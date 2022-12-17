@@ -3,6 +3,7 @@ import { sass } from '@stencil/sass';
 
 export const config: Config = {
   namespace: 'reporting',
+  globalStyle: 'src/global/common.scss',
   outputTargets: [
     {
       type: 'dist',
