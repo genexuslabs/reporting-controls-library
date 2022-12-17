@@ -1,0 +1,10 @@
+/// Helper mixin to ease the styling of the visibility behavior of custom elements.
+/// @param {string} $display display CSS property
+@mixin visibility($display) {
+  display: $display;
+
+  &[hidden]:not([invisible-mode="collapse"]) {
+    display: $display !important;
+    visibility: hidden;
+  }
+}
