@@ -1,7 +1,8 @@
 {
-  "name": "reporting",
+  "name": "@genexus/reporting",
   "version": "0.0.1",
-  "description": "Stencil Component Starter",
+  "author": "GeneXus",
+  "description": "GeneXus Reporting",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
   "es2015": "dist/esm/index.mjs",
@@ -12,7 +13,7 @@
   "unpkg": "dist/reporting/reporting.esm.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ionic-team/stencil-component-starter.git"
+    "url": "git+https://github.com/genexuslabs/Reporting.git"
   },
   "files": [
     "dist/",
