@@ -28,6 +28,25 @@ To build the library for production, run:
 npm run build
 ```
 
+## Using this components library
+
+### Script tag
+
+- Put a script tag similar to this `<script type='module' src='https://unpkg.com/@genexus/reporting@0.0.1/dist/index.js'></script>` in the head of your index.html
+- Then you can use the element anywhere in your template, JSX, html etc
+
+### Node Modules
+
+- Run `npm install @genexus/reporting --save`
+- Put a script tag similar to this `<script type='module' src='node_modules/@genexus/reporting/dist/index.js'></script>` in the head of your index.html
+- Then you can use the element anywhere in your template, JSX, html etc
+
+### In a stencil app
+
+- Run `npm install @genexus/reporting --save`
+- Add an import to the npm packages `import @genexus/reporting;`
+- Then you can use the element anywhere in your template, JSX, html etc
+
 ## Authors
 
 See the list of [contributors](https://github.com/genexuslabs/Reporting/contributors) who participated in this project.
