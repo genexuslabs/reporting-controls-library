@@ -1,0 +1,6 @@
+# Avoid false positive errors from ESLint
+/dist/**
+/build/**
+/www/**
+/loader/**
+/src/components.d.ts

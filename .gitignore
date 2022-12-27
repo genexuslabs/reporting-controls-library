@@ -1,3 +1,7 @@
+# Visual Studio Code
+.vs
+
+# Stencil defaults
 dist/
 www/
 loader/
