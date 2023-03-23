@@ -34,7 +34,6 @@ module.exports = {
         prop: "inline",
         state: "inline",
         element: "inline",
-        event: "inline",
         method: "multiline",
         watch: "multiline",
         listen: "multiline"
