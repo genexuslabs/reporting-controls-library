@@ -2,6 +2,12 @@ import { Component, Event, EventEmitter, Prop } from "@stencil/core";
 import { QueryViewer, QueryViewerCard } from "../../services/types/json";
 import { GeneratorType, QueryViewerOutputType } from "../../common/basic-types";
 import { asyncServerCall } from "../../services/services-manager";
+import { parseMetadataXML } from "../../services/xml-parser/metadata-parser";
+import { parseDataXML } from "../../services/xml-parser/data-parser";
+import {
+  QueryViewerServiceData,
+  QueryViewerServiceMetaData
+} from "../../services/types/service-result";
 
 @Component({
   tag: "gx-query-viewer-controller",
@@ -106,12 +112,12 @@ export class QueryViewerController {
   /**
    * Fired when new metadata is fetched
    */
-  @Event() queryViewerMetadata: EventEmitter;
+  @Event() queryViewerMetadata: EventEmitter<QueryViewerServiceMetaData>;
 
   /**
    * Fired when new data is fetched
    */
-  @Event() queryViewerData: EventEmitter;
+  @Event() queryViewerData: EventEmitter<QueryViewerServiceData>;
 
   private getQueryViewerInformation(): QueryViewer {
     const queryViewerObject: QueryViewer = {
@@ -139,6 +145,34 @@ export class QueryViewerController {
     return queryViewerObject;
   }
 
+  private metaDataCallback =
+    (queryViewerObject: QueryViewer) => (xml: string) => {
+      if (!xml) {
+        return;
+      }
+
+      const serviceMetaData: QueryViewerServiceMetaData = parseMetadataXML(xml);
+      this.queryViewerMetadata.emit(serviceMetaData);
+
+      // When success, make an async server call for data
+      asyncServerCall(
+        queryViewerObject,
+        this.baseUrl,
+        this.environment,
+        "data",
+        this.dataCallback
+      );
+    };
+
+  private dataCallback = (xml: string) => {
+    if (!xml) {
+      return;
+    }
+
+    const serviceData: QueryViewerServiceData = parseDataXML(xml);
+    this.queryViewerData.emit(serviceData);
+  };
+
   componentWillLoad() {
     const queryViewerObject = this.getQueryViewerInformation();
 
@@ -147,21 +181,7 @@ export class QueryViewerController {
       this.baseUrl,
       this.environment,
       "metadata",
-      (xml: string) => {
-        this.queryViewerMetadata.emit(xml);
-        // console.log("metadata", xml);
-      }
-    );
-
-    asyncServerCall(
-      queryViewerObject,
-      this.baseUrl,
-      this.environment,
-      "data",
-      (xml: string) => {
-        this.queryViewerData.emit(xml);
-        // console.log("data", xml);
-      }
+      this.metaDataCallback(queryViewerObject)
     );
   }
 }

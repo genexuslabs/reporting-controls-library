@@ -1,9 +1,9 @@
 import {
   QueryViewerAxisOrderType,
-  QueryViewerConditionOperator,
   QueryViewerExpandCollapseType,
   QueryViewerFilterType
-} from "../types/constants";
+} from "../../common/basic-types";
+import { QueryViewerConditionOperator } from "../types/constants";
 import {
   QueryViewer,
   QueryViewerAxis,
