@@ -195,18 +195,8 @@ export type QueryViewerAxis = {
     Subtotals: string;
     CanDragToPages: boolean;
 
-    ValuesStyles?: {
-      Value: string | number | boolean; // @todo TODO: Improve the type
-      StyleOrClass: string;
-      ApplyToRowOrColumn: boolean;
-    }[];
-
-    ConditionalStyles?: {
-      Operator: string;
-      Value1: string | number | boolean; // @todo TODO: Improve the type
-      Value2?: string | number | boolean; // @todo TODO: Improve the type
-      StyleOrClass: string;
-    }[];
+    ValuesStyles?: QueryViewerAxisValueStyle[];
+    ConditionalStyles?: QueryViewerAxisConditionalStyle[];
   };
 
   Actions?: {
@@ -249,6 +239,19 @@ export type QueryViewerAxis = {
     Type?: "ShowAllValues" | string; // @todo TODO: Improve the type
     Values: string[];
   };
+};
+
+export type QueryViewerAxisValueStyle = {
+  Value: string | number | boolean; // @todo TODO: Improve the type
+  StyleOrClass: string;
+  ApplyToRowOrColumn: boolean;
+};
+
+export type QueryViewerAxisConditionalStyle = {
+  Operator: string;
+  Value1: string | number | boolean; // @todo TODO: Improve the type
+  Value2?: string | number | boolean; // @todo TODO: Improve the type
+  StyleOrClass: string;
 };
 
 export type QueryViewerCard = QueryViewer & {
