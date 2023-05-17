@@ -48,3 +48,49 @@ export enum QueryViewerChartType {
   StepTimeline = "StepTimeline",
   Sparkline = "Sparkline"
 }
+
+export enum QueryViewerAxisOrderType {
+  None = "None",
+  Ascending = "Ascending",
+  Descending = "Descending",
+  Custom = "Custom"
+}
+
+export enum QueryViewerConditionOperator {
+  Equal = "EQ",
+  LessThan = "LT",
+  GreaterThan = "GT",
+  LessOrEqual = "LE",
+  GreaterOrEqual = "GE",
+  NotEqual = "NE",
+  Interval = "IN"
+}
+
+export enum QueryViewerDataType {
+  Integer = "integer",
+  Real = "real",
+  Character = "character",
+  Boolean = "boolean",
+  Date = "date",
+  DateTime = "datetime",
+  GUID = "guid",
+  GeoPoint = "geopoint"
+}
+
+export enum QueryViewerExpandCollapseType {
+  ExpandAllValues = "ExpandAllValues",
+  CollapseAllValues = "CollapseAllValues",
+  ExpandSomeValues = "ExpandSomeValues"
+}
+
+export enum QueryViewerFilterType {
+  ShowAllValues = "ShowAllValues",
+  HideAllValues = "HideAllValues",
+  ShowSomeValues = "ShowSomeValues"
+}
+
+export enum QueryViewerSubtotals {
+  Yes = "Yes",
+  Hidden = "Hidden",
+  No = "No"
+}
