@@ -1,0 +1,56 @@
+:host {
+  display: grid;
+  grid-template-areas: "value trend" "title ." "values-container .";
+  grid-template-columns: min-content min-content;
+  grid-template-rows: min-content min-content min-content;
+}
+
+:host(.gx-query-viewer-card-include-sparkline) {
+  grid-template-areas: "value ." "title ." "sparkline trend" "values-container .";
+  grid-template-rows: min-content min-content min-content min-content;
+}
+
+.value {
+  grid-area: value;
+  font-size: 36px;
+  line-height: normal;
+}
+
+.title {
+  font-family: "Source Sans Pro";
+  grid-area: title;
+  font-size: 14px;
+}
+
+.values-container {
+  grid-area: values-container;
+}
+
+.trend {
+  grid-area: trend;
+  padding-top: 25px;
+}
+
+.max-min-title {
+  font-family: "Source Sans Pro";
+  font-size: 13px;
+  line-height: normal;
+  padding-inline: 30px;
+}
+
+.max-min-value {
+  font-size: 18px;
+  padding-inline-start: 15px;
+  padding-inline-end: 15px;
+}
+
+:host {
+  text-align: center;
+}
+
+.card-sparkline {
+  grid-area: sparkline;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
