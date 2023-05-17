@@ -1,0 +1,62 @@
+// @font-face {
+//   font-family: "Material Icons";
+//   font-style: normal;
+//   font-weight: 400;
+//   src: local("Material Icons"), local("MaterialIcons-Regular"),
+//     url(MaterialIcons-Regular.woff2) format("woff2");
+// }
+
+// .material-icons {
+//   font-family: "Material Icons";
+//   font-weight: normal;
+//   font-style: normal;
+//   font-size: 24px; /* Preferred icon size */
+//   display: inline-block;
+//   line-height: 1;
+//   text-transform: none;
+//   letter-spacing: normal;
+//   word-wrap: normal;
+//   white-space: nowrap;
+//   direction: ltr;
+
+//   /* Support for all WebKit browsers. */
+//   -webkit-font-smoothing: antialiased;
+//   /* Support for Safari and Chrome. */
+//   text-rendering: optimizeLegibility;
+
+//   /* Support for Firefox. */
+//   -moz-osx-font-smoothing: grayscale;
+
+//   /* Support for IE. */
+//   font-feature-settings: "liga";
+// }
+.title {
+  font-size: 15px;
+}
+
+.gx-cell:not([align]) > gx-query-viewer {
+  justify-content: center;
+}
+
+.gx-cell[align] > gx-query-viewer {
+  display: contents;
+}
+// gx-query-viewer-card::part(trend) {
+//   font-family: "Material Icons";
+//   font-size: 1.7em;
+//   display: inline-block;
+//   line-height: 0;
+//   // letter-spacing: normal;
+//   word-wrap: normal;
+//   white-space: nowrap;
+//   vertical-align: middle;
+//   // Support for all WebKit browsers
+//   -webkit-font-smoothing: antialiased;
+//   // Support for Safari and Chrome
+//   text-rendering: optimizeLegibility;
+//   //Support for Firefox
+//   -moz-osx-font-smoothing: grayscale;
+//   // No select
+//   -webkit-user-select: none; // Safari
+//   user-select: none; // Non-prefixed version, currently supported by Chrome and Opera
+// }
