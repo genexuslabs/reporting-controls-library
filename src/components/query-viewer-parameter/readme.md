@@ -13,9 +13,9 @@
 
 ## Events
 
-| Event                   | Description | Type                                            |
-| ----------------------- | ----------- | ----------------------------------------------- |
-| `parameterValueChanged` |             | `CustomEvent<QueryViewerParameterChangedEvent>` |
+| Event                   | Description                                      | Type                                            |
+| ----------------------- | ------------------------------------------------ | ----------------------------------------------- |
+| `parameterValueChanged` | Fired each time the value of the control changes | `CustomEvent<QueryViewerParameterChangedEvent>` |
 
 
 ----------------------------------------------

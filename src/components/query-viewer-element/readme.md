@@ -36,9 +36,9 @@
 
 ## Events
 
-| Event            | Description | Type               |
-| ---------------- | ----------- | ------------------ |
-| `elementChanged` |             | `CustomEvent<any>` |
+| Event            | Description                                           | Type               |
+| ---------------- | ----------------------------------------------------- | ------------------ |
+| `elementChanged` | Fired each time the properties of the control changes | `CustomEvent<any>` |
 
 
 ----------------------------------------------
