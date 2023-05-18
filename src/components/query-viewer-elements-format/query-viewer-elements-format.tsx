@@ -5,32 +5,40 @@ import { Component, Event, EventEmitter, Prop } from "@stencil/core";
   shadow: false
 })
 export class QueryViewerElementFormat {
-  @Event() elementChanged: EventEmitter;
-
   /**
    * Format on values
    */
-  @Prop() picture: string;
+  @Prop() readonly picture: string;
+
   /**
    * How to show subtotals
    */
-  @Prop() subtotals: "Yes" | "Hidden" | "No";
+  @Prop() readonly subtotals: "Yes" | "Hidden" | "No";
+
   /**
    * If true cand drag to pages
    */
-  @Prop() canDragToPages: boolean;
+  @Prop() readonly canDragToPages: boolean;
+
   /**
    * Format style
    */
-  @Prop() formatStyle: string;
+  @Prop() readonly formatStyle: string;
+
   /**
    * Target value
    */
-  @Prop() targetValue: string;
+  @Prop() readonly targetValue: string;
+
   /**
    * Max value
    */
-  @Prop() maximumValue: string;
+  @Prop() readonly maximumValue: string;
+
+  /**
+   * Fired each time the properties of the control changes
+   */
+  @Event() elementChanged: EventEmitter;
 
   componentDidUpdate() {
     this.elementChanged.emit();

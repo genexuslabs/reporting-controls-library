@@ -84,7 +84,9 @@ const SERIES_OPTION = [
 })
 export class QueryViewerCard {
   private queryViewerCardId: string;
+
   @Element() element: HTMLGxQueryViewerCardElement;
+
   /**
    * Axis.
    */
@@ -207,6 +209,7 @@ export class QueryViewerCard {
         <h1 class="title" part="title" id={this.queryViewerCardId}>
           {this.datum.Title}
         </h1>
+
         {this.includeSparkline && (
           <gx-query-viewer-chart
             class="card-sparkline"
@@ -220,11 +223,13 @@ export class QueryViewerCard {
             xaxisOptions={XAXIS_OPTION}
           ></gx-query-viewer-chart>
         )}
+
         {this.includeTrend && (
           <i class="trend" part="trend" aria-hidden="true">
             keyboard_arrow_up
           </i>
         )}
+
         {this.includeMaxAndMin && (
           <div class="values-container">
             <div class="div-value">

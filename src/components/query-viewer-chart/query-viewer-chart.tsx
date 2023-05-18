@@ -22,34 +22,42 @@ export class QueryViewerChart {
   private chartHC: Chart;
 
   @Element() element: HTMLGxQueryViewerChartElement;
+
   /**
    * Name of the element
    */
   @Prop() readonly chartTitle: TitleOptions;
+
   /**
    * Title that will be displayed on top of the query
    */
   @Prop() readonly chartOptions: ChartOptions;
+
   /**
    * Options of the chart.
    */
   @Prop() readonly tooltipOptions: TooltipOptions;
+
   /**
    * Options of the tooltip, the tooltip appears when hovering over a point in a series.
    */
   @Prop() readonly legendOptions: LegendOptions;
+
   /**
    * Options of the legend, the legend displays the series in a chart with a predefined symbol and the name of the series.
    */
   @Prop() readonly plotOptions: PlotOptions;
+
   /**
    * Options of the plot for each series type chart.
    */
   @Prop() readonly yaxisOptions: YAxisOptions;
+
   /**
    * Options of the Y axis (usually this is the vertical axis).
    */
   @Prop() readonly xaxisOptions: XAxisOptions;
+
   /**
    * Options of the X axis (usually this is the horizontal axis).
    */
@@ -74,9 +82,8 @@ export class QueryViewerChart {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       () => {}
     );
-    // eslint-disable-next-line @stencil/strict-boolean-conditions
     if (this.chartHC) {
-      console.log("Funciona");
+      // console.log("Works");
     }
   }
 
