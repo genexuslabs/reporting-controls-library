@@ -1,0 +1,38 @@
+gx-query-viewer {
+  display: flex;
+  align-self: stretch;
+  flex: 1;
+
+  iframe {
+    flex: 1;
+    border: 0;
+  }
+}
+
+@font-face {
+  font-family: "Material Icons";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Material Icons"), local("MaterialIcons-Outlined"),
+    url("assets/MaterialIcons-Outlined.woff2") format("woff2");
+}
+
+gx-query-viewer-card::part(trend) {
+  font-family: "Material Icons";
+  font-size: 1.7em;
+  display: inline-block;
+  line-height: 0;
+  // letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  vertical-align: middle;
+  // Support for all WebKit browsers
+  -webkit-font-smoothing: antialiased;
+  // Support for Safari and Chrome
+  text-rendering: optimizeLegibility;
+  //Support for Firefox
+  -moz-osx-font-smoothing: grayscale;
+  // No select
+  -webkit-user-select: none; // Safari
+  user-select: none; // Non-prefixed version, currently supported by Chrome and Opera
+}
