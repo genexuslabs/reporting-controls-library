@@ -35,7 +35,7 @@ const PLOT_OPTION = {
   series: {
     enableMouseTracking: false,
     lineWidth: 1,
-    lineColor: "#182f53",
+    lineColor: "var(--gx-query-viewer-card-sparkline-color)",
     shadow: false,
     states: {
       hover: {
@@ -213,6 +213,7 @@ export class QueryViewerCard {
         {this.includeSparkline && (
           <gx-query-viewer-chart
             class="card-sparkline"
+            part="sparkline"
             chartTitle={TITLE_OPTION}
             chartOptions={CHART_OPTION}
             seriesOptions={SERIES_OPTION as SeriesOptionsType[]}

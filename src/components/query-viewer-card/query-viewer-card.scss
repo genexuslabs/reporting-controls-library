@@ -1,4 +1,5 @@
 :host {
+  --gx-query-viewer-card-sparkline-color: #182f53;
   display: grid;
   grid-template-areas: "value trend" "title ." "values-container .";
   grid-template-columns: min-content min-content;
@@ -13,13 +14,14 @@
 .value {
   grid-area: value;
   font-size: 36px;
-  line-height: normal;
+  text-align: center;
 }
 
 .title {
   font-family: "Source Sans Pro";
   grid-area: title;
   font-size: 14px;
+  text-align: center;
 }
 
 .values-container {
