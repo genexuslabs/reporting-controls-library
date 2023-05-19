@@ -17,6 +17,10 @@ import {
   ValueStyle
 } from "../../common/query-viewer-interfaces";
 import { SeriesOptionsType } from "highcharts";
+import {
+  QueryViewerChartType,
+  QueryViewerOutputType
+} from "../../common/basic-types";
 
 const TITLE_OPTION = {
   text: ""
@@ -144,47 +148,12 @@ export class QueryViewer implements GxComponent {
   /**
    * Type of the QueryViewer: Table, PivotTable, Chart, Card
    */
-  @Prop() readonly type: "Card" | "Chart" | "PivotTable" | "Table" | "Default";
+  @Prop() readonly type: QueryViewerOutputType;
 
   /**
    * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
    */
-  @Prop() readonly chartType:
-    | "Column"
-    | "Column3D"
-    | "StackedColumn"
-    | "StackedColumn3D"
-    | "StackedColumn100"
-    | "Bar"
-    | "StackedBar"
-    | "StackedBar100"
-    | "Area"
-    | "StackedArea"
-    | "StackedArea100"
-    | "SmoothArea"
-    | "StepArea"
-    | "Line"
-    | "StackedLine"
-    | "StackedLine100"
-    | "SmoothLine"
-    | "StepLine"
-    | "Pie"
-    | "Pie3D"
-    | "Doughnut"
-    | "Doughnut3D"
-    | "LinearGauge"
-    | "CircularGauge"
-    | "Radar"
-    | "FilledRadar"
-    | "PolarArea"
-    | "Funnel"
-    | "Pyramid"
-    | "ColumnLine"
-    | "Column3DLine"
-    | "Timeline"
-    | "SmoothTimeline"
-    | "StepTimeline"
-    | "Sparkline";
+  @Prop() readonly chartType: QueryViewerChartType;
 
   /**
    * If type == PivotTable or Table, if true there is paging, else everything in one table
