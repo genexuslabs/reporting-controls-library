@@ -1,4 +1,12 @@
-import { Component, Element, Host, Prop, State, h } from "@stencil/core";
+import {
+  Component,
+  Element,
+  Host,
+  Listen,
+  Prop,
+  State,
+  h
+} from "@stencil/core";
 
 import { Component as GxComponent } from "../../common/interfaces";
 import { ElementValue } from "../../common/query-viewer-interfaces";
@@ -7,6 +15,7 @@ import {
   QueryViewerChartType,
   QueryViewerOutputType
 } from "../../common/basic-types";
+import { QueryViewerServiceResponse } from "../../services/types/service-result";
 
 const TITLE_OPTION = {
   text: ""
@@ -115,6 +124,8 @@ export class QueryViewer implements GxComponent {
 
   @State() parameters: string;
   @State() elements: string;
+
+  @State() serviceResponse: QueryViewerServiceResponse;
 
   /**
    * Language of the QueryViewer
@@ -313,6 +324,11 @@ export class QueryViewer implements GxComponent {
    * Version of data
    */
   @Prop() readonly dataVersionId: number;
+
+  @Listen("queryViewerServiceResponse")
+  handleServiceResponse(event: CustomEvent<QueryViewerServiceResponse>) {
+    this.serviceResponse = event.detail;
+  }
 
   private isDatum = (element: ElementValue) => element.Type == "Datum";
   // private isAxis = (element: ElementValue) => element.Type == "Axis";
