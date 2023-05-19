@@ -96,6 +96,21 @@ const SERIES_OPTION = [
   assetsDirs: ["assets"]
 })
 export class QueryViewer implements GxComponent {
+  /**
+   * Dictionary for each type of Query Viewer. Maps Query Viewer types to their
+   * corresponding render.
+   */
+  private rendersDictionary: {
+    [key in QueryViewerOutputType]: any;
+  } = {
+    [QueryViewerOutputType.Card]: this.cardRender(),
+    [QueryViewerOutputType.Chart]: this.chartRender(),
+    [QueryViewerOutputType.Map]: "",
+    [QueryViewerOutputType.PivotTable]: "",
+    [QueryViewerOutputType.Table]: "",
+    [QueryViewerOutputType.Default]: ""
+  };
+
   @Element() element: HTMLGxQueryViewerElement;
 
   @State() parameters: string;
@@ -308,9 +323,45 @@ export class QueryViewer implements GxComponent {
   //   });
   // };
 
-  render() {
+  private cardRender() {
     const queryViewerElements: ElementValue[] = JSON.parse(this.elements);
     const datum = queryViewerElements.filter(this.isDatum);
+
+    datum.map(
+      datum => (
+        // axis.map(axis => (
+        <gx-query-viewer-card
+          datum={datum}
+          value={datum.DataField}
+          // axis={axis}
+          // showDataAs={this.showDataAs}
+          orientation={this.orientation}
+          includeTrend={this.includeTrend}
+          // trendPeriod={this.trendPeriod}
+          includeSparkline={this.includeSparkline}
+          includeMaxAndMin={this.includeMaxMin}
+        ></gx-query-viewer-card>
+      )
+      // ))
+    );
+  }
+
+  private chartRender() {
+    return (
+      <gx-query-viewer-chart
+        chartTitle={TITLE_OPTION}
+        chartOptions={CHART_OPTION}
+        seriesOptions={SERIES_OPTION as SeriesOptionsType[]}
+        tooltipOptions={TOOLTIP_OPTION}
+        legendOptions={LEGEND_OPTION}
+        plotOptions={PLOT_OPTION}
+        yaxisOptions={YAXIS_OPTION}
+        xaxisOptions={XAXIS_OPTION}
+      ></gx-query-viewer-chart>
+    );
+  }
+
+  render() {
     // const axis = queryViewerElements.filter(this.isAxis);
     // const cardAxis = this.getFirstAxisDateTimeOrDate();
     // console.log("type", this.type);
@@ -322,41 +373,6 @@ export class QueryViewer implements GxComponent {
     // console.log("includeMaxMin", this.includeMaxMin);
     // console.log("orientation", this.orientation);
 
-    return (
-      <Host>
-        {this.type == "Card" ? (
-          datum.map(
-            datum => (
-              // axis.map(axis => (
-              <gx-query-viewer-card
-                datum={datum}
-                value={datum.DataField}
-                // axis={axis}
-                // showDataAs={this.showDataAs}
-                orientation={this.orientation}
-                includeTrend={this.includeTrend}
-                // trendPeriod={this.trendPeriod}
-                includeSparkline={this.includeSparkline}
-                includeMaxAndMin={this.includeMaxMin}
-              ></gx-query-viewer-card>
-            )
-            // ))
-          )
-        ) : this.type == "Chart" ? (
-          <gx-query-viewer-chart
-            chartTitle={TITLE_OPTION}
-            chartOptions={CHART_OPTION}
-            seriesOptions={SERIES_OPTION as SeriesOptionsType[]}
-            tooltipOptions={TOOLTIP_OPTION}
-            legendOptions={LEGEND_OPTION}
-            plotOptions={PLOT_OPTION}
-            yaxisOptions={YAXIS_OPTION}
-            xaxisOptions={XAXIS_OPTION}
-          ></gx-query-viewer-chart>
-        ) : (
-          ""
-        )}
-      </Host>
-    );
+    return <Host>{this.rendersDictionary[this.type]}</Host>;
   }
 }
