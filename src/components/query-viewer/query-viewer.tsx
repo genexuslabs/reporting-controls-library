@@ -132,16 +132,6 @@ export class QueryViewer implements GxComponent {
   @State() elements: string;
 
   /**
-   * Base URL of the server
-   */
-  @Prop() readonly baseUrl: any;
-
-  /**
-   * Environmet of the project: JAVA. .Net, NetCore
-   */
-  @Prop() readonly env: string;
-
-  /**
    * Language of the QueryViewer
    */
   @Prop() readonly language: string;
@@ -150,11 +140,6 @@ export class QueryViewer implements GxComponent {
    * Object of QueryViewer
    */
   @Prop() readonly object: string;
-
-  /**
-   * Name of the Query or Data provider assigned
-   */
-  @Prop() readonly objectName: string;
 
   /**
    * Type of the QueryViewer: Table, PivotTable, Chart, Card
@@ -328,21 +313,6 @@ export class QueryViewer implements GxComponent {
    * If autoResize, in here select the type, Width, height, or both
    */
   @Prop() readonly autoResizeType: "Both" | "Vertical" | "Horizontal";
-
-  /**
-   * Type of font
-   */
-  @Prop() readonly fontFamily: string;
-
-  /**
-   * Font size
-   */
-  @Prop() readonly fontSize: number;
-
-  /**
-   * Font Color
-   */
-  @Prop() readonly fontColor: string;
 
   /**
    * Auto refresh group
