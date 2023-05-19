@@ -6,7 +6,8 @@ import { parseMetadataXML } from "../../services/xml-parser/metadata-parser";
 import { parseDataXML } from "../../services/xml-parser/data-parser";
 import {
   QueryViewerServiceData,
-  QueryViewerServiceMetaData
+  QueryViewerServiceMetaData,
+  QueryViewerServiceResponse
 } from "../../services/types/service-result";
 
 @Component({
@@ -110,14 +111,9 @@ export class QueryViewerController {
   @Prop() readonly type: QueryViewerOutputType;
 
   /**
-   * Fired when new metadata is fetched
+   * Fired when new metadata and data is fetched
    */
-  @Event() queryViewerMetadata: EventEmitter<QueryViewerServiceMetaData>;
-
-  /**
-   * Fired when new data is fetched
-   */
-  @Event() queryViewerData: EventEmitter<QueryViewerServiceData>;
+  @Event() queryViewerServiceResponse: EventEmitter<QueryViewerServiceResponse>;
 
   private getQueryViewerInformation(): QueryViewer {
     const queryViewerObject: QueryViewer = {
@@ -152,7 +148,6 @@ export class QueryViewerController {
       }
 
       const serviceMetaData: QueryViewerServiceMetaData = parseMetadataXML(xml);
-      this.queryViewerMetadata.emit(serviceMetaData);
 
       // When success, make an async server call for data
       asyncServerCall(
@@ -160,18 +155,24 @@ export class QueryViewerController {
         this.baseUrl,
         this.environment,
         "data",
-        this.dataCallback
+        this.dataCallback(serviceMetaData)
       );
     };
 
-  private dataCallback = (xml: string) => {
-    if (!xml) {
-      return;
-    }
+  private dataCallback =
+    (metaData: QueryViewerServiceMetaData) => (xml: string) => {
+      if (!xml) {
+        return;
+      }
 
-    const serviceData: QueryViewerServiceData = parseDataXML(xml);
-    this.queryViewerData.emit(serviceData);
-  };
+      const serviceData: QueryViewerServiceData = parseDataXML(xml);
+
+      // Emit service response
+      this.queryViewerServiceResponse.emit({
+        MetaData: metaData,
+        Data: serviceData
+      });
+    };
 
   componentWillLoad() {
     const queryViewerObject = this.getQueryViewerInformation();

@@ -9,16 +9,16 @@ import {
   QueryViewerAxisValueStyle
 } from "./json";
 
-export type QueryViewerServiceData = {
-  Rows: QueryViewerServiceDataRow[];
+export type QueryViewerServiceResponse = {
+  MetaData: QueryViewerServiceMetaData;
+  Data: QueryViewerServiceData;
 };
 
-export type QueryViewerServiceDataRow = { [key: string]: string };
-
+// MetaData
 export type QueryViewerServiceMetaData = {
   TextForNullValues: string;
   Axes: QueryViewerServiceMetaDataAxis[];
-  Data: QueryViewerServiceDataAxis[];
+  Data: QueryViewerServiceMetaDataDataAxis[];
 };
 
 export type QueryViewerServiceMetaDataAxis = {
@@ -55,7 +55,7 @@ export type QueryViewerServiceMetaDataAxis = {
   ValuesStyles: QueryViewerAxisValueStyle[];
 };
 
-export type QueryViewerServiceDataAxis = {
+export type QueryViewerServiceMetaDataDataAxis = {
   Name: string;
   Title: string;
   DataField: string;
@@ -76,3 +76,10 @@ export type QueryViewerServiceDataAxis = {
   IsFormula: boolean;
   Formula: string;
 };
+
+// Data
+export type QueryViewerServiceData = {
+  Rows: QueryViewerServiceDataRow[];
+};
+
+export type QueryViewerServiceDataRow = { [key: string]: string };
