@@ -11,9 +11,9 @@ import {
   QueryViewerAxisValueStyle
 } from "../types/json";
 import {
-  QueryViewerServiceDataAxis,
   QueryViewerServiceMetaData,
-  QueryViewerServiceMetaDataAxis
+  QueryViewerServiceMetaDataAxis,
+  QueryViewerServiceMetaDataDataAxis
 } from "../types/service-result";
 import {
   getBooleanAttribute,
@@ -343,7 +343,7 @@ export function parseMetadataXML(
     getMultipleElementsByTagName(rootElement, DATUM_TAG_NAME)
   );
 
-  const serviceMetaDataDatums: QueryViewerServiceDataAxis[] = datas.map(
+  const serviceMetaDataDatums: QueryViewerServiceMetaDataDataAxis[] = datas.map(
     data => {
       const dataType = data.getAttribute("dataType");
       const targetValue = parseFloat(data.getAttribute("targetValue"));

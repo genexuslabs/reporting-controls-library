@@ -94,3 +94,42 @@ export enum QueryViewerSubtotals {
   Hidden = "Hidden",
   No = "No"
 }
+
+export enum QueryViewerAggregationType {
+  Sum = "Sum",
+  Average = "Average",
+  Count = "Count",
+  Max = "Max",
+  Min = "Min"
+}
+
+export enum QueryViewerVisible {
+  Always = "Always",
+  Yes = "Yes",
+  No = "No",
+  Never = "Never"
+}
+
+export enum QueryViewerShowDataAs {
+  Values = "Values",
+  Percentages = "Percentages",
+  ValuesAndPercentages = "ValuesAndPercentages"
+}
+
+export enum QueryViewerTrendPeriod {
+  SinceTheBeginning = "SinceTheBeginning",
+  LastYear = "LastYear",
+  LastSemester = "LastSemester",
+  LastQuarter = "LastQuarter",
+  LastMonth = "LastMonth",
+  LastWeek = "LastWeek",
+  LastDay = "LastDay",
+  LastHour = "LastHour",
+  LastMinute = "LastMinute",
+  LastSecond = "LastSecond"
+}
+
+export enum QueryViewerOrientation {
+  Horizontal = "Horizontal",
+  Vertical = "Vertical"
+}

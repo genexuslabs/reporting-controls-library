@@ -136,8 +136,8 @@ function aggregateDatum(
 export function aggregateData(
   data: QueryViewerServiceMetaDataDataAxis[],
   rows: QueryViewerServiceDataRow[]
-) {
-  const newRow: { [key: string]: string } = {};
+): QueryViewerServiceDataRow {
+  const newRow: QueryViewerServiceDataRow = {};
 
   data.forEach(datum => {
     const aggValue = aggregateDatum(datum, rows);

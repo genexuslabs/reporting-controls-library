@@ -1,8 +1,10 @@
 import {
+  QueryViewerAggregationType,
   QueryViewerAxisOrderType,
   QueryViewerExpandCollapseType,
   QueryViewerFilterType,
-  QueryViewerSubtotals
+  QueryViewerSubtotals,
+  QueryViewerVisible
 } from "../../common/basic-types";
 import {
   QueryViewerAxisConditionalStyle,
@@ -59,9 +61,9 @@ export type QueryViewerServiceMetaDataDataAxis = {
   Name: string;
   Title: string;
   DataField: string;
-  Aggregation: string;
+  Aggregation: QueryViewerAggregationType;
   DataType: string;
-  Visible: string;
+  Visible: QueryViewerVisible;
   Picture: string;
   RaiseItemClick: boolean;
   IsComponent: boolean;
