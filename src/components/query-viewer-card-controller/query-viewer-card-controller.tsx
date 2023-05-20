@@ -9,6 +9,7 @@ import {
 } from "../../common/basic-types";
 import { aggregateData } from "./utils";
 import { parseNumericPicture } from "../../utils/general";
+import { analyzeSeries } from "../query-viewer-chart/utils";
 
 @Component({
   tag: "gx-query-viewer-card-controller",
@@ -66,7 +67,7 @@ export class QueryViewerCard {
     | "Last second" = "Since the beginning";
 
   /**
-   * If there is a date, I do not add the data because I want to see the
+   * If there is a date, do not add the data because we want to see the
    * evolution over time.
    */
   private checkIfThereIsAnyDate() {
@@ -105,7 +106,7 @@ export class QueryViewerCard {
         : response.Data.Rows[response.Data.Rows.length - 1];
     }
 
-    // const dataAllSeries = [];
+    const dataAllSeries = [];
     for (let i = 0; i < response.MetaData.Data.length; i++) {
       const datum = response.MetaData.Data[i];
 
@@ -139,8 +140,19 @@ export class QueryViewerCard {
           anyRows &&
           (this.includeTrend || this.includeSparkline || this.includeMaxAndMin)
         ) {
-          // const data = analizeSeries(qViewer, datum, xDataField, xDataType);
-          // dataAllSeries.push(data);
+          const data = analyzeSeries(
+            {
+              includeMaxAndMin: this.includeMaxAndMin,
+              includeSparkline: this.includeSparkline,
+              includeTrend: this.includeTrend,
+              trendPeriod: this.trendPeriod
+            },
+            response.Data,
+            datum,
+            xDataField,
+            xDataType
+          );
+          dataAllSeries.push(data);
         }
 
         // const styleStr = selectStyle(datum, value);
