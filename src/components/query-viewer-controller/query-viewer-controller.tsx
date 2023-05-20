@@ -1,6 +1,10 @@
 import { Component, Event, EventEmitter, Prop } from "@stencil/core";
 import { QueryViewer, QueryViewerCard } from "../../services/types/json";
-import { GeneratorType, QueryViewerOutputType } from "../../common/basic-types";
+import {
+  GeneratorType,
+  QueryViewerChartType,
+  QueryViewerOutputType
+} from "../../common/basic-types";
 import { asyncServerCall } from "../../services/services-manager";
 import { parseMetadataXML } from "../../services/xml-parser/metadata-parser";
 import { parseDataXML } from "../../services/xml-parser/data-parser";
@@ -33,42 +37,7 @@ export class QueryViewerController {
   /**
    * When `type == Chart`, specifies the chart type: Bar, Pie, Timeline, etc...
    */
-  @Prop() readonly chartType:
-    | "Column"
-    | "Column3D"
-    | "StackedColumn"
-    | "StackedColumn3D"
-    | "StackedColumn100"
-    | "Bar"
-    | "StackedBar"
-    | "StackedBar100"
-    | "Area"
-    | "StackedArea"
-    | "StackedArea100"
-    | "SmoothArea"
-    | "StepArea"
-    | "Line"
-    | "StackedLine"
-    | "StackedLine100"
-    | "SmoothLine"
-    | "StepLine"
-    | "Pie"
-    | "Pie3D"
-    | "Doughnut"
-    | "Doughnut3D"
-    | "LinearGauge"
-    | "CircularGauge"
-    | "Radar"
-    | "FilledRadar"
-    | "PolarArea"
-    | "Funnel"
-    | "Pyramid"
-    | "ColumnLine"
-    | "Column3DLine"
-    | "Timeline"
-    | "SmoothTimeline"
-    | "StepTimeline"
-    | "Sparkline";
+  @Prop() readonly chartType: QueryViewerChartType;
 
   /**
    * Environment of the project: java or net

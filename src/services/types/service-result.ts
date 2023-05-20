@@ -20,7 +20,7 @@ export type QueryViewerServiceResponse = {
 export type QueryViewerServiceMetaData = {
   TextForNullValues: string;
   Axes: QueryViewerServiceMetaDataAxis[];
-  Data: QueryViewerServiceMetaDataDataAxis[];
+  Data: QueryViewerServiceMetaDataData[];
 };
 
 export type QueryViewerServiceMetaDataAxis = {
@@ -57,7 +57,7 @@ export type QueryViewerServiceMetaDataAxis = {
   ValuesStyles: QueryViewerAxisValueStyle[];
 };
 
-export type QueryViewerServiceMetaDataDataAxis = {
+export type QueryViewerServiceMetaDataData = {
   Name: string;
   Title: string;
   DataField: string;

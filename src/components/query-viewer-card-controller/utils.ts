@@ -1,7 +1,7 @@
 import { QueryViewerAggregationType } from "../../common/basic-types";
 import {
   QueryViewerServiceDataRow,
-  QueryViewerServiceMetaDataDataAxis
+  QueryViewerServiceMetaDataData
 } from "../../services/types/service-result";
 
 function evaluate(
@@ -77,7 +77,7 @@ const aggregate = (
   );
 
 function aggregateDatum(
-  datum: QueryViewerServiceMetaDataDataAxis,
+  datum: QueryViewerServiceMetaDataData,
   rows: QueryViewerServiceDataRow[]
 ): string {
   const currentYValues = [];
@@ -134,7 +134,7 @@ function aggregateDatum(
 }
 
 export function aggregateData(
-  data: QueryViewerServiceMetaDataDataAxis[],
+  data: QueryViewerServiceMetaDataData[],
   rows: QueryViewerServiceDataRow[]
 ): QueryViewerServiceDataRow {
   const newRow: QueryViewerServiceDataRow = {};
