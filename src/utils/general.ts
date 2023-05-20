@@ -1,8 +1,6 @@
-import {
-  QueryViewerDataType,
-  QueryViewerShowDataAs
-} from "../common/basic-types";
-import { QueryViewerServiceMetaDataDataAxis } from "../services/types/service-result";
+import { format } from "date-fns";
+
+import { QueryViewerDataType } from "../common/basic-types";
 
 export function parseNumericPicture(dataType: string, picture: string) {
   // @todo Check if picture can be undefined
@@ -86,6 +84,21 @@ export function parseNumericPicture(dataType: string, picture: string) {
     Suffix: suffix
   };
 }
+
+/**
+ * Given a date it formats the date to a string.
+ *  - If `includeTime` is `true` the output format is `"YYYY-MM-DD HH:mm:ss"`.
+ *    Example: `2023-05-19 15:22:27`
+ *  - Otherwise, the output format is `"YYYY-MM-DD"`
+ *    Example: `2023-05-19`
+ * @param date The date to format to string
+ * @param includeTime If should include hours, minutes and seconds
+ * @returns The date formatted to a string
+ */
+export const dateToString = (date: Date, includeTime: boolean) =>
+  includeTime
+    ? format(date, "YYYY-MM-DD HH:mm:ss")
+    : format(date, "YYYY-MM-DD"); // Y4MD format
 
 // function formatNumber(number, decimalPrecision, picture, removeTrailingZeroes) {
 //   let formattedNumber = gx.num.formatNumber(
