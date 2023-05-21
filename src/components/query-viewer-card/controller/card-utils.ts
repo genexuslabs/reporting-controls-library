@@ -310,10 +310,9 @@ const showDataAsMapping: {
 // @todo Complete the implementation of this function by comparing it to the Web implementation
 export function valueOrPercentage(
   showDataAs: QueryViewerShowDataAs,
-  valueStr: string,
+  value: number,
   datum: QueryViewerServiceMetaDataData
 ) {
-  const value = parseFloat(valueStr);
   const percentage = (value * 100) / datum.TargetValue;
 
   return showDataAsMapping[showDataAs]({

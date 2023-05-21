@@ -197,7 +197,7 @@ export class QueryViewerCard {
 
     cardInformation["value"] = valueOrPercentage(
       this.showDataAs,
-      lastRow[datum.DataField],
+      parseFloat(lastRow[datum.DataField]),
       datum
     );
 
@@ -246,14 +246,14 @@ export class QueryViewerCard {
       // MinValue @todo Update the implementation of the minValue using the Web implementation
       cardInformation["minValue"] = valueOrPercentage(
         this.showDataAs,
-        data.MinWhen,
+        data.MinValue,
         datum
       );
 
       // MaxValue @todo Update the implementation of the maxValue using the Web implementation
       cardInformation["maxValue"] = valueOrPercentage(
         this.showDataAs,
-        data.MaxWhen,
+        data.MaxValue,
         datum
       );
     }
