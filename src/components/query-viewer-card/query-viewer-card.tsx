@@ -133,25 +133,6 @@ export class QueryViewerCard {
    */
   @Event() itemClickEvent: EventEmitter;
 
-  /* private trendIcon(data: any) {
-    let icon;
-    if (data > 0) icon = "keyboard_arrow_up";
-    else if (data < 0) icon = "keyboard_arrow_down";
-    else icon = "drag_handle";
-
-    return icon;
-  }
-
-  private valueOrPercentage(valueStr: string, datum: ElementValue) {
-    let value = "";
-    let percentage = "";
-    value = valueStr;
-    percentage =
-      String((Number(value) * 100) / Number(datum.Format.TargetValue)) + "%";
-
-    return value;
-  }
-  */
   componentWillLoad() {
     // Sets IDs
     if (!this.queryViewerCardId) {
