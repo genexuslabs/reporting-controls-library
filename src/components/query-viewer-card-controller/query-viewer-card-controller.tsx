@@ -230,9 +230,9 @@ export class QueryViewerCard {
       this.includeTrend && data.LinearRegression.AnyTrend;
 
     if (shouldIncludeTrend) {
-      cardInformation["includeTrend"] = true;
+      cardInformation.includeTrend = true;
 
-      cardInformation["trend"] = this.getTrendIconConfiguration(
+      cardInformation.trend = this.getTrendIconConfiguration(
         data.LinearRegression.Slope
       );
     }
@@ -241,6 +241,8 @@ export class QueryViewerCard {
     const shouldIncludeMaxAndMin = this.includeMaxMin && !!xDataField;
 
     if (shouldIncludeMaxAndMin) {
+      cardInformation.includeMinMax = true;
+
       // MinValue @todo Update the implementation of the minValue using the Web implementation
       cardInformation["minValue"] = valueOrPercentage(
         this.showDataAs,
