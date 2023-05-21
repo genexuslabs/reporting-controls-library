@@ -73,7 +73,7 @@ export class QueryViewerController {
   /**
    * @todo Add description and improve type
    */
-  @Prop() readonly translationType: string = "None";
+  @Prop() readonly translationType: string = "None"; // @todo Verify the values that Angular provides
 
   /**
    * Type of the QueryViewer: Table, PivotTable, Chart, Card
@@ -144,7 +144,7 @@ export class QueryViewerController {
       });
     };
 
-  componentWillLoad() {
+  connectedCallback() {
     const queryViewerObject = this.getQueryViewerInformation();
 
     asyncServerCall(
