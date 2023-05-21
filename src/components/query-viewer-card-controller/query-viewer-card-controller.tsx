@@ -1,4 +1,5 @@
 import { Component, h, Prop, Host, Element } from "@stencil/core";
+
 import {
   QueryViewerServiceDataRow,
   QueryViewerServiceMetaDataData,
@@ -8,9 +9,10 @@ import {
   QueryViewerDataType,
   QueryViewerShowDataAs,
   QueryViewerTrendPeriod,
-  QueryViewerVisible
+  QueryViewerVisible,
+  TrendIcon
 } from "../../common/basic-types";
-import { aggregateData, parseNumericPicture } from "../../utils/general";
+import { aggregateData } from "../../utils/general";
 import {
   RegressionSeries,
   analyzeSeries,
@@ -23,31 +25,30 @@ type CardInformation = {
   minValue?: string;
   maxValue?: string;
   dataSeries?: RegressionSeries;
-  includeMinAndMax: boolean;
+  includeMinMax: boolean;
   includeSparkline: boolean;
   includeTrend: boolean;
-  trend?: TrendConfiguration;
+  trend: TrendConfiguration;
 };
 
 type TrendConfiguration = {
-  icon: string;
-  tooltip: string;
+  icon: TrendIcon;
+  tooltip?: string;
 };
 
 const trendIconMapping = (linearRegressionSlope: number) =>
   linearRegressionSlope > 0 ? "keyboard_arrow_up" : "keyboard_arrow_down";
 
 @Component({
-  tag: "gx-query-viewer-card-controller",
-  styleUrl: "query-viewer-card-controller.scss"
+  tag: "gx-query-viewer-card-controller"
 })
 export class QueryViewerCard {
   @Element() element: HTMLGxQueryViewerCardControllerElement;
 
   /**
-   * IncludeMaxAndMin, specifies whether to include the maximum and minimum values in the series.
+   * Specifies whether to include the maximum and minimum values in the series.
    */
-  @Prop() readonly includeMaxAndMin: boolean = false;
+  @Prop() readonly includeMaxMin: boolean = false;
 
   /**
    * IncludeSparkline, specifies whether to include a sparkline chart for the values or not.
@@ -90,7 +91,12 @@ export class QueryViewerCard {
     xDataField: string;
     xDataType: QueryViewerDataType;
   } {
-    this.serviceResponse.MetaData.Axes.forEach(axis => {
+    const axes = this.serviceResponse.MetaData.Axes;
+
+    // Can't use forEach, because it displays an error "Not all code paths return a value."
+    for (let i = 0; i < axes.length; i++) {
+      const axis = axes[i];
+
       if (
         axis.DataType === QueryViewerDataType.Date ||
         axis.DataType === QueryViewerDataType.DateTime
@@ -101,7 +107,7 @@ export class QueryViewerCard {
           xDataType: axis.DataType
         };
       }
-    });
+    }
 
     return {
       aggregateRows: true,
@@ -118,9 +124,14 @@ export class QueryViewerCard {
   });
 
   private getCardsToRender(): CardInformation[] {
-    const cardsToRender: CardInformation[] = [];
     const response = this.serviceResponse;
 
+    // No metadata and data has been fetched yet
+    if (!response) {
+      return [];
+    }
+
+    const cardsToRender: CardInformation[] = [];
     const anyRows = response.Data.Rows.length > 0;
     const { aggregateRows, xDataField, xDataType } =
       this.checkIfThereIsAnyDate();
@@ -167,9 +178,12 @@ export class QueryViewerCard {
     const cardInformation: CardInformation = {
       title: datum.Title,
       value: "",
-      includeMinAndMax: false,
+      includeMinMax: false,
       includeSparkline: false,
-      includeTrend: false
+      includeTrend: false,
+      trend: {
+        icon: "drag_handle"
+      }
     };
 
     if (!anyRows) {
@@ -188,7 +202,7 @@ export class QueryViewerCard {
     );
 
     const shouldAnalyzeData =
-      this.includeTrend || this.includeSparkline || this.includeMaxAndMin;
+      this.includeTrend || this.includeSparkline || this.includeMaxMin;
 
     if (!shouldAnalyzeData) {
       return cardInformation;
@@ -196,7 +210,7 @@ export class QueryViewerCard {
 
     const data = analyzeSeries(
       {
-        includeMaxAndMin: this.includeMaxAndMin,
+        includeMaxAndMin: this.includeMaxMin,
         includeSparkline: this.includeSparkline,
         includeTrend: this.includeTrend,
         trendPeriod: this.trendPeriod
@@ -224,7 +238,7 @@ export class QueryViewerCard {
     }
 
     // MaxAndMin
-    const shouldIncludeMaxAndMin = this.includeMaxAndMin && !!xDataField;
+    const shouldIncludeMaxAndMin = this.includeMaxMin && !!xDataField;
 
     if (shouldIncludeMaxAndMin) {
       // MinValue @todo Update the implementation of the minValue using the Web implementation
@@ -266,6 +280,35 @@ export class QueryViewerCard {
   }
 
   render() {
-    return <Host></Host>;
+    const cardsToRender = this.getCardsToRender();
+
+    return (
+      <Host>
+        {cardsToRender.map(
+          ({
+            title,
+            value,
+            maxValue,
+            minValue,
+            includeMinMax,
+            includeSparkline,
+            includeTrend,
+            trend
+            // dataSeries
+          }) => (
+            <gx-query-viewer-card
+              description={title}
+              value={value}
+              minValue={minValue}
+              maxValue={maxValue}
+              includeMaxMin={includeMinMax}
+              includeSparkline={includeSparkline}
+              includeTrend={includeTrend}
+              trendIcon={trend.icon}
+            ></gx-query-viewer-card>
+          )
+        )}
+      </Host>
+    );
   }
 }
