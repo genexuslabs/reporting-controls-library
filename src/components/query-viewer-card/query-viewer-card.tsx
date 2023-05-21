@@ -66,16 +66,10 @@ const XAXIS_OPTION = {
   }
 };
 
-const SERIES_OPTION = [
+const seriesOption = (data: number[][]) => [
   {
     type: "spline",
-    data: [
-      [1352740844000, 12],
-      [1352741744000, 10],
-      [1352742644000, 20],
-      [1352743544000, 40],
-      [1352744444000, 50]
-    ]
+    data: data
   }
 ];
 
@@ -130,6 +124,11 @@ export class QueryViewerCard {
   @Prop() readonly trendIcon: TrendIcon = "drag_handle";
 
   /**
+   * Specifies the data used for the series of the sparkline.
+   */
+  @Prop() readonly seriesData: number[][] = [];
+
+  /**
    * ItemClickEvent, executes actions when this event is triggered after clicking on a query element.
    */
   @Event() itemClickEvent: EventEmitter;
@@ -165,7 +164,7 @@ export class QueryViewerCard {
             class="card-sparkline"
             chartTitle={TITLE_OPTION}
             chartOptions={CHART_OPTION}
-            seriesOptions={SERIES_OPTION as SeriesOptionsType[]}
+            seriesOptions={seriesOption(this.seriesData) as SeriesOptionsType[]}
             tooltipOptions={TOOLTIP_OPTION}
             legendOptions={LEGEND_OPTION}
             plotOptions={PLOT_OPTION}

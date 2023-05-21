@@ -144,8 +144,6 @@ export class QueryViewerCard {
         : response.Data.Rows[response.Data.Rows.length - 1];
     }
 
-    const dataAllSeries: RegressionSeries[] = [];
-
     response.MetaData.Data.forEach(datum => {
       if (
         datum.Visible === QueryViewerVisible.Yes ||
@@ -157,8 +155,7 @@ export class QueryViewerCard {
             anyRows,
             xDataField,
             xDataType,
-            lastRow,
-            dataAllSeries
+            lastRow
           )
         );
       }
@@ -172,8 +169,7 @@ export class QueryViewerCard {
     anyRows: boolean,
     xDataField: string,
     xDataType: QueryViewerDataType,
-    lastRow: QueryViewerServiceDataRow,
-    dataAllSeries: RegressionSeries[]
+    lastRow: QueryViewerServiceDataRow
   ): CardInformation {
     const cardInformation: CardInformation = {
       title: datum.Title,
@@ -220,7 +216,7 @@ export class QueryViewerCard {
       xDataField,
       xDataType
     );
-    dataAllSeries.push(data);
+    cardInformation["dataSeries"] = data;
 
     // Sparkline
     cardInformation["includeSparkline"] = this.includeSparkline && !!xDataField;
@@ -295,8 +291,8 @@ export class QueryViewerCard {
             includeMinMax,
             includeSparkline,
             includeTrend,
-            trend
-            // dataSeries
+            trend,
+            dataSeries
           }) => (
             <gx-query-viewer-card
               description={title}
@@ -307,6 +303,7 @@ export class QueryViewerCard {
               includeSparkline={includeSparkline}
               includeTrend={includeTrend}
               trendIcon={trend.icon}
+              seriesData={dataSeries.ChartSeriesData}
             ></gx-query-viewer-card>
           )
         )}

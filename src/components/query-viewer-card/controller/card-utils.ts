@@ -27,7 +27,7 @@ export type RegressionSeries = {
   MinWhen: string;
   MaxValue: number;
   MaxWhen: string;
-  ChartSeriesData: { x: number; y: number }[];
+  ChartSeriesData: number[][];
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -45,7 +45,7 @@ function analyzeMain(
   let maxValue: number = null;
   let minWhen: string = null;
   let maxWhen: string = null;
-  const chartSeriesData: { x: number; y: number }[] = [];
+  const chartSeriesData: number[][] = [];
 
   const linearRegression: {
     AnyTrend: boolean;
@@ -98,10 +98,10 @@ function analyzeMain(
       //   y: yValue
       // });
 
-      chartSeriesData.push({
-        x: date.getTime() - date.getTimezoneOffset() * 60000, // @todo Magic number
-        y: yValue
-      });
+      chartSeriesData.push([
+        date.getTime() - date.getTimezoneOffset() * 60000, // @todo Magic number
+        yValue
+      ]);
 
       // Initialize the max and min values
       if (minValue == null && maxValue == null) {
