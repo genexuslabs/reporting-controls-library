@@ -2,6 +2,7 @@ import { add, intervalToDuration } from "date-fns";
 
 import {
   QueryViewerDataType,
+  QueryViewerShowDataAs,
   QueryViewerTrendPeriod
 } from "../../common/basic-types";
 import {
@@ -29,6 +30,9 @@ export type RegressionSeries = {
   ChartSeriesData: { x: number; y: number }[];
 };
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//                               Analyze series
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 function analyzeMain(
   start: number,
   regressionStart: number,
@@ -263,4 +267,54 @@ export function analyzeSeries(
     serviceData.Rows,
     xDataType
   );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//                             Value or Percentage
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const showDataAsMapping: {
+  [key in QueryViewerShowDataAs]: (values: {
+    value: string;
+    percentage: string;
+  }) => string;
+} = {
+  [QueryViewerShowDataAs.Values]: values => values.value,
+  [QueryViewerShowDataAs.Percentages]: values => values.percentage,
+  [QueryViewerShowDataAs.ValuesAndPercentages]: values =>
+    values.value + " (" + values.percentage + ")"
+};
+
+// @todo How do we implement gx.num.formatNumber function?
+// function formatNumber(number, decimalPrecision, picture, removeTrailingZeroes) {
+//   let formattedNumber = gx.num.formatNumber(
+//     number,
+//     decimalPrecision,
+//     picture,
+//     0,
+//     true,
+//     false
+//   );
+//   if (removeTrailingZeroes) {
+//     if (formattedNumber.indexOf(gx.decimalPoint) >= 0) {
+//       while (qv.util.endsWith(formattedNumber, "0")) {
+//         formattedNumber = formattedNumber.slice(0, -1);
+//       }
+//       if (qv.util.endsWith(formattedNumber, gx.decimalPoint)) {
+//         formattedNumber = formattedNumber.slice(0, -1);
+//       }
+//     }
+//   }
+//   return formattedNumber;
+// }
+
+// @todo Complete the implementation of this function by comparing it to the Web implementation
+export function valueOrPercentage(
+  showDataAs: QueryViewerShowDataAs,
+  valueStr: string,
+  datum: QueryViewerServiceMetaDataData
+) {
+  const value = parseFloat(valueStr);
+  const percentage = `${(value * 100) / datum.TargetValue}%`;
+
+  return showDataAsMapping[showDataAs]({ value: valueStr, percentage });
 }

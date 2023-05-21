@@ -90,66 +90,6 @@ export function parseNumericPicture(dataType: string, picture: string) {
   };
 }
 
-// function formatNumber(number, decimalPrecision, picture, removeTrailingZeroes) {
-//   let formattedNumber = gx.num.formatNumber(
-//     number,
-//     decimalPrecision,
-//     picture,
-//     0,
-//     true,
-//     false
-//   );
-//   if (removeTrailingZeroes) {
-//     if (formattedNumber.indexOf(gx.decimalPoint) >= 0) {
-//       while (qv.util.endsWith(formattedNumber, "0")) {
-//         formattedNumber = formattedNumber.slice(0, -1);
-//       }
-//       if (qv.util.endsWith(formattedNumber, gx.decimalPoint)) {
-//         formattedNumber = formattedNumber.slice(0, -1);
-//       }
-//     }
-//   }
-//   return formattedNumber;
-// }
-
-// export function valueOrPercentage(
-//   qViewer,
-//   valueStr: string,
-//   datum: QueryViewerServiceMetaDataDataAxis,
-//   decimals: number
-// ) {
-//   let value;
-//   let percentage;
-//   if (valueStr != "") {
-//     value = qv.util.formatNumber(
-//       parseFloat(valueStr),
-//       decimals,
-//       datum.Picture,
-//       false
-//     );
-//     percentage =
-//       qv.util.formatNumber(
-//         parseFloat((valueStr * 100) / datum.TargetValue),
-//         2,
-//         "ZZZZZZZZZZZZZZ9.99",
-//         false
-//       ) + "%";
-//   } else {
-//     value = "";
-//     percentage = "";
-//   }
-//   switch (qViewer.ShowDataAs) {
-//     case QueryViewerShowDataAs.Values:
-//       return value;
-//     case QueryViewerShowDataAs.Percentages:
-//       return percentage;
-//     case QueryViewerShowDataAs.ValuesAndPercentages:
-//       return value + " (" + percentage + ")";
-//     default:
-//       return value;
-//   }
-// }
-
 function evaluate(
   formula: string,
   baseName: string,
