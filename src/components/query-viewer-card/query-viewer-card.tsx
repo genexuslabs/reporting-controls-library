@@ -18,7 +18,7 @@ const TITLE_OPTION = {
 };
 
 const CHART_OPTION = {
-  width: "100",
+  width: "128",
   height: "50",
   backgroundColor: "transparent",
   margin: [0, 0, 0, 0],
@@ -36,7 +36,7 @@ const LEGEND_OPTION = {
 const PLOT_OPTION = {
   series: {
     enableMouseTracking: false,
-    lineWidth: 1,
+    lineWidth: 2,
     lineColor: "#182f53",
     shadow: false,
     states: {
