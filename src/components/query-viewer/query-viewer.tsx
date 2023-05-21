@@ -5,11 +5,10 @@ import {
   Listen,
   Prop,
   State,
-  Watch,
   h
 } from "@stencil/core";
 
-import { SeriesOptionsType } from "highcharts";
+// import { SeriesOptionsType } from "highcharts";
 import { Component as GxComponent } from "../../common/interfaces";
 import {
   QueryViewerChartType,
@@ -19,86 +18,86 @@ import {
 } from "../../common/basic-types";
 import { QueryViewerServiceResponse } from "../../services/types/service-result";
 
-const TITLE_OPTION = {
-  text: ""
-};
+// const TITLE_OPTION = {
+//   text: ""
+// };
 
-const CHART_OPTION = {
-  margin: [0, 0, 0, 0],
-  renderTo: "container",
-  type: "pie",
-  plotShadow: false
-};
+// const CHART_OPTION = {
+//   margin: [0, 0, 0, 0],
+//   renderTo: "container",
+//   type: "pie",
+//   plotShadow: false
+// };
 
-const TOOLTIP_OPTION = {
-  pointFormat: "{series.name}: <b>{point.percentage:.1f}%</b>"
-};
+// const TOOLTIP_OPTION = {
+//   pointFormat: "{series.name}: <b>{point.percentage:.1f}%</b>"
+// };
 
-const LEGEND_OPTION = {
-  enabled: false
-};
+// const LEGEND_OPTION = {
+//   enabled: false
+// };
 
-const PLOT_OPTION = {
-  pie: {
-    allowPointSelect: true,
-    cursor: "pointer",
-    dataLabels: {
-      enabled: true,
-      format: "<b>{point.name}</b>: {point.percentage:.1f} %"
-    }
-  }
-};
+// const PLOT_OPTION = {
+//   pie: {
+//     allowPointSelect: true,
+//     cursor: "pointer",
+//     dataLabels: {
+//       enabled: true,
+//       format: "<b>{point.name}</b>: {point.percentage:.1f} %"
+//     }
+//   }
+// };
 
-const YAXIS_OPTION = {};
+// const YAXIS_OPTION = {};
 
-const XAXIS_OPTION = {};
+// const XAXIS_OPTION = {};
 
-const SERIES_OPTION = [
-  {
-    name: "Brands",
-    colorByPoint: true,
-    data: [
-      {
-        name: "Chrome",
-        y: 70.67,
-        sliced: true,
-        selected: true
-      },
-      {
-        name: "Edge",
-        y: 14.77
-      },
-      {
-        name: "Firefox",
-        y: 4.86
-      },
-      {
-        name: "Safari",
-        y: 2.63
-      },
-      {
-        name: "Internet Explorer",
-        y: 1.53
-      },
-      {
-        name: "Opera",
-        y: 1.4
-      },
-      {
-        name: "Sogou Explorer",
-        y: 0.84
-      },
-      {
-        name: "QQ",
-        y: 0.51
-      },
-      {
-        name: "Other",
-        y: 2.6
-      }
-    ]
-  }
-];
+// const SERIES_OPTION = [
+//   {
+//     name: "Brands",
+//     colorByPoint: true,
+//     data: [
+//       {
+//         name: "Chrome",
+//         y: 70.67,
+//         sliced: true,
+//         selected: true
+//       },
+//       {
+//         name: "Edge",
+//         y: 14.77
+//       },
+//       {
+//         name: "Firefox",
+//         y: 4.86
+//       },
+//       {
+//         name: "Safari",
+//         y: 2.63
+//       },
+//       {
+//         name: "Internet Explorer",
+//         y: 1.53
+//       },
+//       {
+//         name: "Opera",
+//         y: 1.4
+//       },
+//       {
+//         name: "Sogou Explorer",
+//         y: 0.84
+//       },
+//       {
+//         name: "QQ",
+//         y: 0.51
+//       },
+//       {
+//         name: "Other",
+//         y: 2.6
+//       }
+//     ]
+//   }
+// ];
 
 @Component({
   tag: "gx-query-viewer",
@@ -117,8 +116,9 @@ export class QueryViewer implements GxComponent {
     ) => any;
   } = {
     [QueryViewerOutputType.Card]: response => this.cardRender(response),
-    [QueryViewerOutputType.Chart]: response => this.chartRender(response),
 
+    [QueryViewerOutputType.Chart]: response =>
+      this.notImplementedRender(response),
     [QueryViewerOutputType.Map]: response =>
       this.notImplementedRender(response),
     [QueryViewerOutputType.PivotTable]: response =>
@@ -126,7 +126,9 @@ export class QueryViewer implements GxComponent {
     [QueryViewerOutputType.Table]: response =>
       this.notImplementedRender(response),
 
-    [QueryViewerOutputType.Default]: response => this.cardRender(response)
+    // @todo Update this option to depend on the assigned object
+    [QueryViewerOutputType.Default]: response =>
+      this.notImplementedRender(response)
   };
 
   @Element() element: HTMLGxQueryViewerElement;
@@ -343,20 +345,20 @@ export class QueryViewer implements GxComponent {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private chartRender(_serviceResponse: QueryViewerServiceResponse) {
-    return (
-      <gx-query-viewer-chart
-        chartTitle={TITLE_OPTION}
-        chartOptions={CHART_OPTION}
-        seriesOptions={SERIES_OPTION as SeriesOptionsType[]}
-        tooltipOptions={TOOLTIP_OPTION}
-        legendOptions={LEGEND_OPTION}
-        plotOptions={PLOT_OPTION}
-        yaxisOptions={YAXIS_OPTION}
-        xaxisOptions={XAXIS_OPTION}
-      ></gx-query-viewer-chart>
-    );
-  }
+  // private chartRender(_serviceResponse: QueryViewerServiceResponse) {
+  //   return (
+  //     <gx-query-viewer-chart
+  //       chartTitle={TITLE_OPTION}
+  //       chartOptions={CHART_OPTION}
+  //       seriesOptions={SERIES_OPTION as SeriesOptionsType[]}
+  //       tooltipOptions={TOOLTIP_OPTION}
+  //       legendOptions={LEGEND_OPTION}
+  //       plotOptions={PLOT_OPTION}
+  //       yaxisOptions={YAXIS_OPTION}
+  //       xaxisOptions={XAXIS_OPTION}
+  //     ></gx-query-viewer-chart>
+  //   );
+  // }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private notImplementedRender(_serviceResponse: QueryViewerServiceResponse) {
