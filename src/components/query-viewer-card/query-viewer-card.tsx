@@ -175,9 +175,9 @@ export class QueryViewerCard {
         )}
 
         {this.includeTrend && (
-          <i class="trend" part="trend" aria-hidden="true">
+          <span class="trend" part="trend" aria-hidden="true">
             {this.trendIcon}
-          </i>
+          </span>
         )}
 
         {this.includeMaxMin && (
