@@ -314,7 +314,10 @@ export function valueOrPercentage(
   datum: QueryViewerServiceMetaDataData
 ) {
   const value = parseFloat(valueStr);
-  const percentage = `${(value * 100) / datum.TargetValue}%`;
+  const percentage = (value * 100) / datum.TargetValue;
 
-  return showDataAsMapping[showDataAs]({ value: valueStr, percentage });
+  return showDataAsMapping[showDataAs]({
+    value: value.toFixed(2),
+    percentage: percentage.toFixed(2) + "%"
+  });
 }
