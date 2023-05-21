@@ -5,15 +5,17 @@ import {
   Listen,
   Prop,
   State,
+  Watch,
   h
 } from "@stencil/core";
 
-import { Component as GxComponent } from "../../common/interfaces";
-import { ElementValue } from "../../common/query-viewer-interfaces";
 import { SeriesOptionsType } from "highcharts";
+import { Component as GxComponent } from "../../common/interfaces";
 import {
   QueryViewerChartType,
-  QueryViewerOutputType
+  QueryViewerOutputType,
+  QueryViewerShowDataAs,
+  QueryViewerTrendPeriod
 } from "../../common/basic-types";
 import { QueryViewerServiceResponse } from "../../services/types/service-result";
 
@@ -110,14 +112,21 @@ export class QueryViewer implements GxComponent {
    * corresponding render.
    */
   private rendersDictionary: {
-    [key in QueryViewerOutputType]: any;
+    [key in QueryViewerOutputType]: (
+      serviceResponse: QueryViewerServiceResponse
+    ) => any;
   } = {
-    [QueryViewerOutputType.Card]: this.cardRender(),
-    [QueryViewerOutputType.Chart]: this.chartRender(),
-    [QueryViewerOutputType.Map]: "",
-    [QueryViewerOutputType.PivotTable]: "",
-    [QueryViewerOutputType.Table]: "",
-    [QueryViewerOutputType.Default]: ""
+    [QueryViewerOutputType.Card]: response => this.cardRender(response),
+    [QueryViewerOutputType.Chart]: response => this.chartRender(response),
+
+    [QueryViewerOutputType.Map]: response =>
+      this.notImplementedRender(response),
+    [QueryViewerOutputType.PivotTable]: response =>
+      this.notImplementedRender(response),
+    [QueryViewerOutputType.Table]: response =>
+      this.notImplementedRender(response),
+
+    [QueryViewerOutputType.Default]: response => this.cardRender(response)
   };
 
   @Element() element: HTMLGxQueryViewerElement;
@@ -200,10 +209,8 @@ export class QueryViewer implements GxComponent {
   /**
    * Type of data to show
    */
-  @Prop() readonly showDataAs:
-    | "Values"
-    | "Percentages"
-    | "ValuesAndPercentages";
+  @Prop() readonly showDataAs: QueryViewerShowDataAs =
+    QueryViewerShowDataAs.Values;
 
   /**
    * If true includes trend on the graph
@@ -213,17 +220,8 @@ export class QueryViewer implements GxComponent {
   /**
    * If includeTrend, defines the period of the trend
    */
-  @Prop() readonly trendPeriod:
-    | "SinceTheBeginning"
-    | "LastYear"
-    | "LastSemester"
-    | "LastQuarter"
-    | "LastMonth"
-    | "LastWeek"
-    | "LastDay"
-    | "LastHour"
-    | "LastMinute"
-    | "LastSecond";
+  @Prop() readonly trendPeriod: QueryViewerTrendPeriod =
+    QueryViewerTrendPeriod.SinceTheBeginning;
 
   /**
    * For timeline for remembering layout
@@ -330,39 +328,22 @@ export class QueryViewer implements GxComponent {
     this.serviceResponse = event.detail;
   }
 
-  private isDatum = (element: ElementValue) => element.Type == "Datum";
-  // private isAxis = (element: ElementValue) => element.Type == "Axis";
-  // private getFirstAxisDateTimeOrDate(axis: ElementValue[]) : ElementValue{
-  //   axis.forEach(element => {
-  //    //if element.
-
-  //   });
-  // };
-
-  private cardRender() {
-    const queryViewerElements: ElementValue[] = JSON.parse(this.elements);
-    const datum = queryViewerElements.filter(this.isDatum);
-
-    datum.map(
-      datum => (
-        // axis.map(axis => (
-        <gx-query-viewer-card
-          datum={datum}
-          value={datum.DataField}
-          // axis={axis}
-          // showDataAs={this.showDataAs}
-          orientation={this.orientation}
-          includeTrend={this.includeTrend}
-          // trendPeriod={this.trendPeriod}
-          includeSparkline={this.includeSparkline}
-          includeMaxAndMin={this.includeMaxMin}
-        ></gx-query-viewer-card>
-      )
-      // ))
+  private cardRender(serviceResponse: QueryViewerServiceResponse) {
+    return (
+      <gx-query-viewer-card-controller
+        includeMaxMin={this.includeMaxMin}
+        includeSparkline={this.includeSparkline}
+        includeTrend={this.includeTrend}
+        orientation={this.orientation}
+        serviceResponse={serviceResponse}
+        showDataAs={this.showDataAs}
+        trendPeriod={this.trendPeriod}
+      ></gx-query-viewer-card-controller>
     );
   }
 
-  private chartRender() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private chartRender(_serviceResponse: QueryViewerServiceResponse) {
     return (
       <gx-query-viewer-chart
         chartTitle={TITLE_OPTION}
@@ -377,18 +358,14 @@ export class QueryViewer implements GxComponent {
     );
   }
 
-  render() {
-    // const axis = queryViewerElements.filter(this.isAxis);
-    // const cardAxis = this.getFirstAxisDateTimeOrDate();
-    // console.log("type", this.type);
-    // console.log("elements", this.elements);
-    // console.log(datum);
-    // console.log(this.objectName);
-    // console.log("includeTrend", this.includeTrend);
-    // console.log("includeSparkline", this.includeSparkline);
-    // console.log("includeMaxMin", this.includeMaxMin);
-    // console.log("orientation", this.orientation);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private notImplementedRender(_serviceResponse: QueryViewerServiceResponse) {
+    return "";
+  }
 
-    return <Host>{this.rendersDictionary[this.type]}</Host>;
+  render() {
+    return (
+      <Host>{this.rendersDictionary[this.type](this.serviceResponse)}</Host>
+    );
   }
 }

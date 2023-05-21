@@ -8,6 +8,7 @@ import {
   Element
 } from "@stencil/core";
 import { SeriesOptionsType } from "highcharts";
+
 import { TrendIcon } from "../../common/basic-types";
 
 let autoQueryViewerCardId = 0;
@@ -108,9 +109,9 @@ export class QueryViewerCard {
   @Prop() readonly includeSparkline: boolean = false;
 
   /**
-   * IncludeMaxAndMin, specifies whether to include the maximum and minimum values in the series.
+   * Specifies whether to include the maximum and minimum values in the series.
    */
-  @Prop() readonly includeMaxAndMin: boolean = false;
+  @Prop() readonly includeMaxMin: boolean = false;
 
   /**
    * maxValue, specifies the maximum value in the series.
@@ -197,7 +198,7 @@ export class QueryViewerCard {
           </i>
         )}
 
-        {this.includeMaxAndMin && (
+        {this.includeMaxMin && (
           <div class="values-container">
             <div class="div-value">
               <span class="max-min-value" part="max-min-value">

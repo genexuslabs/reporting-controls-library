@@ -1,4 +1,5 @@
 import { Component, Event, EventEmitter, Prop } from "@stencil/core";
+
 import { QueryViewer, QueryViewerCard } from "../../services/types/json";
 import {
   GeneratorType,
