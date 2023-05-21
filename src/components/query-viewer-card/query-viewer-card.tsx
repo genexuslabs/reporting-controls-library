@@ -20,6 +20,7 @@ const TITLE_OPTION = {
 const CHART_OPTION = {
   width: "100",
   height: "50",
+  backgroundColor: "transparent",
   margin: [0, 0, 0, 0],
   renderTo: "container"
 };
