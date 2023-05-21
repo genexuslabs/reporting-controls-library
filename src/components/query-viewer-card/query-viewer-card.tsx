@@ -7,8 +7,8 @@ import {
   Host,
   Element
 } from "@stencil/core";
-import { ElementValue } from "../../common/query-viewer-interfaces";
 import { SeriesOptionsType } from "highcharts";
+import { TrendIcon } from "../../common/basic-types";
 
 let autoQueryViewerCardId = 0;
 
@@ -88,16 +88,6 @@ export class QueryViewerCard {
   @Element() element: HTMLGxQueryViewerCardElement;
 
   /**
-   * Axis.
-   */
-  @Prop() readonly axis: ElementValue;
-
-  /**
-   * Datum.
-   */
-  @Prop() readonly datum: ElementValue;
-
-  /**
    * Value, specifies the value to show in the card.
    */
   @Prop() readonly value: string;
@@ -108,37 +98,9 @@ export class QueryViewerCard {
   @Prop() readonly description: string;
 
   /**
-   * ShowDataAs, specifies whether to show the actual values, the values as a percentage of the target values, or both.
-   */
-  @Prop() readonly showDataAs:
-    | "Values"
-    | "Percentages"
-    | "Values and Percentages" = "Values";
-
-  /**
-   * Orientation, specifies whether to arrange the attributes horizontally or vertically when than one data attribute is present.
-   */
-  @Prop() readonly orientation: "Horizontal" | "Vertical" = "Horizontal";
-
-  /**
    * IncludeTrend, specifies whether to include a trend mark for the values or not.
    */
   @Prop() readonly includeTrend: boolean = false;
-
-  /**
-   * If includeTrend == True, TrendPeriod specifies the period of time to calculate the trend.
-   */
-  @Prop() readonly trendPeriod:
-    | "Since the beginning"
-    | "Last semester"
-    | "Last year"
-    | "Last quarter"
-    | "Last month"
-    | "Last week"
-    | "Last day"
-    | "Last hour"
-    | "Last minute"
-    | "Last second" = "Since the beginning";
 
   /**
    * IncludeSparkline, specifies whether to include a sparkline chart for the values or not.
@@ -153,12 +115,17 @@ export class QueryViewerCard {
   /**
    * maxValue, specifies the maximum value in the series.
    */
-  @Prop() readonly maxValue: number = 3905.71;
+  @Prop() readonly maxValue: string = "3905.71"; // @todo Find the default maxValue
 
   /**
    * minValue, specifies the minimum value in the series.
    */
-  @Prop() readonly minValue: number = 1802.52;
+  @Prop() readonly minValue: string = "1802.52"; // @todo Find the default minValue
+
+  /**
+   * Specifies the trend used for the trend icon.
+   */
+  @Prop() readonly trendIcon: TrendIcon = "drag_handle";
 
   /**
    * ItemClickEvent, executes actions when this event is triggered after clicking on a query element.
@@ -207,7 +174,7 @@ export class QueryViewerCard {
           {this.value}
         </span>
         <h1 class="title" part="title" id={this.queryViewerCardId}>
-          {this.datum.Title}
+          {this.description}
         </h1>
 
         {this.includeSparkline && (
@@ -226,7 +193,7 @@ export class QueryViewerCard {
 
         {this.includeTrend && (
           <i class="trend" part="trend" aria-hidden="true">
-            keyboard_arrow_up
+            {this.trendIcon}
           </i>
         )}
 

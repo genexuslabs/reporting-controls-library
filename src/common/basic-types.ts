@@ -49,6 +49,11 @@ export enum QueryViewerChartType {
   Sparkline = "Sparkline"
 }
 
+export type TrendIcon =
+  | "keyboard_arrow_up"
+  | "keyboard_arrow_down"
+  | "drag_handle";
+
 export enum QueryViewerAxisOrderType {
   None = "None",
   Ascending = "Ascending",
