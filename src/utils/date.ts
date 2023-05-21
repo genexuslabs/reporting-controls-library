@@ -1,8 +1,8 @@
 import { format, parse } from "date-fns";
 
 export enum DateFormat {
-  Date = "YYYY-MM-DD", // Y4MD format
-  DateTime = "YYYY-MM-DD HH:mm:ss"
+  Date = "yyyy-MM-dd", // Y4MD format
+  DateTime = "yyyy-MM-dd HH:mm:ss"
 }
 
 /**
