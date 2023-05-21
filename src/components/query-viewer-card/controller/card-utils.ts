@@ -4,17 +4,17 @@ import {
   QueryViewerDataType,
   QueryViewerShowDataAs,
   QueryViewerTrendPeriod
-} from "../../common/basic-types";
+} from "../../../common/basic-types";
 import {
   QueryViewerServiceData,
   QueryViewerServiceDataRow,
   QueryViewerServiceMetaDataData
-} from "../../services/types/service-result";
+} from "../../../services/types/service-result";
 import {
   DateFormat,
   fromDateToString,
   fromStringToDate
-} from "../../utils/date";
+} from "../../../utils/date";
 
 export type RegressionSeries = {
   LinearRegression: {

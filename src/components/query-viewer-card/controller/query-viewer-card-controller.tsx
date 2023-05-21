@@ -4,15 +4,15 @@ import {
   QueryViewerServiceDataRow,
   QueryViewerServiceMetaDataData,
   QueryViewerServiceResponse
-} from "../../services/types/service-result";
+} from "../../../services/types/service-result";
 import {
   QueryViewerDataType,
   QueryViewerShowDataAs,
   QueryViewerTrendPeriod,
   QueryViewerVisible,
   TrendIcon
-} from "../../common/basic-types";
-import { aggregateData } from "../../utils/general";
+} from "../../../common/basic-types";
+import { aggregateData } from "../../../utils/general";
 import {
   RegressionSeries,
   analyzeSeries,
