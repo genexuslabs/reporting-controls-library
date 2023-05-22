@@ -63,7 +63,7 @@ export class QueryViewerChart {
    */
   @Prop() readonly seriesOptions: SeriesOptionsType[];
 
-  componentDidRender() {
+  componentDidLoad() {
     this.chartHC = new Chart(
       this.chartContainer,
       {
