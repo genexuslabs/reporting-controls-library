@@ -202,17 +202,17 @@ export class QueryViewer implements GxComponent {
   @Prop() readonly exportToXML: boolean;
 
   /**
-   * Include max and min
+   * Specifies whether to include the maximum and minimum values in the series.
    */
   @Prop() readonly includeMaxMin: boolean;
 
   /**
-   * Include spark line
+   * Specifies whether to include a sparkline chart for the values or not.
    */
   @Prop() readonly includeSparkline: boolean;
 
   /**
-   * If true includes trend on the graph
+   * Specifies whether to include a trend mark for the values or not.
    */
   @Prop() readonly includeTrend: boolean;
 
@@ -272,7 +272,8 @@ export class QueryViewer implements GxComponent {
   @Prop() readonly rememberLayout: boolean;
 
   /**
-   * Type of data to show
+   * Specifies whether to show the actual values, the values as a percentage of
+   * the target values, or both.
    */
   @Prop() readonly showDataAs: QueryViewerShowDataAs =
     QueryViewerShowDataAs.Values;
@@ -293,7 +294,8 @@ export class QueryViewer implements GxComponent {
   @Prop() readonly theme: string;
 
   /**
-   * If includeTrend, defines the period of the trend
+   * If `includeTrend == true`, this attribute specifies the period of time to
+   * calculate the trend.
    */
   @Prop() readonly trendPeriod: QueryViewerTrendPeriod =
     QueryViewerTrendPeriod.SinceTheBeginning;

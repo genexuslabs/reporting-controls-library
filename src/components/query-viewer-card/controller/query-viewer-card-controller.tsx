@@ -51,33 +51,36 @@ export class QueryViewerCard {
   @Prop() readonly includeMaxMin: boolean = false;
 
   /**
-   * IncludeSparkline, specifies whether to include a sparkline chart for the values or not.
+   * Specifies whether to include a sparkline chart for the values or not.
    */
   @Prop() readonly includeSparkline: boolean = false;
 
   /**
-   * IncludeTrend, specifies whether to include a trend mark for the values or not.
+   * Specifies whether to include a trend mark for the values or not.
    */
   @Prop() readonly includeTrend: boolean = false;
 
   /**
-   * Orientation, specifies whether to arrange the attributes horizontally or vertically when than one data attribute is present.
+   * Specifies whether to arrange the attributes horizontally or vertically
+   * when than one data attribute is present.
    */
   @Prop() readonly orientation: "Horizontal" | "Vertical" = "Horizontal";
 
   /**
-   *
+   * Specifies the metadata and data that the control will use to render.
    */
   @Prop() readonly serviceResponse: QueryViewerServiceResponse;
 
   /**
-   * ShowDataAs, specifies whether to show the actual values, the values as a percentage of the target values, or both.
+   * Specifies whether to show the actual values, the values as a percentage of
+   * the target values, or both.
    */
   @Prop() readonly showDataAs: QueryViewerShowDataAs =
     QueryViewerShowDataAs.Values;
 
   /**
-   * If includeTrend == True, TrendPeriod specifies the period of time to calculate the trend.
+   * If `includeTrend == true`, this attribute specifies the period of time to
+   * calculate the trend.
    */
   @Prop() readonly trendPeriod: QueryViewerTrendPeriod =
     QueryViewerTrendPeriod.SinceTheBeginning;

@@ -84,22 +84,23 @@ export class QueryViewerCard {
   @Element() element: HTMLGxQueryViewerCardElement;
 
   /**
-   * Value, specifies the value to show in the card.
+   * Specifies the value to show in the card.
    */
   @Prop() readonly value: string;
 
   /**
-   * Description, describe the content or purpose of the element set as Datum in the query object.
+   * Describe the content or purpose of the element set as Datum in the query
+   * object.
    */
   @Prop() readonly description: string;
 
   /**
-   * IncludeTrend, specifies whether to include a trend mark for the values or not.
+   * Specifies whether to include a trend mark for the values or not.
    */
   @Prop() readonly includeTrend: boolean = false;
 
   /**
-   * IncludeSparkline, specifies whether to include a sparkline chart for the values or not.
+   * Specifies whether to include a sparkline chart for the values or not.
    */
   @Prop() readonly includeSparkline: boolean = false;
 
@@ -109,17 +110,17 @@ export class QueryViewerCard {
   @Prop() readonly includeMaxMin: boolean = false;
 
   /**
-   * maxValue, specifies the maximum value in the series.
+   * Specifies the maximum value in the series.
    */
-  @Prop() readonly maxValue: string = "3905.71"; // @todo Find the default maxValue
+  @Prop() readonly maxValue: string = "";
 
   /**
-   * minValue, specifies the minimum value in the series.
+   * Specifies the minimum value in the series.
    */
-  @Prop() readonly minValue: string = "1802.52"; // @todo Find the default minValue
+  @Prop() readonly minValue: string = "";
 
   /**
-   * Specifies the trend used for the trend icon.
+   * Specifies the icon used for the trend.
    */
   @Prop() readonly trendIcon: TrendIcon = "drag_handle";
 
