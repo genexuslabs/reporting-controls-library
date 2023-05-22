@@ -1,24 +1,26 @@
 import {
+  QueryViewerAggregationType,
   QueryViewerAxisOrderType,
   QueryViewerExpandCollapseType,
   QueryViewerFilterType,
-  QueryViewerSubtotals
+  QueryViewerSubtotals,
+  QueryViewerVisible
 } from "../../common/basic-types";
 import {
   QueryViewerAxisConditionalStyle,
   QueryViewerAxisValueStyle
 } from "./json";
 
-export type QueryViewerServiceData = {
-  Rows: QueryViewerServiceDataRow[];
+export type QueryViewerServiceResponse = {
+  MetaData: QueryViewerServiceMetaData;
+  Data: QueryViewerServiceData;
 };
 
-export type QueryViewerServiceDataRow = { [key: string]: string };
-
+// MetaData
 export type QueryViewerServiceMetaData = {
   TextForNullValues: string;
   Axes: QueryViewerServiceMetaDataAxis[];
-  Data: QueryViewerServiceDataAxis[];
+  Data: QueryViewerServiceMetaDataData[];
 };
 
 export type QueryViewerServiceMetaDataAxis = {
@@ -55,13 +57,13 @@ export type QueryViewerServiceMetaDataAxis = {
   ValuesStyles: QueryViewerAxisValueStyle[];
 };
 
-export type QueryViewerServiceDataAxis = {
+export type QueryViewerServiceMetaDataData = {
   Name: string;
   Title: string;
   DataField: string;
-  Aggregation: string;
+  Aggregation: QueryViewerAggregationType;
   DataType: string;
-  Visible: string;
+  Visible: QueryViewerVisible;
   Picture: string;
   RaiseItemClick: boolean;
   IsComponent: boolean;
@@ -76,3 +78,10 @@ export type QueryViewerServiceDataAxis = {
   IsFormula: boolean;
   Formula: string;
 };
+
+// Data
+export type QueryViewerServiceData = {
+  Rows: QueryViewerServiceDataRow[];
+};
+
+export type QueryViewerServiceDataRow = { [key: string]: string };

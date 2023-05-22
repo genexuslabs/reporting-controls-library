@@ -23,6 +23,12 @@ const SERVICE_POST_INFO_MAP: {
   data: data
 };
 
+/**
+ * Necessary so that the explorer does not cache the results of the services
+ * @returns Unique value with each call, using the current date
+ */
+const foolCache = () => new Date().getTime();
+
 export const asyncServerCall = (
   qViewer: QueryViewer,
   baseUrl: string,
@@ -31,7 +37,12 @@ export const asyncServerCall = (
   callbackWhenReady: (xml: string) => void
 ) => {
   const serviceURL =
-    baseUrl + GENERATOR[environment] + SERVICE_NAME_MAP[serviceType];
+    baseUrl +
+    GENERATOR[environment] +
+    SERVICE_NAME_MAP[serviceType] +
+    "," +
+    foolCache();
+
   const postInfo = parseObjectToFormData(
     SERVICE_POST_INFO_MAP[serviceType](qViewer)
   );

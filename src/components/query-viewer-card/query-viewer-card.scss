@@ -1,3 +1,7 @@
+@import "../../common/base-mixins";
+
+@include box-sizing();
+
 :host {
   display: grid;
   grid-template-areas: "value trend" "title ." "values-container .";
