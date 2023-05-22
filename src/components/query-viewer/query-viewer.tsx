@@ -136,8 +136,6 @@ export class QueryViewer implements GxComponent {
   @State() parameters: string;
   @State() elements: string;
 
-  @State() serviceResponse: QueryViewerServiceResponse;
-
   /**
    * Allowing elements order to change
    */
@@ -257,6 +255,11 @@ export class QueryViewer implements GxComponent {
    * Timeline
    */
   @Prop() readonly plotSeries: "InTheSameChart" | "InSeparateCharts";
+
+  /**
+   * Specifies the metadata and data that the control will use to render.
+   */
+  @Prop() readonly serviceResponse: QueryViewerServiceResponse;
 
   /**
    * Title of the QueryViewer
