@@ -259,7 +259,7 @@ export class QueryViewer implements GxComponent {
   /**
    * Specifies the metadata and data that the control will use to render.
    */
-  @Prop() readonly serviceResponse: QueryViewerServiceResponse;
+  @Prop({ mutable: true }) serviceResponse: QueryViewerServiceResponse;
 
   /**
    * Title of the QueryViewer
