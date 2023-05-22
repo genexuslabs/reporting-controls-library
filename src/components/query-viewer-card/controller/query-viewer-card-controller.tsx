@@ -1,4 +1,4 @@
-import { Component, h, Prop, Host, Element } from "@stencil/core";
+import { Component, h, Prop, Host, Element, Watch } from "@stencil/core";
 
 import {
   QueryViewerServiceDataRow,
@@ -13,21 +13,17 @@ import {
   TrendIcon
 } from "../../../common/basic-types";
 import { aggregateData } from "../../../utils/general";
-import {
-  RegressionSeries,
-  analyzeSeries,
-  valueOrPercentage
-} from "./card-utils";
+import { analyzeSeries, valueOrPercentage } from "./card-utils";
 
 type CardInformation = {
   title: string;
   value: string;
   minValue?: string;
   maxValue?: string;
-  dataSeries?: RegressionSeries;
   includeMinMax: boolean;
   includeSparkline: boolean;
   includeTrend: boolean;
+  seriesData: number[][];
   trend: TrendConfiguration;
 };
 
@@ -43,6 +39,8 @@ const trendIconMapping = (linearRegressionSlope: number) =>
   tag: "gx-query-viewer-card-controller"
 })
 export class QueryViewerCard {
+  private cardsToRender: CardInformation[] = [];
+
   @Element() element: HTMLGxQueryViewerCardControllerElement;
 
   /**
@@ -70,6 +68,10 @@ export class QueryViewerCard {
    * Specifies the metadata and data that the control will use to render.
    */
   @Prop() readonly serviceResponse: QueryViewerServiceResponse;
+  @Watch("serviceResponse")
+  handleServiceResponseChange(newResponse: QueryViewerServiceResponse) {
+    this.cardsToRender = this.getCardsToRender(newResponse);
+  }
 
   /**
    * Specifies whether to show the actual values, the values as a percentage of
@@ -126,9 +128,9 @@ export class QueryViewerCard {
     tooltip: `GXPL_QViewer${this.trendPeriod}Trend` // @todo Translate this texts
   });
 
-  private getCardsToRender(): CardInformation[] {
-    const response = this.serviceResponse;
-
+  private getCardsToRender(
+    response: QueryViewerServiceResponse
+  ): CardInformation[] {
     // No metadata and data has been fetched yet
     if (!response) {
       return [];
@@ -154,6 +156,7 @@ export class QueryViewerCard {
       ) {
         cardsToRender.push(
           this.getCardInformation(
+            response,
             datum,
             anyRows,
             xDataField,
@@ -168,6 +171,7 @@ export class QueryViewerCard {
   }
 
   private getCardInformation(
+    response: QueryViewerServiceResponse,
     datum: QueryViewerServiceMetaDataData,
     anyRows: boolean,
     xDataField: string,
@@ -180,6 +184,7 @@ export class QueryViewerCard {
       includeMinMax: false,
       includeSparkline: false,
       includeTrend: false,
+      seriesData: [],
       trend: {
         icon: "drag_handle"
       }
@@ -200,8 +205,10 @@ export class QueryViewerCard {
       datum
     );
 
-    const shouldAnalyzeData =
-      this.includeTrend || this.includeSparkline || this.includeMaxMin;
+    // @todo Check how should be implemented this properties in the runtime
+    // const shouldAnalyzeData =
+    //   this.includeTrend || this.includeSparkline || this.includeMaxMin;
+    const shouldAnalyzeData = true;
 
     if (!shouldAnalyzeData) {
       return cardInformation;
@@ -209,24 +216,27 @@ export class QueryViewerCard {
 
     const data = analyzeSeries(
       {
-        includeMaxAndMin: this.includeMaxMin,
-        includeSparkline: this.includeSparkline,
-        includeTrend: this.includeTrend,
+        // includeMaxAndMin: this.includeMaxMin,
+        // includeSparkline: this.includeSparkline,
+        // includeTrend: this.includeTrend,
+        // @todo Check how should be implemented this properties in the runtime
+        includeMaxAndMin: true,
+        includeSparkline: true,
+        includeTrend: true,
         trendPeriod: this.trendPeriod
       },
-      this.serviceResponse.Data,
+      response.Data,
       datum,
       xDataField,
       xDataType
     );
-    cardInformation["dataSeries"] = data;
+    cardInformation["seriesData"] = data.ChartSeriesData;
 
     // Sparkline
-    cardInformation["includeSparkline"] = this.includeSparkline && !!xDataField;
+    cardInformation["includeSparkline"] = !!xDataField;
 
     // Trend
-    const shouldIncludeTrend =
-      this.includeTrend && data.LinearRegression.AnyTrend;
+    const shouldIncludeTrend = data.LinearRegression.AnyTrend;
 
     if (shouldIncludeTrend) {
       cardInformation.includeTrend = true;
@@ -237,7 +247,7 @@ export class QueryViewerCard {
     }
 
     // MaxAndMin
-    const shouldIncludeMaxAndMin = this.includeMaxMin && !!xDataField;
+    const shouldIncludeMaxAndMin = !!xDataField;
 
     if (shouldIncludeMaxAndMin) {
       cardInformation.includeMinMax = true;
@@ -280,12 +290,14 @@ export class QueryViewerCard {
     // }
   }
 
-  render() {
-    const cardsToRender = this.getCardsToRender();
+  connectedCallback() {
+    this.cardsToRender = this.getCardsToRender(this.serviceResponse);
+  }
 
+  render() {
     return (
       <Host>
-        {cardsToRender.map(
+        {this.cardsToRender.map(
           ({
             title,
             value,
@@ -294,19 +306,19 @@ export class QueryViewerCard {
             includeMinMax,
             includeSparkline,
             includeTrend,
-            trend,
-            dataSeries
+            seriesData,
+            trend
           }) => (
             <gx-query-viewer-card
               description={title}
               value={value}
               minValue={minValue}
               maxValue={maxValue}
-              includeMaxMin={includeMinMax}
-              includeSparkline={includeSparkline}
-              includeTrend={includeTrend}
+              includeMaxMin={this.includeMaxMin && includeMinMax}
+              includeSparkline={this.includeSparkline && includeSparkline}
+              includeTrend={this.includeTrend && includeTrend}
               trendIcon={trend.icon}
-              seriesData={dataSeries.ChartSeriesData}
+              seriesData={seriesData}
             ></gx-query-viewer-card>
           )
         )}
