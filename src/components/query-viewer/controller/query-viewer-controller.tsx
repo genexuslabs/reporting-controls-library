@@ -1,19 +1,19 @@
 import { Component, Event, EventEmitter, Prop } from "@stencil/core";
 
-import { QueryViewer, QueryViewerCard } from "../../services/types/json";
+import { QueryViewer, QueryViewerCard } from "../../../services/types/json";
 import {
   GeneratorType,
   QueryViewerChartType,
   QueryViewerOutputType
-} from "../../common/basic-types";
-import { asyncServerCall } from "../../services/services-manager";
-import { parseMetadataXML } from "../../services/xml-parser/metadata-parser";
-import { parseDataXML } from "../../services/xml-parser/data-parser";
+} from "../../../common/basic-types";
+import { asyncServerCall } from "../../../services/services-manager";
+import { parseMetadataXML } from "../../../services/xml-parser/metadata-parser";
+import { parseDataXML } from "../../../services/xml-parser/data-parser";
 import {
   QueryViewerServiceData,
   QueryViewerServiceMetaData,
   QueryViewerServiceResponse
-} from "../../services/types/service-result";
+} from "../../../services/types/service-result";
 
 @Component({
   tag: "gx-query-viewer-controller",
