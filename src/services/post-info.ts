@@ -7,39 +7,27 @@ import {
 } from "./types/json";
 import { sortAscendingForced } from "./utils/common";
 
-export function metaData(qViewer: QueryViewer): QueryViewerMetaData {
-  const baseInfo = getBaseInfo(qViewer);
+export const metaData = (qViewer: QueryViewer): QueryViewerMetaData => ({
+  ...getBaseInfo(qViewer),
+  RememberLayout: qViewer.RememberLayout,
+  ShowDataLabelsIn: qViewer.ShowDataLabelsIn // @todo Only used in PivotTable. Check if necessary
+});
 
-  return {
-    ...baseInfo,
-    RememberLayout: qViewer.RememberLayout,
-    ShowDataLabelsIn: qViewer.ShowDataLabelsIn // @todo Only used in PivotTable. Check if necessary
-  };
-}
+export const data = (qViewer: QueryViewer): QueryViewerData => ({
+  ...getBaseInfo(qViewer),
+  SortAscendingForced: sortAscendingForced(qViewer)
+});
 
-export function data(qViewer: QueryViewer): QueryViewerData {
-  const baseInfo = getBaseInfo(qViewer);
-
-  return {
-    ...baseInfo,
-    SortAscendingForced: sortAscendingForced(qViewer)
-  };
-}
-
-export function attributeValues(
+export const attributeValues = (
   qViewer: QueryViewer,
   DataField: string,
   PageNumber: number,
   PageSize: number,
   Filter: string
-): QueryViewerAttributeValues {
-  const baseInfo = getBaseInfo(qViewer);
-
-  return {
-    ...baseInfo,
-    DataField: DataField,
-    PageNumber: PageNumber,
-    PageSize: PageSize,
-    Filter: Filter
-  };
-}
+): QueryViewerAttributeValues => ({
+  ...getBaseInfo(qViewer),
+  DataField: DataField,
+  PageNumber: PageNumber,
+  PageSize: PageSize,
+  Filter: Filter
+});

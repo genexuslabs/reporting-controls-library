@@ -64,15 +64,15 @@ export namespace Components {
          */
         "exportToXML": boolean;
         /**
-          * Include max and min
+          * Specifies whether to include the maximum and minimum values in the series.
          */
         "includeMaxMin": boolean;
         /**
-          * Include spark line
+          * Specifies whether to include a sparkline chart for the values or not.
          */
         "includeSparkline": boolean;
         /**
-          * If true includes trend on the graph
+          * Specifies whether to include a trend mark for the values or not.
          */
         "includeTrend": boolean;
         /**
@@ -116,7 +116,11 @@ export namespace Components {
          */
         "rememberLayout": boolean;
         /**
-          * Type of data to show
+          * Specifies the metadata and data that the control will use to render.
+         */
+        "serviceResponse": QueryViewerServiceResponse;
+        /**
+          * Specifies whether to show the actual values, the values as a percentage of the target values, or both.
          */
         "showDataAs": QueryViewerShowDataAs;
         /**
@@ -132,7 +136,7 @@ export namespace Components {
          */
         "theme": string;
         /**
-          * If includeTrend, defines the period of the trend
+          * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
         "trendPeriod": QueryViewerTrendPeriod;
         /**
@@ -162,7 +166,7 @@ export namespace Components {
     }
     interface GxQueryViewerCard {
         /**
-          * Description, describe the content or purpose of the element set as Datum in the query object.
+          * Describe the content or purpose of the element set as Datum in the query object.
          */
         "description": string;
         /**
@@ -170,19 +174,19 @@ export namespace Components {
          */
         "includeMaxMin": boolean;
         /**
-          * IncludeSparkline, specifies whether to include a sparkline chart for the values or not.
+          * Specifies whether to include a sparkline chart for the values or not.
          */
         "includeSparkline": boolean;
         /**
-          * IncludeTrend, specifies whether to include a trend mark for the values or not.
+          * Specifies whether to include a trend mark for the values or not.
          */
         "includeTrend": boolean;
         /**
-          * maxValue, specifies the maximum value in the series.
+          * Specifies the maximum value in the series.
          */
         "maxValue": string;
         /**
-          * minValue, specifies the minimum value in the series.
+          * Specifies the minimum value in the series.
          */
         "minValue": string;
         /**
@@ -190,11 +194,11 @@ export namespace Components {
          */
         "seriesData": number[][];
         /**
-          * Specifies the trend used for the trend icon.
+          * Specifies the icon used for the trend.
          */
         "trendIcon": TrendIcon;
         /**
-          * Value, specifies the value to show in the card.
+          * Specifies the value to show in the card.
          */
         "value": string;
     }
@@ -204,24 +208,27 @@ export namespace Components {
          */
         "includeMaxMin": boolean;
         /**
-          * IncludeSparkline, specifies whether to include a sparkline chart for the values or not.
+          * Specifies whether to include a sparkline chart for the values or not.
          */
         "includeSparkline": boolean;
         /**
-          * IncludeTrend, specifies whether to include a trend mark for the values or not.
+          * Specifies whether to include a trend mark for the values or not.
          */
         "includeTrend": boolean;
         /**
-          * Orientation, specifies whether to arrange the attributes horizontally or vertically when than one data attribute is present.
+          * Specifies whether to arrange the attributes horizontally or vertically when than one data attribute is present.
          */
         "orientation": "Horizontal" | "Vertical";
+        /**
+          * Specifies the metadata and data that the control will use to render.
+         */
         "serviceResponse": QueryViewerServiceResponse;
         /**
-          * ShowDataAs, specifies whether to show the actual values, the values as a percentage of the target values, or both.
+          * Specifies whether to show the actual values, the values as a percentage of the target values, or both.
          */
         "showDataAs": QueryViewerShowDataAs;
         /**
-          * If includeTrend == True, TrendPeriod specifies the period of time to calculate the trend.
+          * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
         "trendPeriod": QueryViewerTrendPeriod;
     }
@@ -631,15 +638,15 @@ declare namespace LocalJSX {
          */
         "exportToXML"?: boolean;
         /**
-          * Include max and min
+          * Specifies whether to include the maximum and minimum values in the series.
          */
         "includeMaxMin"?: boolean;
         /**
-          * Include spark line
+          * Specifies whether to include a sparkline chart for the values or not.
          */
         "includeSparkline"?: boolean;
         /**
-          * If true includes trend on the graph
+          * Specifies whether to include a trend mark for the values or not.
          */
         "includeTrend"?: boolean;
         /**
@@ -683,7 +690,11 @@ declare namespace LocalJSX {
          */
         "rememberLayout"?: boolean;
         /**
-          * Type of data to show
+          * Specifies the metadata and data that the control will use to render.
+         */
+        "serviceResponse"?: QueryViewerServiceResponse;
+        /**
+          * Specifies whether to show the actual values, the values as a percentage of the target values, or both.
          */
         "showDataAs"?: QueryViewerShowDataAs;
         /**
@@ -699,7 +710,7 @@ declare namespace LocalJSX {
          */
         "theme"?: string;
         /**
-          * If includeTrend, defines the period of the trend
+          * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
         "trendPeriod"?: QueryViewerTrendPeriod;
         /**
@@ -729,7 +740,7 @@ declare namespace LocalJSX {
     }
     interface GxQueryViewerCard {
         /**
-          * Description, describe the content or purpose of the element set as Datum in the query object.
+          * Describe the content or purpose of the element set as Datum in the query object.
          */
         "description"?: string;
         /**
@@ -737,19 +748,19 @@ declare namespace LocalJSX {
          */
         "includeMaxMin"?: boolean;
         /**
-          * IncludeSparkline, specifies whether to include a sparkline chart for the values or not.
+          * Specifies whether to include a sparkline chart for the values or not.
          */
         "includeSparkline"?: boolean;
         /**
-          * IncludeTrend, specifies whether to include a trend mark for the values or not.
+          * Specifies whether to include a trend mark for the values or not.
          */
         "includeTrend"?: boolean;
         /**
-          * maxValue, specifies the maximum value in the series.
+          * Specifies the maximum value in the series.
          */
         "maxValue"?: string;
         /**
-          * minValue, specifies the minimum value in the series.
+          * Specifies the minimum value in the series.
          */
         "minValue"?: string;
         /**
@@ -761,11 +772,11 @@ declare namespace LocalJSX {
          */
         "seriesData"?: number[][];
         /**
-          * Specifies the trend used for the trend icon.
+          * Specifies the icon used for the trend.
          */
         "trendIcon"?: TrendIcon;
         /**
-          * Value, specifies the value to show in the card.
+          * Specifies the value to show in the card.
          */
         "value"?: string;
     }
@@ -775,24 +786,27 @@ declare namespace LocalJSX {
          */
         "includeMaxMin"?: boolean;
         /**
-          * IncludeSparkline, specifies whether to include a sparkline chart for the values or not.
+          * Specifies whether to include a sparkline chart for the values or not.
          */
         "includeSparkline"?: boolean;
         /**
-          * IncludeTrend, specifies whether to include a trend mark for the values or not.
+          * Specifies whether to include a trend mark for the values or not.
          */
         "includeTrend"?: boolean;
         /**
-          * Orientation, specifies whether to arrange the attributes horizontally or vertically when than one data attribute is present.
+          * Specifies whether to arrange the attributes horizontally or vertically when than one data attribute is present.
          */
         "orientation"?: "Horizontal" | "Vertical";
+        /**
+          * Specifies the metadata and data that the control will use to render.
+         */
         "serviceResponse"?: QueryViewerServiceResponse;
         /**
-          * ShowDataAs, specifies whether to show the actual values, the values as a percentage of the target values, or both.
+          * Specifies whether to show the actual values, the values as a percentage of the target values, or both.
          */
         "showDataAs"?: QueryViewerShowDataAs;
         /**
-          * If includeTrend == True, TrendPeriod specifies the period of time to calculate the trend.
+          * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
         "trendPeriod"?: QueryViewerTrendPeriod;
     }

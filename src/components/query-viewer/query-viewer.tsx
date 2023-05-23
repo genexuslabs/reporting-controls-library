@@ -136,134 +136,20 @@ export class QueryViewer implements GxComponent {
   @State() parameters: string;
   @State() elements: string;
 
-  @State() serviceResponse: QueryViewerServiceResponse;
-
-  /**
-   * Language of the QueryViewer
-   */
-  @Prop() readonly language: string;
-
-  /**
-   * Object of QueryViewer
-   */
-  @Prop() readonly object: string;
-
-  /**
-   * Type of the QueryViewer: Table, PivotTable, Chart, Card
-   */
-  @Prop() readonly type: QueryViewerOutputType;
-
-  /**
-   * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
-   */
-  @Prop() readonly chartType: QueryViewerChartType;
-
-  /**
-   * If type == PivotTable or Table, if true there is paging, else everything in one table
-   */
-  @Prop() readonly paging: boolean;
-
-  /**
-   * If paging true, number of items for a single page
-   */
-  @Prop() readonly pageSize: number;
-
-  /**
-   * Ax to show data labels
-   */
-  @Prop() readonly showDataLabelsIn: string;
-
-  /**
-   * Timeline
-   */
-  @Prop() readonly plotSeries: "InTheSameChart" | "InSeparateCharts";
-
-  /**
-   * Labels for XAxis
-   */
-  @Prop() readonly xAxisLabels:
-    | "Horizontally"
-    | "Rotated30"
-    | "Rotated45"
-    | "Rotated60"
-    | "Vertically";
-
-  /**
-   * if true the x Axes intersect at zero
-   */
-  @Prop() readonly xAxisIntersectionAtZero: boolean;
-
-  /**
-   * if true show values on the graph
-   */
-  @Prop() readonly showValues: boolean;
-
-  /**
-   * X Axis title
-   */
-  @Prop() readonly xAxisTitle: string;
-
-  /**
-   * Y Axis title
-   */
-  @Prop() readonly yAxisTitle: string;
-
-  /**
-   * Type of data to show
-   */
-  @Prop() readonly showDataAs: QueryViewerShowDataAs =
-    QueryViewerShowDataAs.Values;
-
-  /**
-   * If true includes trend on the graph
-   */
-  @Prop() readonly includeTrend: boolean;
-
-  /**
-   * If includeTrend, defines the period of the trend
-   */
-  @Prop() readonly trendPeriod: QueryViewerTrendPeriod =
-    QueryViewerTrendPeriod.SinceTheBeginning;
-
-  /**
-   * For timeline for remembering layout
-   */
-  @Prop() readonly rememberLayout: boolean;
-
-  /**
-   * Orientation of the graph
-   */
-  @Prop() readonly orientation: "Horizontal" | "Vertical";
-
-  /**
-   * Include spark line
-   */
-  @Prop() readonly includeSparkline: boolean;
-
-  /**
-   * Include max and min
-   */
-  @Prop() readonly includeMaxMin: boolean;
-
-  /**
-   * Theme for showing the graph
-   */
-  @Prop() readonly theme: string;
-
-  /**
-   * Object type -> Query or DataProvider
-   */
-  @Prop() readonly objectType: string;
-
-  /**
-   * True if it is external query
-   */
-  @Prop() readonly isExternalQuery: boolean;
-
   /**
    * Allowing elements order to change
    */
   @Prop() readonly allowElementsOrderChange: boolean;
+
+  /**
+   * Allow selection
+   */
+  @Prop() readonly allowSelection: boolean;
+
+  /**
+   * Auto refresh group
+   */
+  @Prop() readonly autoRefreshGroup: string;
 
   /**
    * If type== PivotTable or Table, if true will shrink the table
@@ -276,24 +162,19 @@ export class QueryViewer implements GxComponent {
   @Prop() readonly autoResizeType: "Both" | "Vertical" | "Horizontal";
 
   /**
-   * Auto refresh group
+   * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
    */
-  @Prop() readonly autoRefreshGroup: string;
+  @Prop() readonly chartType: QueryViewerChartType;
+
+  /**
+   * Version of data
+   */
+  @Prop() readonly dataVersionId: number;
 
   /**
    * Allowing or not Comlumn sort
    */
   @Prop() readonly disableColumnSort: boolean;
-
-  /**
-   * Allow selection
-   */
-  @Prop() readonly allowSelection: boolean;
-
-  /**
-   * If type== PivotTable or Table allow to export to XML
-   */
-  @Prop() readonly exportToXML: boolean;
 
   /**
    * If type== PivotTable or Table allow to export to HTML
@@ -316,14 +197,138 @@ export class QueryViewer implements GxComponent {
   @Prop() readonly exportToPDF: boolean;
 
   /**
+   * If type== PivotTable or Table allow to export to XML
+   */
+  @Prop() readonly exportToXML: boolean;
+
+  /**
+   * Specifies whether to include the maximum and minimum values in the series.
+   */
+  @Prop() readonly includeMaxMin: boolean;
+
+  /**
+   * Specifies whether to include a sparkline chart for the values or not.
+   */
+  @Prop() readonly includeSparkline: boolean;
+
+  /**
+   * Specifies whether to include a trend mark for the values or not.
+   */
+  @Prop() readonly includeTrend: boolean;
+
+  /**
+   * True if it is external query
+   */
+  @Prop() readonly isExternalQuery: boolean;
+
+  /**
+   * Language of the QueryViewer
+   */
+  @Prop() readonly language: string;
+
+  /**
+   * Object of QueryViewer
+   */
+  @Prop() readonly object: string;
+
+  /**
+   * Object type -> Query or DataProvider
+   */
+  @Prop() readonly objectType: string;
+
+  /**
+   * Orientation of the graph
+   */
+  @Prop() readonly orientation: "Horizontal" | "Vertical";
+
+  /**
+   * If paging true, number of items for a single page
+   */
+  @Prop() readonly pageSize: number;
+
+  /**
+   * If type == PivotTable or Table, if true there is paging, else everything in one table
+   */
+  @Prop() readonly paging: boolean;
+
+  /**
+   * Timeline
+   */
+  @Prop() readonly plotSeries: "InTheSameChart" | "InSeparateCharts";
+
+  /**
+   * Specifies the metadata and data that the control will use to render.
+   */
+  @Prop({ mutable: true }) serviceResponse: QueryViewerServiceResponse;
+
+  /**
    * Title of the QueryViewer
    */
   @Prop() readonly queryTitle: string;
 
   /**
-   * Version of data
+   * For timeline for remembering layout
    */
-  @Prop() readonly dataVersionId: number;
+  @Prop() readonly rememberLayout: boolean;
+
+  /**
+   * Specifies whether to show the actual values, the values as a percentage of
+   * the target values, or both.
+   */
+  @Prop() readonly showDataAs: QueryViewerShowDataAs =
+    QueryViewerShowDataAs.Values;
+
+  /**
+   * Ax to show data labels
+   */
+  @Prop() readonly showDataLabelsIn: string;
+
+  /**
+   * if true show values on the graph
+   */
+  @Prop() readonly showValues: boolean;
+
+  /**
+   * Theme for showing the graph
+   */
+  @Prop() readonly theme: string;
+
+  /**
+   * If `includeTrend == true`, this attribute specifies the period of time to
+   * calculate the trend.
+   */
+  @Prop() readonly trendPeriod: QueryViewerTrendPeriod =
+    QueryViewerTrendPeriod.SinceTheBeginning;
+
+  /**
+   * Type of the QueryViewer: Table, PivotTable, Chart, Card
+   */
+  @Prop() readonly type: QueryViewerOutputType;
+
+  /**
+   * if true the x Axes intersect at zero
+   */
+  @Prop() readonly xAxisIntersectionAtZero: boolean;
+
+  /**
+   * Labels for XAxis
+   */
+  @Prop() readonly xAxisLabels:
+    | "Horizontally"
+    | "Rotated30"
+    | "Rotated45"
+    | "Rotated60"
+    | "Vertically";
+
+  /**
+   * X Axis title
+   */
+  @Prop() readonly xAxisTitle: string;
+
+  /**
+   * Y Axis title
+   */
+  @Prop() readonly yAxisTitle: string;
 
   @Listen("queryViewerServiceResponse")
   handleServiceResponse(event: CustomEvent<QueryViewerServiceResponse>) {
