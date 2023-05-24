@@ -2,11 +2,6 @@ gx-query-viewer {
   display: flex;
   align-self: stretch;
   flex: 1;
-
-  iframe {
-    flex: 1;
-    border: 0;
-  }
 }
 
 @font-face {
@@ -19,13 +14,9 @@ gx-query-viewer {
 
 gx-query-viewer-card::part(trend) {
   font-family: "Material Icons";
-  font-size: 1.7em;
+  font-size: 27px;
   display: inline-block;
   line-height: 0;
-  // letter-spacing: normal;
-  word-wrap: normal;
-  white-space: nowrap;
-  vertical-align: middle;
   // Support for all WebKit browsers
   -webkit-font-smoothing: antialiased;
   // Support for Safari and Chrome

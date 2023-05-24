@@ -3,6 +3,7 @@
 @include box-sizing();
 
 :host {
+  --gx-query-viewer-card-sparkline-color: #182f53;
   display: grid;
   grid-template-areas: "value trend" "title ." "values-container .";
   grid-template-columns: min-content min-content;
@@ -21,7 +22,6 @@
 .value {
   grid-area: value;
   font-size: 2.75em;
-  line-height: normal;
 }
 
 .title {
