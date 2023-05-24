@@ -1,13 +1,19 @@
 import { Component, Event, EventEmitter, Prop } from "@stencil/core";
-import { QueryViewer, QueryViewerCard } from "../../services/types/json";
-import { GeneratorType, QueryViewerOutputType } from "../../common/basic-types";
-import { asyncServerCall } from "../../services/services-manager";
-import { parseMetadataXML } from "../../services/xml-parser/metadata-parser";
-import { parseDataXML } from "../../services/xml-parser/data-parser";
+
+import { QueryViewer, QueryViewerCard } from "../../../services/types/json";
+import {
+  GeneratorType,
+  QueryViewerChartType,
+  QueryViewerOutputType
+} from "../../../common/basic-types";
+import { asyncServerCall } from "../../../services/services-manager";
+import { parseMetadataXML } from "../../../services/xml-parser/metadata-parser";
+import { parseDataXML } from "../../../services/xml-parser/data-parser";
 import {
   QueryViewerServiceData,
-  QueryViewerServiceMetaData
-} from "../../services/types/service-result";
+  QueryViewerServiceMetaData,
+  QueryViewerServiceResponse
+} from "../../../services/types/service-result";
 
 @Component({
   tag: "gx-query-viewer-controller",
@@ -32,42 +38,7 @@ export class QueryViewerController {
   /**
    * When `type == Chart`, specifies the chart type: Bar, Pie, Timeline, etc...
    */
-  @Prop() readonly chartType:
-    | "Column"
-    | "Column3D"
-    | "StackedColumn"
-    | "StackedColumn3D"
-    | "StackedColumn100"
-    | "Bar"
-    | "StackedBar"
-    | "StackedBar100"
-    | "Area"
-    | "StackedArea"
-    | "StackedArea100"
-    | "SmoothArea"
-    | "StepArea"
-    | "Line"
-    | "StackedLine"
-    | "StackedLine100"
-    | "SmoothLine"
-    | "StepLine"
-    | "Pie"
-    | "Pie3D"
-    | "Doughnut"
-    | "Doughnut3D"
-    | "LinearGauge"
-    | "CircularGauge"
-    | "Radar"
-    | "FilledRadar"
-    | "PolarArea"
-    | "Funnel"
-    | "Pyramid"
-    | "ColumnLine"
-    | "Column3DLine"
-    | "Timeline"
-    | "SmoothTimeline"
-    | "StepTimeline"
-    | "Sparkline";
+  @Prop() readonly chartType: QueryViewerChartType;
 
   /**
    * Environment of the project: java or net
@@ -102,7 +73,7 @@ export class QueryViewerController {
   /**
    * @todo Add description and improve type
    */
-  @Prop() readonly translationType: string = "None";
+  @Prop() readonly translationType: string = "None"; // @todo Verify the values that Angular provides
 
   /**
    * Type of the QueryViewer: Table, PivotTable, Chart, Card
@@ -110,14 +81,9 @@ export class QueryViewerController {
   @Prop() readonly type: QueryViewerOutputType;
 
   /**
-   * Fired when new metadata is fetched
+   * Fired when new metadata and data is fetched
    */
-  @Event() queryViewerMetadata: EventEmitter<QueryViewerServiceMetaData>;
-
-  /**
-   * Fired when new data is fetched
-   */
-  @Event() queryViewerData: EventEmitter<QueryViewerServiceData>;
+  @Event() queryViewerServiceResponse: EventEmitter<QueryViewerServiceResponse>;
 
   private getQueryViewerInformation(): QueryViewer {
     const queryViewerObject: QueryViewer = {
@@ -152,7 +118,6 @@ export class QueryViewerController {
       }
 
       const serviceMetaData: QueryViewerServiceMetaData = parseMetadataXML(xml);
-      this.queryViewerMetadata.emit(serviceMetaData);
 
       // When success, make an async server call for data
       asyncServerCall(
@@ -160,20 +125,26 @@ export class QueryViewerController {
         this.baseUrl,
         this.environment,
         "data",
-        this.dataCallback
+        this.dataCallback(serviceMetaData)
       );
     };
 
-  private dataCallback = (xml: string) => {
-    if (!xml) {
-      return;
-    }
+  private dataCallback =
+    (metaData: QueryViewerServiceMetaData) => (xml: string) => {
+      if (!xml) {
+        return;
+      }
 
-    const serviceData: QueryViewerServiceData = parseDataXML(xml);
-    this.queryViewerData.emit(serviceData);
-  };
+      const serviceData: QueryViewerServiceData = parseDataXML(xml);
 
-  componentWillLoad() {
+      // Emit service response
+      this.queryViewerServiceResponse.emit({
+        MetaData: metaData,
+        Data: serviceData
+      });
+    };
+
+  connectedCallback() {
     const queryViewerObject = this.getQueryViewerInformation();
 
     asyncServerCall(

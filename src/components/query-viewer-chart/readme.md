@@ -23,13 +23,11 @@
 
 ### Used by
 
- - [gx-query-viewer](../query-viewer)
  - [gx-query-viewer-card](../query-viewer-card)
 
 ### Graph
 ```mermaid
 graph TD;
-  gx-query-viewer --> gx-query-viewer-chart
   gx-query-viewer-card --> gx-query-viewer-chart
   style gx-query-viewer-chart fill:#f9f,stroke:#333,stroke-width:4px
 ```

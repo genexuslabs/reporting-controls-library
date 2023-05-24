@@ -5,10 +5,9 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { ElementValue } from "./common/query-viewer-interfaces";
+import { GeneratorType, QueryViewerChartType, QueryViewerOutputType, QueryViewerShowDataAs, QueryViewerTrendPeriod, TrendIcon } from "./common/basic-types";
+import { QueryViewerServiceResponse } from "./services/types/service-result";
 import { ChartOptions, LegendOptions, PlotOptions, SeriesOptionsType, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
-import { GeneratorType, QueryViewerOutputType } from "./common/basic-types";
-import { QueryViewerServiceData, QueryViewerServiceMetaData } from "./services/types/service-result";
 import { QueryViewerParameterChangedEvent } from "./components/query-viewer-parameter/query-viewer-parameter";
 export namespace Components {
     interface GxQueryViewer {
@@ -33,47 +32,9 @@ export namespace Components {
          */
         "autoResizeType": "Both" | "Vertical" | "Horizontal";
         /**
-          * Base URL of the server
-         */
-        "baseUrl": any;
-        /**
           * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
          */
-        "chartType": | "Column"
-    | "Column3D"
-    | "StackedColumn"
-    | "StackedColumn3D"
-    | "StackedColumn100"
-    | "Bar"
-    | "StackedBar"
-    | "StackedBar100"
-    | "Area"
-    | "StackedArea"
-    | "StackedArea100"
-    | "SmoothArea"
-    | "StepArea"
-    | "Line"
-    | "StackedLine"
-    | "StackedLine100"
-    | "SmoothLine"
-    | "StepLine"
-    | "Pie"
-    | "Pie3D"
-    | "Doughnut"
-    | "Doughnut3D"
-    | "LinearGauge"
-    | "CircularGauge"
-    | "Radar"
-    | "FilledRadar"
-    | "PolarArea"
-    | "Funnel"
-    | "Pyramid"
-    | "ColumnLine"
-    | "Column3DLine"
-    | "Timeline"
-    | "SmoothTimeline"
-    | "StepTimeline"
-    | "Sparkline";
+        "chartType": QueryViewerChartType;
         /**
           * Version of data
          */
@@ -82,10 +43,6 @@ export namespace Components {
           * Allowing or not Comlumn sort
          */
         "disableColumnSort": boolean;
-        /**
-          * Environmet of the project: JAVA. .Net, NetCore
-         */
-        "env": string;
         /**
           * If type== PivotTable or Table allow to export to HTML
          */
@@ -107,27 +64,15 @@ export namespace Components {
          */
         "exportToXML": boolean;
         /**
-          * Font Color
-         */
-        "fontColor": string;
-        /**
-          * Type of font
-         */
-        "fontFamily": string;
-        /**
-          * Font size
-         */
-        "fontSize": number;
-        /**
-          * Include max and min
+          * Specifies whether to include the maximum and minimum values in the series.
          */
         "includeMaxMin": boolean;
         /**
-          * Include spark line
+          * Specifies whether to include a sparkline chart for the values or not.
          */
         "includeSparkline": boolean;
         /**
-          * If true includes trend on the graph
+          * Specifies whether to include a trend mark for the values or not.
          */
         "includeTrend": boolean;
         /**
@@ -142,10 +87,6 @@ export namespace Components {
           * Object of QueryViewer
          */
         "object": string;
-        /**
-          * Name of the Query or Data provider assigned
-         */
-        "objectName": string;
         /**
           * Object type -> Query or DataProvider
          */
@@ -175,11 +116,13 @@ export namespace Components {
          */
         "rememberLayout": boolean;
         /**
-          * Type of data to show
+          * Specifies the metadata and data that the control will use to render.
          */
-        "showDataAs": | "Values"
-    | "Percentages"
-    | "ValuesAndPercentages";
+        "serviceResponse": QueryViewerServiceResponse;
+        /**
+          * Specifies whether to show the actual values, the values as a percentage of the target values, or both.
+         */
+        "showDataAs": QueryViewerShowDataAs;
         /**
           * Ax to show data labels
          */
@@ -193,22 +136,13 @@ export namespace Components {
          */
         "theme": string;
         /**
-          * If includeTrend, defines the period of the trend
+          * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
-        "trendPeriod": | "SinceTheBeginning"
-    | "LastYear"
-    | "LastSemester"
-    | "LastQuarter"
-    | "LastMonth"
-    | "LastWeek"
-    | "LastDay"
-    | "LastHour"
-    | "LastMinute"
-    | "LastSecond";
+        "trendPeriod": QueryViewerTrendPeriod;
         /**
           * Type of the QueryViewer: Table, PivotTable, Chart, Card
          */
-        "type": "Card" | "Chart" | "PivotTable" | "Table" | "Default";
+        "type": QueryViewerOutputType;
         /**
           * if true the x Axes intersect at zero
          */
@@ -232,64 +166,71 @@ export namespace Components {
     }
     interface GxQueryViewerCard {
         /**
-          * Axis.
-         */
-        "axis": ElementValue;
-        /**
-          * Datum.
-         */
-        "datum": ElementValue;
-        /**
-          * Description, describe the content or purpose of the element set as Datum in the query object.
+          * Describe the content or purpose of the element set as Datum in the query object.
          */
         "description": string;
         /**
-          * IncludeMaxAndMin, specifies whether to include the maximum and minimum values in the series.
+          * Specifies whether to include the maximum and minimum values in the series.
          */
-        "includeMaxAndMin": boolean;
+        "includeMaxMin": boolean;
         /**
-          * IncludeSparkline, specifies whether to include a sparkline chart for the values or not.
+          * Specifies whether to include a sparkline chart for the values or not.
          */
         "includeSparkline": boolean;
         /**
-          * IncludeTrend, specifies whether to include a trend mark for the values or not.
+          * Specifies whether to include a trend mark for the values or not.
          */
         "includeTrend": boolean;
         /**
-          * maxValue, specifies the maximum value in the series.
+          * Specifies the maximum value in the series.
          */
-        "maxValue": number;
+        "maxValue": string;
         /**
-          * minValue, specifies the minimum value in the series.
+          * Specifies the minimum value in the series.
          */
-        "minValue": number;
+        "minValue": string;
         /**
-          * Orientation, specifies whether to arrange the attributes horizontally or vertically when than one data attribute is present.
+          * Specifies the data used for the series of the sparkline.
+         */
+        "seriesData": number[][];
+        /**
+          * Specifies the icon used for the trend.
+         */
+        "trendIcon": TrendIcon;
+        /**
+          * Specifies the value to show in the card.
+         */
+        "value": string;
+    }
+    interface GxQueryViewerCardController {
+        /**
+          * Specifies whether to include the maximum and minimum values in the series.
+         */
+        "includeMaxMin": boolean;
+        /**
+          * Specifies whether to include a sparkline chart for the values or not.
+         */
+        "includeSparkline": boolean;
+        /**
+          * Specifies whether to include a trend mark for the values or not.
+         */
+        "includeTrend": boolean;
+        /**
+          * Specifies whether to arrange the attributes horizontally or vertically when than one data attribute is present.
          */
         "orientation": "Horizontal" | "Vertical";
         /**
-          * ShowDataAs, specifies whether to show the actual values, the values as a percentage of the target values, or both.
+          * Specifies the metadata and data that the control will use to render.
          */
-        "showDataAs": | "Values"
-    | "Percentages"
-    | "Values and Percentages";
+        "serviceResponse": QueryViewerServiceResponse;
         /**
-          * If includeTrend == True, TrendPeriod specifies the period of time to calculate the trend.
+          * Specifies whether to show the actual values, the values as a percentage of the target values, or both.
          */
-        "trendPeriod": | "Since the beginning"
-    | "Last semester"
-    | "Last year"
-    | "Last quarter"
-    | "Last month"
-    | "Last week"
-    | "Last day"
-    | "Last hour"
-    | "Last minute"
-    | "Last second";
+        "showDataAs": QueryViewerShowDataAs;
         /**
-          * Value, specifies the value to show in the card.
+          * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
-        "value": string;
+        "trendPeriod": QueryViewerTrendPeriod;
     }
     interface GxQueryViewerChart {
         /**
@@ -341,41 +282,7 @@ export namespace Components {
         /**
           * When `type == Chart`, specifies the chart type: Bar, Pie, Timeline, etc...
          */
-        "chartType": | "Column"
-    | "Column3D"
-    | "StackedColumn"
-    | "StackedColumn3D"
-    | "StackedColumn100"
-    | "Bar"
-    | "StackedBar"
-    | "StackedBar100"
-    | "Area"
-    | "StackedArea"
-    | "StackedArea100"
-    | "SmoothArea"
-    | "StepArea"
-    | "Line"
-    | "StackedLine"
-    | "StackedLine100"
-    | "SmoothLine"
-    | "StepLine"
-    | "Pie"
-    | "Pie3D"
-    | "Doughnut"
-    | "Doughnut3D"
-    | "LinearGauge"
-    | "CircularGauge"
-    | "Radar"
-    | "FilledRadar"
-    | "PolarArea"
-    | "Funnel"
-    | "Pyramid"
-    | "ColumnLine"
-    | "Column3DLine"
-    | "Timeline"
-    | "SmoothTimeline"
-    | "StepTimeline"
-    | "Sparkline";
+        "chartType": QueryViewerChartType;
         /**
           * Environment of the project: java or net
          */
@@ -622,6 +529,12 @@ declare global {
         prototype: HTMLGxQueryViewerCardElement;
         new (): HTMLGxQueryViewerCardElement;
     };
+    interface HTMLGxQueryViewerCardControllerElement extends Components.GxQueryViewerCardController, HTMLStencilElement {
+    }
+    var HTMLGxQueryViewerCardControllerElement: {
+        prototype: HTMLGxQueryViewerCardControllerElement;
+        new (): HTMLGxQueryViewerCardControllerElement;
+    };
     interface HTMLGxQueryViewerChartElement extends Components.GxQueryViewerChart, HTMLStencilElement {
     }
     var HTMLGxQueryViewerChartElement: {
@@ -661,6 +574,7 @@ declare global {
     interface HTMLElementTagNameMap {
         "gx-query-viewer": HTMLGxQueryViewerElement;
         "gx-query-viewer-card": HTMLGxQueryViewerCardElement;
+        "gx-query-viewer-card-controller": HTMLGxQueryViewerCardControllerElement;
         "gx-query-viewer-chart": HTMLGxQueryViewerChartElement;
         "gx-query-viewer-controller": HTMLGxQueryViewerControllerElement;
         "gx-query-viewer-element": HTMLGxQueryViewerElementElement;
@@ -692,47 +606,9 @@ declare namespace LocalJSX {
          */
         "autoResizeType"?: "Both" | "Vertical" | "Horizontal";
         /**
-          * Base URL of the server
-         */
-        "baseUrl"?: any;
-        /**
           * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
          */
-        "chartType"?: | "Column"
-    | "Column3D"
-    | "StackedColumn"
-    | "StackedColumn3D"
-    | "StackedColumn100"
-    | "Bar"
-    | "StackedBar"
-    | "StackedBar100"
-    | "Area"
-    | "StackedArea"
-    | "StackedArea100"
-    | "SmoothArea"
-    | "StepArea"
-    | "Line"
-    | "StackedLine"
-    | "StackedLine100"
-    | "SmoothLine"
-    | "StepLine"
-    | "Pie"
-    | "Pie3D"
-    | "Doughnut"
-    | "Doughnut3D"
-    | "LinearGauge"
-    | "CircularGauge"
-    | "Radar"
-    | "FilledRadar"
-    | "PolarArea"
-    | "Funnel"
-    | "Pyramid"
-    | "ColumnLine"
-    | "Column3DLine"
-    | "Timeline"
-    | "SmoothTimeline"
-    | "StepTimeline"
-    | "Sparkline";
+        "chartType"?: QueryViewerChartType;
         /**
           * Version of data
          */
@@ -741,10 +617,6 @@ declare namespace LocalJSX {
           * Allowing or not Comlumn sort
          */
         "disableColumnSort"?: boolean;
-        /**
-          * Environmet of the project: JAVA. .Net, NetCore
-         */
-        "env"?: string;
         /**
           * If type== PivotTable or Table allow to export to HTML
          */
@@ -766,27 +638,15 @@ declare namespace LocalJSX {
          */
         "exportToXML"?: boolean;
         /**
-          * Font Color
-         */
-        "fontColor"?: string;
-        /**
-          * Type of font
-         */
-        "fontFamily"?: string;
-        /**
-          * Font size
-         */
-        "fontSize"?: number;
-        /**
-          * Include max and min
+          * Specifies whether to include the maximum and minimum values in the series.
          */
         "includeMaxMin"?: boolean;
         /**
-          * Include spark line
+          * Specifies whether to include a sparkline chart for the values or not.
          */
         "includeSparkline"?: boolean;
         /**
-          * If true includes trend on the graph
+          * Specifies whether to include a trend mark for the values or not.
          */
         "includeTrend"?: boolean;
         /**
@@ -801,10 +661,6 @@ declare namespace LocalJSX {
           * Object of QueryViewer
          */
         "object"?: string;
-        /**
-          * Name of the Query or Data provider assigned
-         */
-        "objectName"?: string;
         /**
           * Object type -> Query or DataProvider
          */
@@ -834,11 +690,13 @@ declare namespace LocalJSX {
          */
         "rememberLayout"?: boolean;
         /**
-          * Type of data to show
+          * Specifies the metadata and data that the control will use to render.
          */
-        "showDataAs"?: | "Values"
-    | "Percentages"
-    | "ValuesAndPercentages";
+        "serviceResponse"?: QueryViewerServiceResponse;
+        /**
+          * Specifies whether to show the actual values, the values as a percentage of the target values, or both.
+         */
+        "showDataAs"?: QueryViewerShowDataAs;
         /**
           * Ax to show data labels
          */
@@ -852,22 +710,13 @@ declare namespace LocalJSX {
          */
         "theme"?: string;
         /**
-          * If includeTrend, defines the period of the trend
+          * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
-        "trendPeriod"?: | "SinceTheBeginning"
-    | "LastYear"
-    | "LastSemester"
-    | "LastQuarter"
-    | "LastMonth"
-    | "LastWeek"
-    | "LastDay"
-    | "LastHour"
-    | "LastMinute"
-    | "LastSecond";
+        "trendPeriod"?: QueryViewerTrendPeriod;
         /**
           * Type of the QueryViewer: Table, PivotTable, Chart, Card
          */
-        "type"?: "Card" | "Chart" | "PivotTable" | "Table" | "Default";
+        "type"?: QueryViewerOutputType;
         /**
           * if true the x Axes intersect at zero
          */
@@ -891,68 +740,75 @@ declare namespace LocalJSX {
     }
     interface GxQueryViewerCard {
         /**
-          * Axis.
-         */
-        "axis"?: ElementValue;
-        /**
-          * Datum.
-         */
-        "datum"?: ElementValue;
-        /**
-          * Description, describe the content or purpose of the element set as Datum in the query object.
+          * Describe the content or purpose of the element set as Datum in the query object.
          */
         "description"?: string;
         /**
-          * IncludeMaxAndMin, specifies whether to include the maximum and minimum values in the series.
+          * Specifies whether to include the maximum and minimum values in the series.
          */
-        "includeMaxAndMin"?: boolean;
+        "includeMaxMin"?: boolean;
         /**
-          * IncludeSparkline, specifies whether to include a sparkline chart for the values or not.
+          * Specifies whether to include a sparkline chart for the values or not.
          */
         "includeSparkline"?: boolean;
         /**
-          * IncludeTrend, specifies whether to include a trend mark for the values or not.
+          * Specifies whether to include a trend mark for the values or not.
          */
         "includeTrend"?: boolean;
         /**
-          * maxValue, specifies the maximum value in the series.
+          * Specifies the maximum value in the series.
          */
-        "maxValue"?: number;
+        "maxValue"?: string;
         /**
-          * minValue, specifies the minimum value in the series.
+          * Specifies the minimum value in the series.
          */
-        "minValue"?: number;
+        "minValue"?: string;
         /**
           * ItemClickEvent, executes actions when this event is triggered after clicking on a query element.
          */
         "onItemClickEvent"?: (event: GxQueryViewerCardCustomEvent<any>) => void;
         /**
-          * Orientation, specifies whether to arrange the attributes horizontally or vertically when than one data attribute is present.
+          * Specifies the data used for the series of the sparkline.
+         */
+        "seriesData"?: number[][];
+        /**
+          * Specifies the icon used for the trend.
+         */
+        "trendIcon"?: TrendIcon;
+        /**
+          * Specifies the value to show in the card.
+         */
+        "value"?: string;
+    }
+    interface GxQueryViewerCardController {
+        /**
+          * Specifies whether to include the maximum and minimum values in the series.
+         */
+        "includeMaxMin"?: boolean;
+        /**
+          * Specifies whether to include a sparkline chart for the values or not.
+         */
+        "includeSparkline"?: boolean;
+        /**
+          * Specifies whether to include a trend mark for the values or not.
+         */
+        "includeTrend"?: boolean;
+        /**
+          * Specifies whether to arrange the attributes horizontally or vertically when than one data attribute is present.
          */
         "orientation"?: "Horizontal" | "Vertical";
         /**
-          * ShowDataAs, specifies whether to show the actual values, the values as a percentage of the target values, or both.
+          * Specifies the metadata and data that the control will use to render.
          */
-        "showDataAs"?: | "Values"
-    | "Percentages"
-    | "Values and Percentages";
+        "serviceResponse"?: QueryViewerServiceResponse;
         /**
-          * If includeTrend == True, TrendPeriod specifies the period of time to calculate the trend.
+          * Specifies whether to show the actual values, the values as a percentage of the target values, or both.
          */
-        "trendPeriod"?: | "Since the beginning"
-    | "Last semester"
-    | "Last year"
-    | "Last quarter"
-    | "Last month"
-    | "Last week"
-    | "Last day"
-    | "Last hour"
-    | "Last minute"
-    | "Last second";
+        "showDataAs"?: QueryViewerShowDataAs;
         /**
-          * Value, specifies the value to show in the card.
+          * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
-        "value"?: string;
+        "trendPeriod"?: QueryViewerTrendPeriod;
     }
     interface GxQueryViewerChart {
         /**
@@ -1004,41 +860,7 @@ declare namespace LocalJSX {
         /**
           * When `type == Chart`, specifies the chart type: Bar, Pie, Timeline, etc...
          */
-        "chartType"?: | "Column"
-    | "Column3D"
-    | "StackedColumn"
-    | "StackedColumn3D"
-    | "StackedColumn100"
-    | "Bar"
-    | "StackedBar"
-    | "StackedBar100"
-    | "Area"
-    | "StackedArea"
-    | "StackedArea100"
-    | "SmoothArea"
-    | "StepArea"
-    | "Line"
-    | "StackedLine"
-    | "StackedLine100"
-    | "SmoothLine"
-    | "StepLine"
-    | "Pie"
-    | "Pie3D"
-    | "Doughnut"
-    | "Doughnut3D"
-    | "LinearGauge"
-    | "CircularGauge"
-    | "Radar"
-    | "FilledRadar"
-    | "PolarArea"
-    | "Funnel"
-    | "Pyramid"
-    | "ColumnLine"
-    | "Column3DLine"
-    | "Timeline"
-    | "SmoothTimeline"
-    | "StepTimeline"
-    | "Sparkline";
+        "chartType"?: QueryViewerChartType;
         /**
           * Environment of the project: java or net
          */
@@ -1056,13 +878,9 @@ declare namespace LocalJSX {
          */
         "objectName"?: string;
         /**
-          * Fired when new data is fetched
+          * Fired when new metadata and data is fetched
          */
-        "onQueryViewerData"?: (event: GxQueryViewerControllerCustomEvent<QueryViewerServiceData>) => void;
-        /**
-          * Fired when new metadata is fetched
-         */
-        "onQueryViewerMetadata"?: (event: GxQueryViewerControllerCustomEvent<QueryViewerServiceMetaData>) => void;
+        "onQueryViewerServiceResponse"?: (event: GxQueryViewerControllerCustomEvent<QueryViewerServiceResponse>) => void;
         /**
           * For timeline for remembering layout
          */
@@ -1274,6 +1092,7 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "gx-query-viewer": GxQueryViewer;
         "gx-query-viewer-card": GxQueryViewerCard;
+        "gx-query-viewer-card-controller": GxQueryViewerCardController;
         "gx-query-viewer-chart": GxQueryViewerChart;
         "gx-query-viewer-controller": GxQueryViewerController;
         "gx-query-viewer-element": GxQueryViewerElement;
@@ -1288,6 +1107,7 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "gx-query-viewer": LocalJSX.GxQueryViewer & JSXBase.HTMLAttributes<HTMLGxQueryViewerElement>;
             "gx-query-viewer-card": LocalJSX.GxQueryViewerCard & JSXBase.HTMLAttributes<HTMLGxQueryViewerCardElement>;
+            "gx-query-viewer-card-controller": LocalJSX.GxQueryViewerCardController & JSXBase.HTMLAttributes<HTMLGxQueryViewerCardControllerElement>;
             "gx-query-viewer-chart": LocalJSX.GxQueryViewerChart & JSXBase.HTMLAttributes<HTMLGxQueryViewerChartElement>;
             "gx-query-viewer-controller": LocalJSX.GxQueryViewerController & JSXBase.HTMLAttributes<HTMLGxQueryViewerControllerElement>;
             "gx-query-viewer-element": LocalJSX.GxQueryViewerElement & JSXBase.HTMLAttributes<HTMLGxQueryViewerElementElement>;

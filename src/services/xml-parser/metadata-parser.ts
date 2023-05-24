@@ -1,19 +1,21 @@
 import {
+  QueryViewerAggregationType,
   QueryViewerAxisOrderType,
   QueryViewerConditionOperator,
   QueryViewerDataType,
   QueryViewerExpandCollapseType,
   QueryViewerFilterType,
-  QueryViewerSubtotals
+  QueryViewerSubtotals,
+  QueryViewerVisible
 } from "../../common/basic-types";
 import {
   QueryViewerAxisConditionalStyle,
   QueryViewerAxisValueStyle
 } from "../types/json";
 import {
-  QueryViewerServiceDataAxis,
   QueryViewerServiceMetaData,
-  QueryViewerServiceMetaDataAxis
+  QueryViewerServiceMetaDataAxis,
+  QueryViewerServiceMetaDataData
 } from "../types/service-result";
 import {
   getBooleanAttribute,
@@ -343,7 +345,7 @@ export function parseMetadataXML(
     getMultipleElementsByTagName(rootElement, DATUM_TAG_NAME)
   );
 
-  const serviceMetaDataDatums: QueryViewerServiceDataAxis[] = datas.map(
+  const serviceMetaDataDatums: QueryViewerServiceMetaDataData[] = datas.map(
     data => {
       const dataType = data.getAttribute("dataType");
       const targetValue = parseFloat(data.getAttribute("targetValue"));
@@ -354,9 +356,11 @@ export function parseMetadataXML(
         Name: data.getAttribute("name"),
         Title: data.getAttribute("displayName"),
         DataField: data.getAttribute("dataField"),
-        Aggregation: capitalize(data.getAttribute("aggregation")),
+        Aggregation: capitalize(
+          data.getAttribute("aggregation")
+        ) as QueryViewerAggregationType,
         DataType: dataType,
-        Visible: data.getAttribute("visible"),
+        Visible: data.getAttribute("visible") as QueryViewerVisible,
         Picture:
           data.getAttribute("picture") ||
           dataType === QueryViewerDataType.Integer

@@ -1,3 +1,7 @@
+@import "../../common/base-mixins";
+
+@include box-sizing();
+
 :host {
   --gx-query-viewer-card-sparkline-color: #182f53;
   display: grid;
@@ -9,6 +13,10 @@
 :host(.gx-query-viewer-card-include-sparkline) {
   grid-template-areas: "value ." "title ." "sparkline trend" "values-container .";
   grid-template-rows: min-content min-content min-content min-content;
+}
+
+:host {
+  text-align: center;
 }
 
 .value {
@@ -24,13 +32,23 @@
   text-align: center;
 }
 
-.values-container {
-  grid-area: values-container;
+.card-sparkline {
+  grid-area: sparkline;
+  position: relative;
+  display: flex;
+  justify-content: center;
 }
 
 .trend {
   grid-area: trend;
   padding-top: 25px;
+}
+
+// - - - - - - - - - - - - - - - -
+//           Min and max
+// - - - - - - - - - - - - - - - -
+.values-container {
+  grid-area: values-container;
 }
 
 .max-min-title {
@@ -44,15 +62,4 @@
   font-size: 18px;
   padding-inline-start: 15px;
   padding-inline-end: 15px;
-}
-
-:host {
-  text-align: center;
-}
-
-.card-sparkline {
-  grid-area: sparkline;
-  position: relative;
-  display: flex;
-  justify-content: center;
 }
