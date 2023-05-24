@@ -1,0 +1,47 @@
+////
+/// @group theming-mixins
+////
+
+/// Helper mixin to ease styling gx-query-viewer-card custom element
+/// @param {string} $value-class Class for styling the value element of the query-viewer-card custom element
+/// @param {string} $title-class Class for styling the title element of the query-viewer-card custom element
+/// @param {string} $sparkline-color Color for styling sparkline of the query-viewer-card custom element
+/// @param {string} $max-min-title-class Class for styling the title of the max and min elements of the query-viewer-card custom element
+/// @param {string} $max-min-value-class Class for styling the value of the max and min elements of the query-viewer-card custom element
+@mixin gx-query-viewer-card(
+  $value-class: null,
+  $title-class: null,
+  $sparkline-color: null,
+  $max-min-title-class: null,
+  $max-min-value-class: null
+) {
+  @if $value-class != null {
+    &__card::part(value) {
+      @extend #{$value-class} !optional;
+    }
+  }
+
+  @if $title-class != null {
+    &__card::part(title) {
+      @extend #{$title-class} !optional;
+    }
+  }
+
+  @if $sparkline-color != null {
+    &__card {
+      --gx-query-viewer-card-sparkline-color: #{$sparkline-color};
+    }
+  }
+
+  @if $max-min-title-class != null {
+    &__card::part(max-min-title) {
+      @extend #{$max-min-title-class} !optional;
+    }
+  }
+
+  @if $max-min-value-class != null {
+    &__card::part(max-min-value) {
+      @extend #{$max-min-value-class} !optional;
+    }
+  }
+}
