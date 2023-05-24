@@ -20,13 +20,13 @@
 
 .value {
   grid-area: value;
-  font-size: 36px;
+  font-size: 2.75em;
   line-height: normal;
 }
 
 .title {
   grid-area: title;
-  font-size: 14px;
+  font-size: 0.875em;
 }
 
 .card-sparkline {
@@ -49,14 +49,13 @@
 }
 
 .max-min-title {
-  font-family: "Source Sans Pro";
-  font-size: 13px;
+  font-size: 0.75em;
   line-height: normal;
   padding-inline: 30px;
 }
 
 .max-min-value {
-  font-size: 18px;
+  font-size: 1.125em;
   padding-inline-start: 15px;
   padding-inline-end: 15px;
 }
