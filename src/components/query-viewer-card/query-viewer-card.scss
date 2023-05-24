@@ -5,14 +5,15 @@
 :host {
   --gx-query-viewer-card-sparkline-color: currentColor;
   display: grid;
-  grid-template-areas: "value trend" "title ." "values-container .";
-  grid-template-columns: min-content min-content;
-  grid-template-rows: min-content min-content min-content;
+  grid-template: "value ." min-content "title ." min-content "sparkline trend" min-content "values-container ." min-content / min-content min-content;
 }
 
-:host(.gx-query-viewer-card-include-sparkline) {
-  grid-template-areas: "value ." "title ." "sparkline trend" "values-container .";
-  grid-template-rows: min-content min-content min-content min-content;
+:host(.gx-query-viewer-card--sparkline) {
+  grid-template: "value" min-content "title" min-content "sparkline" min-content "values-container" min-content / min-content;
+}
+
+:host(.gx-query-viewer-card--trend) {
+  grid-template: "value trend" min-content "title ." min-content "values-container ." min-content / min-content min-content;
 }
 
 :host {

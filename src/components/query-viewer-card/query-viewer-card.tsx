@@ -149,8 +149,10 @@ export class QueryViewerCard {
         role="article"
         aria-labelledby={this.queryViewerCardId}
         class={{
-          "gx-query-viewer-card-include-sparkline":
-            this.includeSparkline && this.includeTrend
+          "gx-query-viewer-card--sparkline":
+            this.includeSparkline && !this.includeTrend,
+          "gx-query-viewer-card--trend":
+            !this.includeSparkline && this.includeTrend
         }}
       >
         <span class="value" part="value">
