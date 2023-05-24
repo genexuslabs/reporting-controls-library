@@ -6,6 +6,7 @@
   --gx-query-viewer-card-sparkline-color: currentColor;
   display: grid;
   grid-template: "value ." min-content "title ." min-content "sparkline trend" min-content "values-container ." min-content / min-content min-content;
+  text-align: center;
 }
 
 :host(.gx-query-viewer-card--sparkline) {
@@ -14,10 +15,6 @@
 
 :host(.gx-query-viewer-card--trend) {
   grid-template: "value trend" min-content "title ." min-content "values-container ." min-content / min-content min-content;
-}
-
-:host {
-  text-align: center;
 }
 
 .value {
