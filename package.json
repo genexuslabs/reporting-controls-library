@@ -24,7 +24,9 @@
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll",
-    "generate": "stencil generate"
+    "generate": "stencil generate",
+    "validate": "npm run test && npm run build",
+    "validate.ci": "npm run build -- --max-workers 1 --debug"
   },
   "devDependencies": {
     "@stencil-community/eslint-plugin": "^0.5.0",
