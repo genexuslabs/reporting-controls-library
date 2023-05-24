@@ -3,7 +3,7 @@
 @include box-sizing();
 
 :host {
-  --gx-query-viewer-card-sparkline-color: #182f53;
+  --gx-query-viewer-card-sparkline-color: currentColor;
   display: grid;
   grid-template-areas: "value trend" "title ." "values-container .";
   grid-template-columns: min-content min-content;
