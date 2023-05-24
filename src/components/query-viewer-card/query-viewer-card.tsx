@@ -149,8 +149,10 @@ export class QueryViewerCard {
         role="article"
         aria-labelledby={this.queryViewerCardId}
         class={{
-          "gx-query-viewer-card-include-sparkline":
-            this.includeSparkline && this.includeTrend
+          "gx-query-viewer-card--sparkline":
+            this.includeSparkline && !this.includeTrend,
+          "gx-query-viewer-card--trend":
+            !this.includeSparkline && this.includeTrend
         }}
       >
         <span class="value" part="value">
@@ -183,22 +185,18 @@ export class QueryViewerCard {
 
         {this.includeMaxMin && (
           <div class="values-container">
-            <div class="div-value">
-              <span class="max-min-value" part="max-min-value">
-                {this.minValue}
-              </span>
-              <span class="max-min-value" part="max-min-value">
-                {this.maxValue}
-              </span>
-            </div>
-            <div class="div-title">
-              <span class="max-min-title" part="max-min-title">
-                Min.
-              </span>
-              <span class="max-min-title" part="max-min-title">
-                Max.
-              </span>
-            </div>
+            <span class="max-min-value" part="max-min-value">
+              {this.minValue}
+            </span>
+            <span class="max-min-value" part="max-min-value">
+              {this.maxValue}
+            </span>
+            <span class="max-min-title" part="max-min-title">
+              Min.
+            </span>
+            <span class="max-min-title" part="max-min-title">
+              Max.
+            </span>
           </div>
         )}
       </Host>
