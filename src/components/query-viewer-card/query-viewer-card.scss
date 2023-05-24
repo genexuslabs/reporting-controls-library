@@ -45,17 +45,18 @@
 //           Min and max
 // - - - - - - - - - - - - - - - -
 .values-container {
+  display: grid;
+  grid-template-columns: min-content min-content;
   grid-area: values-container;
+  justify-content: center;
+  column-gap: 1.25em;
+  row-gap: 0.125em;
 }
 
 .max-min-title {
   font-size: 0.75em;
-  line-height: normal;
-  padding-inline: 30px;
 }
 
 .max-min-value {
   font-size: 1.125em;
-  padding-inline-start: 15px;
-  padding-inline-end: 15px;
 }
