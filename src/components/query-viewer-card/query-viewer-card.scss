@@ -5,16 +5,16 @@
 :host {
   --gx-query-viewer-card-sparkline-color: currentColor;
   display: grid;
-  grid-template: "value ." min-content "title ." min-content "sparkline trend" min-content "values-container ." min-content / min-content min-content;
+  grid-template: "value ." min-content "title ." min-content "sparkline trend" min-content "values-container ." min-content / max-content min-content;
   text-align: center;
 }
 
 :host(.gx-query-viewer-card--sparkline) {
-  grid-template: "value" min-content "title" min-content "sparkline" min-content "values-container" min-content / min-content;
+  grid-template: "value" min-content "title" min-content "sparkline" min-content "values-container" min-content / max-content;
 }
 
 :host(.gx-query-viewer-card--trend) {
-  grid-template: "value trend" min-content "title ." min-content "values-container ." min-content / min-content min-content;
+  grid-template: "value trend" min-content "title ." min-content "values-container ." min-content / max-content min-content;
 }
 
 .value {
@@ -44,7 +44,7 @@
 // - - - - - - - - - - - - - - - -
 .values-container {
   display: grid;
-  grid-template-columns: min-content min-content;
+  grid-template-columns: max-content max-content;
   grid-area: values-container;
   justify-content: center;
   column-gap: 1.25em;
