@@ -145,6 +145,12 @@ export class QueryViewerController {
     };
 
   connectedCallback() {
+    // In some lifecycles this variable is undefined and a couple of ms after,
+    // it's defined
+    if (!this.baseUrl) {
+      return;
+    }
+
     const queryViewerObject = this.getQueryViewerInformation();
 
     asyncServerCall(
