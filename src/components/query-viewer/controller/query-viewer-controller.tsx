@@ -151,6 +151,11 @@ export class QueryViewerController {
       return;
     }
 
+    // WA to avoid requests to unimplemented outputs
+    if (this.type !== QueryViewerOutputType.Card) {
+      return;
+    }
+
     const queryViewerObject = this.getQueryViewerInformation();
 
     asyncServerCall(
