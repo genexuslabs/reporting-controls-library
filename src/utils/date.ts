@@ -1,4 +1,4 @@
-import { format, parse } from "date-fns";
+import { format, parseISO } from "date-fns";
 
 export enum DateFormat {
   Date = "yyyy-MM-dd", // Y4MD format
@@ -21,10 +21,9 @@ export const fromDateToString = (date: Date, includeTime: boolean) =>
     : format(date, DateFormat.Date);
 
 /**
- * Given a string that represents a date, it formats the string to a date.
+ * Given a string that represents a date, it formats the string to a date of ISO format.
  * @param dateString String that represents a date
  * @param format Format to parse the string to a date
- * @returns The string formatted to a date
+ * @returns The string formatted to a date of ISO format
  */
-export const fromStringToDate = (dateString: string, format: DateFormat) =>
-  parse(dateString, format, new Date());
+export const fromStringToDateISO = (dateString: string) => parseISO(dateString);

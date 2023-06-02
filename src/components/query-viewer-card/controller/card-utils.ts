@@ -1,4 +1,4 @@
-import { add, intervalToDuration } from "date-fns";
+import { add, differenceInDays, differenceInSeconds } from "date-fns";
 
 import {
   QueryViewerDataType,
@@ -10,11 +10,7 @@ import {
   QueryViewerServiceDataRow,
   QueryViewerServiceMetaDataData
 } from "../../../services/types/service-result";
-import {
-  DateFormat,
-  fromDateToString,
-  fromStringToDate
-} from "../../../utils/date";
+import { fromDateToString, fromStringToDateISO } from "../../../utils/date";
 
 export type RegressionSeries = {
   LinearRegression: {
@@ -89,7 +85,7 @@ function analyzeMain(
       n += 1;
       // @todo Make tests to ensure this conversion works
       // const date = new gx.date.gxdate(rowXDataField, "Y4MD");
-      const date = fromStringToDate(rowXDataField, DateFormat.Date);
+      const dateX = fromStringToDateISO(rowXDataField);
       const yValue = parseFloat(rowYDataField);
 
       // @todo Make tests to ensure this conversion works
@@ -99,7 +95,7 @@ function analyzeMain(
       // });
 
       chartSeriesData.push([
-        date.getTime() - date.getTimezoneOffset() * 60000, // @todo Magic number
+        dateX.getTime() - dateX.getTimezoneOffset() * 60000, // @todo Magic number
         yValue
       ]);
 
@@ -123,7 +119,7 @@ function analyzeMain(
 
       if (i >= regressionStart) {
         if (regressionStartDate === null && regressionStartY === null) {
-          regressionStartDate = date;
+          regressionStartDate = dateX;
           regressionStartY = yValue;
         }
 
@@ -133,16 +129,12 @@ function analyzeMain(
         //     ? gx.date.daysDiff(date, regressionStartDate)
         //     : gx.date.secDiff(date, regressionStartDate);
 
-        const intervalDuration = intervalToDuration({
-          start: regressionStartDate,
-          end: date
-        });
-
         // Change of variable to not handle such large numbers
         const x =
           xDataType === QueryViewerDataType.Date
-            ? intervalDuration.days
-            : intervalDuration.seconds;
+            ? differenceInDays(dateX, regressionStartDate)
+            : differenceInSeconds(dateX, regressionStartDate);
+
         const y = yValue - regressionStartY;
 
         sums.x += x;
