@@ -12,6 +12,7 @@ import {
 import { Component as GxComponent } from "../../common/interfaces";
 import {
   QueryViewerChartType,
+  QueryViewerOrientation,
   QueryViewerOutputType,
   QueryViewerShowDataAs,
   QueryViewerTrendPeriod
@@ -239,7 +240,8 @@ export class QueryViewer implements GxComponent {
   /**
    * Orientation of the graph
    */
-  @Prop() readonly orientation: "Horizontal" | "Vertical";
+  @Prop() readonly orientation: QueryViewerOrientation =
+    QueryViewerOrientation.Horizontal;
 
   /**
    * If paging true, number of items for a single page

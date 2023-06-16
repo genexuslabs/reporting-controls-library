@@ -4,6 +4,7 @@ import { QueryViewer, QueryViewerCard } from "../../../services/types/json";
 import {
   GeneratorType,
   QueryViewerChartType,
+  QueryViewerOrientation,
   QueryViewerOutputType
 } from "../../../common/basic-types";
 import { asyncServerCall } from "../../../services/services-manager";
@@ -61,6 +62,11 @@ export class QueryViewerController {
   @Prop() readonly includeTrend: boolean = false;
 
   /**
+   * Specified the orientation when have more than one card
+   */
+  @Prop() readonly orientation: QueryViewerOrientation;
+
+  /**
    * For timeline for remembering layout
    */
   @Prop() readonly rememberLayout: boolean = true;
@@ -106,6 +112,8 @@ export class QueryViewerController {
 
       (queryViewerObject as QueryViewerCard)["IncludeSparkline"] =
         this.includeSparkline;
+
+      (queryViewerObject as QueryViewerCard)["Orientation"] = this.orientation;
     }
 
     return queryViewerObject;

@@ -1,0 +1,33 @@
+:host {
+  display: grid;
+  grid-template: min-content / max-content max-content;
+}
+
+:host(.gx-query-viewer-card-controller--vertical) {
+  display: grid;
+  grid-template: min-content / max-content;
+}
+
+@font-face {
+  font-family: "Material Icons";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Material Icons"), local("MaterialIcons-Outlined"),
+    url("assets/MaterialIcons-Outlined.woff2") format("woff2");
+}
+
+gx-query-viewer-card::part(trend) {
+  font-family: "Material Icons";
+  font-size: 27px;
+  display: inline-block;
+  line-height: 0;
+  // Support for all WebKit browsers
+  -webkit-font-smoothing: antialiased;
+  // Support for Safari and Chrome
+  text-rendering: optimizeLegibility;
+  //Support for Firefox
+  -moz-osx-font-smoothing: grayscale;
+  // No select
+  -webkit-user-select: none; // Safari
+  user-select: none; // Non-prefixed version, currently supported by Chrome and Opera
+}
