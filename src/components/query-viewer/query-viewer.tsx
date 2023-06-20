@@ -167,6 +167,11 @@ export class QueryViewer implements GxComponent {
   @Prop() readonly chartType: QueryViewerChartType;
 
   /**
+   * A CSS class to set as the `gx-query-viewer` element class.
+   */
+  @Prop() readonly cssClass: string;
+
+  /**
    * Version of data
    */
   @Prop() readonly dataVersionId: number;
@@ -338,6 +343,7 @@ export class QueryViewer implements GxComponent {
   private cardRender(serviceResponse: QueryViewerServiceResponse) {
     return (
       <gx-query-viewer-card-controller
+        cssClass={this.cssClass}
         includeMaxMin={this.includeMaxMin}
         includeSparkline={this.includeSparkline}
         includeTrend={this.includeTrend}

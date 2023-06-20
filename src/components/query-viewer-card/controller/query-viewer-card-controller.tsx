@@ -44,6 +44,11 @@ export class QueryViewerCard {
   @Element() element: HTMLGxQueryViewerCardControllerElement;
 
   /**
+   * A CSS class to set as the `gx-query-viewer-card-controller` element class.
+   */
+  @Prop() readonly cssClass: string;
+
+  /**
    * Specifies whether to include the maximum and minimum values in the series.
    */
   @Prop() readonly includeMaxMin: boolean = false;
@@ -310,6 +315,7 @@ export class QueryViewerCard {
             trend
           }) => (
             <gx-query-viewer-card
+              class={{ [`${this.cssClass}__card`]: !!this.cssClass }}
               description={title}
               value={value}
               minValue={minValue}
