@@ -21,12 +21,15 @@
   ],
   "scripts": {
     "build": "stencil build --docs",
+    "postbuild": "npm run scss-bundle",
     "start": "stencil build --dev --watch --serve",
+    "scss-bundle": "scss-bundle -e ./src/components/_components-theming-mixins.scss -o dist/theming/theming-mixins.scss",
+    "scss-bundle.watch": "scss-bundle -w ./src/components -e ./src/components/_components-theming-mixins.scss -o dist/theming/theming-mixins.scss",
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll",
     "generate": "stencil generate",
-    "validate": "npm run test && npm run build",
-    "validate.ci": "npm run build -- --max-workers 1 --debug"
+    "validate": "npm run test && npm run build && npm run scss-bundle",
+    "validate.ci": "npm run build -- --max-workers 1 --debug && npm run scss-bundle"
   },
   "devDependencies": {
     "@stencil-community/eslint-plugin": "^0.5.0",
@@ -44,6 +47,7 @@
     "jest-cli": "^27.4.5",
     "prettier": "~2.7.0",
     "puppeteer": "^19.4.1",
+    "scss-bundle": "^3.1.1",
     "typescript": "^4.9.0"
   },
   "license": "MIT",
