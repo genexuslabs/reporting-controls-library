@@ -33,6 +33,7 @@
 | ----------------- | ----------- |
 | `"max-min-title"` |             |
 | `"max-min-value"` |             |
+| `"sparkline"`     |             |
 | `"title"`         |             |
 | `"trend"`         |             |
 | `"value"`         |             |
