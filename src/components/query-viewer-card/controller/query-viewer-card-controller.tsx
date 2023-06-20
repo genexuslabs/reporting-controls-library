@@ -25,7 +25,6 @@ type CardInformation = {
   includeSparkline: boolean;
   includeTrend: boolean;
   seriesData: number[][];
-  orientation: QueryViewerOrientation;
   trend: TrendConfiguration;
 };
 
@@ -39,8 +38,7 @@ const trendIconMapping = (linearRegressionSlope: number) =>
 
 @Component({
   tag: "gx-query-viewer-card-controller",
-  styleUrl: "query-viewer-card-controller.scss",
-  shadow: true
+  styleUrl: "query-viewer-card-controller.scss"
 })
 export class QueryViewerCard {
   private cardsToRender: CardInformation[] = [];
@@ -189,7 +187,6 @@ export class QueryViewerCard {
       includeSparkline: false,
       includeTrend: false,
       seriesData: [],
-      orientation: QueryViewerOrientation.Horizontal,
       trend: {
         icon: "drag_handle"
       }
@@ -303,7 +300,6 @@ export class QueryViewerCard {
     return (
       <Host
         role="article"
-        aria-labelledby="gx-query-viewer-card-controller"
         class={{
           "gx-query-viewer-card-controller--vertical":
             this.orientation === QueryViewerOrientation.Vertical

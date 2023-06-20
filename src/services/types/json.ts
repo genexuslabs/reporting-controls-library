@@ -1,7 +1,4 @@
-import {
-  QueryViewerOrientation,
-  QueryViewerOutputType
-} from "../../common/basic-types";
+import { QueryViewerOutputType } from "../../common/basic-types";
 
 export type QueryViewerSDTWithValues = {
   Type: string;
@@ -260,7 +257,6 @@ export type QueryViewerAxisConditionalStyle = {
 export type QueryViewerCard = QueryViewer & {
   IncludeSparkline: boolean;
   IncludeTrend: boolean;
-  Orientation: QueryViewerOrientation;
 };
 
 export type QueryViewerChart = QueryViewer & {

@@ -112,8 +112,6 @@ export class QueryViewerController {
 
       (queryViewerObject as QueryViewerCard)["IncludeSparkline"] =
         this.includeSparkline;
-
-      (queryViewerObject as QueryViewerCard)["Orientation"] = this.orientation;
     }
 
     return queryViewerObject;
