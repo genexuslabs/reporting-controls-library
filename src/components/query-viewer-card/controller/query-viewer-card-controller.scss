@@ -1,0 +1,9 @@
+:host {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+:host(.gx-query-viewer-card-controller--vertical) {
+  display: grid;
+  grid-template: min-content / max-content;
+}

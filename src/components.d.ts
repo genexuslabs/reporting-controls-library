@@ -5,7 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { GeneratorType, QueryViewerChartType, QueryViewerOutputType, QueryViewerShowDataAs, QueryViewerTrendPeriod, TrendIcon } from "./common/basic-types";
+import { GeneratorType, QueryViewerChartType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerShowDataAs, QueryViewerTrendPeriod, TrendIcon } from "./common/basic-types";
 import { QueryViewerServiceResponse } from "./services/types/service-result";
 import { ChartOptions, LegendOptions, PlotOptions, SeriesOptionsType, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
 import { QueryViewerParameterChangedEvent } from "./components/query-viewer-parameter/query-viewer-parameter";
@@ -94,7 +94,7 @@ export namespace Components {
         /**
           * Orientation of the graph
          */
-        "orientation": "Horizontal" | "Vertical";
+        "orientation": QueryViewerOrientation;
         /**
           * If paging true, number of items for a single page
          */
@@ -218,7 +218,7 @@ export namespace Components {
         /**
           * Specifies whether to arrange the attributes horizontally or vertically when than one data attribute is present.
          */
-        "orientation": "Horizontal" | "Vertical";
+        "orientation": QueryViewerOrientation;
         /**
           * Specifies the metadata and data that the control will use to render.
          */
@@ -299,6 +299,10 @@ export namespace Components {
           * Name of the Query or Data provider assigned
          */
         "objectName": string;
+        /**
+          * Specified the orientation when have more than one card
+         */
+        "orientation": QueryViewerOrientation;
         /**
           * For timeline for remembering layout
          */
@@ -668,7 +672,7 @@ declare namespace LocalJSX {
         /**
           * Orientation of the graph
          */
-        "orientation"?: "Horizontal" | "Vertical";
+        "orientation"?: QueryViewerOrientation;
         /**
           * If paging true, number of items for a single page
          */
@@ -796,7 +800,7 @@ declare namespace LocalJSX {
         /**
           * Specifies whether to arrange the attributes horizontally or vertically when than one data attribute is present.
          */
-        "orientation"?: "Horizontal" | "Vertical";
+        "orientation"?: QueryViewerOrientation;
         /**
           * Specifies the metadata and data that the control will use to render.
          */
@@ -881,6 +885,10 @@ declare namespace LocalJSX {
           * Fired when new metadata and data is fetched
          */
         "onQueryViewerServiceResponse"?: (event: GxQueryViewerControllerCustomEvent<QueryViewerServiceResponse>) => void;
+        /**
+          * Specified the orientation when have more than one card
+         */
+        "orientation"?: QueryViewerOrientation;
         /**
           * For timeline for remembering layout
          */

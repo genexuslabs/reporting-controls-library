@@ -7,6 +7,7 @@ import {
 } from "../../../services/types/service-result";
 import {
   QueryViewerDataType,
+  QueryViewerOrientation,
   QueryViewerShowDataAs,
   QueryViewerTranslations,
   QueryViewerTrendPeriod,
@@ -37,7 +38,8 @@ const trendIconMapping = (linearRegressionSlope: number) =>
   linearRegressionSlope > 0 ? "keyboard_arrow_up" : "keyboard_arrow_down";
 
 @Component({
-  tag: "gx-query-viewer-card-controller"
+  tag: "gx-query-viewer-card-controller",
+  styleUrl: "query-viewer-card-controller.scss"
 })
 export class QueryViewerCard {
   private cardsToRender: CardInformation[] = [];
@@ -68,8 +70,8 @@ export class QueryViewerCard {
    * Specifies whether to arrange the attributes horizontally or vertically
    * when than one data attribute is present.
    */
-  @Prop() readonly orientation: "Horizontal" | "Vertical" = "Horizontal";
-
+  @Prop() readonly orientation: QueryViewerOrientation =
+    QueryViewerOrientation.Horizontal;
   /**
    * Specifies the metadata and data that the control will use to render.
    */
@@ -307,7 +309,13 @@ export class QueryViewerCard {
 
   render() {
     return (
-      <Host>
+      <Host
+        role="article"
+        class={{
+          "gx-query-viewer-card-controller--vertical":
+            this.orientation === QueryViewerOrientation.Vertical
+        }}
+      >
         {this.cardsToRender.map(
           ({
             title,

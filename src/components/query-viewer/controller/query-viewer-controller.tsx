@@ -4,6 +4,7 @@ import { QueryViewer, QueryViewerCard } from "../../../services/types/json";
 import {
   GeneratorType,
   QueryViewerChartType,
+  QueryViewerOrientation,
   QueryViewerOutputType
 } from "../../../common/basic-types";
 import { asyncServerCall } from "../../../services/services-manager";
@@ -59,6 +60,11 @@ export class QueryViewerController {
    * If true includes trend on the graph
    */
   @Prop() readonly includeTrend: boolean = false;
+
+  /**
+   * Specified the orientation when have more than one card
+   */
+  @Prop() readonly orientation: QueryViewerOrientation;
 
   /**
    * For timeline for remembering layout
