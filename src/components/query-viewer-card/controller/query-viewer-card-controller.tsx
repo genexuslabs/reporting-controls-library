@@ -9,6 +9,7 @@ import {
   QueryViewerDataType,
   QueryViewerOrientation,
   QueryViewerShowDataAs,
+  QueryViewerTranslations,
   QueryViewerTrendPeriod,
   QueryViewerVisible,
   TrendIcon
@@ -46,6 +47,11 @@ export class QueryViewerCard {
   @Element() element: HTMLGxQueryViewerCardControllerElement;
 
   /**
+   * A CSS class to set as the `gx-query-viewer-card-controller` element class.
+   */
+  @Prop() readonly cssClass: string;
+
+  /**
    * Specifies whether to include the maximum and minimum values in the series.
    */
   @Prop() readonly includeMaxMin: boolean = false;
@@ -81,6 +87,11 @@ export class QueryViewerCard {
    */
   @Prop() readonly showDataAs: QueryViewerShowDataAs =
     QueryViewerShowDataAs.Values;
+
+  /**
+   * For translate the labels of the outputs
+   */
+  @Prop() readonly translations: QueryViewerTranslations;
 
   /**
    * If `includeTrend == true`, this attribute specifies the period of time to
@@ -318,6 +329,7 @@ export class QueryViewerCard {
             trend
           }) => (
             <gx-query-viewer-card
+              class={{ [`${this.cssClass}__card`]: !!this.cssClass }}
               description={title}
               value={value}
               minValue={minValue}
@@ -325,6 +337,7 @@ export class QueryViewerCard {
               includeMaxMin={this.includeMaxMin && includeMinMax}
               includeSparkline={this.includeSparkline && includeSparkline}
               includeTrend={this.includeTrend && includeTrend}
+              translations={this.translations}
               trendIcon={trend.icon}
               seriesData={seriesData}
             ></gx-query-viewer-card>
