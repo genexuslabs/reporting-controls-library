@@ -9,7 +9,12 @@ import {
 } from "@stencil/core";
 import { SeriesOptionsType } from "highcharts";
 
-import { TrendIcon } from "../../common/basic-types";
+import {
+  QueryViewerTranslations,
+  QueryViewerTranslationsLabels,
+  QueryViewerTrendPeriod,
+  TrendIcon
+} from "../../common/basic-types";
 
 let autoQueryViewerCardId = 0;
 
@@ -120,9 +125,21 @@ export class QueryViewerCard {
   @Prop() readonly minValue: string = "";
 
   /**
+   * For translate the labels of the outputs
+   */
+  @Prop() readonly translations: QueryViewerTranslations;
+
+  /**
    * Specifies the icon used for the trend.
    */
   @Prop() readonly trendIcon: TrendIcon = "drag_handle";
+
+  /**
+   * If `includeTrend == true`, this attribute specifies the period of time to
+   * calculate the trend.
+   */
+  @Prop() readonly trendPeriod: QueryViewerTrendPeriod =
+    QueryViewerTrendPeriod.SinceTheBeginning;
 
   /**
    * Specifies the data used for the series of the sparkline.
@@ -178,7 +195,24 @@ export class QueryViewerCard {
         )}
 
         {this.includeTrend && (
-          <span class="trend" part="trend" aria-hidden="true">
+          <span
+            aria-label={
+              this.translations[
+                ("GXPL_QViewer" +
+                  this.trendPeriod +
+                  "Trend") as QueryViewerTranslationsLabels
+              ]
+            }
+            class="trend"
+            part="trend"
+            title={
+              this.translations[
+                ("GXPL_QViewer" +
+                  this.trendPeriod +
+                  "Trend") as QueryViewerTranslationsLabels
+              ]
+            }
+          >
             {this.trendIcon}
           </span>
         )}
@@ -192,10 +226,10 @@ export class QueryViewerCard {
               {this.maxValue}
             </span>
             <span class="max-min-title" part="max-min-title">
-              Min.
+              {this.translations.GXPL_QViewerCardMinimum}
             </span>
             <span class="max-min-title" part="max-min-title">
-              Max.
+              {this.translations.GXPL_QViewerCardMaximum}
             </span>
           </div>
         )}

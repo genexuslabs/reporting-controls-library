@@ -8,6 +8,7 @@ import {
 import {
   QueryViewerDataType,
   QueryViewerShowDataAs,
+  QueryViewerTranslations,
   QueryViewerTrendPeriod,
   QueryViewerVisible,
   TrendIcon
@@ -84,6 +85,11 @@ export class QueryViewerCard {
    */
   @Prop() readonly showDataAs: QueryViewerShowDataAs =
     QueryViewerShowDataAs.Values;
+
+  /**
+   * For translate the labels of the outputs
+   */
+  @Prop() readonly translations: QueryViewerTranslations;
 
   /**
    * If `includeTrend == true`, this attribute specifies the period of time to
@@ -323,6 +329,7 @@ export class QueryViewerCard {
               includeMaxMin={this.includeMaxMin && includeMinMax}
               includeSparkline={this.includeSparkline && includeSparkline}
               includeTrend={this.includeTrend && includeTrend}
+              translations={this.translations}
               trendIcon={trend.icon}
               seriesData={seriesData}
             ></gx-query-viewer-card>

@@ -11,9 +11,11 @@ import {
 // import { SeriesOptionsType } from "highcharts";
 import { Component as GxComponent } from "../../common/interfaces";
 import {
+  DUMMY_TRANSLATIONS,
   QueryViewerChartType,
   QueryViewerOutputType,
   QueryViewerShowDataAs,
+  QueryViewerTranslations,
   QueryViewerTrendPeriod
 } from "../../common/basic-types";
 import { QueryViewerServiceResponse } from "../../services/types/service-result";
@@ -299,6 +301,11 @@ export class QueryViewer implements GxComponent {
   @Prop() readonly theme: string;
 
   /**
+   * For translate the labels of the outputs
+   */
+  @Prop() readonly translations: QueryViewerTranslations;
+
+  /**
    * If `includeTrend == true`, this attribute specifies the period of time to
    * calculate the trend.
    */
@@ -350,6 +357,7 @@ export class QueryViewer implements GxComponent {
         orientation={this.orientation}
         serviceResponse={serviceResponse}
         showDataAs={this.showDataAs}
+        translations={DUMMY_TRANSLATIONS}
         trendPeriod={this.trendPeriod}
       ></gx-query-viewer-card-controller>
     );
