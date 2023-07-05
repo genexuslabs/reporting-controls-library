@@ -2,13 +2,37 @@
 <html dir="ltr" lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
     <title>Stencil Component Starter</title>
 
     <script type="module" src="/build/reporting.esm.js"></script>
     <script nomodule src="/build/reporting.js"></script>
+
+    <script>
+      window.addEventListener("appload", () => {
+        const chatItems = [
+          {
+            content: "Do these documents have confidentiality obligations?",
+            messageType: "user"
+          },
+          {
+            content:
+              "Yes, the agreement has standard Martian confidentiality obligations. In Section 10, it states that each party (as the “Disclosing Party”) may disclose or make available Confidential Information to the other Space Civilizations (as the “Receiving Party”). The Receiving Party is then obligated to protect the Confidential Information and ensure its Representatives’ compliance with the terms of Section 10.",
+            messageType: "assistant"
+          }
+        ];
+
+        const chatRef = document.querySelector("gx-query-chat");
+        chatRef.items = chatItems;
+      });
+    </script>
   </head>
   <body>
-    <my-component first="Stencil" last="'Don't call me a framework' JS"></my-component>
+    <gx-query-sidebar-menu expanded="true"></gx-query-sidebar-menu>
+
+    <gx-query-chat></gx-query-chat>
   </body>
 </html>
