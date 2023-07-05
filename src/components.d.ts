@@ -5,11 +5,24 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { GeneratorType, QueryViewerChartType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerShowDataAs, QueryViewerTrendPeriod, TrendIcon } from "./common/basic-types";
+import { QueryChatItem } from "./components/gx-query/query-chat/query-chat";
+import { GeneratorType, QueryViewerChartType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerShowDataAs, QueryViewerTranslations, QueryViewerTrendPeriod, TrendIcon } from "./common/basic-types";
 import { QueryViewerServiceResponse } from "./services/types/service-result";
 import { ChartOptions, LegendOptions, PlotOptions, SeriesOptionsType, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
 import { QueryViewerParameterChangedEvent } from "./components/query-viewer-parameter/query-viewer-parameter";
 export namespace Components {
+    interface GxQueryChat {
+        /**
+          * This property specifies the items of the chat.
+         */
+        "items": QueryChatItem[];
+    }
+    interface GxQuerySidebarMenu {
+        /**
+          * This attribute lets you determine if the control is expanded or collapsed.
+         */
+        "expanded": boolean;
+    }
     interface GxQueryViewer {
         /**
           * Allowing elements order to change
@@ -35,6 +48,10 @@ export namespace Components {
           * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
          */
         "chartType": QueryViewerChartType;
+        /**
+          * A CSS class to set as the `gx-query-viewer` element class.
+         */
+        "cssClass": string;
         /**
           * Version of data
          */
@@ -136,6 +153,10 @@ export namespace Components {
          */
         "theme": string;
         /**
+          * For translate the labels of the outputs
+         */
+        "translations": QueryViewerTranslations;
+        /**
           * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
         "trendPeriod": QueryViewerTrendPeriod;
@@ -194,15 +215,27 @@ export namespace Components {
          */
         "seriesData": number[][];
         /**
+          * For translate the labels of the outputs
+         */
+        "translations": QueryViewerTranslations;
+        /**
           * Specifies the icon used for the trend.
          */
         "trendIcon": TrendIcon;
+        /**
+          * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
+         */
+        "trendPeriod": QueryViewerTrendPeriod;
         /**
           * Specifies the value to show in the card.
          */
         "value": string;
     }
     interface GxQueryViewerCardController {
+        /**
+          * A CSS class to set as the `gx-query-viewer-card-controller` element class.
+         */
+        "cssClass": string;
         /**
           * Specifies whether to include the maximum and minimum values in the series.
          */
@@ -227,6 +260,10 @@ export namespace Components {
           * Specifies whether to show the actual values, the values as a percentage of the target values, or both.
          */
         "showDataAs": QueryViewerShowDataAs;
+        /**
+          * For translate the labels of the outputs
+         */
+        "translations": QueryViewerTranslations;
         /**
           * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
@@ -521,6 +558,18 @@ export interface GxQueryViewerParameterCustomEvent<T> extends CustomEvent<T> {
     target: HTMLGxQueryViewerParameterElement;
 }
 declare global {
+    interface HTMLGxQueryChatElement extends Components.GxQueryChat, HTMLStencilElement {
+    }
+    var HTMLGxQueryChatElement: {
+        prototype: HTMLGxQueryChatElement;
+        new (): HTMLGxQueryChatElement;
+    };
+    interface HTMLGxQuerySidebarMenuElement extends Components.GxQuerySidebarMenu, HTMLStencilElement {
+    }
+    var HTMLGxQuerySidebarMenuElement: {
+        prototype: HTMLGxQuerySidebarMenuElement;
+        new (): HTMLGxQuerySidebarMenuElement;
+    };
     interface HTMLGxQueryViewerElement extends Components.GxQueryViewer, HTMLStencilElement {
     }
     var HTMLGxQueryViewerElement: {
@@ -576,6 +625,8 @@ declare global {
         new (): HTMLGxQueryViewerParameterElement;
     };
     interface HTMLElementTagNameMap {
+        "gx-query-chat": HTMLGxQueryChatElement;
+        "gx-query-sidebar-menu": HTMLGxQuerySidebarMenuElement;
         "gx-query-viewer": HTMLGxQueryViewerElement;
         "gx-query-viewer-card": HTMLGxQueryViewerCardElement;
         "gx-query-viewer-card-controller": HTMLGxQueryViewerCardControllerElement;
@@ -588,6 +639,18 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    interface GxQueryChat {
+        /**
+          * This property specifies the items of the chat.
+         */
+        "items"?: QueryChatItem[];
+    }
+    interface GxQuerySidebarMenu {
+        /**
+          * This attribute lets you determine if the control is expanded or collapsed.
+         */
+        "expanded"?: boolean;
+    }
     interface GxQueryViewer {
         /**
           * Allowing elements order to change
@@ -613,6 +676,10 @@ declare namespace LocalJSX {
           * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
          */
         "chartType"?: QueryViewerChartType;
+        /**
+          * A CSS class to set as the `gx-query-viewer` element class.
+         */
+        "cssClass"?: string;
         /**
           * Version of data
          */
@@ -714,6 +781,10 @@ declare namespace LocalJSX {
          */
         "theme"?: string;
         /**
+          * For translate the labels of the outputs
+         */
+        "translations"?: QueryViewerTranslations;
+        /**
           * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
         "trendPeriod"?: QueryViewerTrendPeriod;
@@ -776,15 +847,27 @@ declare namespace LocalJSX {
          */
         "seriesData"?: number[][];
         /**
+          * For translate the labels of the outputs
+         */
+        "translations"?: QueryViewerTranslations;
+        /**
           * Specifies the icon used for the trend.
          */
         "trendIcon"?: TrendIcon;
+        /**
+          * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
+         */
+        "trendPeriod"?: QueryViewerTrendPeriod;
         /**
           * Specifies the value to show in the card.
          */
         "value"?: string;
     }
     interface GxQueryViewerCardController {
+        /**
+          * A CSS class to set as the `gx-query-viewer-card-controller` element class.
+         */
+        "cssClass"?: string;
         /**
           * Specifies whether to include the maximum and minimum values in the series.
          */
@@ -809,6 +892,10 @@ declare namespace LocalJSX {
           * Specifies whether to show the actual values, the values as a percentage of the target values, or both.
          */
         "showDataAs"?: QueryViewerShowDataAs;
+        /**
+          * For translate the labels of the outputs
+         */
+        "translations"?: QueryViewerTranslations;
         /**
           * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
@@ -1098,6 +1185,8 @@ declare namespace LocalJSX {
         "onParameterValueChanged"?: (event: GxQueryViewerParameterCustomEvent<QueryViewerParameterChangedEvent>) => void;
     }
     interface IntrinsicElements {
+        "gx-query-chat": GxQueryChat;
+        "gx-query-sidebar-menu": GxQuerySidebarMenu;
         "gx-query-viewer": GxQueryViewer;
         "gx-query-viewer-card": GxQueryViewerCard;
         "gx-query-viewer-card-controller": GxQueryViewerCardController;
@@ -1113,6 +1202,8 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "gx-query-chat": LocalJSX.GxQueryChat & JSXBase.HTMLAttributes<HTMLGxQueryChatElement>;
+            "gx-query-sidebar-menu": LocalJSX.GxQuerySidebarMenu & JSXBase.HTMLAttributes<HTMLGxQuerySidebarMenuElement>;
             "gx-query-viewer": LocalJSX.GxQueryViewer & JSXBase.HTMLAttributes<HTMLGxQueryViewerElement>;
             "gx-query-viewer-card": LocalJSX.GxQueryViewerCard & JSXBase.HTMLAttributes<HTMLGxQueryViewerCardElement>;
             "gx-query-viewer-card-controller": LocalJSX.GxQueryViewerCardController & JSXBase.HTMLAttributes<HTMLGxQueryViewerCardControllerElement>;
