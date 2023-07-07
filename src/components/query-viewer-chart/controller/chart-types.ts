@@ -3,7 +3,7 @@ import {
   QueryViewerPlotSeries
 } from "../../../common/basic-types";
 
-type IsChartTypes =
+export type IsChartTypes =
   | "Timeline"
   | "DatetimeXAxis"
   | "Stacked"
@@ -107,7 +107,7 @@ export const IS_CHART_TYPE: IsChartTypesFunction = (
   Splitted: IsSplittedChart(type, qViewer)
 });
 
-function IsSplittedChart(type: QueryViewerChartType, qViewer): boolean {
+export function IsSplittedChart(type: QueryViewerChartType, qViewer): boolean {
   // Para las gráficas Stacked no tiene sentido separar en varias gráficas pues dejan de apilarse las series
   if (IS_CHART_TYPE(type, qViewer).Stacked) {
     return false;

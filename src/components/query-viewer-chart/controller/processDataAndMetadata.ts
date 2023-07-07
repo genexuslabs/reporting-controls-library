@@ -1,24 +1,41 @@
 import {
+  DateTimePicture,
+  QueryViewerAggregationType,
+  QueryViewerCategoryValue,
+  QueryViewerChartCategories,
+  QueryViewerChartPoint,
+  QueryViewerChartSerie,
+  QueryViewerChartType,
   QueryViewerDataType,
+  QueryViewerFilterType,
   QueryViewerOutputType,
   QueryViewerTranslations,
   QueryViewerVisible
 } from "../../../common/basic-types";
 import {
+  QueryViewerServiceDataRow,
   QueryViewerServiceMetaData,
   QueryViewerServiceMetaDataData,
   QueryViewerServiceResponse
 } from "../../../services/types/service-result";
-import { ChartTypes } from "./chart-types";
+import { trimUtil } from "../../../services/xml-parser/utils/general";
+import {
+  IsMulticoloredSerie,
+  NormalizeTargetAndMaximumValues,
+  getPictureProperties,
+  parseNumericPicture
+} from "../../../utils/general";
+import { ChartTypes, IS_CHART_TYPE } from "./chart-types";
 
-type ChartMetadataAndData = {
-  Categories: {
+export type ChartMetadataAndData = {
+  Categories: QueryViewerChartCategories;
+  Series: {
+    // ByIndex: { [key: number]: QueryViewerChartSerie[] };
+    // DataFields: { [key: string]: QueryViewerChartSerie[] };
+    ByIndex: QueryViewerChartSerie[];
     DataFields: string[];
-    MinValue: number;
-    MaxValue: number;
-    Values: number[];
   };
-  Series: { DataFields: string[] };
+  PlotBands?: [];
 };
 
 function TotData(data: QueryViewerServiceMetaDataData[]) {
@@ -61,7 +78,27 @@ function GetCategoriesAndSeriesDataFields(
 ) {
   const result: ChartMetadataAndData = {
     Categories: { DataFields: [], MinValue: null, MaxValue: null, Values: [] },
-    Series: { DataFields: [] }
+    Series: {
+      ByIndex: null,
+      DataFields: null
+      //   MinValue: null,
+      //   MaxValue: null,
+      //   FieldName: "",
+      //   Name: "",
+      //   Visible: null,
+      //   DataType: null,
+      //   Aggregation: null,
+      //   Picture: "",
+      //   DataFields: "",
+      //   NumberFormat: "",
+      //   Color: "",
+      //   TargetValue: null,
+      //   MaximumValue: null,
+      //   PositiveValues: null,
+      //   NegativeValues: null,
+      //   Points: null
+    },
+    PlotBands: []
   };
   Metadata.Axes.forEach(axis => {
     if (
@@ -84,102 +121,93 @@ function GetCategoriesAndSeriesDataFields(
   return result;
 }
 
-function GetAxesByDataFieldObj(qViewer) {
-  const axesByDataField = {};
-  for (let i = 0; i < qViewer.Metadata.Axes.length; i++) {
-    const axis = qViewer.Metadata.Axes[i];
-    const pictureProperties = qv.util.GetPictureProperties(
-      axis.DataType,
-      axis.Picture
-    );
+// function GetAxesByDataFieldObj(
+//   Metadata: QueryViewerServiceMetaData
+// ): QueryViewerServiceMetaDataAxis[] {
+//   const axesByDataField: QueryViewerServiceMetaDataAxis[] = [];
+//   Metadata.Axes.forEach(axis => {
+//     const pictureProperties = getPictureProperties(axis.DataType, axis.Picture);
+//     axesByDataField.append({
+//       Picture: axis.Picture,
+//       DataType: axis.DataType,
+//       PictureProperties: pictureProperties,
+//       Filter: axis.Filter
+//     });
+//   });
+
+//   return axesByDataField;
+// }
+
+function GetAxesByDataFieldObj(Metadata: QueryViewerServiceMetaData): {
+  [key: string]: {
+    Picture: string;
+    DataType: QueryViewerDataType;
+    PictureProperties: DateTimePicture;
+    Filter: {
+      Type: QueryViewerFilterType;
+      Values: string[];
+    };
+  };
+} {
+  const axesByDataField: {
+    [key: string]: {
+      Picture: string;
+      DataType: QueryViewerDataType;
+      PictureProperties: DateTimePicture;
+      Filter: {
+        Type: QueryViewerFilterType;
+        Values: string[];
+      };
+    };
+  } = {};
+  Metadata.Axes.forEach(axis => {
+    const pictureProperties = getPictureProperties(axis.DataType, axis.Picture);
     axesByDataField[axis.DataField] = {
       Picture: axis.Picture,
       DataType: axis.DataType,
       PictureProperties: pictureProperties,
       Filter: axis.Filter
     };
-  }
+  });
+
   return axesByDataField;
 }
 
-// function GetDataByDataFieldObj(qViewer, uniqueAxis) {
+function GetDataByDataFieldObj(
+  Metadata: QueryViewerServiceMetaData,
+  type: QueryViewerOutputType,
+  chartType: QueryViewerChartType,
+  chartTypes: ChartTypes,
+  chartMetadataAndData: ChartMetadataAndData
+): {
+  [key: string]: {
+    Datum: QueryViewerServiceMetaDataData;
+    Multicolored: boolean;
+  };
+} {
+  const dataByDataField: {
+    [key: string]: {
+      Datum: QueryViewerServiceMetaDataData;
+      Multicolored: boolean;
+    };
+  } = {};
+  const totData = TotData(Metadata.Data);
 
-//     function IsMulticoloredSerie(qViewer, datum, uniqueAxis) {
-
-//         function ExistColors(styles) {
-//             // Verifica si hay colores a partir de Styles condicionales
-//             var existColors = false;
-//             for (var i = 0; i < styles.length; i++) {
-//                 var style = styles[i];
-//                 var arr = GetColorFromStyle(style.StyleOrClass, false);
-//                 var colorFound = arr[0];
-//                 if (colorFound) {
-//                     existColors = true;
-//                     break;
-//                 }
-//             }
-//             return existColors;
-//         }
-
-//         var multicoloredSerie;
-//         if (qViewer.RealType == QueryViewerOutputType.Map && ((qViewer.MapType == QueryViewerMapType.Choropleth && qViewer.Chart.colorAxis != "") || (qViewer.MapType == QueryViewerMapType.Bubble && qViewer.Chart.colorAxis != "")))
-//             multicoloredSerie = false;					// Estos tipos de gráfica tienen que dibujar sí o sí cada valor de referencia con un color diferente
-//         else if (qViewer.RealType == QueryViewerOutputType.Map && ((qViewer.MapType == QueryViewerMapType.Choropleth && (qViewer.Chart.colorAxis.dataClasses.length == 0)) || (qViewer.MapType == QueryViewerMapType.Bubble && (qViewer.Chart.colorAxis.dataClasses.length == 0))))
-//             multicoloredSerie = true;				// En este tipo de mapas todos los valores van a ir del mismo color
-//         if (qViewer.RealType == QueryViewerOutputType.Chart && (qv.chart.IsSingleSerieChart(qViewer) || (qViewer.RealChartType == QueryViewerChartType.PolarArea && qViewer.Chart.Series.DataFields.length == 1)))
-//             multicoloredSerie = true;					// Estos tipos de gráfica tienen que dibujar sí o sí cada valor con un color diferente
-//         else if (qViewer.RealType == QueryViewerOutputType.Chart && (qv.chart.IsAreaChart(qViewer) || qv.chart.IsLineChart(qViewer) || qViewer.RealChartType == QueryViewerChartType.Radar || qViewer.RealChartType == QueryViewerChartType.FilledRadar))
-//             multicoloredSerie = false;					// Estos tipos de gráfica no pueden ser multicolores porque son líneas o áreas y no estamos dejando pintar partes de una linea o area de colores diferentes
-//         else if (qViewer.RealType == QueryViewerOutputType.Chart && (qViewer.Chart.Series.DataFields.length > 1 && !qv.chart.IsSplittedChart(qViewer)))
-//             multicoloredSerie = false;					// Multi series: al haber más de una serie hay una leyenda indicando el color de cada serie, por lo tanto todos los valores tienen que tener el mismo color
-//         else {
-//             // Single series
-//             var existConditionalColors = ExistColors(datum.ConditionalStyles);
-//             var existValuesColors = false;
-//             if (uniqueAxis != null)
-//                 existValuesColors = ExistColors(uniqueAxis.ValuesStyles);	// Si tengo una sola categoria tambien se puede hacer por valor si corresponde
-//             multicoloredSerie = (existConditionalColors || existValuesColors);	// Es multicolor si existen colores condicionales o colores por valor
-//         }
-//         return multicoloredSerie;
-//     }
-
-//     var dataByDataField = {};
-//     var totData = TotData(qViewer.Metadata.Data);
-//     for (var i = 0; i < qViewer.Metadata.Data.length; i++) {
-//         var datum = qViewer.Metadata.Data[i];
-//         if (VisibleDatum(totData, datum)) {
-//             var multicolored = IsMulticoloredSerie(qViewer, datum, uniqueAxis)
-//             dataByDataField[datum.DataField] = { Datum: datum, Multicolored: multicolored };
-//         }
-//     }
-//     return dataByDataField;
-
-// }
-
-// function GetColorFromStyle(style, isBackgroundColor) {
-//     var color = "";
-//     var colorFound = false;
-//     var colorKey = isBackgroundColor ? "backgroundcolor" : "color";
-//     if (style != "") {
-//         var keyValuePairs = style.split(";");
-//         for (var i = 0; i < keyValuePairs.length; i++) {
-//             var keyValuePairStr = keyValuePairs[i];
-//             var keyValuePair = keyValuePairStr.split(":");
-//             if (keyValuePair.length == 2) {
-//                 var key = qv.util.trim(keyValuePair[0]);
-//                 var value = qv.util.trim(keyValuePair[1]);
-//                 if (key.toLowerCase() == colorKey) {
-//                     color = value;
-//                     colorFound = (value != "");
-//                     break;
-//                 }
-//             }
-//         }
-//         if (colorFound && color.substr(0, 1) == "#")
-//             color = color.replace("#", "");
-//     }
-//     return [colorFound, color];
-// }
+  Metadata.Data.forEach(datum => {
+    if (VisibleDatum(totData, datum)) {
+      dataByDataField[datum.DataField] = {
+        Datum: datum,
+        Multicolored: IsMulticoloredSerie(
+          type,
+          chartType,
+          chartTypes,
+          chartMetadataAndData
+        )
+      };
+    }
+  });
+  return dataByDataField;
+}
 
 // function GetColor(multicoloredSerie, datum, uniqueAxis, seriesIndex, colorIndex, categoryLabel, value) {
 
@@ -244,181 +272,191 @@ function GetAxesByDataFieldObj(qViewer) {
 //     return { IsDefault: isDefaultColor, Color: color, ColorIndex: colorIndexAux };
 // }
 
-// function AddCategoryValue(qViewer, row, valueIndex, axesByDataField) {
+function GetCategoryLabel(
+  result: ChartMetadataAndData,
+  metadata: QueryViewerServiceMetaData,
+  row: QueryViewerServiceDataRow
+  // axesByDataField: string[]
+) {
+  let value;
+  // let valueWithPicture;
+  let label = "";
+  let labelWithPicture = "";
+  result.Categories.DataFields.forEach(dataField => {
+    if (row[dataField] !== undefined) {
+      value = trimUtil(row[dataField]);
+      // valueWithPicture = ApplyPicture(
+      //   value,
+      //   axesByDataField[dataField].Picture,
+      //   axesByDataField[dataField].DataType,
+      //   axesByDataField[dataField].PictureProperties
+      // );
+    } else {
+      value = metadata.TextForNullValues;
+      // valueWithPicture = metadata.TextForNullValues;
+    }
+    label += (label === "" ? "" : ", ") + value;
+    labelWithPicture += labelWithPicture === "" ? "" : ", "; // + valueWithPicture;
+  });
 
-//     function GetCategoryLabel(qViewer, row, axesByDataField) {
+  return [label, labelWithPicture];
+}
 
-//         var label = "";
-//         var labelWithPicture = "";
-//         for (var i = 0; i < qViewer.Chart.Categories.DataFields.length; i++) {
-//             var dataField = qViewer.Chart.Categories.DataFields[i];
-//             var value;
-//             var valueWithPicture;
-//             if (row[dataField] != undefined) {
-//                 value = qv.util.trim(row[dataField]);
-//                 valueWithPicture = qv.util.ApplyPicture(value, axesByDataField[dataField].Picture, axesByDataField[dataField].DataType, axesByDataField[dataField].PictureProperties);
-//             }
-//             else {
-//                 value = qViewer.Metadata.TextForNullValues;
-//                 valueWithPicture = qViewer.Metadata.TextForNullValues;
-//             }
-//             label += (label == "" ? "" : ", ") + value;
-//             labelWithPicture += (labelWithPicture == "" ? "" : ", ") + valueWithPicture;
-//         }
-//         return [label, labelWithPicture];
-//     }
+function AddCategoryValue(
+  result: ChartMetadataAndData,
+  metadata: QueryViewerServiceMetaData,
+  row: QueryViewerServiceDataRow,
+  valueIndex: number
+) {
+  const arr = GetCategoryLabel(result, metadata, row);
+  let categoryValue: QueryViewerCategoryValue;
 
-//     var arr = GetCategoryLabel(qViewer, row, axesByDataField);
-//     var categoryValue = {};
-//     categoryValue.Value = arr[0];
-//     categoryValue.ValueWithPicture = arr[1];
-//     qViewer.Chart.Categories.Values.push(categoryValue);
-//     if (valueIndex == 0) {
-//         qViewer.Chart.Categories.MinValue = categoryValue.Value;
-//         qViewer.Chart.Categories.MaxValue = categoryValue.Value;
-//     }
-//     else {
-//         if (categoryValue.Value > qViewer.Chart.Categories.MaxValue)
-//             qViewer.Chart.Categories.MaxValue = categoryValue.Value;
-//         if (categoryValue.Value < qViewer.Chart.Categories.MinValue)
-//             qViewer.Chart.Categories.MinValue = categoryValue.Value;
-//     }
+  categoryValue.Value = arr[0];
+  categoryValue.ValueWithPicture = arr[1];
+  result.Categories.Values.push(categoryValue);
+  if (valueIndex === 0) {
+    result.Categories.MinValue = categoryValue.Value;
+    result.Categories.MaxValue = categoryValue.Value;
+  } else {
+    if (categoryValue.Value > result.Categories.MaxValue) {
+      result.Categories.MaxValue = categoryValue.Value;
+    }
+    if (categoryValue.Value < result.Categories.MinValue) {
+      result.Categories.MinValue = categoryValue.Value;
+    }
+  }
+}
 
-// }
-
-// function AddSeriesValues(qViewer, row, valueIndex, dataByDataField, uniqueAxis) {
-//     for (var i = 0; i < qViewer.Chart.Series.DataFields.length; i++) {
-//         var serie = qViewer.Chart.Series.ByIndex[i]
-//         var dataField = qViewer.Chart.Series.DataFields[i];
-//         var value = row[dataField] != undefined ? row[dataField] : null;
-//         var point = {};
-//         point.Value = value;
-//         var datum = dataByDataField[dataField].Datum;
-//         var multicoloredSerie = dataByDataField[dataField].Multicolored;
-//         if (datum.Aggregation == QueryViewerAggregationType.Average) {
-//             var value_N = row[dataField + "_N"];
-//             var value_D = row[dataField + "_D"];
-//             if (value_N == undefined && value_D == undefined) {
-//                 // Caso de un dataprovider donde se le asigna agregación = Average por código
-//                 value_N = value;
-//                 value_D = "1";
-//             }
-//             point.Value_N = value_N;
-//             point.Value_D = value_D;
-//         }
-//         if (multicoloredSerie)
-//             point.Color = GetColor(multicoloredSerie, datum, uniqueAxis, 0, valueIndex, qViewer.Chart.Categories.Values[valueIndex].Value, value);
-//         else
-//             point.Color = qv.util.GetNullColor();
-//         serie.Points.push(point);
-//         if (point.Value > 0) serie.PositiveValues = true;
-//         if (point.Value < 0) serie.NegativeValues = true;
-//         if (valueIndex === 0) {
-//             serie.MinValue = parseFloat(point.Value);
-//             serie.MaxValue = parseFloat(point.Value);
-//         }
-//         else {
-//             if (parseFloat(point.Value) > serie.MaxValue)
-//                 serie.MaxValue = parseFloat(point.Value);
-//             if (parseFloat(point.Value) < serie.MinValue)
-//                 serie.MinValue = parseFloat(point.Value);
-//         }
-
-//     }
-// }
+function AddSeriesValues(
+  result: ChartMetadataAndData,
+  row: QueryViewerServiceDataRow,
+  valueIndex: number,
+  dataByDataField: {
+    [key: string]: {
+      Datum: QueryViewerServiceMetaDataData;
+      Multicolored: boolean;
+    };
+  }
+) {
+  for (let i = 0; i < result.Series.DataFields.length; i++) {
+    const serie = result.Series.ByIndex[i];
+    const dataField = result.Series.DataFields[i];
+    const value = row[dataField] !== undefined ? row[dataField] : null;
+    const point: QueryViewerChartPoint = {
+      Value: "",
+      Value_N: "",
+      Value_D: ""
+    };
+    point.Value = value;
+    const datum = dataByDataField[dataField].Datum;
+    // var multicoloredSerie = dataByDataField[dataField].Multicolored;
+    if (datum.Aggregation === QueryViewerAggregationType.Average) {
+      let value_N = row[dataField + "_N"];
+      let value_D = row[dataField + "_D"];
+      if (value_N === undefined && value_D === undefined) {
+        // Caso de un dataprovider donde se le asigna agregación = Average por código
+        value_N = value;
+        value_D = "1";
+      }
+      point.Value_N = value_N;
+      point.Value_D = value_D;
+    }
+    // if (multicoloredSerie)
+    //     point.Color = GetColor(multicoloredSerie, datum, uniqueAxis, 0, valueIndex, result.Categories.Values[valueIndex].Value, value);
+    // else
+    //     point.Color = qv.util.GetNullColor();
+    serie.Points.push(point);
+    if (parseFloat(point.Value) > 0) {
+      serie.PositiveValues = true;
+    }
+    if (parseFloat(point.Value) < 0) {
+      serie.NegativeValues = true;
+    }
+    if (valueIndex === 0) {
+      serie.MinValue = parseFloat(point.Value);
+      serie.MaxValue = parseFloat(point.Value);
+    } else {
+      if (parseFloat(point.Value) > serie.MaxValue) {
+        serie.MaxValue = parseFloat(point.Value);
+      }
+      if (parseFloat(point.Value) < serie.MinValue) {
+        serie.MinValue = parseFloat(point.Value);
+      }
+    }
+  }
+}
 
 // function CalculatePlotBands(qViewer, datum) {
-//     for (var j = 0; j < datum.ConditionalStyles.length; j++) {
-//         var conditionalStyle = datum.ConditionalStyles[j];
-//         var arr = GetColorFromStyle(conditionalStyle.StyleOrClass, true);
-//         var colorFound = arr[0];
-//         var backgroundColor = arr[1];
-//         if (colorFound) {
-//             plotBand = {};
-//             plotBand.Color = qv.util.GetColorObject(backgroundColor);
-//             if (conditionalStyle.Operator == QueryViewerConditionOperator.Interval) {
-//                 plotBand.From = parseFloat(conditionalStyle.Value1);
-//                 plotBand.To = parseFloat(conditionalStyle.Value2);
-//             } else if (conditionalStyle.Operator == QueryViewerConditionOperator.Equal) {
-//                 plotBand.From = parseFloat(conditionalStyle.Value1);
-//                 plotBand.To = parseFloat(conditionalStyle.Value1);
-//             }
-//             else if (conditionalStyle.Operator == QueryViewerConditionOperator.GreaterOrEqual || conditionalStyle.Operator == QueryViewerConditionOperator.GreaterThan)
-//                 plotBand.From = parseFloat(conditionalStyle.Value1);
-//             else if (conditionalStyle.Operator == QueryViewerConditionOperator.LessOrEqual || conditionalStyle.Operator == QueryViewerConditionOperator.LessThan)
-//                 plotBand.To = parseFloat(conditionalStyle.Value1);
-//             plotBand.SeriesName = datum.Title != "" ? datum.Title : datum.Name;
-//             qViewer.Chart.PlotBands.push(plotBand);
-//         }
+//   for (let j = 0; j < datum.ConditionalStyles.length; j++) {
+//     const conditionalStyle = datum.ConditionalStyles[j];
+//     const arr = GetColorFromStyle(conditionalStyle.StyleOrClass, true);
+//     const colorFound = arr[0];
+//     const backgroundColor = arr[1];
+//     if (colorFound) {
+//       plotBand = {};
+//       plotBand.Color = qv.util.GetColorObject(backgroundColor);
+//       if (conditionalStyle.Operator == QueryViewerConditionOperator.Interval) {
+//         plotBand.From = parseFloat(conditionalStyle.Value1);
+//         plotBand.To = parseFloat(conditionalStyle.Value2);
+//       } else if (
+//         conditionalStyle.Operator == QueryViewerConditionOperator.Equal
+//       ) {
+//         plotBand.From = parseFloat(conditionalStyle.Value1);
+//         plotBand.To = parseFloat(conditionalStyle.Value1);
+//       } else if (
+//         conditionalStyle.Operator ==
+//           QueryViewerConditionOperator.GreaterOrEqual ||
+//         conditionalStyle.Operator == QueryViewerConditionOperator.GreaterThan
+//       ) {
+//         plotBand.From = parseFloat(conditionalStyle.Value1);
+//       } else if (
+//         conditionalStyle.Operator == QueryViewerConditionOperator.LessOrEqual ||
+//         conditionalStyle.Operator == QueryViewerConditionOperator.LessThan
+//       ) {
+//         plotBand.To = parseFloat(conditionalStyle.Value1);
+//       }
+//       plotBand.SeriesName = datum.Title != "" ? datum.Title : datum.Name;
+//       qViewer.Chart.PlotBands.push(plotBand);
 //     }
+//   }
 // }
 
-// function IsFilteredRow(qViewer, row) {
-//     var filtered = false;
-//     for (var i = 0; i < qViewer.Metadata.Axes.length; i++) {
-//         var axis = qViewer.Metadata.Axes[i];
-//         if (axis.Visible == QueryViewerVisible.Yes || axis.Visible == QueryViewerVisible.Always) {
-//             var value = qv.util.trim(row[axis.DataField]);
-//             // Controlo contra la propiedad Filter
-//             if (axis.Filter.Type == QueryViewerFilterType.HideAllValues) {
-//                 filtered = true;
-//                 break;
-//             }
-//             else if (axis.Filter.Type == QueryViewerFilterType.ShowSomeValues) {
-//                 if (axis.Filter.Values.indexOf(value) < 0) {
-//                     filtered = true;
-//                     break;
-//                 }
-//             }
-//             if (qViewer.RealType === QueryViewerOutputType.Map && axis.DataType === QueryViewerDataType.Character) {
-//                 // En mapas de Continent y Country filtro los países o estados que quedan fuera del mapa
-//                 if (qViewer.Region === QueryViewerRegion.Country) {
-//                     if (!qv.util.startsWith(value.toUpperCase(), qViewer.Country + "-")) {
-//                         filtered = true;
-//                         break;
-//                     }
-//                 } else if (qViewer.Region === QueryViewerRegion.Continent) {
-//                     switch (qViewer.Continent) {
-//                         case QueryViewerContinent.Africa:
-//                             filtered = !qv.map.IsAfricanCountry(value.toUpperCase());
-//                             break;
-//                         case QueryViewerContinent.Asia:
-//                             filtered = !qv.map.IsAsianCountry(value.toUpperCase());
-//                             break;
-//                         case QueryViewerContinent.Europe:
-//                             filtered = !qv.map.IsEuropeanCountry(value.toUpperCase());
-//                             break;
-//                         case QueryViewerContinent.NorthAmerica:
-//                             filtered = !qv.map.IsNorthAmericanCountry(value.toUpperCase());
-//                             break;
-//                         case QueryViewerContinent.Oceania:
-//                             filtered = !qv.map.IsOceanianCountry(value.toUpperCase());
-//                             break;
-//                         case QueryViewerContinent.SouthAmerica:
-//                             filtered = !qv.map.IsSouthAmericanCountry(value.toUpperCase());
-//                             break;
-//                         default:
-//                             filtered = true;
-//                             break;
-//                     }
-//                 }
-//             }
-//         }
-//     }
-//     return filtered;
-// }
+function IsFilteredRow(
+  Metadata: QueryViewerServiceMetaData,
+  row: QueryViewerServiceDataRow
+) {
+  for (let i = 0; i < Metadata.Axes.length; i++) {
+    const axis = Metadata.Axes[i];
+    if (
+      axis.Visible === QueryViewerVisible.Yes ||
+      axis.Visible === QueryViewerVisible.Always
+    ) {
+      const value = trimUtil(row[axis.DataField]);
+      // Controlo contra la propiedad Filter
+      if (
+        axis.Filter.Type === QueryViewerFilterType.HideAllValues ||
+        (axis.Filter.Type === QueryViewerFilterType.ShowSomeValues &&
+          axis.Filter.Values.indexOf(value) < 0)
+      ) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
 
 function XAxisDataTypeOK(
   serviceResponse: QueryViewerServiceResponse,
   type: QueryViewerOutputType,
-  chartTypes: ChartTypes,
+  chartTypes: QueryViewerChartType,
   translations: QueryViewerTranslations
 ) {
   const dataType = XAxisDataType(serviceResponse.MetaData);
+  const qViewer: any = null;
   switch (type) {
     case QueryViewerOutputType.Chart:
       return {
-        IsOK: chartTypes.DatetimeXAxis
+        IsOK: IS_CHART_TYPE(chartTypes, qViewer).DatetimeXAxis
           ? dataType === QueryViewerDataType.Date ||
             dataType === QueryViewerDataType.DateTime
           : true,
@@ -444,36 +482,91 @@ function XAxisDataTypeOK(
 //         serie.MaximumValue = serie.TargetValue;
 // }
 
-// function aggregatePoints(chartSerie) {
-//     var currentYValues = [];
-//     var currentYQuantities = [];
-//     var firstColor = "";
-//     for (var i = 0; i < chartSerie.Points.length; i++) {
-//         var yValue;
-//         var yQuantity;
-//         if (chartSerie.Aggregation == QueryViewerAggregationType.Count) {
-//             yValue = 0;		// No se utiliza
-//             yQuantity = parseFloat(qv.util.trim(chartSerie.Points[i].Value));
-//         }
-//         else {
-//             if (chartSerie.Aggregation == QueryViewerAggregationType.Average) {
-//                 yValue = parseFloat(qv.util.trim(chartSerie.Points[i].Value_N));
-//                 yQuantity = parseFloat(qv.util.trim(chartSerie.Points[i].Value_D));
-//             }
-//             else {
-//                 yValue = parseFloat(qv.util.trim(chartSerie.Points[i].Value));
-//                 yQuantity = 1;
-//             }
-//         }
-//         currentYValues.push(yValue);
-//         currentYQuantities.push(yQuantity);
-//         if (firstColor == "") firstColor = chartSerie.Points[i].Color;
-//     }
-//     var value = qv.util.aggregate(chartSerie.Aggregation, currentYValues, currentYQuantities).toString();
-//     chartSerie.Points = [{ Value: value, Value_N: value, Value_D: "1", Color: firstColor }];
-//     chartSerie.NegativeValues = value < 0;
-//     chartSerie.PositiveValues = value > 0;
-// }
+function aggregate(
+  aggregation: QueryViewerAggregationType,
+  values: number[],
+  quantities: number[]
+) {
+  let sumValues: number;
+  let sumQuantities: number;
+  let minValue: number;
+  let maxValue: number;
+
+  switch (aggregation) {
+    case QueryViewerAggregationType.Sum:
+      values.forEach(value => {
+        if (value != null) {
+          sumValues += value;
+        }
+      });
+      return sumValues;
+    case QueryViewerAggregationType.Average:
+      for (let i = 0; i < values.length; i++) {
+        if (values[i] != null) {
+          sumValues += values[i];
+          sumQuantities += quantities[i];
+        }
+      }
+      return sumValues != null ? sumValues / sumQuantities : null;
+    case QueryViewerAggregationType.Count:
+      quantities.forEach(quantity => {
+        sumQuantities += quantity;
+      });
+      return sumQuantities;
+    case QueryViewerAggregationType.Max:
+      values.forEach(value => {
+        if (!maxValue) {
+          maxValue = value;
+        } else if (value > maxValue) {
+          maxValue = value;
+        }
+      });
+      return maxValue;
+    case QueryViewerAggregationType.Min:
+      values.forEach(value => {
+        if (!minValue) {
+          minValue = value;
+        } else if (value < maxValue) {
+          minValue = value;
+        }
+      });
+      return minValue;
+  }
+}
+
+function aggregatePoints(chartSerie: QueryViewerChartSerie) {
+  const currentYValues: number[] = [];
+  const currentYQuantities: number[] = [];
+  // const firstColor = "";
+  chartSerie.Points.forEach(point => {
+    let yValue;
+    let yQuantity;
+    if (chartSerie.Aggregation === QueryViewerAggregationType.Count) {
+      yValue = 0; // No se utiliza
+      yQuantity = parseFloat(trimUtil(point.Value));
+    } else if (chartSerie.Aggregation === QueryViewerAggregationType.Average) {
+      yValue = parseFloat(trimUtil(point.Value_N));
+      yQuantity = parseFloat(trimUtil(point.Value_D));
+    } else {
+      yValue = parseFloat(trimUtil(point.Value));
+      yQuantity = 1;
+    }
+    currentYValues.push(yValue);
+    currentYQuantities.push(yQuantity);
+    //   if (firstColor === "") {
+    //     firstColor = point.Color;
+    //   }
+  });
+
+  const value = aggregate(
+    chartSerie.Aggregation,
+    currentYValues,
+    currentYQuantities
+  ).toString();
+  chartSerie.Points = [{ Value: value, Value_N: value, Value_D: "1" }];
+  chartSerie.NegativeValues = parseFloat(value) < 0;
+  chartSerie.PositiveValues = parseFloat(value) > 0;
+}
 
 // function CalculateColorAxis(qViewer, datum) {
 
@@ -533,17 +626,18 @@ function XAxisDataTypeOK(
 export function ProcessDataAndMetadata(
   serviceResponse: QueryViewerServiceResponse,
   type: QueryViewerOutputType,
+  chartType: QueryViewerChartType,
   chartTypes: ChartTypes,
   translations: QueryViewerTranslations
-) {
+): { error: string; chart: ChartMetadataAndData } {
   const xAxisDataTypeStatus = XAxisDataTypeOK(
     serviceResponse,
     type,
-    chartTypes,
+    chartType,
     translations
   );
   if (!xAxisDataTypeStatus.IsOK) {
-    return xAxisDataTypeStatus.Error;
+    return { error: xAxisDataTypeStatus.Error, chart: undefined };
   }
 
   // Obtengo DataFields de categorias y series
@@ -552,83 +646,92 @@ export function ProcessDataAndMetadata(
     type
   );
 
-  const axesByDataField = GetAxesByDataFieldObj(qViewer);
+  // const axesByDataField = GetAxesByDataFieldObj(serviceResponse.MetaData);
 
   // Inicializo series
-  result.Series.ByIndex = [];
-  const uniqueAxis =
-    result.Categories.DataFields.length == 1
-      ? qv.util.GetAxisByDataField(qViewer, result.Categories.DataFields[0])
-      : null;
-  const dataByDataField = GetDataByDataFieldObj(qViewer, uniqueAxis);
-  result.PlotBands = [];
-  for (var i = 0; i < result.Series.DataFields.length; i++) {
-    const dataField = result.Series.DataFields[i];
+  // const uniqueAxis =
+  //   result.Categories.DataFields.length === 1
+  //     ? getAxisByDataField(
+  //         serviceResponse.MetaData,
+  //         result.Categories.DataFields[0]
+  //       )
+  //     : null;
+
+  const dataByDataField = GetDataByDataFieldObj(
+    serviceResponse.MetaData,
+    type,
+    chartType,
+    chartTypes,
+    result
+  );
+
+  result.Series.DataFields.forEach(dataField => {
     const datum = dataByDataField[dataField].Datum;
-    const multicoloredSerie = dataByDataField[dataField].Multicolored;
+    // const multicoloredSerie = dataByDataField[dataField].Multicolored;
 
-    var serie = {};
-    serie.MinValue = null; // Minimum value for the serie from the dataset
-    serie.MaxValue = null; // Maximum value for the serie from the dataset
-    serie.FieldName = datum.Name; // Nombre del field correspondiente a serie
-    serie.Name = datum.Title;
-    serie.Visible = datum.Visible;
-    serie.DataType = datum.DataType;
-    serie.Aggregation = datum.Aggregation;
+    const serie: QueryViewerChartSerie = {
+      MinValue: null, // Minimum value for the serie from the dataset
+      MaxValue: null, // Maximum value for the serie from the dataset
+      FieldName: datum.Name, // Nombre del field correspondiente a serie
+      Name: datum.Title,
+      Visible: datum.Visible,
+      DataType: datum.DataType,
+      Aggregation: datum.Aggregation,
+      DataFields: null,
+      Color: "",
+      Picture: null,
+      TargetValue: datum.TargetValue,
+      MaximumValue: datum.MaximumValue, // MaximumValue property value (not the maximum value for the serie from the dataset)
+      PositiveValues: false,
+      NegativeValues: false,
+      NumberFormat: null,
+      Points: []
+    };
 
-    const picture = datum.Picture;
     serie.Picture =
-      picture == ""
-        ? serie.DataType == QueryViewerDataType.Integer
+      datum.Picture === ""
+        ? serie.DataType === QueryViewerDataType.Integer
           ? "ZZZZZZZZZZZZZZ9"
           : "ZZZZZZZZZZZZZZ9.99"
-        : picture;
-    serie.NumberFormat = qv.util.ParseNumericPicture(
-      serie.DataType,
-      serie.Picture
-    );
-    if (!multicoloredSerie) {
-      serie.Color = GetColor(multicoloredSerie, datum, uniqueAxis, i, 0, "", 0);
-    } else {
-      serie.Color = qv.util.GetNullColor();
-    }
-    serie.TargetValue = datum.TargetValue;
-    serie.MaximumValue = datum.MaximumValue; // MaximumValue property value (not the maximum value for the serie from the dataset)
+        : datum.Picture;
+
+    serie.NumberFormat = parseNumericPicture(serie.DataType, serie.Picture);
+    // if (!multicoloredSerie) {
+    //   serie.Color = GetColor(multicoloredSerie, datum, uniqueAxis, i, 0, "", 0);
+    // } else {
+    //   serie.Color = GetNullColor();
+    // }
     NormalizeTargetAndMaximumValues(serie);
-    serie.PositiveValues = false;
-    serie.NegativeValues = false;
-    serie.Points = [];
-    qViewer.Chart.Series.ByIndex.push(serie);
-    // Si el dato tiene estilos condicionales, agrego las PlotBands correspondientes
-    if (qViewer.RealType == QueryViewerOutputType.Chart) {
-      CalculatePlotBands(qViewer, datum);
-    }
-    // Calculo colores segun los ConditionalStyles para las leyendas del mapa
-    if (qViewer.RealType == QueryViewerOutputType.Map) {
-      CalculateColorAxis(qViewer, datum);
-    }
-  }
+
+    result.Series.ByIndex.push(serie);
+    // // Si el dato tiene estilos condicionales, agrego las PlotBands correspondientes
+    // if (qViewer.RealType === QueryViewerOutputType.Chart) {
+    //   CalculatePlotBands(qViewer, datum);
+    // }
+    // // Calculo colores segun los ConditionalStyles para las leyendas del mapa
+    // if (qViewer.RealType === QueryViewerOutputType.Map) {
+    //   CalculateColorAxis(qViewer, datum);
+    // }
+  });
 
   // Recorro valores y lleno categorías y series
   let valueIndex = 0;
-  for (var i = 0; i < qViewer.Data.Rows.length; i++) {
-    const row = qViewer.Data.Rows[i];
-    if (!IsFilteredRow(qViewer, row)) {
-      AddCategoryValue(qViewer, row, valueIndex, axesByDataField);
-      AddSeriesValues(qViewer, row, valueIndex, dataByDataField, uniqueAxis);
+  serviceResponse.Data.Rows.forEach(row => {
+    if (!IsFilteredRow(serviceResponse.MetaData, row)) {
+      AddCategoryValue(result, serviceResponse.MetaData, row, valueIndex);
+      AddSeriesValues(result, row, valueIndex, dataByDataField);
       valueIndex++;
     }
-  }
+  });
 
   if (
-    qViewer.RealType == QueryViewerOutputType.Chart &&
-    qv.chart.IsGaugeChart(qViewer)
+    type === QueryViewerOutputType.Chart &&
+    IS_CHART_TYPE(chartType, null).Gauge
   ) {
-    for (var i = 0; i < qViewer.Chart.Series.DataFields.length; i++) {
-      var serie = qViewer.Chart.Series.ByIndex[i];
+    result.Series.ByIndex.forEach(serie => {
       aggregatePoints(serie); // Sólo puede haber un punto por serie para el Gauge
-    }
+    });
   }
 
-  return "";
+  return { error: "", chart: result };
 }

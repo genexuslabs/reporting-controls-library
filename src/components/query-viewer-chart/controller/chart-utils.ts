@@ -1,6 +1,21 @@
 import { QueryViewerChartType } from "../../../common/basic-types";
+import { ChartTypes } from "./chart-types";
+import { ChartMetadataAndData } from "./processDataAndMetadata";
 
-export function getChartType(chartType: QueryViewerChartType): string {
+export type ChartGroupLower =
+  | "column"
+  | "bar"
+  | "area"
+  | "areaspline"
+  | "line"
+  | "spline"
+  | "pie"
+  | "funnel"
+  | "pyramid"
+  | "solidgauge"
+  | "line";
+
+export function getChartType(chartType: QueryViewerChartType): ChartGroupLower {
   switch (chartType) {
     case QueryViewerChartType.Column:
     case QueryViewerChartType.Column3D:
@@ -50,4 +65,26 @@ export function getChartType(chartType: QueryViewerChartType): string {
     default:
       return "line";
   }
+}
+
+function getAllHighchartOptions(
+  chartTypes: ChartTypes,
+  chartMetadataAndData: ChartMetadataAndData
+) {
+  const arrOptions = [];
+  if (chartTypes.Splitted) {
+    for (
+      let seriesIndex = 0;
+      seriesIndex < chartMetadataAndData.Series.ByIndex.length;
+      seriesIndex++
+    ) {
+      const chartSerie = chartMetadataAndData.Series.ByIndex[seriesIndex];
+      var options = getHighchartOptions(qViewer, chartSerie, seriesIndex);
+      arrOptions.push(options);
+    }
+  } else {
+    var options = getHighchartOptions(qViewer, null, null);
+    arrOptions.push(options);
+  }
+  return arrOptions;
 }
