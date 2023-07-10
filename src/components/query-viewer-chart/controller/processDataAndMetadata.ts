@@ -1,5 +1,5 @@
 import {
-  DateTimePicture,
+  //   DateTimePicture,
   QueryViewerAggregationType,
   QueryViewerCategoryValue,
   QueryViewerChartCategories,
@@ -22,7 +22,7 @@ import { trimUtil } from "../../../services/xml-parser/utils/general";
 import {
   IsMulticoloredSerie,
   NormalizeTargetAndMaximumValues,
-  getPictureProperties,
+  //   getPictureProperties,
   parseNumericPicture
 } from "../../../utils/general";
 import { ChartTypes, IS_CHART_TYPE } from "./chart-types";
@@ -49,7 +49,7 @@ function TotData(data: QueryViewerServiceMetaDataData[]) {
   return totData;
 }
 
-function XAxisDataType(
+export function XAxisDataType(
   Metadata: QueryViewerServiceMetaData
 ): QueryViewerDataType {
   let cantRowsOrColumns = 0;
@@ -138,40 +138,40 @@ function GetCategoriesAndSeriesDataFields(
 //   return axesByDataField;
 // }
 
-function GetAxesByDataFieldObj(Metadata: QueryViewerServiceMetaData): {
-  [key: string]: {
-    Picture: string;
-    DataType: QueryViewerDataType;
-    PictureProperties: DateTimePicture;
-    Filter: {
-      Type: QueryViewerFilterType;
-      Values: string[];
-    };
-  };
-} {
-  const axesByDataField: {
-    [key: string]: {
-      Picture: string;
-      DataType: QueryViewerDataType;
-      PictureProperties: DateTimePicture;
-      Filter: {
-        Type: QueryViewerFilterType;
-        Values: string[];
-      };
-    };
-  } = {};
-  Metadata.Axes.forEach(axis => {
-    const pictureProperties = getPictureProperties(axis.DataType, axis.Picture);
-    axesByDataField[axis.DataField] = {
-      Picture: axis.Picture,
-      DataType: axis.DataType,
-      PictureProperties: pictureProperties,
-      Filter: axis.Filter
-    };
-  });
+// function GetAxesByDataFieldObj(Metadata: QueryViewerServiceMetaData): {
+//   [key: string]: {
+//     Picture: string;
+//     DataType: QueryViewerDataType;
+//     PictureProperties: DateTimePicture;
+//     Filter: {
+//       Type: QueryViewerFilterType;
+//       Values: string[];
+//     };
+//   };
+// } {
+//   const axesByDataField: {
+//     [key: string]: {
+//       Picture: string;
+//       DataType: QueryViewerDataType;
+//       PictureProperties: DateTimePicture;
+//       Filter: {
+//         Type: QueryViewerFilterType;
+//         Values: string[];
+//       };
+//     };
+//   } = {};
+//   Metadata.Axes.forEach(axis => {
+//     const pictureProperties = getPictureProperties(axis.DataType, axis.Picture);
+//     axesByDataField[axis.DataField] = {
+//       Picture: axis.Picture,
+//       DataType: axis.DataType,
+//       PictureProperties: pictureProperties,
+//       Filter: axis.Filter
+//     };
+//   });
 
-  return axesByDataField;
-}
+//   return axesByDataField;
+// }
 
 function GetDataByDataFieldObj(
   Metadata: QueryViewerServiceMetaData,
@@ -623,7 +623,7 @@ function aggregatePoints(chartSerie: QueryViewerChartSerie) {
 //     }
 // }
 
-export function ProcessDataAndMetadata(
+export function processDataAndMetadata(
   serviceResponse: QueryViewerServiceResponse,
   type: QueryViewerOutputType,
   chartType: QueryViewerChartType,

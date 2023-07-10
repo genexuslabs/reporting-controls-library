@@ -1,4 +1,7 @@
-import { QueryViewerOutputType } from "../../common/basic-types";
+import {
+  QueryViewerConditionOperator,
+  QueryViewerOutputType
+} from "../../common/basic-types";
 
 export type QueryViewerSDTWithValues = {
   Type: string;
@@ -248,7 +251,7 @@ export type QueryViewerAxisValueStyle = {
 };
 
 export type QueryViewerAxisConditionalStyle = {
-  Operator: string;
+  Operator: QueryViewerConditionOperator;
   Value1: string | number | boolean; // @todo TODO: Improve the type
   Value2?: string | number | boolean; // @todo TODO: Improve the type
   StyleOrClass: string;

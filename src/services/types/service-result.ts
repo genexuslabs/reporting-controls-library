@@ -1,6 +1,7 @@
 import {
   QueryViewerAggregationType,
   QueryViewerAxisOrderType,
+  QueryViewerDataType,
   QueryViewerExpandCollapseType,
   QueryViewerFilterType,
   QueryViewerSubtotals,
@@ -27,7 +28,7 @@ export type QueryViewerServiceMetaDataAxis = {
   Name: string;
   Title: string;
   DataField: string;
-  DataType: string;
+  DataType: QueryViewerDataType;
   Visible: string;
   Axis: string;
   Picture: string;
@@ -62,7 +63,7 @@ export type QueryViewerServiceMetaDataData = {
   Title: string;
   DataField: string;
   Aggregation: QueryViewerAggregationType;
-  DataType: string;
+  DataType: QueryViewerDataType;
   Visible: QueryViewerVisible;
   Picture: string;
   RaiseItemClick: boolean;

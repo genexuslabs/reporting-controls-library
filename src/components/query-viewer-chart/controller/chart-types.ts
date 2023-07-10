@@ -23,7 +23,7 @@ export type ChartTypes = { [key in IsChartTypes]: boolean };
 
 export type IsChartTypesFunction = (
   type: QueryViewerChartType,
-  qViewer
+  qViewer: any
 ) => ChartTypes;
 
 export const IS_CHART_TYPE: IsChartTypesFunction = (
@@ -107,7 +107,10 @@ export const IS_CHART_TYPE: IsChartTypesFunction = (
   Splitted: IsSplittedChart(type, qViewer)
 });
 
-export function IsSplittedChart(type: QueryViewerChartType, qViewer): boolean {
+export function IsSplittedChart(
+  type: QueryViewerChartType,
+  qViewer: any
+): boolean {
   // Para las gráficas Stacked no tiene sentido separar en varias gráficas pues dejan de apilarse las series
   if (IS_CHART_TYPE(type, qViewer).Stacked) {
     return false;

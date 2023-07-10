@@ -1,5 +1,11 @@
-import { QueryViewerChartType } from "../../../common/basic-types";
+import {
+  QueryViewerChartType,
+  QueryViewerOutputType,
+  QueryViewerXAxisLabels
+} from "../../../common/basic-types";
+import { QueryViewerServiceMetaData } from "../../../services/types/service-result";
 import { ChartTypes } from "./chart-types";
+import { getHighchartOptions } from "./highcharts-options";
 import { ChartMetadataAndData } from "./processDataAndMetadata";
 
 export type ChartGroupLower =
@@ -15,7 +21,9 @@ export type ChartGroupLower =
   | "solidgauge"
   | "line";
 
-export function getChartType(chartType: QueryViewerChartType): ChartGroupLower {
+export function getChartGroup(
+  chartType: QueryViewerChartType
+): ChartGroupLower {
   switch (chartType) {
     case QueryViewerChartType.Column:
     case QueryViewerChartType.Column3D:
@@ -67,24 +75,68 @@ export function getChartType(chartType: QueryViewerChartType): ChartGroupLower {
   }
 }
 
-function getAllHighchartOptions(
+export function getAllHighchartOptions(
+  chartMetadataAndData: ChartMetadataAndData,
+  serviceResponseMetadata: QueryViewerServiceMetaData,
+  type: QueryViewerOutputType,
+  chartType: QueryViewerChartType,
   chartTypes: ChartTypes,
-  chartMetadataAndData: ChartMetadataAndData
+  chartGroupLower: ChartGroupLower,
+  allowSelection: boolean,
+  showValues: boolean,
+  xAxisLabels: QueryViewerXAxisLabels,
+  xAxisIntersectionAtZero: boolean,
+  yAxisTitle: string,
+  queryTitle: string,
+  isRTL: boolean
 ) {
   const arrOptions = [];
-  if (chartTypes.Splitted) {
-    for (
-      let seriesIndex = 0;
-      seriesIndex < chartMetadataAndData.Series.ByIndex.length;
-      seriesIndex++
-    ) {
-      const chartSerie = chartMetadataAndData.Series.ByIndex[seriesIndex];
-      var options = getHighchartOptions(qViewer, chartSerie, seriesIndex);
-      arrOptions.push(options);
-    }
-  } else {
-    var options = getHighchartOptions(qViewer, null, null);
+  if (!chartTypes.Splitted) {
+    const options = getHighchartOptions(
+      chartMetadataAndData,
+      serviceResponseMetadata,
+      null,
+      type,
+      chartType,
+      chartTypes,
+      chartGroupLower,
+      null,
+      allowSelection,
+      showValues,
+      xAxisLabels,
+      xAxisIntersectionAtZero,
+      yAxisTitle,
+      queryTitle,
+      isRTL
+    );
+    arrOptions.push(options);
+    return arrOptions;
+  }
+  for (
+    let seriesIndex = 0;
+    seriesIndex < chartMetadataAndData.Series.ByIndex.length;
+    seriesIndex++
+  ) {
+    const chartSerie = chartMetadataAndData.Series.ByIndex[seriesIndex];
+    const options = getHighchartOptions(
+      chartMetadataAndData,
+      serviceResponseMetadata,
+      chartSerie,
+      type,
+      chartType,
+      chartTypes,
+      chartGroupLower,
+      seriesIndex,
+      allowSelection,
+      showValues,
+      xAxisLabels,
+      xAxisIntersectionAtZero,
+      yAxisTitle,
+      queryTitle,
+      isRTL
+    );
     arrOptions.push(options);
   }
+
   return arrOptions;
 }

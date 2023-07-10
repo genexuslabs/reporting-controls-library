@@ -1,7 +1,6 @@
 import {
   QueryViewerChartSerie,
   QueryViewerChartType,
-  QueryViewerDataType,
   QueryViewerOutputType,
   QueryViewerVisible,
   QueryViewerXAxisLabels
@@ -9,7 +8,7 @@ import {
 import {
   Options as HighChartOptions,
   ChartOptions,
-  SelectEventObject,
+  //   SelectEventObject,
   LegendOptions,
   SubtitleOptions,
   XAxisOptions,
@@ -17,17 +16,23 @@ import {
   YAxisPlotLinesOptions,
   AlignValue,
   PlotOptions,
-  PointMarkerOptionsObject
+  PointMarkerOptionsObject,
+  TooltipOptions,
+  TooltipFormatterContextObject,
+  SeriesOptionsType,
+  PaneOptions
 } from "highcharts";
-import { ChartTypes, IsChartTypes } from "./chart-types";
-import { ChartGroupLower, getChartType } from "./chart-utils";
+import { ChartTypes } from "./chart-types";
+import { ChartGroupLower, getChartGroup } from "./chart-utils";
 import { ChartMetadataAndData } from "./processDataAndMetadata";
 import {
   QueryViewerServiceMetaData,
   QueryViewerServiceMetaDataData
 } from "../../../services/types/service-result";
-import { SelectionAllowed } from "../../../utils/general";
+import { SelectionAllowed, TooltipFormatter } from "../../../utils/general";
+import { trimUtil } from "../../../services/xml-parser/utils/general";
 
+const DEFAULTCHARTSPACING = 10;
 const getSpacing = (chartTypes: ChartTypes) =>
   chartTypes.Timeline
     ? [DEFAULTCHARTSPACING, 0, DEFAULTCHARTSPACING, 0] // top, right, bottom, left
@@ -39,57 +44,57 @@ const getSpacing = (chartTypes: ChartTypes) =>
       ];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function selectionEventHandler(_event: SelectEventObject): undefined {
-  //   if (typeof _avoidSelectionEventHandler === "undefined") {
-  //     _avoidSelectionEventHandler = false;
-  //   }
-  //   if (!_avoidSelectionEventHandler) {
-  //     // Desmarca el botón de zoom seleccionado cuando se hace un zoom seleccionando puntos en la gráfica
-  //     deselectZoom(prevClickedZoomId);
-  //     prevClickedZoomId = null;
-  //     if (event.xAxis) {
-  //       const qvOptions = event.target.options.qv;
-  //       var xAxis = event.xAxis[0];
-  //       const minPercent =
-  //         ((xAxis.min - qvOptions.dataMin) /
-  //           (qvOptions.dataMax - qvOptions.dataMin)) *
-  //         100;
-  //       const maxPercent =
-  //         ((xAxis.max - qvOptions.dataMin) /
-  //           (qvOptions.dataMax - qvOptions.dataMin)) *
-  //         100;
-  //       InitializeSlider(
-  //         event.target.options.qv.viewerId,
-  //         minPercent,
-  //         maxPercent
-  //       );
-  //     } else {
-  //       InitializeSlider(event.target.options.qv.viewerId, 0, 100);
-  //     }
-  //     const qViewer = qv.collection[event.target.options.qv.viewerId];
-  //     if (IsSplittedChart(qViewer)) {
-  //       let containers;
-  //       const containerId = qViewer.getContainerControl().id;
-  //       containers = jQuery("[id^=" + containerId + "_chart]");
-  //       const charts = [];
-  //       jQuery.each(containers, function (index, div) {
-  //         if (div.id != event.target.renderTo.id) {
-  //           const chart = jQuery("#" + div.id).highcharts();
-  //           charts.push(chart);
-  //         }
-  //       });
-  //       jQuery.each(charts, function (index, chart) {
-  //         if (event.xAxis) {
-  //           chart.get("xaxis").setExtremes(xAxis.min, xAxis.max);
-  //         } else {
-  //           _avoidSelectionEventHandler = true;
-  //           chart.zoomOut();
-  //           _avoidSelectionEventHandler = false;
-  //         }
-  //       });
-  //     }
-  //   }
-}
+// function selectionEventHandler(_event: SelectEventObject): void {
+//   //   if (typeof _avoidSelectionEventHandler === "undefined") {
+//   //     _avoidSelectionEventHandler = false;
+//   //   }
+//   //   if (!_avoidSelectionEventHandler) {
+//   //     // Desmarca el botón de zoom seleccionado cuando se hace un zoom seleccionando puntos en la gráfica
+//   //     deselectZoom(prevClickedZoomId);
+//   //     prevClickedZoomId = null;
+//   //     if (event.xAxis) {
+//   //       const qvOptions = event.target.options.qv;
+//   //       var xAxis = event.xAxis[0];
+//   //       const minPercent =
+//   //         ((xAxis.min - qvOptions.dataMin) /
+//   //           (qvOptions.dataMax - qvOptions.dataMin)) *
+//   //         100;
+//   //       const maxPercent =
+//   //         ((xAxis.max - qvOptions.dataMin) /
+//   //           (qvOptions.dataMax - qvOptions.dataMin)) *
+//   //         100;
+//   //       InitializeSlider(
+//   //         event.target.options.qv.viewerId,
+//   //         minPercent,
+//   //         maxPercent
+//   //       );
+//   //     } else {
+//   //       InitializeSlider(event.target.options.qv.viewerId, 0, 100);
+//   //     }
+//   //     const qViewer = qv.collection[event.target.options.qv.viewerId];
+//   //     if (IsSplittedChart(qViewer)) {
+//   //       let containers;
+//   //       const containerId = qViewer.getContainerControl().id;
+//   //       containers = jQuery("[id^=" + containerId + "_chart]");
+//   //       const charts = [];
+//   //       jQuery.each(containers, function (index, div) {
+//   //         if (div.id != event.target.renderTo.id) {
+//   //           const chart = jQuery("#" + div.id).highcharts();
+//   //           charts.push(chart);
+//   //         }
+//   //       });
+//   //       jQuery.each(charts, function (index, chart) {
+//   //         if (event.xAxis) {
+//   //           chart.get("xaxis").setExtremes(xAxis.min, xAxis.max);
+//   //         } else {
+//   //           _avoidSelectionEventHandler = true;
+//   //           chart.zoomOut();
+//   //           _avoidSelectionEventHandler = false;
+//   //         }
+//   //       });
+//   //     }
+//   //   }
+// }
 
 function getChartObject(
   type: QueryViewerChartType,
@@ -118,7 +123,7 @@ function getChartObject(
   //   }
 
   if (!chartTypes.Combination) {
-    chart.type = getChartType(type);
+    chart.type = getChartGroup(type);
   }
   if (
     type === QueryViewerChartType.Radar ||
@@ -148,7 +153,7 @@ function getChartObject(
     chart.zoomType = "x";
     chart.resetZoomButton = { theme: { display: "none" } };
     chart.events = {};
-    chart.events.selection = selectionEventHandler;
+    // chart.events.selection = selectionEventHandler;
   }
   return chart;
 }
@@ -423,8 +428,8 @@ function YAxisTitle(
   return yAxisTitle;
 }
 
-const HasYAxis = (chartTypes: ChartTypes) =>
-  !chartTypes.Circular && !chartTypes.Funnel && !chartTypes.Gauge;
+// const HasYAxis = (chartTypes: ChartTypes) =>
+//   !chartTypes.Circular && !chartTypes.Funnel && !chartTypes.Gauge;
 
 function getYAxisObject(
   chartMetadataAndData: ChartMetadataAndData,
@@ -668,22 +673,23 @@ function getMarker(
   return marker;
 }
 
-function connector90degrees(labelPosition, connectorPosition, options) {
-  const connectorPadding = options.connectorPadding,
-    touchingSliceAt = connectorPosition.touchingSliceAt,
-    alignment = labelPosition.alignment;
-  return [
-    "M",
-    labelPosition.x + (alignment === "left" ? 1 : -1) * connectorPadding,
-    labelPosition.y,
-    "L",
-    touchingSliceAt.x,
-    labelPosition.y,
-    "L",
-    touchingSliceAt.x,
-    touchingSliceAt.y
-  ];
-}
+// ToDo: implement this, check the parameters
+// function connector90degrees(labelPosition, connectorPosition, options) {
+//   const connectorPadding = options.connectorPadding,
+//     touchingSliceAt = connectorPosition.touchingSliceAt,
+//     alignment = labelPosition.alignment;
+//   return [
+//     "M",
+//     labelPosition.x + (alignment === "left" ? 1 : -1) * connectorPadding,
+//     labelPosition.y,
+//     "L",
+//     touchingSliceAt.x,
+//     labelPosition.y,
+//     "L",
+//     touchingSliceAt.x,
+//     touchingSliceAt.y
+//   ];
+// }
 
 function getPlotOptionsObject(
   chartType: QueryViewerChartType,
@@ -863,8 +869,8 @@ function getPlotOptionsObject(
       }
       plotOptions.pie.dataLabels = {
         enabled: showValues,
-        connectorColor: "#c3c4c8",
-        connectorShape: connector90degrees
+        connectorColor: "#c3c4c8"
+        // connectorShape: connector90degrees
       };
       plotOptions.pie.showInLegend = true;
       break;
@@ -878,8 +884,8 @@ function getPlotOptionsObject(
       plotOptions.funnel.showInLegend = true;
       plotOptions.funnel.dataLabels = {
         enabled: showValues,
-        connectorColor: "#c3c4c8",
-        connectorShape: connector90degrees
+        connectorColor: "#c3c4c8"
+        // connectorShape: connector90degrees
       };
       break;
     case "pyramid":
@@ -887,53 +893,180 @@ function getPlotOptionsObject(
       plotOptions.pyramid.showInLegend = true;
       plotOptions.pyramid.dataLabels = {
         enabled: showValues,
-        connectorColor: "#c3c4c8",
-        connectorShape: connector90degrees
+        connectorColor: "#c3c4c8"
+        // connectorShape: connector90degrees
       };
       break;
   }
   return plotOptions;
 }
 
-function getTooltipObject(qViewer) {
-  const tooltip = {};
-  if (IsTimelineChart(qViewer)) {
-    tooltip.borderRadius = 1;
-    tooltip.shadow = true;
-    tooltip.shared = qViewer.Metadata.Data.length > 1;
-    tooltip.formatter = function () {
-      if (qViewer.Metadata.Data.length === 1) {
-        return TooltipFormatter(
-          this,
-          qViewer.Chart.Series.ByIndex,
-          IsSplittedChart(qViewer)
-        );
-      } else {
-        return DateTimeTooltipFormatter(this, qViewer.Chart.Series.ByIndex);
-      }
-    };
-  } else if (
-    type == QueryViewerChartType.StackedColumn100 ||
-    type == QueryViewerChartType.StackedBar100 ||
-    type == QueryViewerChartType.StackedArea100 ||
-    type == QueryViewerChartType.StackedLine100
+function Stacked100TooltipFormatter(
+  evArg: TooltipFormatterContextObject,
+  isRTL: boolean
+) {
+  const percentage = Math.round(evArg.point.percentage * 100) / 100;
+  return isRTL
+    ? "%" +
+        percentage +
+        "<b>: " +
+        (evArg.point.name !== "" ? evArg.point.name : evArg.series.name) +
+        "</b>"
+    : "<b>" +
+        (evArg.point.name !== "" ? evArg.point.name : evArg.series.name) +
+        "</b>: " +
+        percentage +
+        "%";
+}
+
+// ToDo: implement this
+// function DateTimeTooltipFormatter(evArg, chartSeries) {
+//   let hoverPoints;
+//   const viewerId = evArg.points[0].series.chart.options.qv.viewerId;
+//   const qViewer = qv.collection[viewerId];
+//   if (IsSplittedChart(qViewer)) {
+//     hoverPoints = getHoverPoints(qViewer, evArg.points[0].point.index);
+//   } else {
+//     hoverPoints = [];
+//     jQuery.each(evArg.points, function (index, point) {
+//       hoverPoints.push(point.point);
+//     });
+//   }
+//   // Agrupa la lista de puntos por índice de la serie
+//   const points_by_strIndex = {};
+//   const compare = gx.dom.el(viewerId + "_options_compare_enable").checked;
+//   for (let i = 0; i < hoverPoints.length; i++) {
+//     const index = compare
+//       ? Math.trunc(hoverPoints[i].series.index / 2)
+//       : hoverPoints[i].series.index;
+//     var strIndex = index.toString();
+//     if (points_by_strIndex[strIndex] == undefined) {
+//       points_by_strIndex[strIndex] = [];
+//     }
+//     points_by_strIndex[strIndex].push(hoverPoints[i]);
+//   }
+//   let res = "";
+//   let currentTotal = 0;
+//   let previousTotal = 0;
+//   let oldUtc;
+//   let oldSeriesName;
+//   for (var strIndex in points_by_strIndex) {
+//     const seriesIndex = parseInt(strIndex);
+//     const serie = chartSeries[seriesIndex];
+//     const seriesName = serie.Name;
+//     const points = points_by_strIndex[strIndex];
+//     for (let ind = 0; points[ind] != undefined; ind++) {
+//       const p = points[ind];
+//       const utc = parseInt(p.real_x ? p.real_x : p.x);
+//       if (p.real_x) {
+//         previousTotal += p.y;
+//       } else {
+//         currentTotal += p.y;
+//       }
+//       if (compare) {
+//         if (oldSeriesName != seriesName) {
+//           qv.util.isRTL(qViewer)
+//             ? (res += GetBoldRightText(seriesName) + "<br/>")
+//             : (res += GetBoldText(seriesName) + "<br/>");
+//           oldSeriesName = seriesName;
+//         }
+//       } else if (oldUtc != utc) {
+//         qv.util.isRTL(qViewer)
+//           ? (res += GetBoldRightText(p.name) + "<br/>")
+//           : (res += GetBoldText(p.name) + "<br/>");
+//         oldUtc = utc;
+//       }
+//       const duration =
+//         qViewer.RealChartType == QueryViewerChartType.StepTimeline
+//           ? GetDuration(p)
+//           : "";
+//       var keySpan;
+//       const valueSpan = qv.util.dom.createSpan(
+//         null,
+//         "",
+//         "",
+//         "",
+//         {},
+//         null,
+//         qv.util.formatNumber(
+//           p.y,
+//           serie.NumberFormat.DecimalPrecision,
+//           serie.Picture,
+//           false
+//         )
+//       ).outerHTML;
+
+//       qv.util.isRTL(qViewer)
+//         ? (keySpan = qv.util.dom.createSpan(
+//             null,
+//             "",
+//             "",
+//             "",
+//             {},
+//             null,
+//             ": " + (compare ? p.name : seriesName)
+//           ).outerHTML)
+//         : (keySpan = qv.util.dom.createSpan(
+//             null,
+//             "",
+//             "",
+//             "",
+//             {},
+//             null,
+//             (compare ? p.name : seriesName) + ": "
+//           ).outerHTML);
+//       qv.util.isRTL(qViewer)
+//         ? (res += duration + valueSpan + keySpan + "<br/>")
+//         : (res += keySpan + valueSpan + duration + "<br/>");
+//     }
+//   }
+//   return res;
+// }
+
+function getTooltipObject(
+  chartType: QueryViewerChartType,
+  chartTypes: ChartTypes,
+  isRTL: boolean
+): TooltipOptions {
+  const tooltip: TooltipOptions = {};
+  //   if (chartTypes.Timeline) {
+  //     tooltip.borderRadius = 1;
+  //     tooltip.shadow = true;
+  //     tooltip.shared = metadata.Data.length > 1;
+  //     tooltip.formatter = function () {
+  //       if (metadata.Data.length === 1) {
+  //         return TooltipFormatter(this, chartTypes.Splitted, isRTL, chartTypes);
+  //       }
+  //       // else {
+  //       // return DateTimeTooltipFormatter(
+  //       //   this,
+  //       //   chartMetadataAndData.Series.ByIndex
+  //       // );
+  //       // }
+  //     };
+  //   } else
+  if (
+    chartType === QueryViewerChartType.StackedColumn100 ||
+    chartType === QueryViewerChartType.StackedBar100 ||
+    chartType === QueryViewerChartType.StackedArea100 ||
+    chartType === QueryViewerChartType.StackedLine100
   ) {
     tooltip.formatter = function () {
-      return Stacked100TooltipFormatter(this, qViewer);
+      return Stacked100TooltipFormatter(this, isRTL);
     };
-  } else if (IsCircularChart(qViewer)) {
-    tooltip.formatter = function () {
-      return PieTooltipFormatter(this, IsSplittedChart(qViewer));
-    };
-  } else if (type == QueryViewerChartType.CircularGauge) {
-    tooltip.enabled =
-      (qViewer.Chart.Series.DataFields.length > 1 ||
-        !gx.lang.gxBoolean(qViewer.ShowValues)) &&
-      !IsSplittedChart(qViewer);
-    tooltip.formatter = function () {
-      return CircularGaugeTooltipAndDataLabelFormatter(this, qViewer);
-    };
-    tooltip.positioner = function (labelWidth, labelHeight) {
+
+    //   else if (chartTypes.Circular) {
+    //     tooltip.formatter = function () {
+    //       return PieTooltipFormatter(this, chartTypes.Splitted);
+    //     };
+    //   } else if (chartType === QueryViewerChartType.CircularGauge) {
+    //     tooltip.enabled =
+    //       (chartMetadataAndData.Series.DataFields.length > 1 || !showValues) &&
+    //       !chartTypes.Splitted;
+    //     tooltip.formatter = function () {
+    //       return CircularGaugeTooltipAndDataLabelFormatter(this, qViewer);
+    //     };
+    tooltip.positioner = function (labelWidth) {
       return {
         x: (this.chart.plotWidth - labelWidth) / 2,
         y: this.chart.plotHeight / 2
@@ -941,186 +1074,191 @@ function getTooltipObject(qViewer) {
     };
   } else {
     tooltip.formatter = function () {
-      return TooltipFormatter(
-        this,
-        qViewer.Chart.Series.ByIndex,
-        IsSplittedChart(qViewer) && !IsGaugeChart(qViewer)
-      );
+      return TooltipFormatter(this, chartTypes.Splitted, isRTL, chartTypes);
     };
   }
-  tooltip.useHTML = qv.util.isRTL(qViewer);
+  tooltip.useHTML = isRTL;
   return tooltip;
 }
 
-function getSeriesObject(qViewer, serieIndex, groupOption) {
-  function getSerieObject(
-    qViewer,
-    chartSerie,
-    serieIndex,
-    series,
-    groupOption
-  ) {
-    const serie = {};
-    if (qViewer.ItemClick && qViewer.Metadata.Data[serieIndex].RaiseItemClick) {
-      serie.className = "highcharts-drilldown-point";
+function getIndividualSerieObject(
+  chartTypes: ChartTypes,
+  chartType: QueryViewerChartType,
+  chartMetadataAndData: ChartMetadataAndData,
+  _serieIndex: number,
+  chartSerie: QueryViewerChartSerie
+): SeriesOptionsType {
+  // ToDo: check the correct type
+  const serie: SeriesOptionsType = { type: "line" };
+  // ToDo: implement this
+  //   if (qViewer.ItemClick && qViewer.Metadata.Data[serieIndex].RaiseItemClick) {
+  //     serie.className = "highcharts-drilldown-point";
+  //   }
+  serie.visible =
+    chartSerie.Visible === QueryViewerVisible.Yes ||
+    chartSerie.Visible === QueryViewerVisible.Always;
+  // ToDo: implement this with the events
+  //   serie.events = {
+  //     legendItemClick: function (e) {
+  //       if (chartSerie.Visible == QueryViewerVisible.Always) {
+  //         e.preventDefault();
+  //       } else {
+  //         const runtimeElements = qv.chart.GetRuntimeMetadata(qViewer);
+  //         const elementName =
+  //           qViewer.Chart.Series.ByIndex[e.target.index].FieldName;
+  //         const runtimeElement = qv.util.GetElementInCollection(
+  //           runtimeElements,
+  //           "Name",
+  //           elementName
+  //         );
+  //         runtimeElement.Hidden = !runtimeElement.Hidden;
+  //         qv.util.autorefresh.UpdateLayoutSameGroup(
+  //           qViewer,
+  //           runtimeElements,
+  //           false
+  //         );
+  //       }
+  //     }
+  //   };
+  if (chartTypes.Timeline) {
+    // serie.name = chartSerie.Name;
+    // serie.data = [];
+    // serie.turboThreshold = 0;
+    // // if (!qv.util.IsNullColor(chartSerie.Color)) {
+    // //   SetHighchartsColor(qViewer, serie, chartSerie.Color, true);
+    // // }
+    // const points = groupPoints(
+    //   qViewer.Chart.Categories,
+    //   chartSerie.Points,
+    //   qv.util.XAxisDataType(qViewer),
+    //   chartSerie.Aggregation,
+    //   groupOption
+    // );
+    // for (j = 0; j < points.length; j++) {
+    //   const name = points[j].name;
+    //   const xValue = points[j].x;
+    //   const value = points[j].y;
+    //   const date = new gx.date.gxdate(xValue, "Y4MD");
+    //   serie.data[j] = {
+    //     x: date.Value.getTime() - date.Value.getTimezoneOffset() * 60000,
+    //     y: value,
+    //     name: name
+    //   };
+    //   if (qv.util.IsNullColor(chartSerie.Color)) {
+    //     SetHighchartsColor(
+    //       qViewer,
+    //       serie.data[j],
+    //       chartSerie.Points[j].Color,
+    //       true
+    //     );
+    //   }
+    // }
+  } else {
+    // let widths;
+    // if (chartType === QueryViewerChartType.CircularGauge) {
+    //   if (chartTypes.Splitted) {
+    //     widths = circularGaugeWidths(1, 1);
+    //   } else {
+    //     widths = circularGaugeWidths(
+    //       chartMetadataAndData.Series.DataFields.length,
+    //       serieIndex + 1
+    //     );
+    //   }
+    // }
+    serie.name = chartSerie.Name;
+    serie.data = [];
+    serie.turboThreshold = 0;
+    // if (!qv.util.IsNullColor(chartSerie.Color)) {
+    //   SetHighchartsColor(qViewer, serie, chartSerie.Color, true);
+    // }
+    if (
+      chartType === QueryViewerChartType.Radar ||
+      chartType === QueryViewerChartType.FilledRadar ||
+      chartType === QueryViewerChartType.PolarArea
+    ) {
+      serie.pointPlacement =
+        chartType === QueryViewerChartType.Radar ||
+        chartType === QueryViewerChartType.FilledRadar
+          ? "on"
+          : null;
     }
-    serie.visible =
-      chartSerie.Visible == QueryViewerVisible.Yes ||
-      chartSerie.Visible == QueryViewerVisible.Always;
-    serie.events = {
-      legendItemClick: function (e) {
-        if (chartSerie.Visible == QueryViewerVisible.Always) {
-          e.preventDefault();
-        } else {
-          const runtimeElements = qv.chart.GetRuntimeMetadata(qViewer);
-          const elementName =
-            qViewer.Chart.Series.ByIndex[e.target.index].FieldName;
-          const runtimeElement = qv.util.GetElementInCollection(
-            runtimeElements,
-            "Name",
-            elementName
-          );
-          runtimeElement.Hidden = !runtimeElement.Hidden;
-          qv.util.autorefresh.UpdateLayoutSameGroup(
-            qViewer,
-            runtimeElements,
-            false
-          );
-        }
+    for (let j = 0; j < chartSerie.Points.length; j++) {
+      let value =
+        chartSerie.Points[j].Value != null
+          ? parseFloat(trimUtil(chartSerie.Points[j].Value).replace(",", "."))
+          : null;
+      if (chartTypes.Gauge) {
+        value = (value / chartSerie.TargetValue) * 100;
       }
-    };
-    if (IsTimelineChart(qViewer)) {
-      serie.name = chartSerie.Name;
-      serie.data = [];
-      serie.turboThreshold = 0;
-      if (!qv.util.IsNullColor(chartSerie.Color)) {
-        SetHighchartsColor(qViewer, serie, chartSerie.Color, true);
-      }
-      const points = groupPoints(
-        qViewer.Chart.Categories,
-        chartSerie.Points,
-        qv.util.XAxisDataType(qViewer),
-        chartSerie.Aggregation,
-        groupOption
-      );
-      for (j = 0; j < points.length; j++) {
-        var name = points[j].name;
-        var xValue = points[j].x;
-        var value = points[j].y;
-        var date = new gx.date.gxdate(xValue, "Y4MD");
-        serie.data[j] = {
-          x: date.Value.getTime() - date.Value.getTimezoneOffset() * 60000,
-          y: value,
-          name: name
-        };
-        if (qv.util.IsNullColor(chartSerie.Color)) {
-          SetHighchartsColor(
-            qViewer,
-            serie.data[j],
-            chartSerie.Points[j].Color,
-            true
-          );
-        }
-      }
-    } else {
-      let widths;
-      if (type == QueryViewerChartType.CircularGauge) {
-        if (IsSplittedChart(qViewer)) {
-          widths = circularGaugeWidths(1, 1);
-        } else {
-          widths = circularGaugeWidths(
-            qViewer.Chart.Series.DataFields.length,
-            serieIndex + 1
-          );
-        }
-      }
-      serie.name = chartSerie.Name;
-      serie.data = [];
-      serie.turboThreshold = 0;
-      if (!qv.util.IsNullColor(chartSerie.Color)) {
-        SetHighchartsColor(qViewer, serie, chartSerie.Color, true);
-      }
-      if (
-        type == QueryViewerChartType.Radar ||
-        type == QueryViewerChartType.FilledRadar ||
-        type == QueryViewerChartType.PolarArea
-      ) {
-        serie.pointPlacement =
-          type == QueryViewerChartType.Radar ||
-          type == QueryViewerChartType.FilledRadar
-            ? "on"
-            : null;
-      }
-      for (j = 0; j < chartSerie.Points.length; j++) {
-        var value =
-          chartSerie.Points[j].Value != null
-            ? parseFloat(
-                qv.util.trim(chartSerie.Points[j].Value).replace(",", ".")
-              )
-            : null;
-        if (IsGaugeChart(qViewer)) {
-          value = (value / chartSerie.TargetValue) * 100;
-        }
-        var name = qViewer.Chart.Categories.Values[j].ValueWithPicture;
-        serie.data[j] = {};
-        serie.data[j].y = value;
-        serie.data[j].name = IsGaugeChart(qViewer) ? "" : name;
-        serie.data[j].id = serie.data[j].name;
-        if (IsDatetimeXAxis(qViewer)) {
-          var xValue = qViewer.Chart.Categories.Values[j].Value;
-          var date = new gx.date.gxdate(xValue, "Y4MD");
-          serie.data[j].x =
-            date.Value.getTime() - date.Value.getTimezoneOffset() * 60000;
-          serie.data[j].id = date;
-        }
-        if (type == QueryViewerChartType.CircularGauge) {
-          serie.data[j].radius = widths.UpperExtreme.toString() + "%";
-          serie.data[j].innerRadius = widths.LowerExtreme.toString() + "%";
-        }
-        if (type == QueryViewerChartType.CircularGauge) {
-          var color;
-          if (!qv.util.IsNullColor(chartSerie.Color)) {
-            color = chartSerie.Color;
-          } else {
-            color = chartSerie.Points[0].Color;
-          }
-          SetHighchartsColor(qViewer, serie.data[j], color, true);
-        } else if (qv.util.IsNullColor(chartSerie.Color)) {
-          SetHighchartsColor(
-            qViewer,
-            serie.data[j],
-            chartSerie.Points[j].Color,
-            true
-          );
-        }
-      }
+      const name = chartTypes.Gauge
+        ? ""
+        : chartMetadataAndData.Categories.Values[j].ValueWithPicture;
+      serie.data[j] = {
+        id: name,
+        name: name,
+        y: value
+      };
+      //   if (chartTypes.DatetimeXAxis) {
+      // var xValue = qViewer.Chart.Categories.Values[j].Value;
+      // var date = new gx.date.gxdate(xValue, "Y4MD");
+      // serie.data[j].x =
+      //   date.Value.getTime() - date.Value.getTimezoneOffset() * 60000;
+      // serie.data[j].id = date;
+      //   }
+      //   if (chartType === QueryViewerChartType.CircularGauge) {
+      //     serie.data[j].radius = widths.UpperExtreme.toString() + "%";
+      //     serie.data[j].innerRadius = widths.LowerExtreme.toString() + "%";
+      //   }
+      //   if (type == QueryViewerChartType.CircularGauge) {
+      //     var color;
+      //     if (!qv.util.IsNullColor(chartSerie.Color)) {
+      //       color = chartSerie.Color;
+      //     } else {
+      //       color = chartSerie.Points[0].Color;
+      //     }
+      //     //SetHighchartsColor(qViewer, serie.data[j], color, true);
+      //   } else if (qv.util.IsNullColor(chartSerie.Color)) {
+      //     SetHighchartsColor(
+      //       qViewer,
+      //       serie.data[j],
+      //       chartSerie.Points[j].Color,
+      //       true
+      //     );
+      //   }
     }
-    return serie;
   }
+  return serie;
+}
 
-  const series = [];
+function getSeriesObject(
+  chartTypes: ChartTypes,
+  chartMetadataAndData: ChartMetadataAndData,
+  serieIndex: number,
+  chartType: QueryViewerChartType
+): Array<SeriesOptionsType> {
+  const series: SeriesOptionsType[] = [];
   for (
     let seriesIndexAux = 0;
-    seriesIndexAux < qViewer.Chart.Series.ByIndex.length;
+    seriesIndexAux < chartMetadataAndData.Series.ByIndex.length;
     seriesIndexAux++
   ) {
-    if (!IsSplittedChart(qViewer) || seriesIndexAux == serieIndex) {
-      const chartSerie = qViewer.Chart.Series.ByIndex[seriesIndexAux];
-      const serie = getSerieObject(
-        qViewer,
-        chartSerie,
+    if (!chartTypes.Splitted || seriesIndexAux === serieIndex) {
+      const chartSerie = chartMetadataAndData.Series.ByIndex[seriesIndexAux];
+      const serie = getIndividualSerieObject(
+        chartTypes,
+        chartType,
+        chartMetadataAndData,
         seriesIndexAux,
-        series,
-        groupOption
+        chartSerie
       );
       const k = serieIndex != null ? serieIndex : seriesIndexAux;
-      if (IsCombinationChart(qViewer)) {
-        if (k % 2 == 0) {
+      if (chartTypes.Combination) {
+        if (k % 2 === 0) {
           serie.type = "column";
           serie.yAxis = 0;
         } else {
           serie.type = "line";
-          serie.yAxis = IsSplittedChart(qViewer) ? 0 : 1;
+          serie.yAxis = chartTypes.Splitted ? 0 : 1;
         }
       }
       series.push(serie);
@@ -1130,65 +1268,118 @@ function getSeriesObject(qViewer, serieIndex, groupOption) {
   return series;
 }
 
-function getPaneObject(qViewer, serieIndex) {
-  const pane = {};
-  if (type == QueryViewerChartType.CircularGauge) {
-    pane.background = [];
-    let widths;
-    if (IsSplittedChart(qViewer)) {
-      widths = circularGaugeWidths(1, 1);
-    }
-    for (
-      let seriesIndexAux = 0;
-      seriesIndexAux < qViewer.Chart.Series.ByIndex.length;
-      seriesIndexAux++
-    ) {
-      if (!IsSplittedChart(qViewer) || seriesIndexAux == serieIndex) {
-        const chartSerie = qViewer.Chart.Series.ByIndex[seriesIndexAux];
-        const oneBackground = {};
-        if (!IsSplittedChart(qViewer)) {
-          widths = circularGaugeWidths(
-            qViewer.Chart.Series.DataFields.length,
-            seriesIndexAux + 1
-          );
-        }
-        oneBackground.outerRadius = widths.UpperExtreme.toString() + "%";
-        oneBackground.innerRadius = widths.LowerExtreme.toString() + "%";
-        var color;
-        if (!qv.util.IsNullColor(chartSerie.Color)) {
-          color = chartSerie.Color;
-        } else {
-          color = chartSerie.Points[0].Color;
-        }
-        SetHighchartsColor(qViewer, oneBackground, color, false);
-        oneBackground.borderWidth = 0;
-        pane.background.push(oneBackground);
-      }
-    }
+function getPaneObject(chartType: QueryViewerChartType): PaneOptions {
+  if (chartType !== QueryViewerChartType.CircularGauge) {
+    return {};
   }
+  const pane: PaneOptions = { background: [] };
+  //   let widths;
+  //   if (chartTypes.Splitted) {
+  //     widths = circularGaugeWidths(1, 1);
+  //   }
+  //   for (
+  //     let seriesIndexAux = 0;
+  //     seriesIndexAux < qViewer.Chart.Series.ByIndex.length;
+  //     seriesIndexAux++
+  //   ) {
+  //     if (!chartTypes.Splitted || seriesIndexAux === serieIndex) {
+  //       const chartSerie = qViewer.Chart.Series.ByIndex[seriesIndexAux];
+  //       const oneBackground = {};
+  //       if (!chartTypes.Splitted) {
+  //         widths = circularGaugeWidths(
+  //           qViewer.Chart.Series.DataFields.length,
+  //           seriesIndexAux + 1
+  //         );
+  //       }
+  //       oneBackground.outerRadius = widths.UpperExtreme.toString() + "%";
+  //       oneBackground.innerRadius = widths.LowerExtreme.toString() + "%";
+  //       var color;
+  //       if (!qv.util.IsNullColor(chartSerie.Color)) {
+  //         color = chartSerie.Color;
+  //       } else {
+  //         color = chartSerie.Points[0].Color;
+  //       }
+  //       SetHighchartsColor(qViewer, oneBackground, color, false);
+  //       oneBackground.borderWidth = 0;
+  //       pane.background.push(oneBackground);
+  //     }
+  //   }
+
   return pane;
 }
 
-export function getHighchartOptions(qViewer, chartSerie, serieIndex) {
-  const groupOption =
-    XAxisDataType(qViewer) === QueryViewerDataType.Date ? "Days" : "Seconds";
+const getTitleObject = (queryTitle: string, serieIndex: number) => ({
+  text: (!serieIndex ? queryTitle : null) || null
+});
+
+export function getHighchartOptions(
+  chartMetadataAndData: ChartMetadataAndData,
+  serviceResponseMetadata: QueryViewerServiceMetaData,
+  chartSerie: QueryViewerChartSerie,
+  type: QueryViewerOutputType,
+  chartType: QueryViewerChartType,
+  chartTypes: ChartTypes,
+  chartGroupLower: ChartGroupLower,
+  serieIndex: number,
+  allowSelection: boolean,
+  showValues: boolean,
+  xAxisLabels: QueryViewerXAxisLabels,
+  xAxisIntersectionAtZero: boolean,
+  yAxisTitle: string,
+  queryTitle: string,
+  isRTL: boolean
+) {
+  //   const groupOption =
+  //     XAxisDataType(serviceResponseMetadata) === QueryViewerDataType.Date
+  //       ? "Days"
+  //       : "Seconds";
 
   const options: HighChartOptions = {
-    chart: getChartObject(qViewer, serieIndex),
+    chart: getChartObject(chartType, chartTypes),
     credits: getNoCreditsObject(),
-    legend: getLegendObject(qViewer),
-    title: getTitleObject(qViewer, serieIndex),
-    subtitle: getSubtitleObject(qViewer, chartSerie),
-    pane: getPaneObject(qViewer, serieIndex),
-    xAxis: getXAxisObject(qViewer, serieIndex),
-    yAxis: getYAxisObject(qViewer, chartSerie, serieIndex),
-    plotOptions: getPlotOptionsObject(options.chart.type, qViewer),
-    tooltip: getTooltipObject(qViewer),
-    series: getSeriesObject(qViewer, serieIndex, groupOption)
+    legend: getLegendObject(chartMetadataAndData, chartTypes, isRTL),
+    title: getTitleObject(queryTitle, serieIndex),
+    subtitle: getSubtitleObject(chartType, chartSerie.Name, chartTypes, isRTL),
+    pane: getPaneObject(chartType),
+    xAxis: getXAxisObject(
+      chartMetadataAndData,
+      serviceResponseMetadata,
+      serieIndex,
+      isRTL,
+      chartType,
+      chartTypes,
+      xAxisLabels
+    ),
+    yAxis: getYAxisObject(
+      chartMetadataAndData,
+      serviceResponseMetadata,
+      chartSerie,
+      isRTL,
+      chartType,
+      chartTypes,
+      yAxisTitle,
+      xAxisIntersectionAtZero
+    ),
+    plotOptions: getPlotOptionsObject(
+      chartType,
+      showValues,
+      chartTypes,
+      chartGroupLower,
+      chartMetadataAndData,
+      allowSelection,
+      type
+    ),
+    tooltip: getTooltipObject(chartType, chartTypes, isRTL),
+    series: getSeriesObject(
+      chartTypes,
+      chartMetadataAndData,
+      serieIndex,
+      chartType
+    )
   };
-  options.qv = {};
-  options.qv.viewerId = qViewer.userControlId(); // Almacena el identificador del control en las opciones de la grafica
-  options.qv.seriesIndex = serieIndex;
+  //   options.qv = {};
+  //   options.qv.viewerId = qViewer.userControlId(); // Almacena el identificador del control en las opciones de la grafica
+  //   options.qv.seriesIndex = serieIndex;
 
   return options;
 }

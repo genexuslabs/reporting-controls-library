@@ -10,23 +10,23 @@ import {
   YAxisOptions,
   XAxisOptions
 } from "highcharts";
+import {
+  QueryViewerTranslations,
+  // QueryViewerTranslationsLabels,
+  QueryViewerChartType,
+  QueryViewerPlotSeries,
+  QueryViewerXAxisLabels
+} from "../../common/basic-types";
 
-let autoQueryViewerChartId = 0;
 @Component({
   tag: "gx-query-viewer-chart",
   shadow: true
 })
 export class QueryViewerChart {
-  private queryViewerChartId: string;
   private chartContainer: HTMLDivElement;
   private chartHC: Chart;
 
   @Element() element: HTMLGxQueryViewerChartElement;
-
-  /**
-   * Name of the element
-   */
-  @Prop() readonly chartTitle: TitleOptions;
 
   /**
    * Title that will be displayed on top of the query
@@ -34,9 +34,14 @@ export class QueryViewerChart {
   @Prop() readonly chartOptions: ChartOptions;
 
   /**
-   * Options of the chart.
+   * Name of the element
    */
-  @Prop() readonly tooltipOptions: TooltipOptions;
+  @Prop() readonly chartTitle: TitleOptions;
+
+  /**
+   * Option of the chartType used to visualize and represent data.
+   */
+  @Prop() readonly chartType: QueryViewerChartType;
 
   /**
    * Options of the tooltip, the tooltip appears when hovering over a point in a series.
@@ -49,9 +54,39 @@ export class QueryViewerChart {
   @Prop() readonly plotOptions: PlotOptions;
 
   /**
-   * Options of the plot for each series type chart.
+   * Specifies if the chart series are plotted together in the same chart or alone in separate charts.
    */
-  @Prop() readonly yaxisOptions: YAxisOptions;
+  @Prop() readonly plotSeries: QueryViewerPlotSeries;
+
+  /**
+   * Options of the X axis (usually this is the horizontal axis).
+   */
+  @Prop() readonly seriesOptions: SeriesOptionsType[];
+
+  /**
+   * Specifies whether the values for the data elements are shown in the chart or not.
+   */
+  @Prop() readonly showValues: boolean;
+
+  /**
+   * Options of the chart.
+   */
+  @Prop() readonly tooltipOptions: TooltipOptions;
+
+  /**
+   * For translate the labels of the outputs
+   */
+  @Prop() readonly translations: QueryViewerTranslations;
+
+  /**
+   * Specifies whether the X axis intersects the Y axis at zero or the intersection point is automatically calculated.
+   */
+  @Prop() readonly xAxisIntersectionAtZero: boolean;
+
+  /**
+   * Specifies if the labels in the X axis of a chart are shown horizontally or vertically.
+   */
+  @Prop() readonly xAxisLabels: QueryViewerXAxisLabels;
 
   /**
    * Options of the Y axis (usually this is the vertical axis).
@@ -59,9 +94,19 @@ export class QueryViewerChart {
   @Prop() readonly xaxisOptions: XAxisOptions;
 
   /**
-   * Options of the X axis (usually this is the horizontal axis).
+   * X axis title, if specified.
    */
-  @Prop() readonly seriesOptions: SeriesOptionsType[];
+  @Prop() readonly xAxisTitle: string;
+
+  /**
+   * Options of the plot for each series type chart.
+   */
+  @Prop() readonly yaxisOptions: YAxisOptions;
+
+  /**
+   * Y axis title, if specified.
+   */
+  @Prop() readonly yAxisTitle: string;
 
   componentDidLoad() {
     this.chartHC = new Chart(
@@ -87,22 +132,9 @@ export class QueryViewerChart {
     }
   }
 
-  componentWillLoad() {
-    // Sets IDs
-    if (!this.queryViewerChartId) {
-      this.queryViewerChartId =
-        this.element.id ||
-        `gx-query-viewer-card-auto-id-${autoQueryViewerChartId++}`;
-    }
-  }
-
   render() {
     return (
-      <Host
-        role="article"
-        aria-labelledby={this.queryViewerChartId}
-        class={"gx-query-viewer-chart"}
-      >
+      <Host>
         <div ref={el => (this.chartContainer = el as HTMLDivElement)}> </div>
       </Host>
     );

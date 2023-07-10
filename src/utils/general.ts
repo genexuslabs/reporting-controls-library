@@ -3,20 +3,20 @@ import {
   QueryViewerAggregationType,
   QueryViewerChartSerie,
   QueryViewerChartType,
-  QueryViewerConditionOperator,
+  // QueryViewerConditionOperator,
   QueryViewerDataType,
   QueryViewerOutputType
 } from "../common/basic-types";
 import { ChartTypes } from "../components/query-viewer-chart/controller/chart-types";
 import { ChartMetadataAndData } from "../components/query-viewer-chart/controller/processDataAndMetadata";
-import { QueryViewerAxisConditionalStyle } from "../services/types/json";
+// import { QueryViewerAxisConditionalStyle } from "../services/types/json";
 import {
   QueryViewerServiceDataRow,
   QueryViewerServiceMetaData,
   QueryViewerServiceMetaDataAxis,
   QueryViewerServiceMetaDataData
 } from "../services/types/service-result";
-
+import { TooltipFormatterContextObject } from "highcharts";
 export function parseNumericPicture(
   dataType: QueryViewerDataType,
   picture: string
@@ -498,36 +498,36 @@ export function NormalizeTargetAndMaximumValues(serie: QueryViewerChartSerie) {
 //   }
 //   return arr;
 // }
-const conditionalStyleDictionary: {
-  [key in QueryViewerConditionOperator]: (
-    value: string,
-    conditionalStyle: QueryViewerAxisConditionalStyle
-  ) => boolean;
-} = {
-  [QueryViewerConditionOperator.Equal]: (value, conditionalStyle) =>
-    value === conditionalStyle.Value1,
-  [QueryViewerConditionOperator.GreaterThan]: (value, conditionalStyle) =>
-    value > conditionalStyle.Value1,
-  [QueryViewerConditionOperator.LessThan]: (value, conditionalStyle) =>
-    value < conditionalStyle.Value1,
-  [QueryViewerConditionOperator.GreaterOrEqual]: (value, conditionalStyle) =>
-    value >= conditionalStyle.Value1,
-  [QueryViewerConditionOperator.LessOrEqual]: (value, conditionalStyle) =>
-    value <= conditionalStyle.Value1,
-  [QueryViewerConditionOperator.NotEqual]: (value, conditionalStyle) =>
-    value !== conditionalStyle.Value1,
-  [QueryViewerConditionOperator.Interval]: (value, conditionalStyle) =>
-    conditionalStyle.Value1 && value <= conditionalStyle.Value2
-};
+// const conditionalStyleDictionary: {
+//   [key in QueryViewerConditionOperator]: (
+//     value: string,
+//     conditionalStyle: QueryViewerAxisConditionalStyle
+//   ) => boolean;
+// } = {
+//   [QueryViewerConditionOperator.Equal]: (value, conditionalStyle) =>
+//     value === conditionalStyle.Value1,
+//   [QueryViewerConditionOperator.GreaterThan]: (value, conditionalStyle) =>
+//     value > conditionalStyle.Value1,
+//   [QueryViewerConditionOperator.LessThan]: (value, conditionalStyle) =>
+//     value < conditionalStyle.Value1,
+//   [QueryViewerConditionOperator.GreaterOrEqual]: (value, conditionalStyle) =>
+//     value >= conditionalStyle.Value1,
+//   [QueryViewerConditionOperator.LessOrEqual]: (value, conditionalStyle) =>
+//     value <= conditionalStyle.Value1,
+//   [QueryViewerConditionOperator.NotEqual]: (value, conditionalStyle) =>
+//     value !== conditionalStyle.Value1,
+//   [QueryViewerConditionOperator.Interval]: (value, conditionalStyle) =>
+//     conditionalStyle.Value1 && value <= conditionalStyle.Value2
+// };
 
-const satisfyStyle = (
-  value: string,
-  conditionalStyle: QueryViewerAxisConditionalStyle
-): boolean =>
-  conditionalStyleDictionary[conditionalStyle.Operator](
-    value,
-    conditionalStyle
-  );
+// const satisfyStyle = (
+//   value: string,
+//   conditionalStyle: QueryViewerAxisConditionalStyle
+// ): boolean =>
+//   conditionalStyleDictionary[conditionalStyle.Operator](
+//     value,
+//     conditionalStyle
+//   );
 
 // function GetConditionalColor(
 //   datum: QueryViewerServiceMetaDataData,
@@ -827,3 +827,151 @@ export const SelectionAllowed = (
       chartType === QueryViewerChartType.LinearGauge)
   );
 // Las gráficas gauge no tienen eje X
+
+// export function formatNumber(
+//   number,
+//   decimalPrecision,
+//   picture,
+//   removeTrailingZeroes
+// ) {
+//   let formattedNumber = gx.num.formatNumber(
+//     number,
+//     decimalPrecision,
+//     picture,
+//     0,
+//     true,
+//     false
+//   );
+//   if (removeTrailingZeroes) {
+//     if (formattedNumber.indexOf(gx.decimalPoint) >= 0) {
+//       while (qv.util.endsWith(formattedNumber, "0")) {
+//         formattedNumber = formattedNumber.slice(0, -1);
+//       }
+//       if (qv.util.endsWith(formattedNumber, gx.decimalPoint)) {
+//         formattedNumber = formattedNumber.slice(0, -1);
+//       }
+//     }
+//   }
+//   return formattedNumber;
+// }
+
+// ToDo: implement this when the picture is done
+export function TooltipFormatter(
+  evArg: TooltipFormatterContextObject,
+  sharedTooltip: boolean,
+  isRTL: boolean,
+  chartTypes: ChartTypes
+) {
+  // let qViewer;
+  const res = "";
+  if (sharedTooltip) {
+    // ToDo: implement this with the events
+    // let firstPoint;
+    // let index;
+    // if (!evArg.points) {
+    //   firstPoint = evArg.point;
+    //   index = firstPoint.index;
+    // } else {
+    //   firstPoint = evArg.points[0];
+    //   index = firstPoint.point.index;
+    // }
+    // qViewer = qv.collection[firstPoint.series.chart.options.qv.viewerId];
+    // const hoverPoints = getHoverPoints(qViewer, index);
+    // const x = !evArg.key ? (!evArg.x ? "" : evArg.x) : evArg.key;
+    // const hasTitle =
+    //   x !== "" && qViewer.RealChartType !== QueryViewerChartType.Sparkline; // en Sparkline la x no viene formateada
+    // let res = "";
+    // if (hasTitle) {
+    //   isRTL ? (res += GetBoldRightText(x)) : (res += GetBoldText(x));
+    // }
+    // for (let i = 0; i < hoverPoints.length; i++) {
+    //   const point = hoverPoints[i];
+    //   const seriesIndex = point.series.chart.options.qv.seriesIndex;
+    //   const serie = chartMetadataAndData.Series.ByIndex[seriesIndex];
+    //   if (isRTL) {
+    //     res +=
+    //       (hasTitle || i > 0 ? "<br/>" : "") +
+    //       formatNumber(
+    //         point.y,
+    //         serie.NumberFormat.DecimalPrecision,
+    //         serie.Picture,
+    //         false
+    //       );
+    //     res += " :" + point.series.name;
+    //   } else {
+    //     res += (hasTitle || i > 0 ? "<br/>" : "") + point.series.name + ": ";
+    //     res += formatNumber(
+    //       point.y,
+    //       serie.NumberFormat.DecimalPrecision,
+    //       serie.Picture,
+    //       false
+    //     );
+    //   }
+    // }
+  } else {
+    // qViewer = qv.collection[evArg.series.chart.options.qv.viewerId];
+    // const seriesIndex = evArg.series.index;
+    // const serie = chartMetadataAndData.Series.ByIndex[seriesIndex];
+    // const picture = chartTypes.Gauge ? "ZZZZZZZZZZZZZZ9.99" : serie.Picture;
+    // const decimalPrecision = chartTypes.Gauge
+    //   ? 2
+    //   : serie.NumberFormat.DecimalPrecision;
+    // const removeTrailingZeroes = chartTypes.Gauge;
+    return isRTL
+      ? (chartTypes.Gauge ? "%" : "") +
+          // formatNumber(
+          //   evArg.point.y,
+          //   decimalPrecision,
+          //   picture,
+          //   removeTrailingZeroes
+          // )
+          evArg.point.y +
+          "<b>: " +
+          (evArg.point.name !== "" ? evArg.point.name : evArg.series.name) +
+          "<b>"
+      : "<b>" +
+          (evArg.point.name !== "" ? evArg.point.name : evArg.series.name) +
+          "</b>: " +
+          // formatNumber(
+          //   evArg.point.y,
+          //   decimalPrecision,
+          //   picture,
+          //   removeTrailingZeroes
+          // )
+          evArg.point.y +
+          (chartTypes.Gauge ? "%" : "");
+  }
+  return res;
+}
+
+// export function GetDuration(point) {
+//   const value = point.y;
+//   const points = point.series.data;
+//   const index = point.index;
+//   let duration = "";
+//   let max = index;
+//   for (var i = index + 1; i < points.length; i++) {
+//     if (points[i].y != value) {
+//       break;
+//     }
+//     max = i;
+//   }
+//   if (max < points.length - 1) {
+//     max++;
+//   }
+//   let min = index;
+//   for (var i = index - 1; i >= 0; i--) {
+//     if (points[i].y != value) {
+//       break;
+//     }
+//     min = i;
+//   }
+//   const seconds = (points[max].x - points[min].x) / 1000;
+//   duration =
+//     " (" +
+//     gx.getMessage("GXPL_QViewerDuration") +
+//     ": " +
+//     qv.util.seconsdToText(seconds) +
+//     ")";
+//   return duration;
+// }
