@@ -233,7 +233,7 @@ function getXAxisObject(
   const xAxis: XAxisOptions = {
     tickWidth: 1,
     tickLength: 10,
-    reversed: isRTL
+    reversed: isRTL || undefined
   };
 
   if (type === QueryViewerChartType.CircularGauge) {
