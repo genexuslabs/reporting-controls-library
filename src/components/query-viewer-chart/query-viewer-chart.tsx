@@ -91,7 +91,7 @@ export class QueryViewerChart {
   /**
    * Options of the Y axis (usually this is the vertical axis).
    */
-  @Prop() readonly xaxisOptions: XAxisOptions;
+  @Prop() readonly xaxisOptions: XAxisOptions | XAxisOptions[];
 
   /**
    * X axis title, if specified.
@@ -101,7 +101,7 @@ export class QueryViewerChart {
   /**
    * Options of the plot for each series type chart.
    */
-  @Prop() readonly yaxisOptions: YAxisOptions;
+  @Prop() readonly yaxisOptions: YAxisOptions | YAxisOptions[];
 
   /**
    * Y axis title, if specified.

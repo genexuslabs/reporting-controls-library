@@ -148,8 +148,8 @@ export class QueryViewerChart {
             title,
             // subtitle,
             // pane,
-            // xAxis,
-            // yAxis,
+            xAxis,
+            yAxis,
             plotOptions,
             tooltip,
             series
@@ -163,8 +163,8 @@ export class QueryViewerChart {
               tooltipOptions={tooltip}
               legendOptions={legend}
               plotOptions={plotOptions}
-              // yaxisOptions={yAxis}
-              // xaxisOptions={xAxis}
+              yaxisOptions={yAxis}
+              xaxisOptions={xAxis}
             ></gx-query-viewer-chart>
           )
         )}

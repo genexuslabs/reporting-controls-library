@@ -273,16 +273,18 @@ function GetDataByDataFieldObj(
 // }
 
 function GetCategoryLabel(
-  result: ChartMetadataAndData,
+  categories: QueryViewerChartCategories,
   metadata: QueryViewerServiceMetaData,
   row: QueryViewerServiceDataRow
   // axesByDataField: string[]
-) {
-  let value;
-  // let valueWithPicture;
-  let label = "";
-  let labelWithPicture = "";
-  result.Categories.DataFields.forEach(dataField => {
+): QueryViewerCategoryValue {
+  const labels: string[] = [];
+  const labelsWithPicture: string[] = [];
+
+  categories.DataFields.forEach(dataField => {
+    let value: string;
+    // let valueWithPicture;
+
     if (row[dataField] !== undefined) {
       value = trimUtil(row[dataField]);
       // valueWithPicture = ApplyPicture(
@@ -295,36 +297,35 @@ function GetCategoryLabel(
       value = metadata.TextForNullValues;
       // valueWithPicture = metadata.TextForNullValues;
     }
-    label += (label === "" ? "" : ", ") + value;
-    labelWithPicture += labelWithPicture === "" ? "" : ", "; // + valueWithPicture;
+
+    labels.push(value);
+    // labelsWithPicture.push(valueWithPicture);
   });
 
-  return [label, labelWithPicture];
+  return {
+    Value: labels.join(", "),
+    ValueWithPicture: labelsWithPicture.join(", ")
+  };
 }
 
 function AddCategoryValue(
-  result: ChartMetadataAndData,
-  metadata: QueryViewerServiceMetaData,
+  categories: QueryViewerChartCategories,
+  metaData: QueryViewerServiceMetaData,
   row: QueryViewerServiceDataRow,
   valueIndex: number
 ) {
-  const arr = GetCategoryLabel(result, metadata, row);
-  const categoryValue: QueryViewerCategoryValue = {
-    Value: arr[0],
-    ValueWithPicture: arr[1]
-  };
-
-  result.Categories.Values.push(categoryValue);
+  const categoryValue = GetCategoryLabel(categories, metaData, row);
+  categories.Values.push(categoryValue);
 
   if (valueIndex === 0) {
-    result.Categories.MinValue = categoryValue.Value;
-    result.Categories.MaxValue = categoryValue.Value;
+    categories.MinValue = categoryValue.Value;
+    categories.MaxValue = categoryValue.Value;
   } else {
-    if (categoryValue.Value > result.Categories.MaxValue) {
-      result.Categories.MaxValue = categoryValue.Value;
+    if (categoryValue.Value > categories.MaxValue) {
+      categories.MaxValue = categoryValue.Value;
     }
-    if (categoryValue.Value < result.Categories.MinValue) {
-      result.Categories.MinValue = categoryValue.Value;
+    if (categoryValue.Value < categories.MinValue) {
+      categories.MinValue = categoryValue.Value;
     }
   }
 }
@@ -643,19 +644,17 @@ export function processDataAndMetadata(
   }
 
   // Obtengo DataFields de categorias y series
-  const result: ChartMetadataAndData = GetCategoriesAndSeriesDataFields(
-    serviceResponse.MetaData,
-    type
-  );
+  const metadataAndData: ChartMetadataAndData =
+    GetCategoriesAndSeriesDataFields(serviceResponse.MetaData, type);
 
   // const axesByDataField = GetAxesByDataFieldObj(serviceResponse.MetaData);
 
   // Inicializo series
   // const uniqueAxis =
-  //   result.Categories.DataFields.length === 1
+  //   metadataAndData.Categories.DataFields.length === 1
   //     ? getAxisByDataField(
   //         serviceResponse.MetaData,
-  //         result.Categories.DataFields[0]
+  //         metadataAndData.Categories.DataFields[0]
   //       )
   //     : null;
 
@@ -664,10 +663,10 @@ export function processDataAndMetadata(
     type,
     chartType,
     chartTypes,
-    result
+    metadataAndData
   );
 
-  result.Series.DataFields.forEach(dataField => {
+  metadataAndData.Series.DataFields.forEach(dataField => {
     const datum = dataByDataField[dataField].Datum;
     // const multicoloredSerie = dataByDataField[dataField].Multicolored;
 
@@ -705,7 +704,7 @@ export function processDataAndMetadata(
     // }
     NormalizeTargetAndMaximumValues(serie);
 
-    result.Series.ByIndex.push(serie);
+    metadataAndData.Series.ByIndex.push(serie);
     // // Si el dato tiene estilos condicionales, agrego las PlotBands correspondientes
     // if (qViewer.RealType === QueryViewerOutputType.Chart) {
     //   CalculatePlotBands(qViewer, datum);
@@ -720,17 +719,22 @@ export function processDataAndMetadata(
   let valueIndex = 0;
   serviceResponse.Data.Rows.forEach(row => {
     if (!IsFilteredRow(serviceResponse.MetaData, row)) {
-      AddCategoryValue(result, serviceResponse.MetaData, row, valueIndex);
-      AddSeriesValues(result, row, valueIndex, dataByDataField);
+      AddCategoryValue(
+        metadataAndData.Categories,
+        serviceResponse.MetaData,
+        row,
+        valueIndex
+      );
+      AddSeriesValues(metadataAndData, row, valueIndex, dataByDataField);
       valueIndex++;
     }
   });
 
   if (type === QueryViewerOutputType.Chart && chartTypes.Gauge) {
-    result.Series.ByIndex.forEach(serie => {
+    metadataAndData.Series.ByIndex.forEach(serie => {
       aggregatePoints(serie); // Sólo puede haber un punto por serie para el Gauge
     });
   }
 
-  return { error: "", chart: result };
+  return { error: "", chart: metadataAndData };
 }
