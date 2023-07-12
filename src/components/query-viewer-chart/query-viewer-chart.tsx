@@ -20,6 +20,7 @@ import {
 
 @Component({
   tag: "gx-query-viewer-chart",
+  styleUrl: "query-viewer-chart.scss",
   shadow: true
 })
 export class QueryViewerChart {
