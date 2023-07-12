@@ -14,6 +14,7 @@ import {
   QueryViewerChartType,
   QueryViewerOrientation,
   QueryViewerOutputType,
+  QueryViewerPlotSeries,
   QueryViewerShowDataAs,
   QueryViewerTranslations,
   QueryViewerTrendPeriod,
@@ -181,7 +182,7 @@ export class QueryViewer implements GxComponent {
   /**
    * Timeline
    */
-  @Prop() readonly plotSeries: "InTheSameChart" | "InSeparateCharts";
+  @Prop() readonly plotSeries: QueryViewerPlotSeries;
 
   /**
    * Specifies the metadata and data that the control will use to render.
@@ -245,7 +246,8 @@ export class QueryViewer implements GxComponent {
   /**
    * Labels for XAxis
    */
-  @Prop() readonly xAxisLabels: QueryViewerXAxisLabels;
+  @Prop() readonly xAxisLabels: QueryViewerXAxisLabels =
+    QueryViewerXAxisLabels.Horizontally;
 
   /**
    * X Axis title

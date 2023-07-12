@@ -7,6 +7,7 @@ import {
 import {
   QueryViewerChartType,
   QueryViewerOutputType,
+  QueryViewerPlotSeries,
   QueryViewerTranslations,
   QueryViewerXAxisLabels
 } from "../../../common/basic-types";
@@ -33,6 +34,11 @@ export class QueryViewerChart {
    * A CSS class to set as the `gx-query-viewer-chart-controller` element class.
    */
   @Prop() readonly cssClass: string;
+
+  /**
+   * Timeline
+   */
+  @Prop() readonly plotSeries: QueryViewerPlotSeries;
 
   /**
    * Specifies the metadata and data that the control will use to render.
@@ -74,7 +80,11 @@ export class QueryViewerChart {
   }
 
   private getChartsConfiguration() {
-    const chartTypes = IS_CHART_TYPE(this.chartType, null);
+    if (!this.serviceResponse) {
+      return [];
+    }
+
+    const chartTypes = IS_CHART_TYPE(this.chartType, null, this.plotSeries);
     const chartMetadataAndData = processDataAndMetadata(
       this.serviceResponse,
       QueryViewerOutputType.Chart,
@@ -92,12 +102,12 @@ export class QueryViewerChart {
       chartMetadataAndData.chart,
       this.serviceResponse.MetaData,
       QueryViewerOutputType.Chart,
-      this.chartType,
+      this.chartType || QueryViewerChartType.Column, // WA to fix undefined prop
       chartTypes,
       chartGroupLower,
       this.allowSelection,
       this.showValues,
-      this.xAxisLabels,
+      this.xAxisLabels || QueryViewerXAxisLabels.Horizontally, // WA to fix undefined prop
       this.xAxisIntersectionAtZero,
       this.yAxisTitle,
       this.queryTitle,
@@ -124,8 +134,10 @@ export class QueryViewerChart {
     // qv.util.hideActivityIndicator(qViewer);
     return arrOptions;
   }
+
   render() {
     const charts = this.getChartsConfiguration();
+
     return (
       <Host>
         {charts.map(

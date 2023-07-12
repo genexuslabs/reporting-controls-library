@@ -23,60 +23,67 @@ export type ChartTypes = { [key in IsChartTypes]: boolean };
 
 export type IsChartTypesFunction = (
   type: QueryViewerChartType,
-  qViewer: any
+  qViewer: any,
+  plotSeries: QueryViewerPlotSeries
 ) => ChartTypes;
+
+const isTimeline = (type: QueryViewerChartType) =>
+  type === QueryViewerChartType.Timeline ||
+  type === QueryViewerChartType.SmoothTimeline ||
+  type === QueryViewerChartType.StepTimeline;
+
+const isStacked = (type: QueryViewerChartType) =>
+  type === QueryViewerChartType.StackedColumn ||
+  type === QueryViewerChartType.StackedColumn3D ||
+  type === QueryViewerChartType.StackedColumn100 ||
+  type === QueryViewerChartType.StackedBar ||
+  type === QueryViewerChartType.StackedBar100 ||
+  type === QueryViewerChartType.StackedArea ||
+  type === QueryViewerChartType.StackedArea100 ||
+  type === QueryViewerChartType.StackedLine ||
+  type === QueryViewerChartType.StackedLine100;
+
+const isCircular = (type: QueryViewerChartType) =>
+  type === QueryViewerChartType.Pie ||
+  type === QueryViewerChartType.Pie3D ||
+  type === QueryViewerChartType.Doughnut ||
+  type === QueryViewerChartType.Doughnut3D;
+
+const isFunnel = (type: QueryViewerChartType) =>
+  type === QueryViewerChartType.Funnel || type === QueryViewerChartType.Pyramid;
+
+const isGauge = (type: QueryViewerChartType) =>
+  type === QueryViewerChartType.CircularGauge ||
+  type === QueryViewerChartType.LinearGauge;
 
 export const IS_CHART_TYPE: IsChartTypesFunction = (
   type: QueryViewerChartType,
-  qViewer
+  qViewer,
+  plotSeries
 ) => ({
-  Timeline:
-    type === QueryViewerChartType.Timeline ||
-    type === QueryViewerChartType.SmoothTimeline ||
-    type === QueryViewerChartType.StepTimeline,
+  Timeline: isTimeline(type),
 
-  DatetimeXAxis:
-    IS_CHART_TYPE(type, qViewer).Timeline ||
-    type === QueryViewerChartType.Sparkline,
+  DatetimeXAxis: isTimeline(type) || type === QueryViewerChartType.Sparkline,
 
-  Stacked:
-    type === QueryViewerChartType.StackedColumn ||
-    type === QueryViewerChartType.StackedColumn3D ||
-    type === QueryViewerChartType.StackedColumn100 ||
-    type === QueryViewerChartType.StackedBar ||
-    type === QueryViewerChartType.StackedBar100 ||
-    type === QueryViewerChartType.StackedArea ||
-    type === QueryViewerChartType.StackedArea100 ||
-    type === QueryViewerChartType.StackedLine ||
-    type === QueryViewerChartType.StackedLine100,
+  Stacked: isStacked(type),
 
-  Circular:
-    type === QueryViewerChartType.Pie ||
-    type === QueryViewerChartType.Pie3D ||
-    type === QueryViewerChartType.Doughnut ||
-    type === QueryViewerChartType.Doughnut3D,
+  Circular: isCircular(type),
 
-  Funnel:
-    type === QueryViewerChartType.Funnel ||
-    type === QueryViewerChartType.Pyramid,
+  Funnel: isFunnel(type),
 
   Polar:
     type === QueryViewerChartType.Radar ||
     type === QueryViewerChartType.FilledRadar ||
     type === QueryViewerChartType.PolarArea,
 
-  SingleSerie:
-    IS_CHART_TYPE(type, qViewer).Circular ||
-    IS_CHART_TYPE(type, qViewer).Funnel,
+  SingleSerie: isCircular(type) || isFunnel(type),
 
   Combination:
     (type === QueryViewerChartType.ColumnLine ||
       type === QueryViewerChartType.Column3DLine) &&
     qViewer.Chart.Series.DataFields.length > 1,
 
-  Gauge:
-    type === QueryViewerChartType.CircularGauge ||
-    type === QueryViewerChartType.LinearGauge,
+  Gauge: isGauge(type),
 
   Area:
     type === QueryViewerChartType.Area ||
@@ -92,35 +99,34 @@ export const IS_CHART_TYPE: IsChartTypesFunction = (
     type === QueryViewerChartType.SmoothLine ||
     type === QueryViewerChartType.StepLine ||
     type === QueryViewerChartType.Sparkline ||
-    IS_CHART_TYPE(type, qViewer).Timeline,
+    isTimeline(type),
 
   Bar:
     type === QueryViewerChartType.Bar ||
     type === QueryViewerChartType.StackedBar ||
     type === QueryViewerChartType.StackedBar100,
 
-  HasYAxis:
-    !IS_CHART_TYPE(type, qViewer).Circular &&
-    !IS_CHART_TYPE(type, qViewer).Funnel &&
-    !IS_CHART_TYPE(type, qViewer).Gauge,
+  HasYAxis: !isCircular(type) && !isFunnel(type) && !isGauge(type),
 
-  Splitted: IsSplittedChart(type, qViewer)
+  Splitted: IsSplittedChart(type, qViewer, plotSeries)
 });
 
 export function IsSplittedChart(
   type: QueryViewerChartType,
-  qViewer: any
+  qViewer: any,
+  plotSeries: QueryViewerPlotSeries
 ): boolean {
   // Para las gráficas Stacked no tiene sentido separar en varias gráficas pues dejan de apilarse las series
-  if (IS_CHART_TYPE(type, qViewer).Stacked) {
+  if (isStacked(type)) {
     return false;
   }
 
   // Fuerzo gráficas separadas para este tipo de gráficas porque sino no se pueden dibujar
   return (
-    (qViewer.PlotSeries === QueryViewerPlotSeries.InSeparateCharts ||
-      IS_CHART_TYPE(type, qViewer).SingleSerie) &&
-    qViewer.Chart.Series.DataFields.length > 1
+    (plotSeries === QueryViewerPlotSeries.InSeparateCharts ||
+      isCircular(type) || // SingleSerie condition
+      isFunnel(type)) && // SingleSerie condition
+    qViewer?.Chart.Series.DataFields.length > 1
   );
 }
 

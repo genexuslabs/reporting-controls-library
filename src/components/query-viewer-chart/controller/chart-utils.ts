@@ -118,6 +118,7 @@ export function getAllHighchartOptions(
     seriesIndex++
   ) {
     const chartSerie = chartMetadataAndData.Series.ByIndex[seriesIndex];
+
     const options = getHighchartOptions(
       chartMetadataAndData,
       serviceResponseMetadata,

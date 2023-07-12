@@ -1339,7 +1339,7 @@ export function getHighchartOptions(
     credits: getNoCreditsObject(),
     legend: getLegendObject(chartMetadataAndData, chartTypes, isRTL),
     title: getTitleObject(queryTitle, serieIndex),
-    subtitle: getSubtitleObject(chartType, chartSerie.Name, chartTypes, isRTL),
+    subtitle: getSubtitleObject(chartType, chartSerie?.Name, chartTypes, isRTL), // chartSerie is undefined unless chartTypes.Splitted === true
     pane: getPaneObject(chartType),
     xAxis: getXAxisObject(
       chartMetadataAndData,

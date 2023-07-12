@@ -25,7 +25,7 @@ import {
   //   getPictureProperties,
   parseNumericPicture
 } from "../../../utils/general";
-import { ChartTypes, IS_CHART_TYPE } from "./chart-types";
+import { ChartTypes } from "./chart-types";
 
 export type ChartMetadataAndData = {
   Categories: QueryViewerChartCategories;
@@ -79,8 +79,8 @@ function GetCategoriesAndSeriesDataFields(
   const result: ChartMetadataAndData = {
     Categories: { DataFields: [], MinValue: null, MaxValue: null, Values: [] },
     Series: {
-      ByIndex: null,
-      DataFields: null
+      ByIndex: [],
+      DataFields: []
       //   MinValue: null,
       //   MaxValue: null,
       //   FieldName: "",
@@ -309,11 +309,13 @@ function AddCategoryValue(
   valueIndex: number
 ) {
   const arr = GetCategoryLabel(result, metadata, row);
-  let categoryValue: QueryViewerCategoryValue;
+  const categoryValue: QueryViewerCategoryValue = {
+    Value: arr[0],
+    ValueWithPicture: arr[1]
+  };
 
-  categoryValue.Value = arr[0];
-  categoryValue.ValueWithPicture = arr[1];
   result.Categories.Values.push(categoryValue);
+
   if (valueIndex === 0) {
     result.Categories.MinValue = categoryValue.Value;
     result.Categories.MaxValue = categoryValue.Value;
@@ -448,15 +450,15 @@ function IsFilteredRow(
 function XAxisDataTypeOK(
   serviceResponse: QueryViewerServiceResponse,
   type: QueryViewerOutputType,
-  chartTypes: QueryViewerChartType,
+  chartTypes: ChartTypes,
   translations: QueryViewerTranslations
 ) {
   const dataType = XAxisDataType(serviceResponse.MetaData);
-  const qViewer: any = null;
+
   switch (type) {
     case QueryViewerOutputType.Chart:
       return {
-        IsOK: IS_CHART_TYPE(chartTypes, qViewer).DatetimeXAxis
+        IsOK: chartTypes.DatetimeXAxis
           ? dataType === QueryViewerDataType.Date ||
             dataType === QueryViewerDataType.DateTime
           : true,
@@ -633,7 +635,7 @@ export function processDataAndMetadata(
   const xAxisDataTypeStatus = XAxisDataTypeOK(
     serviceResponse,
     type,
-    chartType,
+    chartTypes,
     translations
   );
   if (!xAxisDataTypeStatus.IsOK) {
@@ -724,10 +726,7 @@ export function processDataAndMetadata(
     }
   });
 
-  if (
-    type === QueryViewerOutputType.Chart &&
-    IS_CHART_TYPE(chartType, null).Gauge
-  ) {
+  if (type === QueryViewerOutputType.Chart && chartTypes.Gauge) {
     result.Series.ByIndex.forEach(serie => {
       aggregatePoints(serie); // Sólo puede haber un punto por serie para el Gauge
     });
