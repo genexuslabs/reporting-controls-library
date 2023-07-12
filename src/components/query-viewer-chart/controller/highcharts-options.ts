@@ -310,18 +310,19 @@ function getXAxisObject(
     xAxis.categories = [];
   }
   let anyCategoryLabel = false;
-  for (let i = 0; i < chartMetadataAndData.Categories.Values.length; i++) {
-    if (chartMetadataAndData.Categories.Values[i].ValueWithPicture !== "") {
+
+  chartMetadataAndData.Categories.Values.forEach((value, index) => {
+    if (value.ValueWithPicture !== "") {
       anyCategoryLabel = true;
     }
     if (!isDatetimeXAxis) {
-      xAxis.categories[i] =
-        chartMetadataAndData.Categories.Values[i].ValueWithPicture;
+      xAxis.categories[index] = value.ValueWithPicture || value.Value; // WA TODO: UPDATE THIS TO ONLY BE "value.ValueWithPicture"
     }
-  }
+  });
+
   if (!isDatetimeXAxis) {
-    xAxis.labels = {};
-    xAxis.labels.enabled = anyCategoryLabel;
+    xAxis.labels = { enabled: anyCategoryLabel };
+
     if (
       XAxisLabels !== QueryViewerXAxisLabels.Horizontally &&
       !chartTypes.Bar &&
@@ -501,7 +502,7 @@ function getYAxisObject(
     //   const firstSerie = chartTypes.Splitted
     //     ? chartSerie
     //     : chartMetadataAndData.Series.ByIndex[0];
-    yAxis.labels = { formatter: () => this.value };
+    yAxis.labels = { formatter: ref => `${ref.value}` }; // TODO: Update this
     // ToDo: implement this
     //   yAxis.labels.formatter = () =>
     //     formatNumber(
@@ -1090,6 +1091,7 @@ function getIndividualSerieObject(
 ): SeriesOptionsType {
   // ToDo: check the correct type
   const serie: SeriesOptionsType = { type: "line" };
+  serie.type = undefined; // WA to remove TypeScript error
   // ToDo: implement this
   //   if (qViewer.ItemClick && qViewer.Metadata.Data[serieIndex].RaiseItemClick) {
   //     serie.className = "highcharts-drilldown-point";
@@ -1182,18 +1184,21 @@ function getIndividualSerieObject(
           ? "on"
           : null;
     }
-    for (let j = 0; j < chartSerie.Points.length; j++) {
-      let value =
-        chartSerie.Points[j].Value != null
-          ? parseFloat(trimUtil(chartSerie.Points[j].Value).replace(",", "."))
-          : null;
+
+    chartSerie.Points.forEach((point, index) => {
+      let name = "";
+      let value = point.Value
+        ? parseFloat(trimUtil(point.Value).replace(",", "."))
+        : null;
+
       if (chartTypes.Gauge) {
         value = (value / chartSerie.TargetValue) * 100;
+      } else {
+        // name = chartMetadataAndData.Categories.Values[index].ValueWithPicture;
+        name = chartMetadataAndData.Categories.Values[index].Value; // WA TODO: UPDATE THIS TO ONLY BE "....ValueWithPicture"
       }
-      const name = chartTypes.Gauge
-        ? ""
-        : chartMetadataAndData.Categories.Values[j].ValueWithPicture;
-      serie.data[j] = {
+
+      serie.data[index] = {
         id: name,
         name: name,
         y: value
@@ -1225,7 +1230,7 @@ function getIndividualSerieObject(
       //       true
       //     );
       //   }
-    }
+    });
   }
   return serie;
 }
@@ -1339,7 +1344,7 @@ export function getHighchartOptions(
     credits: getNoCreditsObject(),
     legend: getLegendObject(chartMetadataAndData, chartTypes, isRTL),
     title: getTitleObject(queryTitle, serieIndex),
-    subtitle: getSubtitleObject(chartType, chartSerie.Name, chartTypes, isRTL),
+    subtitle: getSubtitleObject(chartType, chartSerie?.Name, chartTypes, isRTL), // chartSerie is undefined unless chartTypes.Splitted === true
     pane: getPaneObject(chartType),
     xAxis: getXAxisObject(
       chartMetadataAndData,
