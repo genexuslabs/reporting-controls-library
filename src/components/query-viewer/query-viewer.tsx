@@ -283,9 +283,17 @@ export class QueryViewer implements GxComponent {
   private chartRender(serviceResponse: QueryViewerServiceResponse) {
     return (
       <gx-query-viewer-chart-controller
+        allowSelection={this.allowSelection}
         cssClass={this.cssClass}
+        chartType={this.chartType}
+        plotSeries={this.plotSeries}
+        queryTitle={this.queryTitle}
         serviceResponse={serviceResponse}
+        showValues={this.showValues}
         translations={DUMMY_TRANSLATIONS}
+        xAxisIntersectionAtZero={this.xAxisIntersectionAtZero}
+        xAxisLabels={this.xAxisLabels}
+        yAxisTitle={this.yAxisTitle}
       ></gx-query-viewer-chart-controller>
     );
   }

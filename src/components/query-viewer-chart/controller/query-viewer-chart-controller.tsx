@@ -102,7 +102,7 @@ export class QueryViewerChart {
       chartMetadataAndData.chart,
       this.serviceResponse.MetaData,
       QueryViewerOutputType.Chart,
-      this.chartType || QueryViewerChartType.Column, // WA to fix undefined prop
+      this.chartType, // WA to fix undefined prop
       chartTypes,
       chartGroupLower,
       this.allowSelection,
