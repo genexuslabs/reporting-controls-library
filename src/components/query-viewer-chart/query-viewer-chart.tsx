@@ -109,7 +109,7 @@ export class QueryViewerChart {
    */
   @Prop() readonly yAxisTitle: string;
 
-  componentDidLoad() {
+  componentDidRender() {
     this.chartHC = new Chart(
       this.chartContainer,
       {

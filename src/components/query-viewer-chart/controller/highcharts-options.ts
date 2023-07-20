@@ -277,35 +277,35 @@ function getXAxisObject(
     }
   }
 
-  //   if (type === QueryViewerChartType.LinearGauge) {
-  //     let widths;
-  //     if (IsSplittedChart(qViewer)) {
-  //       widths = linearGaugeWidths(1, 1);
-  //     }
-  //     xAxis.plotBands = [];
-  //     for (var i = 0; i < qViewer.Chart.Series.ByIndex.length; i++) {
-  //       if (!IsSplittedChart(qViewer) || i === serieIndex) {
-  //         const chartSerie = qViewer.Chart.Series.ByIndex[i];
-  //         if (!IsSplittedChart(qViewer)) {
-  //           widths = linearGaugeWidths(
-  //             qViewer.Chart.Series.DataFields.length,
-  //             i + 1
-  //           );
-  //         }
-  //         plotBand = {};
-  //         var color;
-  //         if (!qv.util.IsNullColor(chartSerie.Color)) {
-  //           color = chartSerie.Color;
-  //         } else {
-  //           color = chartSerie.Points[0].Color;
-  //         }
-  //         SetHighchartsColor(qViewer, plotBand, color, false);
-  //         plotBand.from = widths.LowerExtreme;
-  //         plotBand.to = widths.UpperExtreme;
-  //         xAxis.plotBands.push(plotBand);
-  //       }
-  //     }
-  //   }
+  if (type === QueryViewerChartType.LinearGauge) {
+    // let widths;
+    if (chartTypes.Splitted) {
+      // widths = linearGaugeWidths(1, 1);
+    }
+    xAxis.plotBands = [];
+    // for (let i = 0; i < chartMetadataAndData.Series.ByIndex.length; i++) {
+    // if (!chartTypes.Splitted || i === serieIndex) {
+    //   const chartSerie = chartMetadataAndData.Series.ByIndex[i];
+    //   if (!chartTypes.Splitted) {
+    //     widths = linearGaugeWidths(
+    //       qViewer.Chart.Series.DataFields.length,
+    //       i + 1
+    //     );
+    //   }
+    //   plotBand = {};
+    //   // var color;
+    //   // if (!qv.util.IsNullColor(chartSerie.Color)) {
+    //   //   color = chartSerie.Color;
+    //   // } else {
+    //   //   color = chartSerie.Points[0].Color;
+    //   // }
+    //   // SetHighchartsColor(qViewer, plotBand, color, false);
+    //   plotBand.from = widths.LowerExtreme;
+    //   plotBand.to = widths.UpperExtreme;
+    //   xAxis.plotBands.push(plotBand);
+    // }
+    // }
+  }
   if (!isDatetimeXAxis) {
     xAxis.categories = [];
   }
@@ -404,7 +404,7 @@ function GetDatumByDataField(
   metadata: QueryViewerServiceMetaData,
   dataField: string
 ): QueryViewerServiceMetaDataData {
-  for (let i = 1; i < metadata.Data.length; i++) {
+  for (let i = 0; i < metadata.Data.length; i++) {
     if (metadata.Data[i].DataField === dataField) {
       return metadata.Data[i];
     }
