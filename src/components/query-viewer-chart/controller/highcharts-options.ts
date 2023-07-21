@@ -23,7 +23,13 @@ import {
   PaneOptions
 } from "highcharts";
 import { ChartTypes } from "./chart-types";
-import { ChartGroupLower, getChartGroup } from "./chart-utils";
+import {
+  ChartGroupLower,
+  PieConnectorPosition,
+  PieDataLabelsOptions,
+  PieLabelPosition,
+  getChartGroup
+} from "./chart-utils";
 import { ChartMetadataAndData } from "./processDataAndMetadata";
 import {
   QueryViewerServiceMetaData,
@@ -201,7 +207,7 @@ function XAxisTitle(
   XAxisTitle: string,
   serviceResponseMetadata: QueryViewerServiceMetaData
 ) {
-  if (XAxisTitle) {
+  if (XAxisTitle === "") {
     return XAxisTitle;
   }
 
@@ -233,7 +239,7 @@ function getXAxisObject(
   const xAxis: XAxisOptions = {
     tickWidth: 1,
     tickLength: 10,
-    reversed: isRTL || undefined
+    reversed: isRTL
   };
 
   if (type === QueryViewerChartType.CircularGauge) {
@@ -321,6 +327,7 @@ function getXAxisObject(
   });
 
   if (!isDatetimeXAxis) {
+    anyCategoryLabel = true;
     xAxis.labels = { enabled: anyCategoryLabel };
 
     if (
@@ -675,22 +682,26 @@ function getMarker(
 }
 
 // ToDo: implement this, check the parameters
-// function connector90degrees(labelPosition, connectorPosition, options) {
-//   const connectorPadding = options.connectorPadding,
-//     touchingSliceAt = connectorPosition.touchingSliceAt,
-//     alignment = labelPosition.alignment;
-//   return [
-//     "M",
-//     labelPosition.x + (alignment === "left" ? 1 : -1) * connectorPadding,
-//     labelPosition.y,
-//     "L",
-//     touchingSliceAt.x,
-//     labelPosition.y,
-//     "L",
-//     touchingSliceAt.x,
-//     touchingSliceAt.y
-//   ];
-// }
+function connector90degrees(
+  labelPosition: PieLabelPosition,
+  connectorPosition: PieConnectorPosition,
+  options: PieDataLabelsOptions
+) {
+  const connectorPadding = options.connectorPadding,
+    touchingSliceAt = connectorPosition.touchingSliceAt,
+    alignment = labelPosition.alignment;
+  return [
+    "M",
+    labelPosition.x + (alignment === "left" ? 1 : -1) * connectorPadding,
+    labelPosition.y,
+    "L",
+    touchingSliceAt.x,
+    labelPosition.y,
+    "L",
+    touchingSliceAt.x,
+    touchingSliceAt.y
+  ];
+}
 
 function getPlotOptionsObject(
   chartType: QueryViewerChartType,
@@ -757,6 +768,7 @@ function getPlotOptionsObject(
   switch (chartGroupLower) {
     case "bar":
       plotOptions.bar = {};
+      plotOptions.bar.borderRadius = 0;
       if (chartType === QueryViewerChartType.StackedBar) {
         plotOptions.series.stacking = "normal";
         plotOptions.bar.stacking = "normal";
@@ -793,6 +805,7 @@ function getPlotOptionsObject(
       break;
     case "column":
       plotOptions.column = {};
+      plotOptions.column.borderRadius = 0;
       if (
         chartType === QueryViewerChartType.StackedColumn ||
         chartType === QueryViewerChartType.StackedColumn3D ||
@@ -855,7 +868,9 @@ function getPlotOptionsObject(
       plotOptions.spline.marker = getMarker(allowSelection, type, chartType);
       break;
     case "pie":
-      plotOptions.pie = {};
+      plotOptions.pie = {
+        borderRadius: 0
+      };
       if (
         chartType === QueryViewerChartType.Doughnut ||
         chartType === QueryViewerChartType.Doughnut3D
@@ -870,8 +885,9 @@ function getPlotOptionsObject(
       }
       plotOptions.pie.dataLabels = {
         enabled: showValues,
-        connectorColor: "#c3c4c8"
-        // connectorShape: connector90degrees
+        connectorColor: "#c3c4c8",
+        connectorShape: connector90degrees,
+        format: "{point.y}"
       };
       plotOptions.pie.showInLegend = true;
       break;
@@ -885,8 +901,8 @@ function getPlotOptionsObject(
       plotOptions.funnel.showInLegend = true;
       plotOptions.funnel.dataLabels = {
         enabled: showValues,
-        connectorColor: "#c3c4c8"
-        // connectorShape: connector90degrees
+        connectorColor: "#c3c4c8",
+        connectorShape: connector90degrees
       };
       break;
     case "pyramid":
@@ -894,8 +910,8 @@ function getPlotOptionsObject(
       plotOptions.pyramid.showInLegend = true;
       plotOptions.pyramid.dataLabels = {
         enabled: showValues,
-        connectorColor: "#c3c4c8"
-        // connectorShape: connector90degrees
+        connectorColor: "#c3c4c8",
+        connectorShape: connector90degrees
       };
       break;
   }

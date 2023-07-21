@@ -141,3 +141,23 @@ export function getAllHighchartOptions(
 
   return arrOptions;
 }
+
+export type PieLabelPosition = {
+  alignment: string;
+  x: number;
+  y: number;
+};
+
+export type PieConnectorPosition = {
+  touchingSliceAt: {
+    x: number;
+    y: number;
+  };
+};
+
+export type PieDataLabelsOptions = {
+  enabled: boolean;
+  alignTo: string;
+  format: string;
+  connectorPadding: number;
+};
