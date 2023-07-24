@@ -158,7 +158,10 @@ export class QueryViewerController {
     }
 
     // WA to avoid requests to unimplemented outputs
-    if (this.type !== QueryViewerOutputType.Card) {
+    if (
+      this.type !== QueryViewerOutputType.Card &&
+      this.type !== QueryViewerOutputType.Chart
+    ) {
       return;
     }
 

@@ -19,7 +19,9 @@ export type QueryViewerTranslationsLabels =
   | "GXPL_QViewerLastMinuteTrend"
   | "GXPL_QViewerLastSecondTrend"
   | "GXPL_QViewerCardMinimum"
-  | "GXPL_QViewerCardMaximum";
+  | "GXPL_QViewerCardMaximum"
+  | "GXPL_QViewerNoDatetimeAxis"
+  | "GXPL_QViewerNoMapAxis";
 
 export const DUMMY_TRANSLATIONS: QueryViewerTranslations = {
   GXPL_QViewerCardMaximum: "Max.",
@@ -33,7 +35,9 @@ export const DUMMY_TRANSLATIONS: QueryViewerTranslations = {
   GXPL_QViewerLastSecondTrend: "Trend Last Second",
   GXPL_QViewerLastSemesterTrend: "Trend Last Semester",
   GXPL_QViewerLastWeekTrend: "Trend Last Week",
-  GXPL_QViewerLastYearTrend: "Trend Last Year"
+  GXPL_QViewerLastYearTrend: "Trend Last Year",
+  GXPL_QViewerNoDatetimeAxis: "No Datetime Axis",
+  GXPL_QViewerNoMapAxis: "No Map Axis"
 };
 
 export enum QueryViewerOutputType {
@@ -105,6 +109,16 @@ export enum QueryViewerConditionOperator {
   Interval = "IN"
 }
 
+export enum QueryViewerConditionOperatorSymbol {
+  Equal = "=",
+  LessThan = "<",
+  GreaterThan = ">",
+  LessOrEqual = "≤",
+  GreaterOrEqual = "≥",
+  NotEqual = "<>",
+  Interval = "-"
+}
+
 export enum QueryViewerDataType {
   Integer = "integer",
   Real = "real",
@@ -172,3 +186,71 @@ export enum QueryViewerOrientation {
   Horizontal = "Horizontal",
   Vertical = "Vertical"
 }
+
+export enum QueryViewerPlotSeries {
+  InTheSameChart = "In the same chart",
+  InSeparateCharts = "In separate charts"
+}
+
+export enum QueryViewerXAxisLabels {
+  Horizontally = "Horizontally",
+  Rotated30 = "Rotated30",
+  Rotated45 = "Rotated45",
+  Rotated60 = "Rotated60",
+  Vertically = "Vertically"
+}
+
+export enum QueryViewerMapType {
+  Bubble = "Bubble",
+  Choropleth = "Choropleth"
+}
+
+export type DateTimePicture = {
+  DateFormat: string;
+  IncludeHours: boolean;
+  IncludeMinutes: boolean;
+  IncludeSeconds: boolean;
+  IncludeMilliseconds: boolean;
+};
+
+export type QueryViewerChartSerie = {
+  MinValue: number;
+  MaxValue: number;
+  FieldName: string;
+  Name: string;
+  Visible: QueryViewerVisible;
+  DataType: QueryViewerDataType;
+  Aggregation: QueryViewerAggregationType;
+  Picture: string;
+  DataFields: string[];
+  Color: string;
+  TargetValue: number;
+  MaximumValue: number;
+  PositiveValues: boolean;
+  NegativeValues: boolean;
+  Points: QueryViewerChartPoint[];
+  NumberFormat: {
+    DecimalPrecision: number;
+    UseThousandsSeparator: boolean;
+    Prefix: string;
+    Suffix: string;
+  };
+};
+
+export type QueryViewerChartCategories = {
+  DataFields: string[];
+  MinValue: string;
+  MaxValue: string;
+  Values: QueryViewerCategoryValue[];
+};
+
+export type QueryViewerCategoryValue = {
+  Value: string;
+  ValueWithPicture: string;
+};
+
+export type QueryViewerChartPoint = {
+  Value: string;
+  Value_N: string;
+  Value_D: string;
+};

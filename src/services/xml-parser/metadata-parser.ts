@@ -53,7 +53,9 @@ type QueryViewerDataTypeToPicture = Extract<
 const AXIS_TAG_NAME = "OLAPDimension";
 const DATUM_TAG_NAME = "OLAPMeasure";
 
-const translateStyleOperatorDictonary: { [key in XMLStyleOperator]: string } = {
+const translateStyleOperatorDictonary: {
+  [key in XMLStyleOperator]: QueryViewerConditionOperator;
+} = {
   equal: QueryViewerConditionOperator.Equal,
   less: QueryViewerConditionOperator.LessThan,
   greater: QueryViewerConditionOperator.GreaterThan,
@@ -308,7 +310,7 @@ export function parseMetadataXML(
         false
       );
 
-      const dataType = axis.getAttribute("dataType");
+      const dataType = axis.getAttribute("dataType") as QueryViewerDataType;
 
       return {
         Name: axis.getAttribute("name"),
@@ -347,7 +349,7 @@ export function parseMetadataXML(
 
   const serviceMetaDataDatums: QueryViewerServiceMetaDataData[] = datas.map(
     data => {
-      const dataType = data.getAttribute("dataType");
+      const dataType = data.getAttribute("dataType") as QueryViewerDataType;
       const targetValue = parseFloat(data.getAttribute("targetValue"));
       const maximumValue = parseFloat(data.getAttribute("maximumValue"));
       const formula = getCharacterAttribute(data, "formula", "");

@@ -54,7 +54,7 @@
   "dependencies": {
     "@genexus/web-controls-library": "~1.44.0",
     "date-fns": "^2.30.0",
-    "highcharts": "^10.3.3",
+    "highcharts": "^11.1.0",
     "material-icons": "^1.13.1"
   }
 }
