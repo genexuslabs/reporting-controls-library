@@ -9,6 +9,7 @@ import {
   QueryViewerDataType,
   QueryViewerFilterType,
   QueryViewerOutputType,
+  QueryViewerPlotSeries,
   QueryViewerTranslations,
   QueryViewerVisible
 } from "../../../common/basic-types";
@@ -25,7 +26,7 @@ import {
   //   getPictureProperties,
   parseNumericPicture
 } from "../../../utils/general";
-import { ChartTypes } from "./chart-types";
+import { ChartTypes, IS_CHART_TYPE, isDatetimeXAxis } from "./chart-types";
 
 export type ChartMetadataAndData = {
   Categories: QueryViewerChartCategories;
@@ -451,7 +452,7 @@ function IsFilteredRow(
 function XAxisDataTypeOK(
   serviceResponse: QueryViewerServiceResponse,
   type: QueryViewerOutputType,
-  chartTypes: ChartTypes,
+  chartType: QueryViewerChartType,
   translations: QueryViewerTranslations
 ) {
   const dataType = XAxisDataType(serviceResponse.MetaData);
@@ -459,7 +460,7 @@ function XAxisDataTypeOK(
   switch (type) {
     case QueryViewerOutputType.Chart:
       return {
-        IsOK: chartTypes.DatetimeXAxis
+        IsOK: isDatetimeXAxis(chartType)
           ? dataType === QueryViewerDataType.Date ||
             dataType === QueryViewerDataType.DateTime
           : true,
@@ -630,23 +631,32 @@ export function processDataAndMetadata(
   serviceResponse: QueryViewerServiceResponse,
   type: QueryViewerOutputType,
   chartType: QueryViewerChartType,
-  chartTypes: ChartTypes,
+  plotSeries: QueryViewerPlotSeries,
   translations: QueryViewerTranslations
-): { error: string; chart: ChartMetadataAndData } {
+): { error: string; chart: ChartMetadataAndData; chartTypes: ChartTypes } {
   const xAxisDataTypeStatus = XAxisDataTypeOK(
     serviceResponse,
     type,
-    chartTypes,
+    chartType,
     translations
   );
   if (!xAxisDataTypeStatus.IsOK) {
-    return { error: xAxisDataTypeStatus.Error, chart: undefined };
+    return {
+      error: xAxisDataTypeStatus.Error,
+      chart: undefined,
+      chartTypes: undefined
+    };
   }
 
   // Obtengo DataFields de categorias y series
   const metadataAndData: ChartMetadataAndData =
     GetCategoriesAndSeriesDataFields(serviceResponse.MetaData, type);
 
+  const chartTypes = IS_CHART_TYPE(
+    chartType,
+    metadataAndData.Series.DataFields.length,
+    plotSeries
+  );
   // const axesByDataField = GetAxesByDataFieldObj(serviceResponse.MetaData);
 
   // Inicializo series
@@ -736,5 +746,5 @@ export function processDataAndMetadata(
     });
   }
 
-  return { error: "", chart: metadataAndData };
+  return { error: "", chart: metadataAndData, chartTypes: chartTypes };
 }

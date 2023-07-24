@@ -56,14 +56,17 @@ const isGauge = (type: QueryViewerChartType) =>
   type === QueryViewerChartType.CircularGauge ||
   type === QueryViewerChartType.LinearGauge;
 
+export const isDatetimeXAxis = (type: QueryViewerChartType) =>
+  isTimeline(type) || type === QueryViewerChartType.Sparkline;
+
 export const IS_CHART_TYPE: IsChartTypesFunction = (
   type: QueryViewerChartType,
-  qViewer,
-  plotSeries
+  DataFieldsLength: number,
+  plotSeries: QueryViewerPlotSeries
 ) => ({
   Timeline: isTimeline(type),
 
-  DatetimeXAxis: isTimeline(type) || type === QueryViewerChartType.Sparkline,
+  DatetimeXAxis: isDatetimeXAxis(type),
 
   Stacked: isStacked(type),
 
@@ -81,7 +84,7 @@ export const IS_CHART_TYPE: IsChartTypesFunction = (
   Combination:
     (type === QueryViewerChartType.ColumnLine ||
       type === QueryViewerChartType.Column3DLine) &&
-    qViewer.Chart.Series.DataFields.length > 1,
+    DataFieldsLength > 1,
 
   Gauge: isGauge(type),
 
@@ -108,12 +111,12 @@ export const IS_CHART_TYPE: IsChartTypesFunction = (
 
   HasYAxis: !isCircular(type) && !isFunnel(type) && !isGauge(type),
 
-  Splitted: IsSplittedChart(type, qViewer, plotSeries)
+  Splitted: IsSplittedChart(type, DataFieldsLength, plotSeries)
 });
 
 export function IsSplittedChart(
   type: QueryViewerChartType,
-  qViewer: any,
+  DataFieldsLength: number,
   plotSeries: QueryViewerPlotSeries
 ): boolean {
   // Para las gráficas Stacked no tiene sentido separar en varias gráficas pues dejan de apilarse las series
@@ -126,7 +129,7 @@ export function IsSplittedChart(
     (plotSeries === QueryViewerPlotSeries.InSeparateCharts ||
       isCircular(type) || // SingleSerie condition
       isFunnel(type)) && // SingleSerie condition
-    qViewer?.Chart.Series.DataFields.length > 1
+    DataFieldsLength > 1
   );
 }
 

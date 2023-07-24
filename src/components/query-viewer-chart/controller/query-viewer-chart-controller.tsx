@@ -12,7 +12,6 @@ import {
   QueryViewerXAxisLabels
 } from "../../../common/basic-types";
 import { processDataAndMetadata } from "./processDataAndMetadata";
-import { IS_CHART_TYPE } from "./chart-types";
 import { getAllHighchartOptions, getChartGroup } from "./chart-utils";
 
 @Component({
@@ -84,12 +83,11 @@ export class QueryViewerChart {
       return [];
     }
 
-    const chartTypes = IS_CHART_TYPE(this.chartType, null, this.plotSeries);
     const chartMetadataAndData = processDataAndMetadata(
       this.serviceResponse,
       QueryViewerOutputType.Chart,
       this.chartType,
-      chartTypes,
+      this.plotSeries,
       this.translations
     );
     const chartGroupLower = getChartGroup(this.chartType);
@@ -103,7 +101,7 @@ export class QueryViewerChart {
       this.serviceResponse.MetaData,
       QueryViewerOutputType.Chart,
       this.chartType, // WA to fix undefined prop
-      chartTypes,
+      chartMetadataAndData.chartTypes,
       chartGroupLower,
       this.allowSelection,
       this.showValues,
