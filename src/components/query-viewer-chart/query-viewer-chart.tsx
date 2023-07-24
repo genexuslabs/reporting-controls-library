@@ -10,6 +10,10 @@ import {
   YAxisOptions,
   XAxisOptions
 } from "highcharts";
+
+import Highcharts from "highcharts";
+import Highcharts3d from "highcharts/highcharts-3d";
+import "highcharts/modules/solid-gauge";
 import {
   QueryViewerTranslations,
   // QueryViewerTranslationsLabels,
@@ -110,7 +114,8 @@ export class QueryViewerChart {
   @Prop() readonly yAxisTitle: string;
 
   componentDidRender() {
-    this.chartHC = new Chart(
+    Highcharts3d(Highcharts);
+    this.chartHC = new Highcharts.Chart(
       this.chartContainer,
       {
         chart: this.chartOptions,
