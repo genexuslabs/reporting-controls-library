@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import {
   QueryViewerChartSerie,
   QueryViewerChartType,
@@ -20,7 +21,9 @@ import {
   TooltipOptions,
   TooltipFormatterContextObject,
   SeriesOptionsType,
-  PaneOptions
+  PaneOptions,
+  PaneBackgroundOptions,
+  XAxisPlotBandsOptions
 } from "highcharts";
 import { ChartTypes } from "./chart-types";
 import {
@@ -284,33 +287,34 @@ function getXAxisObject(
   }
 
   if (type === QueryViewerChartType.LinearGauge) {
-    // let widths;
+    let widths;
     if (chartTypes.Splitted) {
-      // widths = linearGaugeWidths(1, 1);
+      widths = linearGaugeWidths(1, 1);
     }
     xAxis.plotBands = [];
-    // for (let i = 0; i < chartMetadataAndData.Series.ByIndex.length; i++) {
-    // if (!chartTypes.Splitted || i === serieIndex) {
-    //   const chartSerie = chartMetadataAndData.Series.ByIndex[i];
-    //   if (!chartTypes.Splitted) {
-    //     widths = linearGaugeWidths(
-    //       qViewer.Chart.Series.DataFields.length,
-    //       i + 1
-    //     );
-    //   }
-    //   plotBand = {};
-    //   // var color;
-    //   // if (!qv.util.IsNullColor(chartSerie.Color)) {
-    //   //   color = chartSerie.Color;
-    //   // } else {
-    //   //   color = chartSerie.Points[0].Color;
-    //   // }
-    //   // SetHighchartsColor(qViewer, plotBand, color, false);
-    //   plotBand.from = widths.LowerExtreme;
-    //   plotBand.to = widths.UpperExtreme;
-    //   xAxis.plotBands.push(plotBand);
-    // }
-    // }
+    for (let i = 0; i < chartMetadataAndData.Series.ByIndex.length; i++) {
+      if (!chartTypes.Splitted || i === serieIndex) {
+        // const chartSerie = chartMetadataAndData.Series.ByIndex[i];
+        // eslint-disable-next-line max-depth
+        if (!chartTypes.Splitted) {
+          widths = linearGaugeWidths(
+            chartMetadataAndData.Series.DataFields.length,
+            i + 1
+          );
+        }
+        let plotBand: XAxisPlotBandsOptions = {};
+        // var color;
+        // if (!qv.util.IsNullColor(chartSerie.Color)) {
+        //   color = chartSerie.Color;
+        // } else {
+        //   color = chartSerie.Points[0].Color;
+        // }
+        // SetHighchartsColor(qViewer, plotBand, color, false);
+        plotBand.from = widths.LowerExtreme;
+        plotBand.to = widths.UpperExtreme;
+        xAxis.plotBands.push(plotBand);
+      }
+    }
   }
   if (!isDatetimeXAxis) {
     xAxis.categories = [];
@@ -374,12 +378,13 @@ function getXAxisObject(
     //   }
     // }
   }
-  //   if (chartTypes.Polar) {
-  //     xAxis.className = "highcharts-no-axis-line highcharts-yes-grid-line";
-  //   } // Clases no estándar de Highcharts
-  //   else if (type === QueryViewerChartType.Sparkline) {
-  //     xAxis.className = "highcharts-no-axis-line highcharts-no-grid-line";
-  //   } // Clases no estándar de Highcharts
+
+  if (chartTypes.Polar) {
+    xAxis.className = "highcharts-no-axis-line highcharts-yes-grid-line";
+  } // Clases no estándar de Highcharts
+  else if (type === QueryViewerChartType.Sparkline) {
+    xAxis.className = "highcharts-no-axis-line highcharts-no-grid-line";
+  } // Clases no estándar de Highcharts
 
   if (
     type === QueryViewerChartType.Bar ||
@@ -447,9 +452,10 @@ function getYAxisObject(
   type: QueryViewerChartType,
   chartTypes: ChartTypes,
   yAxisTitle: string,
-  xAxisIntersectionAtZero: boolean
+  xAxisIntersectionAtZero: boolean,
+  seriesIndex: number
 ): YAxisOptions {
-  const yAxis: YAxisOptions = {
+  let yAxis: YAxisOptions = {
     plotLines: [],
     plotBands: [],
     title: null
@@ -475,6 +481,7 @@ function getYAxisObject(
   } else {
     yAxis.title = { text: yAxisName };
   }
+
   // if (HasYAxis(chartTypes)) {
   // chartMetadataAndData.PlotBands.forEach(chartPlotBand => {
   //   if (chartSerie == null || chartSerie.Name === chartPlotBand.SeriesName) {
@@ -536,24 +543,24 @@ function getYAxisObject(
     yAxis.min = 0;
     yAxis.max = 0;
     // ToDo: Find the way to implement this
-    // for (
-    //   let seriesIndexAux = 0;
-    //   seriesIndexAux < chartMetadataAndData.Series.ByIndex.length;
-    //   seriesIndexAux++
-    // ) {
-    //   if (!chartTypes.Splitted || seriesIndexAux === seriesIndex) {
-    //     const chartSerieAux =
-    //       chartMetadataAndData.Series.ByIndex[seriesIndexAux];
-    //     yAxis.max = Math.max(
-    //       yAxis.max,
-    //       (100 * chartSerieAux.MaximumValue) / chartSerieAux.TargetValue
-    //     );
-    //   }
-    // }
+    for (
+      let seriesIndexAux = 0;
+      seriesIndexAux < chartMetadataAndData.Series.ByIndex.length;
+      seriesIndexAux++
+    ) {
+      if (!chartTypes.Splitted || seriesIndexAux === seriesIndex) {
+        const chartSerieAux =
+          chartMetadataAndData.Series.ByIndex[seriesIndexAux];
+        yAxis.max = Math.max(
+          yAxis.max,
+          (100 * chartSerieAux.MaximumValue) / chartSerieAux.TargetValue
+        );
+      }
+    }
     if (type === QueryViewerChartType.LinearGauge || yAxis.max !== 100) {
       const plotLine: YAxisPlotLinesOptions = { value: 100 };
       // ToDo: check if this style works
-      // plotLine.className = "highcharts-dashed-plot-line"; // Clase no estándar de Highcharts
+      plotLine.className = "highcharts-dashed-plot-line"; // Clase no estándar de Highcharts
       if (
         chartTypes.Splitted ||
         chartMetadataAndData.Series.DataFields.length === 1
@@ -564,6 +571,7 @@ function getYAxisObject(
         let y = 15;
         let x = 0;
         let align: AlignValue = "center";
+        // eslint-disable-next-line max-depth
         if (type === QueryViewerChartType.LinearGauge) {
           y = -10;
           x = -5;
@@ -650,20 +658,33 @@ function getYAxisObject(
   return yAxis;
 }
 
-// ToDo: implement this
-// function LinearGaugePlotHeight(qViewer) {
-//   let marginBottom;
-//   if (
-//     IsSplittedChart(qViewer) ||
-//     qViewer.Chart.Series.DataFields.length === 1
-//   ) {
-//     marginBottom = 23 * NumberOfCharts(qViewer);
-//   } // por el título del eje Y
-//   else {
-//     marginBottom = 29;
-//   } // por la leyenda
-//   return qViewer.getContainerControl().offsetHeight - marginBottom;
-// }
+function NumberOfCharts(
+  chartTypes: ChartTypes,
+  chartMetadataAndData: ChartMetadataAndData
+) {
+  return chartTypes.Splitted
+    ? chartMetadataAndData.Series.DataFields.length
+    : 1;
+}
+
+function LinearGaugePlotHeight(
+  chartTypes: ChartTypes,
+  chartMetadataAndData: ChartMetadataAndData
+) {
+  let marginBottom;
+  if (
+    chartTypes.Splitted ||
+    chartMetadataAndData.Series.DataFields.length === 1
+  ) {
+    marginBottom = 23 * NumberOfCharts(chartTypes, chartMetadataAndData);
+  } // por el título del eje Y
+  else {
+    marginBottom = 29;
+  } // por la leyenda
+
+  // ToDo: implement this
+  return 100 - marginBottom;
+}
 
 function getMarker(
   allowSelection: boolean,
@@ -703,6 +724,50 @@ function connector90degrees(
   ];
 }
 
+function linearGaugeWidths(chartSeriesCount: number, serieNumber: number) {
+  const width = 1 / chartSeriesCount / 2;
+  const center = -0.5 + (serieNumber - 0.5) / chartSeriesCount;
+  const lowerExtreme = center - width / 2;
+  const upperExtreme = center + width / 2;
+  return {
+    Width: width,
+    Center: center,
+    LowerExtreme: lowerExtreme,
+    UpperExtreme: upperExtreme
+  };
+}
+
+// ToDo: implement this
+// function CircularGaugeTooltipAndDataLabelFormatter(
+//   evArg: any
+//  chartTypes: ChartTypes,
+//  chartMetadataAndData: ChartMetadataAndData
+// ) {
+// const seriesIndex = chartTypes.Splitted
+//   ? evArg.series.chart.options.qv.seriesIndex
+//   : evArg.series.index;
+// const serie = chartMetadataAndData.Series.ByIndex[seriesIndex];
+// const chartSize =
+//   Math.min(
+//     qViewer.getContainerControl().offsetHeight,
+//     qViewer.getContainerControl().offsetWidth
+//   ) / NumberOfCharts(qViewer);
+// const fontSize = chartSize / 13;
+// return qv.util.dom.createSpan(
+//   null,
+//   "",
+//   "",
+//   "",
+//   {
+//     color: GetColorStringFromHighchartsObject(qViewer, evArg),
+//     fontSize: fontSize + "px"
+//   },
+//   null,
+//   qv.util.formatNumber(evArg.point.y, 2, "ZZZZZZZZZZZZZZ9.99", true) + "%"
+// ).outerHTML;
+//   return evArg.point.y + "%";
+// }
+
 function getPlotOptionsObject(
   chartType: QueryViewerChartType,
   showValues: boolean,
@@ -720,8 +785,7 @@ function getPlotOptionsObject(
         chartTypes.Splitted,
       y: 0,
       borderWidth: 0
-      // ToDo: implement this
-      // formatter: () => CircularGaugeTooltipAndDataLabelFormatter(this, qViewer)
+      // formatter: () => CircularGaugeTooltipAndDataLabelFormatter(this, qViewer))
     };
     plotOptions.series.marker = { enabled: false };
   } else if (showValues) {
@@ -777,12 +841,14 @@ function getPlotOptionsObject(
         plotOptions.bar.stacking = "percent";
       }
       if (chartType === QueryViewerChartType.LinearGauge) {
-        // const widths = linearGaugeWidths(
-        //   qViewer.Chart.Series.DataFields.length,
-        //   1
-        // );
-        // const width = widths.Width * LinearGaugePlotHeight(qViewer);
-        // plotOptions.bar.pointWidth = width;
+        const widths = linearGaugeWidths(
+          chartMetadataAndData.Series.DataFields.length,
+          1
+        );
+        const width =
+          widths.Width *
+          LinearGaugePlotHeight(chartTypes, chartMetadataAndData);
+        plotOptions.bar.pointWidth = width;
         plotOptions.bar.pointPadding = 0;
         plotOptions.bar.groupPadding = 0;
         let minValue = Number.MAX_VALUE;
@@ -799,8 +865,8 @@ function getPlotOptionsObject(
           }
         }
         // ToDo: implement this
-        // const minLength = minValue * qViewer.getContainerControl().offsetWidth;
-        // plotOptions.bar.borderRadius = Math.min(width / 2, minLength / 2);
+        const minLength = minValue * 100;
+        plotOptions.bar.borderRadius = Math.min(width / 2, minLength / 2);
       }
       break;
     case "column":
@@ -937,132 +1003,307 @@ function Stacked100TooltipFormatter(
 }
 
 // ToDo: implement this
-// function DateTimeTooltipFormatter(evArg, chartSeries) {
-//   let hoverPoints;
-//   const viewerId = evArg.points[0].series.chart.options.qv.viewerId;
-//   const qViewer = qv.collection[viewerId];
-//   if (IsSplittedChart(qViewer)) {
-//     hoverPoints = getHoverPoints(qViewer, evArg.points[0].point.index);
-//   } else {
-//     hoverPoints = [];
-//     jQuery.each(evArg.points, function (index, point) {
-//       hoverPoints.push(point.point);
-//     });
-//   }
-//   // Agrupa la lista de puntos por índice de la serie
-//   const points_by_strIndex = {};
-//   const compare = gx.dom.el(viewerId + "_options_compare_enable").checked;
-//   for (let i = 0; i < hoverPoints.length; i++) {
-//     const index = compare
-//       ? Math.trunc(hoverPoints[i].series.index / 2)
-//       : hoverPoints[i].series.index;
-//     var strIndex = index.toString();
-//     if (points_by_strIndex[strIndex] == undefined) {
-//       points_by_strIndex[strIndex] = [];
-//     }
-//     points_by_strIndex[strIndex].push(hoverPoints[i]);
-//   }
-//   let res = "";
-//   let currentTotal = 0;
-//   let previousTotal = 0;
-//   let oldUtc;
-//   let oldSeriesName;
-//   for (var strIndex in points_by_strIndex) {
-//     const seriesIndex = parseInt(strIndex);
-//     const serie = chartSeries[seriesIndex];
-//     const seriesName = serie.Name;
-//     const points = points_by_strIndex[strIndex];
-//     for (let ind = 0; points[ind] != undefined; ind++) {
-//       const p = points[ind];
-//       const utc = parseInt(p.real_x ? p.real_x : p.x);
-//       if (p.real_x) {
-//         previousTotal += p.y;
-//       } else {
-//         currentTotal += p.y;
-//       }
-//       if (compare) {
-//         if (oldSeriesName != seriesName) {
-//           qv.util.isRTL(qViewer)
-//             ? (res += GetBoldRightText(seriesName) + "<br/>")
-//             : (res += GetBoldText(seriesName) + "<br/>");
-//           oldSeriesName = seriesName;
-//         }
-//       } else if (oldUtc != utc) {
-//         qv.util.isRTL(qViewer)
-//           ? (res += GetBoldRightText(p.name) + "<br/>")
-//           : (res += GetBoldText(p.name) + "<br/>");
-//         oldUtc = utc;
-//       }
-//       const duration =
-//         qViewer.RealChartType == QueryViewerChartType.StepTimeline
-//           ? GetDuration(p)
-//           : "";
-//       var keySpan;
-//       const valueSpan = qv.util.dom.createSpan(
-//         null,
-//         "",
-//         "",
-//         "",
-//         {},
-//         null,
-//         qv.util.formatNumber(
-//           p.y,
-//           serie.NumberFormat.DecimalPrecision,
-//           serie.Picture,
-//           false
-//         )
-//       ).outerHTML;
+function PieTooltipFormatter(
+  evArg: any,
+  sharedTooltip: boolean,
+  isRTL: boolean
+) {
+  // const qViewer = qv.collection[evArg.point.series.chart.options.qv.viewerId];
+  if (!sharedTooltip) {
+    let percentage = Math.round(evArg.point.percentage * 100) / 100;
+    return isRTL
+      ? "%" +
+          percentage +
+          "<b>: " +
+          (evArg.point.name !== ""
+            ? evArg.point.name
+            : evArg.point.series.name) +
+          "</b>"
+      : "<b>" +
+          (evArg.point.name !== ""
+            ? evArg.point.name
+            : evArg.point.series.name) +
+          "</b>: " +
+          percentage +
+          "%";
+  } else {
+    // const hoverPoints = getHoverPoints(qViewer, evArg.point.index);
+    // const x = hoverPoints.length > 0 ? hoverPoints[0].id : "";
+    // const hasTitle = x !== "";
+    let res = "";
+    // if (hasTitle) {
+    //   isRTL ? (res += GetBoldRightText(x)) : (res += GetBoldText(x));
+    // }
+    // for (let i = 0; i < hoverPoints.length; i++) {
+    //   const point = hoverPoints[i];
+    //   let percentage = Math.round(point.percentage * 100) / 100;
+    //   if (isRTL) {
+    //     res += (hasTitle || i > 0 ? "<br/>" : "") + "%" + percentage;
+    //     res += " :" + point.series.name;
+    //   } else {
+    //     res += (hasTitle || i > 0 ? "<br/>" : "") + point.series.name + ": ";
+    //     res += percentage + "%";
+    //   }
+    // }
+    return res;
+  }
+}
 
-//       qv.util.isRTL(qViewer)
-//         ? (keySpan = qv.util.dom.createSpan(
-//             null,
-//             "",
-//             "",
-//             "",
-//             {},
-//             null,
-//             ": " + (compare ? p.name : seriesName)
-//           ).outerHTML)
-//         : (keySpan = qv.util.dom.createSpan(
-//             null,
-//             "",
-//             "",
-//             "",
-//             {},
-//             null,
-//             (compare ? p.name : seriesName) + ": "
-//           ).outerHTML);
-//       qv.util.isRTL(qViewer)
-//         ? (res += duration + valueSpan + keySpan + "<br/>")
-//         : (res += keySpan + valueSpan + duration + "<br/>");
+// function secondsToText(seconds: number) {
+//   let text;
+//   // let picture = "ZZZZZZZZZZZZZZ9";
+//   // let decimalPrecision = 0;
+//   if (seconds < 60) {
+//     // less than 1 minute
+//     text = Math.round(seconds);
+//     // qv.util.formatNumber(
+//     //   Math.round(seconds),
+//     //   decimalPrecision,
+//     //   picture,
+//     //   false
+//     // ) +
+//     // " " +
+//     // qv.util.decapitalize(gx.getMessage("GXPL_QViewerSeconds"));
+//   } else if (seconds < 60 * 60) {
+//     // less than 1 hour
+//     text = Math.round(seconds / 60);
+//     // qv.util.formatNumber(
+//     //   Math.round(seconds / 60),
+//     //   decimalPrecision,
+//     //   picture,
+//     //   false
+//     // ) +
+//     // " " +
+//     // qv.util.decapitalize(gx.getMessage("GXPL_QViewerMinutes"));
+//   } else if (seconds < 60 * 60 * 24) {
+//     // less than 1 day
+//     text = Math.round(seconds / 60 / 60);
+//     // qv.util.formatNumber(
+//     //   Math.round(seconds / 60 / 60),
+//     //   decimalPrecision,
+//     //   picture,
+//     //   false
+//     // ) +
+//     // " " +
+//     // qv.util.decapitalize(gx.getMessage("GXPL_QViewerHours"));
+//   } else if (seconds < 60 * 60 * 24 * 30.44) {
+//     // less than 1 month
+//     text = Math.round(seconds / 60 / 60 / 24);
+//     // qv.util.formatNumber(
+//     //   Math.round(seconds / 60 / 60 / 24),
+//     //   decimalPrecision,
+//     //   picture,
+//     //   false
+//     // ) +
+//     // " " +
+//     // qv.util.decapitalize(gx.getMessage("GXPL_QViewerDays"));
+//   } else if (seconds < 60 * 60 * 24 * 365.25) {
+//     // less than 1 year
+//     text = Math.round(seconds / 60 / 60 / 24 / 30.44);
+//     // qv.util.formatNumber(
+//     //   Math.round(seconds / 60 / 60 / 24 / 30.44),
+//     //   decimalPrecision,
+//     //   picture,
+//     //   false
+//     // ) +
+//     // " " +
+//     // qv.util.decapitalize(gx.getMessage("GXPL_QViewerMonths"));
+//   }
+//   // more than 1 year
+//   else {
+//     text = Math.round(seconds / 60 / 60 / 24 / 365.25);
+//     // qv.util.formatNumber(
+//     //   Math.round(seconds / 60 / 60 / 24 / 365.25),
+//     //   decimalPrecision,
+//     //   picture,
+//     //   false
+//     // ) +
+//     // " " +
+//     // qv.util.decapitalize(gx.getMessage("GXPL_QViewerYears"));
+//   }
+//   return text.toString();
+// }
+
+// function GetDuration(point: any) {
+//   const value = point.y;
+//   const points = point.series.data;
+//   const index = point.index;
+//   let duration = "";
+//   let max = index;
+//   for (let i = index + 1; i < points.length; i++) {
+//     if (points[i].y !== value) {
+//       break;
+//     }
+//     max = i;
+//   }
+//   if (max < points.length - 1) {
+//     max++;
+//   }
+//   let min = index;
+//   for (let i = index - 1; i >= 0; i--) {
+//     if (points[i].y !== value) {
+//       break;
+//     }
+//     min = i;
+//   }
+//   const seconds = (points[max].x - points[min].x) / 1000;
+//   duration = secondsToText(seconds);
+//   // " (" +
+//   // gx.getMessage("GXPL_QViewerDuration") +
+//   // ": " +
+//   // seconsdToText(seconds);
+//   // + ")";
+//   return duration;
+// }
+
+// ToDo: implement this
+// function getHoverPoints(qViewer: any, index: number) {
+//   let points = [];
+//   for (let i = 0; i < qViewer.Charts.length; i++) {
+//     for (let j = 0; j < qViewer.Charts[i].series.length; j++) {
+//       let point = qViewer.Charts[i].series[j].data[index];
+//       points.push(point);
 //     }
 //   }
-//   return res;
+//   return points;
 // }
+
+function DateTimeTooltipFormatter() {
+  // evArg: any,
+  // chartSeries: any,
+  // chartTypes: ChartTypes,
+  // chartType: QueryViewerChartType,
+  // isRTL: boolean
+  // let hoverPoints;
+  // const viewerId = evArg.points[0].series.chart.options.qv.viewerId;
+  // const qViewer = qv.collection[viewerId];
+  // if (chartTypes.Splitted) {
+  //   hoverPoints = getHoverPoints(qViewer, evArg.points[0].point.index);
+  // } else {
+  //   hoverPoints = [];
+  // jQuery.each(evArg.points, function (index, point) {
+  //   hoverPoints.push(point.point);
+  // });
+  // }
+  // Agrupa la lista de puntos por índice de la serie
+  // const pointsByStrIndex: any = {};
+  // const compare = false;
+  // const compare = gx.dom.el(viewerId + "_options_compare_enable").checked;
+  // for (let i = 0; i < hoverPoints.length; i++) {
+  //   const index = compare
+  //     ? Math.trunc(hoverPoints[i].series.index / 2)
+  //     : hoverPoints[i].series.index;
+  //   let strIndex = index.toString();
+  //   if (pointsByStrIndex[strIndex] === undefined) {
+  //     pointsByStrIndex[strIndex] = [];
+  //   }
+  //   pointsByStrIndex[strIndex].push(hoverPoints[i]);
+  // }
+  let res = "";
+  // let currentTotal = 0;
+  // let previousTotal = 0;
+  // let oldUtc;
+  // let oldSeriesName;
+  // for (let strIndex in pointsByStrIndex) {
+  //   const seriesIndex = parseInt(strIndex);
+  //   const serie = chartSeries[seriesIndex];
+  //   const seriesName = serie.Name;
+  //   const points = pointsByStrIndex[strIndex];
+  //   for (let ind = 0; points[ind] !== undefined; ind++) {
+  //     const p = points[ind];
+  //     const utc = parseInt(p.real_x ? p.real_x : p.x);
+  //     // if (p.real_x) {
+  //     //   previousTotal += p.y;
+  //     // } else {
+  //     //   currentTotal += p.y;
+  //     // }
+  //     if (compare) {
+  //       // eslint-disable-next-line max-depth
+  //       if (oldSeriesName !== seriesName) {
+  //         // isRTL
+  //         //   ? (res += GetBoldRightText(seriesName) + "<br/>")
+  //         //   : (res += GetBoldText(seriesName) + "<br/>");
+  //         res += seriesName + "<br/>";
+  //         oldSeriesName = seriesName;
+  //       }
+  //     } else if (oldUtc !== utc) {
+  //       // isRTL
+  //       //   ? (res += GetBoldRightText(p.name) + "<br/>")
+  //       //   : (res += GetBoldText(p.name) + "<br/>");
+  //       res += p.name + "<br/>";
+  //       oldUtc = utc;
+  //     }
+  //     const duration =
+  //       chartType === QueryViewerChartType.StepTimeline ? GetDuration(p) : "";
+  //     let keySpan;
+  //     const valueSpan = p.y;
+  //     // const valueSpan = qv.util.dom.createSpan(
+  //     //   null,
+  //     //   "",
+  //     //   "",
+  //     //   "",
+  //     //   {},
+  //     //   null,
+  //     //   formatNumber(
+  //     //     p.y,
+  //     //     serie.NumberFormat.DecimalPrecision,
+  //     //     serie.Picture,
+  //     //     false
+  //     //   )
+  //     // ).outerHTML;
+
+  //     isRTL
+  //       ? (keySpan = ": " + (compare ? p.name : seriesName))
+  //       : (keySpan = (compare ? p.name : seriesName) + ": ");
+
+  //     // (keySpan = qv.util.dom.createSpan(
+  //     //     null,
+  //     //     "",
+  //     //     "",
+  //     //     "",
+  //     //     {},
+  //     //     null,
+  //     //     ": " + (compare ? p.name : seriesName)
+  //     //   ).outerHTML)
+  //     //
+  //     // (keySpan = qv.util.dom.createSpan(
+  //     //   null,
+  //     //   "",
+  //     //   "",
+  //     //   "",
+  //     //   {},
+  //     //   null,
+  //     //   (compare ? p.name : seriesName) + ": "
+  //     // ).outerHTML);
+  //     isRTL
+  //       ? (res += duration + valueSpan + keySpan + "<br/>")
+  //       : (res += keySpan + valueSpan + duration + "<br/>");
+  //   }
+  // }
+  return res;
+}
 
 function getTooltipObject(
   chartType: QueryViewerChartType,
   chartTypes: ChartTypes,
-  isRTL: boolean
+  isRTL: boolean,
+  showValues: boolean,
+  chartMetadataAndData: ChartMetadataAndData,
+  metadata: QueryViewerServiceMetaData
 ): TooltipOptions {
   const tooltip: TooltipOptions = {};
-  //   if (chartTypes.Timeline) {
-  //     tooltip.borderRadius = 1;
-  //     tooltip.shadow = true;
-  //     tooltip.shared = metadata.Data.length > 1;
-  //     tooltip.formatter = function () {
-  //       if (metadata.Data.length === 1) {
-  //         return TooltipFormatter(this, chartTypes.Splitted, isRTL, chartTypes);
-  //       }
-  //       // else {
-  //       // return DateTimeTooltipFormatter(
-  //       //   this,
-  //       //   chartMetadataAndData.Series.ByIndex
-  //       // );
-  //       // }
-  //     };
-  //   } else
-  if (
+  if (chartTypes.Timeline) {
+    tooltip.borderRadius = 1;
+    tooltip.shadow = true;
+    tooltip.shared = metadata.Data.length > 1;
+    tooltip.formatter = function () {
+      if (metadata.Data.length === 1) {
+        return TooltipFormatter(this, chartTypes.Splitted, isRTL, chartTypes);
+      } else {
+        return DateTimeTooltipFormatter();
+      }
+    };
+  } else if (
     chartType === QueryViewerChartType.StackedColumn100 ||
     chartType === QueryViewerChartType.StackedBar100 ||
     chartType === QueryViewerChartType.StackedArea100 ||
@@ -1071,18 +1312,17 @@ function getTooltipObject(
     tooltip.formatter = function () {
       return Stacked100TooltipFormatter(this, isRTL);
     };
-
-    //   else if (chartTypes.Circular) {
-    //     tooltip.formatter = function () {
-    //       return PieTooltipFormatter(this, chartTypes.Splitted);
-    //     };
-    //   } else if (chartType === QueryViewerChartType.CircularGauge) {
-    //     tooltip.enabled =
-    //       (chartMetadataAndData.Series.DataFields.length > 1 || !showValues) &&
-    //       !chartTypes.Splitted;
-    //     tooltip.formatter = function () {
-    //       return CircularGaugeTooltipAndDataLabelFormatter(this, qViewer);
-    //     };
+  } else if (chartTypes.Circular) {
+    tooltip.formatter = function () {
+      return PieTooltipFormatter(this, tooltip.shared, isRTL);
+    };
+  } else if (chartType === QueryViewerChartType.CircularGauge) {
+    tooltip.enabled =
+      (chartMetadataAndData.Series.DataFields.length > 1 || !showValues) &&
+      !chartTypes.Splitted;
+    // tooltip.formatter = function () {
+    //   return CircularGaugeTooltipAndDataLabelFormatter(this);
+    // };
     tooltip.positioner = function (labelWidth) {
       return {
         x: (this.chart.plotWidth - labelWidth) / 2,
@@ -1172,16 +1412,21 @@ function getIndividualSerieObject(
     //   }
     // }
   } else {
-    // let widths;
+    // let widths: {
+    //   Width: number;
+    //   Center: number;
+    //   LowerExtreme: number;
+    //   UpperExtreme: number;
+    // };
     // if (chartType === QueryViewerChartType.CircularGauge) {
-    //   if (chartTypes.Splitted) {
-    //     widths = circularGaugeWidths(1, 1);
-    //   } else {
-    //     widths = circularGaugeWidths(
-    //       chartMetadataAndData.Series.DataFields.length,
-    //       serieIndex + 1
-    //     );
-    //   }
+    // if (chartTypes.Splitted) {
+    //   widths = circularGaugeWidths(1, 1);
+    // } else {
+    //   widths = circularGaugeWidths(
+    //     chartMetadataAndData.Series.DataFields.length,
+    //     _serieIndex + 1
+    //   );
+    // }
     // }
     serie.name = chartSerie.Name;
     serie.data = [];
@@ -1274,6 +1519,7 @@ function getSeriesObject(
       );
       const k = serieIndex != null ? serieIndex : seriesIndexAux;
       if (chartTypes.Combination) {
+        // eslint-disable-next-line max-depth
         if (k % 2 === 0) {
           serie.type = "column";
           serie.yAxis = 0;
@@ -1289,42 +1535,68 @@ function getSeriesObject(
   return series;
 }
 
-function getPaneObject(chartType: QueryViewerChartType): PaneOptions {
+function circularGaugeWidths(chartSeriesCount: number, serieNumber: number) {
+  let width;
+  let center;
+  let lowerExtreme;
+  let upperExtreme;
+  if (chartSeriesCount <= 3) {
+    width = 24;
+  } else {
+    width = 50 / (chartSeriesCount - 1) - 1;
+  } // Para que no pase más del 50% del Gauge hacia adentro;
+  center = 100 - (width + 1) * (serieNumber - 1);
+  lowerExtreme = center - width / 2;
+  upperExtreme = center + width / 2;
+  return {
+    Width: width,
+    Center: center,
+    LowerExtreme: lowerExtreme,
+    UpperExtreme: upperExtreme
+  };
+}
+
+function getPaneObject(
+  chartType: QueryViewerChartType,
+  chartTypes: ChartTypes,
+  chartmetadataAndData: ChartMetadataAndData,
+  serieIndex: number
+): PaneOptions {
   if (chartType !== QueryViewerChartType.CircularGauge) {
     return {};
   }
   const pane: PaneOptions = { background: [] };
-  //   let widths;
-  //   if (chartTypes.Splitted) {
-  //     widths = circularGaugeWidths(1, 1);
-  //   }
-  //   for (
-  //     let seriesIndexAux = 0;
-  //     seriesIndexAux < qViewer.Chart.Series.ByIndex.length;
-  //     seriesIndexAux++
-  //   ) {
-  //     if (!chartTypes.Splitted || seriesIndexAux === serieIndex) {
-  //       const chartSerie = qViewer.Chart.Series.ByIndex[seriesIndexAux];
-  //       const oneBackground = {};
-  //       if (!chartTypes.Splitted) {
-  //         widths = circularGaugeWidths(
-  //           qViewer.Chart.Series.DataFields.length,
-  //           seriesIndexAux + 1
-  //         );
-  //       }
-  //       oneBackground.outerRadius = widths.UpperExtreme.toString() + "%";
-  //       oneBackground.innerRadius = widths.LowerExtreme.toString() + "%";
-  //       var color;
-  //       if (!qv.util.IsNullColor(chartSerie.Color)) {
-  //         color = chartSerie.Color;
-  //       } else {
-  //         color = chartSerie.Points[0].Color;
-  //       }
-  //       SetHighchartsColor(qViewer, oneBackground, color, false);
-  //       oneBackground.borderWidth = 0;
-  //       pane.background.push(oneBackground);
-  //     }
-  //   }
+  let widths;
+  if (chartTypes.Splitted) {
+    widths = circularGaugeWidths(1, 1);
+  }
+  for (
+    let seriesIndexAux = 0;
+    seriesIndexAux < chartmetadataAndData.Series.ByIndex.length;
+    seriesIndexAux++
+  ) {
+    if (!chartTypes.Splitted || seriesIndexAux === serieIndex) {
+      // const chartSerie = chartmetadataAndData.Series.ByIndex[seriesIndexAux];
+      const oneBackground: PaneBackgroundOptions = {};
+      if (!chartTypes.Splitted) {
+        widths = circularGaugeWidths(
+          chartmetadataAndData.Series.DataFields.length,
+          seriesIndexAux + 1
+        );
+      }
+      oneBackground.outerRadius = widths.UpperExtreme.toString() + "%";
+      oneBackground.innerRadius = widths.LowerExtreme.toString() + "%";
+      // let color;
+      // if (IsNullColor(chartSerie.Color)) {
+      //   color = chartSerie.Color;
+      // } else {
+      //   color = chartSerie.Points[0].Color;
+      // }
+      // SetHighchartsColor(qViewer, oneBackground, color, false);
+      oneBackground.borderWidth = 0;
+      pane.background.push(oneBackground);
+    }
+  }
 
   return pane;
 }
@@ -1361,7 +1633,12 @@ export function getHighchartOptions(
     legend: getLegendObject(chartMetadataAndData, chartTypes, isRTL),
     title: getTitleObject(queryTitle, serieIndex),
     subtitle: getSubtitleObject(chartType, chartSerie?.Name, chartTypes, isRTL), // chartSerie is undefined unless chartTypes.Splitted === true
-    pane: getPaneObject(chartType),
+    pane: getPaneObject(
+      chartType,
+      chartTypes,
+      chartMetadataAndData,
+      serieIndex
+    ),
     xAxis: getXAxisObject(
       chartMetadataAndData,
       serviceResponseMetadata,
@@ -1379,7 +1656,8 @@ export function getHighchartOptions(
       chartType,
       chartTypes,
       yAxisTitle,
-      xAxisIntersectionAtZero
+      xAxisIntersectionAtZero,
+      serieIndex
     ),
     plotOptions: getPlotOptionsObject(
       chartType,
@@ -1390,7 +1668,14 @@ export function getHighchartOptions(
       allowSelection,
       type
     ),
-    tooltip: getTooltipObject(chartType, chartTypes, isRTL),
+    tooltip: getTooltipObject(
+      chartType,
+      chartTypes,
+      isRTL,
+      showValues,
+      chartMetadataAndData,
+      serviceResponseMetadata
+    ),
     series: getSeriesObject(
       chartTypes,
       chartMetadataAndData,
