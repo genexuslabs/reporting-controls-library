@@ -13,7 +13,10 @@ import {
 
 import Highcharts from "highcharts";
 import Highcharts3d from "highcharts/highcharts-3d";
-import "highcharts/modules/solid-gauge";
+import HighchartsMore from "highcharts/highcharts-more";
+import HighchartsFunnel from "highcharts/modules/funnel";
+import HighchartsSolidGauge from "highcharts/modules/solid-gauge";
+
 import {
   QueryViewerTranslations,
   // QueryViewerTranslationsLabels,
@@ -115,6 +118,10 @@ export class QueryViewerChart {
 
   componentDidRender() {
     Highcharts3d(Highcharts);
+    HighchartsMore(Highcharts);
+    HighchartsFunnel(Highcharts);
+    HighchartsSolidGauge(Highcharts);
+
     this.chartHC = new Highcharts.Chart(
       this.chartContainer,
       {
