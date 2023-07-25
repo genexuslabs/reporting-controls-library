@@ -499,14 +499,19 @@ function aggregate(
   switch (aggregation) {
     case QueryViewerAggregationType.Sum:
       values.forEach(value => {
-        if (value != null) {
+        if (value != null && sumValues == null) {
+          sumValues = value;
+        } else if (value != null && sumValues != null) {
           sumValues += value;
         }
       });
       return sumValues;
     case QueryViewerAggregationType.Average:
       for (let i = 0; i < values.length; i++) {
-        if (values[i] != null) {
+        if ((values[i] != null && sumValues, sumQuantities == null)) {
+          sumValues = values[i];
+          sumQuantities = quantities[i];
+        } else if ((values[i], sumValues, sumQuantities != null)) {
           sumValues += values[i];
           sumQuantities += quantities[i];
         }
@@ -514,7 +519,11 @@ function aggregate(
       return sumValues != null ? sumValues / sumQuantities : null;
     case QueryViewerAggregationType.Count:
       quantities.forEach(quantity => {
-        sumQuantities += quantity;
+        if (sumQuantities == null) {
+          sumQuantities = quantity;
+        } else {
+          sumQuantities += quantity;
+        }
       });
       return sumQuantities;
     case QueryViewerAggregationType.Max:
@@ -561,7 +570,6 @@ function aggregatePoints(chartSerie: QueryViewerChartSerie) {
     //     firstColor = point.Color;
     //   }
   });
-
   const value = aggregate(
     chartSerie.Aggregation,
     currentYValues,
