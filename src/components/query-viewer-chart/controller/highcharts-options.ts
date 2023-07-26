@@ -379,12 +379,12 @@ function getXAxisObject(
     // }
   }
 
-  if (chartTypes.Polar) {
-    xAxis.className = "highcharts-no-axis-line highcharts-yes-grid-line";
-  } // Clases no estándar de Highcharts
-  else if (type === QueryViewerChartType.Sparkline) {
-    xAxis.className = "highcharts-no-axis-line highcharts-no-grid-line";
-  } // Clases no estándar de Highcharts
+  // if (chartTypes.Polar) {
+  //   xAxis.className = "highcharts-no-axis-line highcharts-yes-grid-line";
+  // } // Clases no estándar de Highcharts
+  // else if (type === QueryViewerChartType.Sparkline) {
+  //   xAxis.className = "highcharts-no-axis-line highcharts-no-grid-line";
+  // } // Clases no estándar de Highcharts
 
   if (
     type === QueryViewerChartType.Bar ||
@@ -560,7 +560,7 @@ function getYAxisObject(
     if (type === QueryViewerChartType.LinearGauge || yAxis.max !== 100) {
       const plotLine: YAxisPlotLinesOptions = { value: 100 };
       // ToDo: check if this style works
-      plotLine.className = "highcharts-dashed-plot-line"; // Clase no estándar de Highcharts
+      // plotLine.className = "highcharts-dashed-plot-line"; // Clase no estándar de Highcharts
       if (
         chartTypes.Splitted ||
         chartMetadataAndData.Series.DataFields.length === 1
