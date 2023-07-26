@@ -480,7 +480,6 @@ function getYAxisObject(
   } else {
     yAxis.title = { text: yAxisName };
   }
-
   // if (HasYAxis(chartTypes)) {
   // chartMetadataAndData.PlotBands.forEach(chartPlotBand => {
   //   if (chartSerie == null || chartSerie.Name === chartPlotBand.SeriesName) {
@@ -570,7 +569,6 @@ function getYAxisObject(
         let y = 15;
         let x = 0;
         let align: AlignValue = "center";
-        // eslint-disable-next-line max-depth
         if (type === QueryViewerChartType.LinearGauge) {
           y = -10;
           x = -5;
@@ -784,7 +782,8 @@ function getPlotOptionsObject(
         chartTypes.Splitted,
       y: 0,
       borderWidth: 0
-      // formatter: () => CircularGaugeTooltipAndDataLabelFormatter(this, qViewer))
+      // ToDo: implement this
+      // formatter: () => CircularGaugeTooltipAndDataLabelFormatter(this, qViewer)
     };
     plotOptions.series.marker = { enabled: false };
   } else if (showValues) {
@@ -989,16 +988,8 @@ function Stacked100TooltipFormatter(
 ) {
   const percentage = Math.round(evArg.point.percentage * 100) / 100;
   return isRTL
-    ? "%" +
-        percentage +
-        "<b>: " +
-        (evArg.point.name !== "" ? evArg.point.name : evArg.series.name) +
-        "</b>"
-    : "<b>" +
-        (evArg.point.name !== "" ? evArg.point.name : evArg.series.name) +
-        "</b>: " +
-        percentage +
-        "%";
+    ? `%${percentage}<b>: ${evArg.point.name || evArg.series.name}</b>`
+    : `<b>${evArg.point.name || evArg.series.name}</b>: ${percentage}%`;
 }
 
 // ToDo: implement this
@@ -1518,7 +1509,6 @@ function getSeriesObject(
       );
       const k = serieIndex != null ? serieIndex : seriesIndexAux;
       if (chartTypes.Combination) {
-        // eslint-disable-next-line max-depth
         if (k % 2 === 0) {
           serie.type = "column";
           serie.yAxis = 0;

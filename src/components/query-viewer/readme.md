@@ -2,7 +2,6 @@
 
 <!-- Auto Generated Below -->
 
-
 ## Properties
 
 | Property                   | Attribute                     | Description                                                                                            | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Default                                    |
@@ -47,7 +46,6 @@
 | `xAxisTitle`               | `x-axis-title`                | X Axis title                                                                                           | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `undefined`                                |
 | `yAxisTitle`               | `y-axis-title`                | Y Axis title                                                                                           | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `undefined`                                |
 
-
 ## Dependencies
 
 ### Depends on
@@ -56,6 +54,7 @@
 - [gx-query-viewer-chart-controller](../query-viewer-chart/controller)
 
 ### Graph
+
 ```mermaid
 graph TD;
   gx-query-viewer --> gx-query-viewer-card-controller
@@ -66,6 +65,6 @@ graph TD;
   style gx-query-viewer fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
-----------------------------------------------
+---
 
-*Built with [StencilJS](https://stenciljs.com/)*
+_Built with [StencilJS](https://stenciljs.com/)_
