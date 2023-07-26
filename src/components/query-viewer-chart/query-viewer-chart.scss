@@ -14,7 +14,7 @@
   --highcharts-color-9: #91e8e1;
 
   /* Chart background, point stroke for markers and columns etc */
-  --highcharts-background-color: #ffffff;
+  --highcharts-background-color: transparent;
 
   /*
  Neutral colors, grayscale by default. The default colors are defined by
@@ -25,28 +25,32 @@
  */
 
   /* Strong text. */
-  --highcharts-neutral-color-100: #000000;
+  --highcharts-neutral-color-100: currentColor;
 
   /* Main text, axis labels and some strokes. */
-  --highcharts-neutral-color-80: #333333;
+  --highcharts-neutral-color-80: currentColor;
 
   /* Axis title, connector fallback. */
-  --highcharts-neutral-color-60: #666666;
+  --highcharts-neutral-color-60: currentColor;
 
   /* Credits text, export menu stroke. */
-  --highcharts-neutral-color-40: #999999;
+  --highcharts-neutral-color-40: currentColor;
 
   /* Disabled texts, button strokes, crosshair etc. */
-  --highcharts-neutral-color-20: #cccccc;
+  --highcharts-neutral-color-20: currentColor;
 
   /* Grid lines etc. */
-  --highcharts-neutral-color-10: #e6e6e6;
+  --highcharts-neutral-color-10: color-mix(
+    in srgb,
+    currentColor 30%,
+    transparent
+  );
 
   /* Minor grid lines etc. */
-  --highcharts-neutral-color-5: #f2f2f2;
+  --highcharts-neutral-color-5: currentColor;
 
   /* Tooltip backgroud, button fills, map null points. */
-  --highcharts-neutral-color-3: #f7f7f7;
+  --highcharts-neutral-color-3: currentColor;
 
   /*
  Highlights, shades of blue by default
@@ -75,22 +79,6 @@
 
 @media (prefers-color-scheme: dark) {
   :host {
-    /* UI colors */
-    --highcharts-background-color: rgb(48, 48, 48);
-
-    /*
-          Neutral color variations
-          https://www.highcharts.com/samples/highcharts/css/palette-helper
-      */
-    --highcharts-neutral-color-100: rgb(255, 255, 255);
-    --highcharts-neutral-color-80: rgb(214, 214, 214);
-    --highcharts-neutral-color-60: rgb(173, 173, 173);
-    --highcharts-neutral-color-40: rgb(133, 133, 133);
-    --highcharts-neutral-color-20: rgb(92, 92, 92);
-    --highcharts-neutral-color-10: rgb(71, 71, 71);
-    --highcharts-neutral-color-5: rgb(61, 61, 61);
-    --highcharts-neutral-color-3: rgb(57, 57, 57);
-
     /* Highlight color variations */
     --highcharts-highlight-color-100: rgb(122, 167, 255);
     --highcharts-highlight-color-80: rgb(108, 144, 214);

@@ -1,9 +1,6 @@
 # gx-query-viewer-chart
 
-
-
 <!-- Auto Generated Below -->
-
 
 ## Properties
 
@@ -22,19 +19,19 @@
 | `xAxisIntersectionAtZero` | `x-axis-intersection-at-zero` | Specifies whether the X axis intersects the Y axis at zero or the intersection point is automatically calculated.     | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `undefined` |
 | `xAxisLabels`             | `x-axis-labels`               | Specifies if the labels in the X axis of a chart are shown horizontally or vertically.                                | `QueryViewerXAxisLabels.Horizontally \| QueryViewerXAxisLabels.Rotated30 \| QueryViewerXAxisLabels.Rotated45 \| QueryViewerXAxisLabels.Rotated60 \| QueryViewerXAxisLabels.Vertically`                                                                                                                                                                                                                                                                                                                                       | `undefined` |
 | `xAxisTitle`              | `x-axis-title`                | X axis title, if specified.                                                                                           | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `undefined` |
-| `xaxisOptions`            | --                            | Options of the Y axis (usually this is the vertical axis).                                                            | `XAxisOptions`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `undefined` |
+| `xaxisOptions`            | --                            | Options of the Y axis (usually this is the vertical axis).                                                            | `XAxisOptions \| XAxisOptions[]`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | `undefined` |
 | `yAxisTitle`              | `y-axis-title`                | Y axis title, if specified.                                                                                           | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `undefined` |
-| `yaxisOptions`            | --                            | Options of the plot for each series type chart.                                                                       | `YAxisOptions`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `undefined` |
-
+| `yaxisOptions`            | --                            | Options of the plot for each series type chart.                                                                       | `YAxisOptions \| YAxisOptions[]`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | `undefined` |
 
 ## Dependencies
 
 ### Used by
 
- - [gx-query-viewer-card](../query-viewer-card)
- - [gx-query-viewer-chart-controller](controller)
+- [gx-query-viewer-card](../query-viewer-card)
+- [gx-query-viewer-chart-controller](controller)
 
 ### Graph
+
 ```mermaid
 graph TD;
   gx-query-viewer-card --> gx-query-viewer-chart
@@ -42,6 +39,6 @@ graph TD;
   style gx-query-viewer-chart fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
-----------------------------------------------
+---
 
-*Built with [StencilJS](https://stenciljs.com/)*
+_Built with [StencilJS](https://stenciljs.com/)_

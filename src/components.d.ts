@@ -6,7 +6,7 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { QueryChatItem } from "./components/gx-query/query-chat/query-chat";
-import { GeneratorType, QueryViewerChartType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerShowDataAs, QueryViewerTranslations, QueryViewerTrendPeriod, TrendIcon } from "./common/basic-types";
+import { GeneratorType, QueryViewerChartType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPlotSeries, QueryViewerShowDataAs, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels, TrendIcon } from "./common/basic-types";
 import { QueryViewerServiceResponse } from "./services/types/service-result";
 import { ChartOptions, LegendOptions, PlotOptions, SeriesOptionsType, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
 import { QueryViewerParameterChangedEvent } from "./components/query-viewer-parameter/query-viewer-parameter";
@@ -123,7 +123,7 @@ export namespace Components {
         /**
           * Timeline
          */
-        "plotSeries": "InTheSameChart" | "InSeparateCharts";
+        "plotSeries": QueryViewerPlotSeries;
         /**
           * Title of the QueryViewer
          */
@@ -171,11 +171,7 @@ export namespace Components {
         /**
           * Labels for XAxis
          */
-        "xAxisLabels": | "Horizontally"
-    | "Rotated30"
-    | "Rotated45"
-    | "Rotated60"
-    | "Vertically";
+        "xAxisLabels": QueryViewerXAxisLabels;
         /**
           * X Axis title
          */
@@ -279,6 +275,10 @@ export namespace Components {
          */
         "chartTitle": TitleOptions;
         /**
+          * Option of the chartType used to visualize and represent data.
+         */
+        "chartType": QueryViewerChartType;
+        /**
           * Options of the tooltip, the tooltip appears when hovering over a point in a series.
          */
         "legendOptions": LegendOptions;
@@ -287,21 +287,95 @@ export namespace Components {
          */
         "plotOptions": PlotOptions;
         /**
+          * Specifies if the chart series are plotted together in the same chart or alone in separate charts.
+         */
+        "plotSeries": QueryViewerPlotSeries;
+        /**
           * Options of the X axis (usually this is the horizontal axis).
          */
         "seriesOptions": SeriesOptionsType[];
+        /**
+          * Specifies whether the values for the data elements are shown in the chart or not.
+         */
+        "showValues": boolean;
         /**
           * Options of the chart.
          */
         "tooltipOptions": TooltipOptions;
         /**
+          * For translate the labels of the outputs
+         */
+        "translations": QueryViewerTranslations;
+        /**
+          * Specifies whether the X axis intersects the Y axis at zero or the intersection point is automatically calculated.
+         */
+        "xAxisIntersectionAtZero": boolean;
+        /**
+          * Specifies if the labels in the X axis of a chart are shown horizontally or vertically.
+         */
+        "xAxisLabels": QueryViewerXAxisLabels;
+        /**
+          * X axis title, if specified.
+         */
+        "xAxisTitle": string;
+        /**
           * Options of the Y axis (usually this is the vertical axis).
          */
-        "xaxisOptions": XAxisOptions;
+        "xaxisOptions": XAxisOptions | XAxisOptions[];
+        /**
+          * Y axis title, if specified.
+         */
+        "yAxisTitle": string;
         /**
           * Options of the plot for each series type chart.
          */
-        "yaxisOptions": YAxisOptions;
+        "yaxisOptions": YAxisOptions | YAxisOptions[];
+    }
+    interface GxQueryViewerChartController {
+        /**
+          * Allow selection
+         */
+        "allowSelection": boolean;
+        /**
+          * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
+         */
+        "chartType": QueryViewerChartType;
+        /**
+          * A CSS class to set as the `gx-query-viewer-chart-controller` element class.
+         */
+        "cssClass": string;
+        /**
+          * Timeline
+         */
+        "plotSeries": QueryViewerPlotSeries;
+        /**
+          * Title of the QueryViewer
+         */
+        "queryTitle": string;
+        /**
+          * Specifies the metadata and data that the control will use to render.
+         */
+        "serviceResponse": QueryViewerServiceResponse;
+        /**
+          * if true show values on the graph
+         */
+        "showValues": boolean;
+        /**
+          * For translate the labels of the outputs
+         */
+        "translations": QueryViewerTranslations;
+        /**
+          * if true the x Axes intersect at zero
+         */
+        "xAxisIntersectionAtZero": boolean;
+        /**
+          * Labels for XAxis
+         */
+        "xAxisLabels": QueryViewerXAxisLabels;
+        /**
+          * Y Axis title
+         */
+        "yAxisTitle": string;
     }
     interface GxQueryViewerController {
         /**
@@ -594,6 +668,12 @@ declare global {
         prototype: HTMLGxQueryViewerChartElement;
         new (): HTMLGxQueryViewerChartElement;
     };
+    interface HTMLGxQueryViewerChartControllerElement extends Components.GxQueryViewerChartController, HTMLStencilElement {
+    }
+    var HTMLGxQueryViewerChartControllerElement: {
+        prototype: HTMLGxQueryViewerChartControllerElement;
+        new (): HTMLGxQueryViewerChartControllerElement;
+    };
     interface HTMLGxQueryViewerControllerElement extends Components.GxQueryViewerController, HTMLStencilElement {
     }
     var HTMLGxQueryViewerControllerElement: {
@@ -631,6 +711,7 @@ declare global {
         "gx-query-viewer-card": HTMLGxQueryViewerCardElement;
         "gx-query-viewer-card-controller": HTMLGxQueryViewerCardControllerElement;
         "gx-query-viewer-chart": HTMLGxQueryViewerChartElement;
+        "gx-query-viewer-chart-controller": HTMLGxQueryViewerChartControllerElement;
         "gx-query-viewer-controller": HTMLGxQueryViewerControllerElement;
         "gx-query-viewer-element": HTMLGxQueryViewerElementElement;
         "gx-query-viewer-element-format": HTMLGxQueryViewerElementFormatElement;
@@ -751,7 +832,7 @@ declare namespace LocalJSX {
         /**
           * Timeline
          */
-        "plotSeries"?: "InTheSameChart" | "InSeparateCharts";
+        "plotSeries"?: QueryViewerPlotSeries;
         /**
           * Title of the QueryViewer
          */
@@ -799,11 +880,7 @@ declare namespace LocalJSX {
         /**
           * Labels for XAxis
          */
-        "xAxisLabels"?: | "Horizontally"
-    | "Rotated30"
-    | "Rotated45"
-    | "Rotated60"
-    | "Vertically";
+        "xAxisLabels"?: QueryViewerXAxisLabels;
         /**
           * X Axis title
          */
@@ -911,6 +988,10 @@ declare namespace LocalJSX {
          */
         "chartTitle"?: TitleOptions;
         /**
+          * Option of the chartType used to visualize and represent data.
+         */
+        "chartType"?: QueryViewerChartType;
+        /**
           * Options of the tooltip, the tooltip appears when hovering over a point in a series.
          */
         "legendOptions"?: LegendOptions;
@@ -919,21 +1000,95 @@ declare namespace LocalJSX {
          */
         "plotOptions"?: PlotOptions;
         /**
+          * Specifies if the chart series are plotted together in the same chart or alone in separate charts.
+         */
+        "plotSeries"?: QueryViewerPlotSeries;
+        /**
           * Options of the X axis (usually this is the horizontal axis).
          */
         "seriesOptions"?: SeriesOptionsType[];
+        /**
+          * Specifies whether the values for the data elements are shown in the chart or not.
+         */
+        "showValues"?: boolean;
         /**
           * Options of the chart.
          */
         "tooltipOptions"?: TooltipOptions;
         /**
+          * For translate the labels of the outputs
+         */
+        "translations"?: QueryViewerTranslations;
+        /**
+          * Specifies whether the X axis intersects the Y axis at zero or the intersection point is automatically calculated.
+         */
+        "xAxisIntersectionAtZero"?: boolean;
+        /**
+          * Specifies if the labels in the X axis of a chart are shown horizontally or vertically.
+         */
+        "xAxisLabels"?: QueryViewerXAxisLabels;
+        /**
+          * X axis title, if specified.
+         */
+        "xAxisTitle"?: string;
+        /**
           * Options of the Y axis (usually this is the vertical axis).
          */
-        "xaxisOptions"?: XAxisOptions;
+        "xaxisOptions"?: XAxisOptions | XAxisOptions[];
+        /**
+          * Y axis title, if specified.
+         */
+        "yAxisTitle"?: string;
         /**
           * Options of the plot for each series type chart.
          */
-        "yaxisOptions"?: YAxisOptions;
+        "yaxisOptions"?: YAxisOptions | YAxisOptions[];
+    }
+    interface GxQueryViewerChartController {
+        /**
+          * Allow selection
+         */
+        "allowSelection"?: boolean;
+        /**
+          * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
+         */
+        "chartType"?: QueryViewerChartType;
+        /**
+          * A CSS class to set as the `gx-query-viewer-chart-controller` element class.
+         */
+        "cssClass"?: string;
+        /**
+          * Timeline
+         */
+        "plotSeries"?: QueryViewerPlotSeries;
+        /**
+          * Title of the QueryViewer
+         */
+        "queryTitle"?: string;
+        /**
+          * Specifies the metadata and data that the control will use to render.
+         */
+        "serviceResponse"?: QueryViewerServiceResponse;
+        /**
+          * if true show values on the graph
+         */
+        "showValues"?: boolean;
+        /**
+          * For translate the labels of the outputs
+         */
+        "translations"?: QueryViewerTranslations;
+        /**
+          * if true the x Axes intersect at zero
+         */
+        "xAxisIntersectionAtZero"?: boolean;
+        /**
+          * Labels for XAxis
+         */
+        "xAxisLabels"?: QueryViewerXAxisLabels;
+        /**
+          * Y Axis title
+         */
+        "yAxisTitle"?: string;
     }
     interface GxQueryViewerController {
         /**
@@ -1191,6 +1346,7 @@ declare namespace LocalJSX {
         "gx-query-viewer-card": GxQueryViewerCard;
         "gx-query-viewer-card-controller": GxQueryViewerCardController;
         "gx-query-viewer-chart": GxQueryViewerChart;
+        "gx-query-viewer-chart-controller": GxQueryViewerChartController;
         "gx-query-viewer-controller": GxQueryViewerController;
         "gx-query-viewer-element": GxQueryViewerElement;
         "gx-query-viewer-element-format": GxQueryViewerElementFormat;
@@ -1208,6 +1364,7 @@ declare module "@stencil/core" {
             "gx-query-viewer-card": LocalJSX.GxQueryViewerCard & JSXBase.HTMLAttributes<HTMLGxQueryViewerCardElement>;
             "gx-query-viewer-card-controller": LocalJSX.GxQueryViewerCardController & JSXBase.HTMLAttributes<HTMLGxQueryViewerCardControllerElement>;
             "gx-query-viewer-chart": LocalJSX.GxQueryViewerChart & JSXBase.HTMLAttributes<HTMLGxQueryViewerChartElement>;
+            "gx-query-viewer-chart-controller": LocalJSX.GxQueryViewerChartController & JSXBase.HTMLAttributes<HTMLGxQueryViewerChartControllerElement>;
             "gx-query-viewer-controller": LocalJSX.GxQueryViewerController & JSXBase.HTMLAttributes<HTMLGxQueryViewerControllerElement>;
             "gx-query-viewer-element": LocalJSX.GxQueryViewerElement & JSXBase.HTMLAttributes<HTMLGxQueryViewerElementElement>;
             "gx-query-viewer-element-format": LocalJSX.GxQueryViewerElementFormat & JSXBase.HTMLAttributes<HTMLGxQueryViewerElementFormatElement>;

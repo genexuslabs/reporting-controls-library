@@ -1,9 +1,6 @@
 # gx-query-viewer-chart-controller
 
-
-
 <!-- Auto Generated Below -->
-
 
 ## Properties
 
@@ -12,6 +9,7 @@
 | `allowSelection`          | `allow-selection`             | Allow selection                                                             | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `undefined` |
 | `chartType`               | `chart-type`                  | If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...        | `QueryViewerChartType`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `undefined` |
 | `cssClass`                | `css-class`                   | A CSS class to set as the `gx-query-viewer-chart-controller` element class. | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `undefined` |
+| `plotSeries`              | `plot-series`                 | Timeline                                                                    | `QueryViewerPlotSeries.InSeparateCharts \| QueryViewerPlotSeries.InTheSameChart`                                                                                                                                                                                                                                                                                                                                                                                                                                             | `undefined` |
 | `queryTitle`              | `query-title`                 | Title of the QueryViewer                                                    | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `undefined` |
 | `serviceResponse`         | --                            | Specifies the metadata and data that the control will use to render.        | `{ MetaData: QueryViewerServiceMetaData; Data: QueryViewerServiceData; }`                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `undefined` |
 | `showValues`              | `show-values`                 | if true show values on the graph                                            | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `undefined` |
@@ -20,18 +18,18 @@
 | `xAxisLabels`             | `x-axis-labels`               | Labels for XAxis                                                            | `QueryViewerXAxisLabels.Horizontally \| QueryViewerXAxisLabels.Rotated30 \| QueryViewerXAxisLabels.Rotated45 \| QueryViewerXAxisLabels.Rotated60 \| QueryViewerXAxisLabels.Vertically`                                                                                                                                                                                                                                                                                                                                       | `undefined` |
 | `yAxisTitle`              | `y-axis-title`                | Y Axis title                                                                | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `undefined` |
 
-
 ## Dependencies
 
 ### Used by
 
- - [gx-query-viewer](../../query-viewer)
+- [gx-query-viewer](../../query-viewer)
 
 ### Depends on
 
 - [gx-query-viewer-chart](..)
 
 ### Graph
+
 ```mermaid
 graph TD;
   gx-query-viewer-chart-controller --> gx-query-viewer-chart
@@ -39,6 +37,6 @@ graph TD;
   style gx-query-viewer-chart-controller fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
-----------------------------------------------
+---
 
-*Built with [StencilJS](https://stenciljs.com/)*
+_Built with [StencilJS](https://stenciljs.com/)_
