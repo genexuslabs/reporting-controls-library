@@ -23,6 +23,7 @@ import { trimUtil } from "../../../services/xml-parser/utils/general";
 import {
   IsMulticoloredSerie,
   NormalizeTargetAndMaximumValues,
+  aggregate,
   //   getPictureProperties,
   parseNumericPicture
 } from "../../../utils/general";
@@ -485,67 +486,6 @@ function XAxisDataTypeOK(
 //     if (serie.MaximumValue < serie.TargetValue)
 //         serie.MaximumValue = serie.TargetValue;
 // }
-
-function aggregate(
-  aggregation: QueryViewerAggregationType,
-  values: number[],
-  quantities: number[]
-) {
-  let sumValues: number;
-  let sumQuantities: number;
-  let minValue: number;
-  let maxValue: number;
-
-  switch (aggregation) {
-    case QueryViewerAggregationType.Sum:
-      values.forEach(value => {
-        if (value != null && sumValues == null) {
-          sumValues = value;
-        } else if (value != null && sumValues != null) {
-          sumValues += value;
-        }
-      });
-      return sumValues;
-    case QueryViewerAggregationType.Average:
-      for (let i = 0; i < values.length; i++) {
-        if ((values[i] != null && sumValues, sumQuantities == null)) {
-          sumValues = values[i];
-          sumQuantities = quantities[i];
-        } else if ((values[i], sumValues, sumQuantities != null)) {
-          sumValues += values[i];
-          sumQuantities += quantities[i];
-        }
-      }
-      return sumValues != null ? sumValues / sumQuantities : null;
-    case QueryViewerAggregationType.Count:
-      quantities.forEach(quantity => {
-        if (sumQuantities == null) {
-          sumQuantities = quantity;
-        } else {
-          sumQuantities += quantity;
-        }
-      });
-      return sumQuantities;
-    case QueryViewerAggregationType.Max:
-      values.forEach(value => {
-        if (!maxValue) {
-          maxValue = value;
-        } else if (value > maxValue) {
-          maxValue = value;
-        }
-      });
-      return maxValue;
-    case QueryViewerAggregationType.Min:
-      values.forEach(value => {
-        if (!minValue) {
-          minValue = value;
-        } else if (value < maxValue) {
-          minValue = value;
-        }
-      });
-      return minValue;
-  }
-}
 
 function aggregatePoints(chartSerie: QueryViewerChartSerie) {
   const currentYValues: number[] = [];

@@ -170,7 +170,7 @@ const aggregateMap: {
     values.length === 0 ? null : Math.min(...values)
 };
 
-const aggregate = (
+export const aggregate = (
   aggregation: QueryViewerAggregationType,
   values: number[],
   quantities: number[]
