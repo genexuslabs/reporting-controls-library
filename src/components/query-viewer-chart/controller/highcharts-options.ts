@@ -1,4 +1,3 @@
-/* eslint-disable prefer-const */
 import {
   QueryViewerChartSerie,
   QueryViewerChartType,
@@ -302,7 +301,7 @@ function getXAxisObject(
             i + 1
           );
         }
-        let plotBand: XAxisPlotBandsOptions = {};
+        const plotBand: XAxisPlotBandsOptions = {};
         // var color;
         // if (!qv.util.IsNullColor(chartSerie.Color)) {
         //   color = chartSerie.Color;
@@ -455,7 +454,7 @@ function getYAxisObject(
   xAxisIntersectionAtZero: boolean,
   seriesIndex: number
 ): YAxisOptions {
-  let yAxis: YAxisOptions = {
+  const yAxis: YAxisOptions = {
     plotLines: [],
     plotBands: [],
     title: null
@@ -1010,7 +1009,7 @@ function PieTooltipFormatter(
 ) {
   // const qViewer = qv.collection[evArg.point.series.chart.options.qv.viewerId];
   if (!sharedTooltip) {
-    let percentage = Math.round(evArg.point.percentage * 100) / 100;
+    const percentage = Math.round(evArg.point.percentage * 100) / 100;
     return isRTL
       ? "%" +
           percentage +
@@ -1030,7 +1029,7 @@ function PieTooltipFormatter(
     // const hoverPoints = getHoverPoints(qViewer, evArg.point.index);
     // const x = hoverPoints.length > 0 ? hoverPoints[0].id : "";
     // const hasTitle = x !== "";
-    let res = "";
+    const res = "";
     // if (hasTitle) {
     //   isRTL ? (res += GetBoldRightText(x)) : (res += GetBoldText(x));
     // }
@@ -1199,7 +1198,7 @@ function DateTimeTooltipFormatter() {
   //   }
   //   pointsByStrIndex[strIndex].push(hoverPoints[i]);
   // }
-  let res = "";
+  const res = "";
   // let currentTotal = 0;
   // let previousTotal = 0;
   // let oldUtc;
@@ -1536,18 +1535,10 @@ function getSeriesObject(
 }
 
 function circularGaugeWidths(chartSeriesCount: number, serieNumber: number) {
-  let width;
-  let center;
-  let lowerExtreme;
-  let upperExtreme;
-  if (chartSeriesCount <= 3) {
-    width = 24;
-  } else {
-    width = 50 / (chartSeriesCount - 1) - 1;
-  } // Para que no pase más del 50% del Gauge hacia adentro;
-  center = 100 - (width + 1) * (serieNumber - 1);
-  lowerExtreme = center - width / 2;
-  upperExtreme = center + width / 2;
+  const width = chartSeriesCount <= 3 ? 24 : 50 / (chartSeriesCount - 1) - 1; // Para que no pase más del 50% del Gauge hacia adentro;
+  const center = 100 - (width + 1) * (serieNumber - 1);
+  const lowerExtreme = center - width / 2;
+  const upperExtreme = center + width / 2;
   return {
     Width: width,
     Center: center,
