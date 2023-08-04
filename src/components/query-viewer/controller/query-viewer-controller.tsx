@@ -1,4 +1,4 @@
-import { Component, Event, EventEmitter, Prop } from "@stencil/core";
+import { Component, Event, EventEmitter, Prop, Watch } from "@stencil/core";
 
 import { QueryViewer, QueryViewerCard } from "../../../services/types/json";
 import {
@@ -51,6 +51,11 @@ export class QueryViewerController {
    */
   @Prop() readonly objectName: string;
 
+  @Watch("objectName")
+  watchPropHandler(newValue: string) {
+    this.getMetadataAndData(newValue);
+  }
+
   /**
    * Include spark line
    */
@@ -91,12 +96,12 @@ export class QueryViewerController {
    */
   @Event() queryViewerServiceResponse: EventEmitter<QueryViewerServiceResponse>;
 
-  private getQueryViewerInformation(): QueryViewer {
+  private getQueryViewerInformation(objectName: string): QueryViewer {
     const queryViewerObject: QueryViewer = {
       ApplicationNamespace: this.applicationNamespace,
       AllowElementsOrderChange: this.allowElementsOrderChange,
       Axes: undefined, // @todo Add Axes support
-      ObjectName: this.objectName,
+      ObjectName: objectName,
       Parameters: [], // @todo Add Parameters support
       RealType: this.type,
       ReturnSampleData: this.returnSampleData,
@@ -150,7 +155,7 @@ export class QueryViewerController {
       });
     };
 
-  connectedCallback() {
+  private getMetadataAndData(objectName: string) {
     // In some lifecycles this variable is undefined and a couple of ms after,
     // it's defined
     if (!this.baseUrl) {
@@ -165,7 +170,7 @@ export class QueryViewerController {
       return;
     }
 
-    const queryViewerObject = this.getQueryViewerInformation();
+    const queryViewerObject = this.getQueryViewerInformation(objectName);
 
     asyncServerCall(
       queryViewerObject,
@@ -174,5 +179,9 @@ export class QueryViewerController {
       "metadata",
       this.metaDataCallback(queryViewerObject)
     );
+  }
+
+  connectedCallback() {
+    this.getMetadataAndData(this.objectName);
   }
 }
