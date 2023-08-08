@@ -82,7 +82,6 @@ export class QueryViewerChart {
     if (!this.serviceResponse) {
       return [];
     }
-
     const chartMetadataAndData = processDataAndMetadata(
       this.serviceResponse,
       QueryViewerOutputType.Chart,
@@ -144,8 +143,8 @@ export class QueryViewerChart {
             // credits,
             legend,
             title,
-            // subtitle,
-            // pane,
+            subtitle,
+            pane,
             xAxis,
             yAxis,
             plotOptions,
@@ -156,9 +155,11 @@ export class QueryViewerChart {
               class={{ [`${this.cssClass}__chart`]: !!this.cssClass }}
               // translations={this.translations}
               chartTitle={title}
+              subtitleOptions={subtitle}
               chartOptions={chart}
               seriesOptions={series}
               tooltipOptions={tooltip}
+              paneOptions={pane}
               legendOptions={legend}
               plotOptions={plotOptions}
               yaxisOptions={yAxis}

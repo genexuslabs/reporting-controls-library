@@ -2,13 +2,15 @@ import { Component, Prop, h, Host, Element } from "@stencil/core";
 import {
   Chart,
   TitleOptions,
+  SubtitleOptions,
   ChartOptions,
   SeriesOptionsType,
   TooltipOptions,
   LegendOptions,
   PlotOptions,
   YAxisOptions,
-  XAxisOptions
+  XAxisOptions,
+  PaneOptions
 } from "highcharts";
 
 import Highcharts from "highcharts";
@@ -47,6 +49,11 @@ export class QueryViewerChart {
   @Prop() readonly chartTitle: TitleOptions;
 
   /**
+   * Name of the element
+   */
+  @Prop() readonly subtitleOptions: SubtitleOptions;
+
+  /**
    * Option of the chartType used to visualize and represent data.
    */
   @Prop() readonly chartType: QueryViewerChartType;
@@ -80,6 +87,11 @@ export class QueryViewerChart {
    * Options of the chart.
    */
   @Prop() readonly tooltipOptions: TooltipOptions;
+
+  /**
+   * Options of the chart.
+   */
+  @Prop() readonly paneOptions: PaneOptions;
 
   /**
    * For translate the labels of the outputs
@@ -127,10 +139,12 @@ export class QueryViewerChart {
       {
         chart: this.chartOptions,
         title: this.chartTitle,
+        subtitle: this.subtitleOptions,
         xAxis: this.xaxisOptions,
         yAxis: this.yaxisOptions,
         legend: this.legendOptions,
         tooltip: this.tooltipOptions,
+        pane: this.paneOptions,
         plotOptions: this.plotOptions,
         series: this.seriesOptions,
         credits: {

@@ -346,7 +346,7 @@ function AddSeriesValues(
   for (let i = 0; i < result.Series.DataFields.length; i++) {
     const serie = result.Series.ByIndex[i];
     const dataField = result.Series.DataFields[i];
-    const value = row[dataField] !== undefined ? row[dataField] : null;
+    const value = row[dataField] ?? null;
     const point: QueryViewerChartPoint = {
       Value: "",
       Value_N: "",
@@ -648,11 +648,9 @@ export function processDataAndMetadata(
     };
 
     serie.Picture =
-      datum.Picture === ""
-        ? serie.DataType === QueryViewerDataType.Integer
-          ? "ZZZZZZZZZZZZZZ9"
-          : "ZZZZZZZZZZZZZZ9.99"
-        : datum.Picture;
+      datum.Picture || serie.DataType === QueryViewerDataType.Integer
+        ? "ZZZZZZZZZZZZZZ9"
+        : "ZZZZZZZZZZZZZZ9.99";
 
     serie.NumberFormat = parseNumericPicture(serie.DataType, serie.Picture);
     // if (!multicoloredSerie) {
