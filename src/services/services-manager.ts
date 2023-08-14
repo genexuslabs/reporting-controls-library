@@ -1,8 +1,11 @@
-import { QueryViewer } from "./types/json";
-import { data, metaData } from "./post-info";
-import { parseObjectToFormData } from "./utils/common";
 import {
   GeneratorType,
+  GxChatMessage,
+  GxChatMessageResponse,
+  GxQueryItem,
+  GxQueryListResponse,
+  GxQueryOptions,
+  Query,
   QueryViewerChartType,
   QueryViewerContinent,
   QueryViewerCountry,
@@ -18,12 +21,23 @@ import {
   ServiceType
 } from "../common/basic-types";
 import {
+  DeleteQueryServiceResponse,
   GXqueryConnector,
-  GXqueryOptions,
   GetQueryByNameServiceResponse,
-  Query
+  RenameQueryServiceResponse,
+  UpdateQueryServiceResponse
 } from "./gxquery-connector";
+import { data, metaData } from "./post-info";
+import {
+  transformGxChatItemToChatMessageDto,
+  transformGxQueryItemToQueryDto,
+  transformQueryDtoListToUIData,
+  transformQueryDtoToChatItem,
+  transformQueryDtoToGxQueryItem
+} from "./query-transformations";
+import { QueryViewer } from "./types/json";
 import { QueryViewerServiceProperties } from "./types/service-result";
+import { parseObjectToFormData } from "./utils/common";
 
 const STATE_DONE = 4;
 const STATUS_OK = 200;
@@ -115,7 +129,7 @@ const queryToQueryProperties = (query: Query): QueryViewerServiceProperties => {
   };
 };
 
-const contextToGXqueryOptions = (context: ServicesContext): GXqueryOptions => {
+const contextToGXqueryOptions = (context: ServicesContext): GxQueryOptions => {
   return {
     baseUrl: context.baseUrl,
     metadataName: context.metadataName,
@@ -190,4 +204,113 @@ export const asyncServerCall = (
       callbackWhenReady(str);
     });
   }
+};
+
+/**
+ * Fetch query list service
+ * @param options Query options
+ * @param callbackWhenReady Callback function that return data or error
+ */
+export const asyncGetListQuery = (
+  options: GxQueryOptions,
+  callbackWhenReady: (data: GxQueryListResponse) => void
+) => {
+  GXqueryConnector.getQueryList(options)
+    .then(resObj => {
+      const { Errors } = resObj;
+      const Queries = transformQueryDtoListToUIData(resObj.Queries);
+      callbackWhenReady({ Queries, Errors });
+    })
+    .catch(err => {
+      const Errors = [].concat(err?.message || err || []);
+      callbackWhenReady({ Queries: [], Errors });
+    });
+  // const queries = transformQueryDtoListToUIData(resObj.Queries);
+  // callbackWhenReady(queries);
+};
+
+/**
+ * Call service to rename a query
+ * @param options options that includes the query with the new name
+ * @param callbackWhenReady Callback that return service error message
+ */
+export const asyncRenameQuery = (
+  options: GxQueryOptions,
+  query: GxQueryItem,
+  callbackWhenReady: (data: RenameQueryServiceResponse) => void
+) => {
+  const queryDto = transformGxQueryItemToQueryDto(query);
+  const queryOptions = { ...options, query: queryDto };
+  GXqueryConnector.renameQuery(queryOptions)
+    .then(resObj => {
+      callbackWhenReady(resObj);
+    })
+    .catch(err => {
+      callbackWhenReady({ Errors: [err] });
+    });
+};
+
+/**
+ * Call service to delete a query
+ * @param options query options
+ * @param callbackWhenReady Callback that return service error message
+ */
+export const asyncDeleteQuery = (
+  options: GxQueryOptions,
+  query: GxQueryItem,
+  callbackWhenReady: (data: DeleteQueryServiceResponse) => void
+) => {
+  const queryDto = transformGxQueryItemToQueryDto(query);
+  const queryOptions = { ...options, query: queryDto };
+  GXqueryConnector.deleteQuery(queryOptions)
+    .then(resObj => {
+      callbackWhenReady(resObj);
+    })
+    .catch(err => {
+      callbackWhenReady({ Errors: [].concat(err?.message || err || []) });
+    });
+};
+
+/**
+ * Call service to insert a new query
+ * @param options provide baseUrl and metadataId
+ * @param callbackWhenReady Callback that return service error message
+ */
+export const asyncNewChatMessage = (
+  options: GxQueryOptions,
+  messages: GxChatMessage[],
+  callbackWhenReady: (data: GxChatMessageResponse) => void
+) => {
+  const chatMessages = messages.map(transformGxChatItemToChatMessageDto);
+  GXqueryConnector.newInput(options, chatMessages)
+    .then(resObj => {
+      const { Query: QueryDto, Errors } = resObj;
+      const ChatMessage = transformQueryDtoToChatItem(QueryDto);
+      const Query = transformQueryDtoToGxQueryItem(QueryDto);
+      callbackWhenReady({ Errors, ChatMessage, Query });
+    })
+    .catch(err => {
+      callbackWhenReady({ ChatMessage: undefined, Errors: [err] });
+    });
+};
+
+/**
+ * Call service to update a new query
+ * @param options provide baseUrl and metadataId
+ * @param callbackWhenReady Callback that return service error message
+ */
+export const asyncUpdateQuery = (
+  options: GxQueryOptions,
+  query: GxQueryItem,
+  callbackWhenReady: (data: UpdateQueryServiceResponse) => void
+) => {
+  const queryDto = transformGxQueryItemToQueryDto(query);
+  const queryOptions = { ...options, query: queryDto };
+  GXqueryConnector.updateQuery(queryOptions)
+    .then(resObj => {
+      callbackWhenReady(resObj);
+    })
+    .catch(err => {
+      callbackWhenReady({ Errors: [].concat(err?.message || err || []) });
+    });
 };

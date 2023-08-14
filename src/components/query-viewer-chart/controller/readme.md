@@ -2,6 +2,7 @@
 
 <!-- Auto Generated Below -->
 
+
 ## Properties
 
 | Property                  | Attribute                     | Description                                                                 | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Default     |
@@ -18,18 +19,18 @@
 | `xAxisLabels`             | `x-axis-labels`               | Labels for XAxis                                                            | `QueryViewerXAxisLabels.Horizontally \| QueryViewerXAxisLabels.Rotated30 \| QueryViewerXAxisLabels.Rotated45 \| QueryViewerXAxisLabels.Rotated60 \| QueryViewerXAxisLabels.Vertically`                                                                                                                                                                                                                                                                                                                                       | `undefined` |
 | `yAxisTitle`              | `y-axis-title`                | Y Axis title                                                                | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `undefined` |
 
+
 ## Dependencies
 
 ### Used by
 
-- [gx-query-viewer](../../query-viewer)
+ - [gx-query-viewer](../../query-viewer)
 
 ### Depends on
 
 - [gx-query-viewer-chart](..)
 
 ### Graph
-
 ```mermaid
 graph TD;
   gx-query-viewer-chart-controller --> gx-query-viewer-chart
@@ -37,6 +38,6 @@ graph TD;
   style gx-query-viewer-chart-controller fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
----
+----------------------------------------------
 
-_Built with [StencilJS](https://stenciljs.com/)_
+*Built with [StencilJS](https://stenciljs.com/)*

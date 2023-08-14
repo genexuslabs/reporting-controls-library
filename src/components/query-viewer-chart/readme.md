@@ -2,6 +2,7 @@
 
 <!-- Auto Generated Below -->
 
+
 ## Properties
 
 | Property                  | Attribute                     | Description                                                                                                           | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Default     |
@@ -23,15 +24,15 @@
 | `yAxisTitle`              | `y-axis-title`                | Y axis title, if specified.                                                                                           | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `undefined` |
 | `yaxisOptions`            | --                            | Options of the plot for each series type chart.                                                                       | `YAxisOptions \| YAxisOptions[]`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | `undefined` |
 
+
 ## Dependencies
 
 ### Used by
 
-- [gx-query-viewer-card](../query-viewer-card)
-- [gx-query-viewer-chart-controller](controller)
+ - [gx-query-viewer-card](../query-viewer-card)
+ - [gx-query-viewer-chart-controller](controller)
 
 ### Graph
-
 ```mermaid
 graph TD;
   gx-query-viewer-card --> gx-query-viewer-chart
@@ -39,6 +40,6 @@ graph TD;
   style gx-query-viewer-chart fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
----
+----------------------------------------------
 
-_Built with [StencilJS](https://stenciljs.com/)_
+*Built with [StencilJS](https://stenciljs.com/)*

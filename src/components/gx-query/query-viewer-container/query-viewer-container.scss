@@ -1,0 +1,53 @@
+@import "../../../common/base-mixins";
+@import "../../../global/variables";
+
+@include box-sizing();
+
+:host {
+  flex: 1 1 0%;
+
+  background-color: var(--gx-background-color);
+  border-radius: var(--gx-border-radius);
+  box-shadow: var(--gx-box-shadow);
+  font-family: var(--gx-font-family);
+  margin: var(--gx-space-medium);
+}
+
+:host::part(query-viewer__header) {
+  align-items: center;
+  border-bottom: var(--gx-header-border);
+  display: flex;
+  height: var(--gx-header-height);
+  justify-content: space-between;
+  line-height: var(--gx-header-height);
+  // margin-bottom: var(--gx-space-medium);
+  margin: 0;
+  padding: 0 var(--gx-space-medium);
+  position: relative;
+  // width: 100%;
+}
+
+:host::part(query-viewer__title) {
+  font-size: var(--gx-header-font-size);
+  margin: 0;
+}
+
+:host::part(query-viewer__controls) {
+  display: flex;
+  flex-basis: 160px;
+}
+
+.viewer {
+  display: flex;
+  height: calc(100% - var(--gx-header-height));
+}
+
+.subtile {
+  text-align: center;
+  font-style: italic;
+}
+
+gx-query-viewer {
+  align-items: center;
+  justify-content: center;
+}

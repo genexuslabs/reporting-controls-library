@@ -10,13 +10,13 @@ import {
 import { ChartTypes } from "../components/query-viewer-chart/controller/chart-types";
 import { ChartMetadataAndData } from "../components/query-viewer-chart/controller/processDataAndMetadata";
 // import { QueryViewerAxisConditionalStyle } from "../services/types/json";
+import { TooltipFormatterContextObject } from "highcharts";
 import {
   QueryViewerServiceDataRow,
   QueryViewerServiceMetaData,
   QueryViewerServiceMetaDataAxis,
   QueryViewerServiceMetaDataData
 } from "../services/types/service-result";
-import { TooltipFormatterContextObject } from "highcharts";
 export function parseNumericPicture(
   dataType: QueryViewerDataType,
   picture: string
@@ -975,3 +975,33 @@ export function TooltipFormatter(
 //     ")";
 //   return duration;
 // }
+
+export function sessionGet(key: string): string | null {
+  const stringValue = window.sessionStorage.getItem(key);
+  if (stringValue !== null) {
+    const { expirationDate, value } = JSON.parse(stringValue);
+    if (new Date(expirationDate) > new Date()) {
+      return value;
+    } else {
+      window.sessionStorage.removeItem(key);
+    }
+  }
+  return null;
+}
+
+/**
+ * Create a session storage with expiration time
+ * @param key Session Storage key
+ * @param value Session Storage value
+ */
+export function sessionSet(key: string, value: string): void {
+  const expirationInMin = process.env.SESSION_LIMIT || 5;
+  const expirationDate = new Date(
+    new Date().getTime() + 60000 * Number(expirationInMin)
+  );
+  const newValue = {
+    value: value,
+    expirationDate: expirationDate.toISOString()
+  };
+  window.sessionStorage.setItem(key, JSON.stringify(newValue));
+}

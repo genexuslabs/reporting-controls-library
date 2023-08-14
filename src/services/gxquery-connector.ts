@@ -1,17 +1,27 @@
-import { ServiceType } from "../common/basic-types";
+import {
+  GxError,
+  GxQueryOptions,
+  Query,
+  ServiceType
+} from "../common/basic-types";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 
-const API_VERSION_PATH = "/API/V1";
+const API_VERSION_PATH = process.env.API_VERSION_PATH || "/API/V1";
 const LOGIN_SERVICE_PATH = "/Session/Login";
 const GET_METADATA_BY_NAME_SERVICE_PATH = "/Metadata/GetByName";
 const GET_QUERY_BY_NAME_SERVICE_PATH = "/Query/GetByName";
+const GET_LIST_QUERY_SERVICE_PATH = "/Query/List";
+const RENAME_QUERY_SERVICE_PATH = "/Query/SetPropertyValue";
+const DELETE_QUERY_SERVICE_PATH = "/Query/Delete";
+const NEW_QUERY_SERVICE_PATH = "/Query/New";
+const UPDATE_QUERY_SERVICE_PATH = "/Query/Update";
 const QV_GET_METADATA_SERVICE_PATH = "/QueryViewer/GetMetadata";
 const QV_GET_DATA_SERVICE_PATH = "/QueryViewer/GetData";
 const GENERIC_ERROR_CODE = -1;
-const REPOSITORY_NAME = "";
-const USER_NAME = "administrator";
-const USER_PASSWORD = "administrator123";
+const REPOSITORY_NAME = process.env.REPOSITORY_NAME || "";
+const USER_NAME = process.env.USER_NAME || "administrator";
+const USER_PASSWORD = process.env.USER_PASSWORD || "administrator123";
 
 /**
  * Represents a user session in GXquery
@@ -29,47 +39,18 @@ type Metadata = {
 };
 
 /**
- * Represents query in GXquery
+ * Represent GXquery chat messages
  */
-export type Query = {
-  Id: string;
-  Name: string;
-  Description: string;
-  Expression: string;
-  Modified: string;
-  RemoveDuplicates: boolean;
-  MaxRows: string;
-  TextForNullValues: string;
-  OutputType: string;
-  Title: string;
-  ShowValues: boolean;
-  ShowDataAs: string;
-  Orientation: string;
-  IncludeTrend: boolean;
-  IncludeSparkline: boolean;
-  IncludeMaxAndMin: boolean;
-  ChartType: string;
-  PlotSeries: string;
-  XAxisLabels: string;
-  XAxisIntersectionAtZero: boolean;
-  XAxisTitle: string;
-  YAxisTitle: string;
-  MapType: string;
-  Region: string;
-  Continent: string;
-  Country: string;
-  Paging: boolean;
-  PageSize: number;
-  ShowDataLabelsIn: string;
-  TotalForRows: string;
-  TotalForColumns: string;
+export type ChatMessage = {
+  role: "user" | "assistant";
+  content: string;
 };
 
 /**
  * Generic response to any GXquery API service
  */
-type GenericServiceResponse = {
-  Errors: { Code: number; Message: string }[];
+export type GenericServiceResponse = {
+  Errors: GxError[];
 };
 
 /**
@@ -108,15 +89,29 @@ type QVDataServiceResponse = GenericServiceResponse & {
 };
 
 /**
- * This is the minimum information required to display a query from GXquery
+ * Response returned by the QueryList service
  */
-export type GXqueryOptions = {
-  baseUrl: string;
-  metadataName: string;
-  queryName?: string;
-  query?: Query;
+export type GetQueryListServiceResponse = GenericServiceResponse & {
+  Queries: Query[];
 };
-
+/**
+ * Response returned by the Query rename service
+ */
+export type RenameQueryServiceResponse = GenericServiceResponse;
+/**
+ * Response returned by the Query delete service
+ */
+export type DeleteQueryServiceResponse = GenericServiceResponse;
+/**
+ * Response returned by the Query update service
+ */
+export type UpdateQueryServiceResponse = GenericServiceResponse;
+/**
+ * Response returned by the New Query service
+ */
+export type NewQueryServiceResponse = GenericServiceResponse & {
+  Query: Query;
+};
 /**
  * Returns a generic error given its code and message
  */
@@ -151,7 +146,7 @@ export class GXqueryConnector {
    * Starts a session in GXquery and gets the id for a metadata given its name
    */
   private static async connect(
-    options: GXqueryOptions
+    options: GxQueryOptions
   ): Promise<GenericServiceResponse> {
     GXqueryConnector._connecting = true;
     GXqueryConnector._baseUrl = options.baseUrl;
@@ -172,7 +167,7 @@ export class GXqueryConnector {
    * Test if connected to GXquery and connects if not
    */
   private static async checkConnection(
-    options: GXqueryOptions
+    options: GxQueryOptions
   ): Promise<GenericServiceResponse> {
     const NO_ERRORS_RESPONSE: GenericServiceResponse = { Errors: [] };
     if (GXqueryConnector._connected) {
@@ -194,11 +189,11 @@ export class GXqueryConnector {
   /**
    * Calls any REST service
    */
-  private static async callRESTService(
+  private static async callRESTService<T = GenericServiceResponse>(
     service: string,
     method: HttpMethod,
     serviceParameters: string
-  ): Promise<GenericServiceResponse> {
+  ): Promise<T> {
     let serviceURL = GXqueryConnector._baseUrl + API_VERSION_PATH + service;
     let body: string;
     if (method === "GET" || method === "DELETE") {
@@ -218,15 +213,18 @@ export class GXqueryConnector {
       method: method,
       cache: "no-store",
       headers: headers,
-      body: body
+      body
     };
     try {
       const response = await fetch(serviceURL, fetchOptions);
-      return response.ok
-        ? await response.json()
-        : makeGenericError(response.status, response.statusText);
+      if (!response?.ok) {
+        throw new Error(response.statusText);
+      }
+      return await response.json();
     } catch (err) {
-      return makeGenericError(GENERIC_ERROR_CODE, err.message);
+      return Promise.reject<T>(
+        makeGenericError(GENERIC_ERROR_CODE, err.message) as T
+      );
     }
   }
 
@@ -272,7 +270,7 @@ export class GXqueryConnector {
    * Gets a query given its name
    */
   public static async getQueryByName(
-    options: GXqueryOptions
+    options: GxQueryOptions
   ): Promise<GetQueryByNameServiceResponse> {
     const connectionStatus = await GXqueryConnector.checkConnection(options);
     if (connectionStatus.Errors.length > 0) {
@@ -296,7 +294,7 @@ export class GXqueryConnector {
    * Calls a QueryViewer service (data, metadata, etc)
    */
   public static async callQueryViewerService(
-    options: GXqueryOptions,
+    options: GxQueryOptions,
     serviceType: ServiceType,
     postInfo: string
   ) {
@@ -323,7 +321,7 @@ export class GXqueryConnector {
     }
   }
 
-  private static async getQueryId(options: GXqueryOptions): Promise<string> {
+  private static async getQueryId(options: GxQueryOptions): Promise<string> {
     if (!options.queryName) {
       return options.query.Id;
     }
@@ -336,5 +334,131 @@ export class GXqueryConnector {
     return queryByNameResponse.Errors.length === 0
       ? (queryByNameResponse as GetQueryByNameServiceResponse).Query.Id
       : "";
+  }
+
+  /**
+   * Get list of queries
+   */
+  public static async getQueryList(
+    options: GxQueryOptions
+  ): Promise<GetQueryListServiceResponse> {
+    const connectionStatus = await GXqueryConnector.checkConnection(options);
+    if (connectionStatus.Errors.length > 0) {
+      return { Queries: undefined, Errors: connectionStatus.Errors };
+    }
+    const serviceParameters = `MetadataId=${GXqueryConnector._currentMetadata.Id}`;
+    const serviceResponse = await GXqueryConnector.callRESTService(
+      GET_LIST_QUERY_SERVICE_PATH,
+      "GET",
+      serviceParameters
+    );
+    return serviceResponse as GetQueryListServiceResponse;
+  }
+
+  /**
+   * Set a new name for a query
+   * @param options service options
+   * @returns Service response
+   */
+  public static async renameQuery(
+    options: GxQueryOptions
+  ): Promise<RenameQueryServiceResponse> {
+    const connectionStatus = await GXqueryConnector.checkConnection(options);
+    if (connectionStatus.Errors.length > 0) {
+      return connectionStatus;
+    }
+    const { query } = options;
+    const payload = {
+      MetadataId: GXqueryConnector._currentMetadata.Id,
+      Id: query.Id,
+      PropertyName: "Name",
+      PropertyValue: query.Name
+    };
+    const serviceResponse =
+      await GXqueryConnector.callRESTService<RenameQueryServiceResponse>(
+        RENAME_QUERY_SERVICE_PATH,
+        "PUT",
+        JSON.stringify(payload)
+      );
+    return (
+      serviceResponse.hasOwnProperty("Errors")
+        ? serviceResponse
+        : { Errors: serviceResponse }
+    ) as RenameQueryServiceResponse;
+  }
+  /**
+   * Delete an existing query
+   * @param options service options
+   * @returns Service response
+   */
+  public static async deleteQuery(
+    options: GxQueryOptions
+  ): Promise<DeleteQueryServiceResponse> {
+    const connectionStatus = await GXqueryConnector.checkConnection(options);
+    if (connectionStatus.Errors.length > 0) {
+      return connectionStatus as DeleteQueryServiceResponse;
+    }
+    const { query } = options;
+    const serviceParameters = `MetadataId=${GXqueryConnector._currentMetadata.Id}&Id=${query.Id}`;
+    const serviceResponse =
+      await GXqueryConnector.callRESTService<DeleteQueryServiceResponse>(
+        DELETE_QUERY_SERVICE_PATH,
+        "DELETE",
+        serviceParameters
+      );
+    return (
+      serviceResponse.hasOwnProperty("Errors")
+        ? serviceResponse
+        : { Errors: serviceResponse }
+    ) as DeleteQueryServiceResponse;
+  }
+  /**
+   * Save or update a query
+   */
+  public static async updateQuery(
+    options: GxQueryOptions
+  ): Promise<UpdateQueryServiceResponse> {
+    const connectionStatus = await GXqueryConnector.checkConnection(options);
+    if (connectionStatus.Errors.length > 0) {
+      return connectionStatus;
+    }
+    const payload = {
+      Query: options.query,
+      MetadataId: GXqueryConnector._currentMetadata.Id
+    };
+    const serviceResponse =
+      await GXqueryConnector.callRESTService<UpdateQueryServiceResponse>(
+        UPDATE_QUERY_SERVICE_PATH,
+        "PUT",
+        JSON.stringify(payload)
+      );
+    return (
+      serviceResponse.hasOwnProperty("Errors")
+        ? serviceResponse
+        : { Errors: [].concat(serviceResponse || []) }
+    ) as UpdateQueryServiceResponse;
+  }
+  /**
+   * Create a new query without save it in the database
+   */
+  public static async newInput(
+    options: GxQueryOptions,
+    messages: ChatMessage[]
+  ): Promise<NewQueryServiceResponse> {
+    const connectionStatus = await GXqueryConnector.checkConnection(options);
+    if (connectionStatus.Errors.length > 0) {
+      return { Query: undefined, Errors: connectionStatus.Errors };
+    }
+    const payload = {
+      ChatMessages: messages,
+      MetadataId: GXqueryConnector._currentMetadata.Id
+    };
+    const serviceResponse =
+      await GXqueryConnector.callRESTService<NewQueryServiceResponse>(
+        NEW_QUERY_SERVICE_PATH,
+        "POST",
+        JSON.stringify(payload)
+      );
+    return serviceResponse;
   }
 }

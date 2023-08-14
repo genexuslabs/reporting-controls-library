@@ -84,7 +84,10 @@ module.exports = {
     "@stencil-community/strict-boolean-conditions": "off",
 
     // WA to fix false positive errors
-    "@stencil-community/strict-mutable": "warn" // This rule catches Stencil Prop marked as mutable but not changing value in code
+    "@stencil-community/strict-mutable": "warn", // This rule catches Stencil Prop marked as mutable but not changing value in code
+
+    // React
+    "react/jsx-no-bind": "off"
   },
   overrides: [
     {

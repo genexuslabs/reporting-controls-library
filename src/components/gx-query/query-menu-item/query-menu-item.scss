@@ -1,0 +1,61 @@
+@import "../../../common/base-mixins";
+@import "../../../global/variables";
+
+@include box-sizing();
+
+:host {
+  &::part(query-item__item) {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    gap: var(--gx-space-medium);
+    padding: var(--gx-space-medium);
+    &:hover {
+      background-color: var(--menu-item-hover-bg-color);
+    }
+    &::before {
+      content: "";
+      display: flex;
+      width: 20px;
+      height: 16px;
+      background-image: url("../assets/icons8-graph.svg");
+      background-size: cover;
+    }
+  }
+
+  &::part(query-item__label) {
+    cursor: pointer;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    flex-basis: 100%;
+  }
+
+  &::part(query-item__controls) {
+    display: flex;
+    width: var(--menu-controls-width);
+    visibility: hidden;
+  }
+}
+
+:host([is-active]) {
+  &::part(query-item__controls) {
+    visibility: visible;
+  }
+  &::part(query-item__item) {
+    background-color: var(--menu-item-active-bg-color);
+  }
+}
+
+:host([aria-selected="true"]) li {
+  background-color: var(--menu-item-hover-bg-color);
+}
+
+gx-edit {
+  background-color: white;
+  border: var(--menu-box-border-color);
+}
+
+gx-button:focus {
+  border: 1px solid var(--menu-box-border-focus-color);
+  outline: 1;
+}
