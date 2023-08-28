@@ -40,33 +40,44 @@ export class QueryViewerSlider {
   @Prop({ mutable: true }) startSliderValue = DEFAULT_MIN_VALUE;
 
   /**
+   * This attribute lets you define the steps for each slider.
+   */
+  @Prop() readonly step: number = 0.1;
+
+  /**
    * Fired when a new range of the control is committed by the user.
    */
   @Event() change: EventEmitter<QueryViewerSliderRange>;
 
   private updateStartSlider = (event: InputEvent) => {
-    const startInputValue = Number((event.target as HTMLInputElement).value);
+    event.stopPropagation();
 
+    const startInputValue = Number((event.target as HTMLInputElement).value);
     this.updateCustomVars(this.startSliderValue, startInputValue);
   };
 
   private updateEndSlider = (event: InputEvent) => {
-    const endInputValue = Number((event.target as HTMLInputElement).value);
+    event.stopPropagation();
 
+    const endInputValue = Number((event.target as HTMLInputElement).value);
     this.updateCustomVars(endInputValue, this.endSliderValue);
   };
 
   private updateCustomVars(startSliderValue: number, endSliderValue: number) {
+    const elStyle = this.el.style;
+
     const startSliderWidth = endSliderValue;
     const endSliderWidth = 100 - startSliderValue;
 
-    this.el.style.setProperty(SLIDER_START_WIDTH, startSliderWidth.toString());
-    this.el.style.setProperty(SLIDER_END_WIDTH, endSliderWidth.toString());
-    this.el.style.setProperty(SLIDER_START_VALUE, `${startSliderValue}`);
-    this.el.style.setProperty(SLIDER_END_VALUE, `${endSliderValue}`);
+    elStyle.setProperty(SLIDER_START_WIDTH, startSliderWidth.toString());
+    elStyle.setProperty(SLIDER_END_WIDTH, endSliderWidth.toString());
+    elStyle.setProperty(SLIDER_START_VALUE, `${startSliderValue}`);
+    elStyle.setProperty(SLIDER_END_VALUE, `${endSliderValue}`);
   }
 
   private syncStartSlider = (event: InputEvent) => {
+    event.stopPropagation();
+
     const startInputValue = Number((event.target as HTMLInputElement).value);
     this.startSliderValue = startInputValue;
 
@@ -74,6 +85,8 @@ export class QueryViewerSlider {
   };
 
   private syncEndSlider = (event: InputEvent) => {
+    event.stopPropagation();
+
     const endInputValue = Number((event.target as HTMLInputElement).value);
     this.endSliderValue = endInputValue;
 
@@ -94,7 +107,7 @@ export class QueryViewerSlider {
             class="input-slider end"
             part="invisible-slider end"
             type="range"
-            step="0.1"
+            step={this.step}
             min={this.startSliderValue}
             max={DEFAULT_MAX_VALUE}
             value={this.endSliderValue}
@@ -106,7 +119,7 @@ export class QueryViewerSlider {
             class="input-slider start"
             part="invisible-slider start"
             type="range"
-            step="0.1"
+            step={this.step}
             min={DEFAULT_MIN_VALUE}
             max={this.endSliderValue}
             value={this.startSliderValue}
@@ -115,8 +128,8 @@ export class QueryViewerSlider {
           />
         </div>
 
-        <div class="mask" part="mask"></div>
         <div class="thumb start-thumb" part="thumb start-thumb"></div>
+        <div class="mask" part="mask"></div>
         <div class="thumb end-thumb" part=" thumb end-thumb"></div>
       </Host>
     );
