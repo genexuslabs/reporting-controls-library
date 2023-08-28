@@ -639,6 +639,12 @@
         queryViewers[1].serviceResponse = serviceResponseChartMock;
         queryViewers[2].serviceResponse = serviceResponseChartMock;
         queryViewers[3].serviceResponse = serviceResponseChartMock;
+
+        document
+          .querySelector("gx-query-viewer-slider")
+          .addEventListener("change", event => {
+            console.log("Slider new value:", event.detail);
+          });
       });
     </script>
   </head>
@@ -687,18 +693,7 @@
       ></gx-query-viewer>
 
       <div style="height: 200px; margin: 40px; display: flex; width: 100%">
-        <gx-query-viewer-slider
-          type="Chart"
-          chart-type="Line"
-          allow-selection="false"
-          plot-series="InTheSameChart"
-          show-data-labels-in="Columns"
-          query-title="Single data chart"
-          x-axis-intersection-at-zero="false"
-          x-axis-labels=""
-          x-axis-title=""
-          y-axis-title=""
-        >
+        <gx-query-viewer-slider start-slider-value="50" end-slider-value="80">
           <gx-query-viewer
             slot="content"
             type="Chart"
