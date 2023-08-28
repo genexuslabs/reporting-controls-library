@@ -78,7 +78,7 @@ export class QueryViewerCard {
   @Prop() readonly serviceResponse: QueryViewerServiceResponse;
   @Watch("serviceResponse")
   handleServiceResponseChange(newResponse: QueryViewerServiceResponse) {
-    this.cardsToRender = this.getCardsToRender(newResponse);
+    this.updateCards(newResponse);
   }
 
   /**
@@ -87,7 +87,10 @@ export class QueryViewerCard {
    */
   @Prop() readonly showDataAs: QueryViewerShowDataAs =
     QueryViewerShowDataAs.Values;
-
+  @Watch("showDataAs")
+  handleShowDataAsChange() {
+    this.updateCards(this.serviceResponse);
+  }
   /**
    * For translate the labels of the outputs
    */
@@ -99,6 +102,14 @@ export class QueryViewerCard {
    */
   @Prop() readonly trendPeriod: QueryViewerTrendPeriod =
     QueryViewerTrendPeriod.SinceTheBeginning;
+  @Watch("trendPeriod")
+  handleTrendPeriodChange() {
+    this.updateCards(this.serviceResponse);
+  }
+
+  private updateCards(serviceResponse: QueryViewerServiceResponse) {
+    this.cardsToRender = this.getCardsToRender(serviceResponse);
+  }
 
   /**
    * If there is a date, do not add the data because we want to see the
