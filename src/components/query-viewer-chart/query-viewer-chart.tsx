@@ -1,4 +1,4 @@
-import { Component, Prop, h, Host, Element } from "@stencil/core";
+import { Component, Prop, h, Host, Element, Method } from "@stencil/core";
 import {
   Chart,
   TitleOptions,
@@ -10,7 +10,8 @@ import {
   PlotOptions,
   YAxisOptions,
   XAxisOptions,
-  PaneOptions
+  PaneOptions,
+  Axis
 } from "highcharts";
 
 import Highcharts from "highcharts";
@@ -128,6 +129,34 @@ export class QueryViewerChart {
    */
   @Prop() readonly yAxisTitle: string;
 
+  /**
+   * get the current extremes for the axis.
+   */
+  @Method()
+  async getExtremes() {
+    return (this.chartHC.get("xaxis") as Axis).getExtremes();
+  }
+
+  /**
+   * set the current extremes for the axis.
+   */
+  @Method()
+  async setExtremes(minDate: number, maxDate: number, redraw: boolean) {
+    return (this.chartHC.get("xaxis") as Axis).setExtremes(
+      minDate,
+      maxDate,
+      redraw
+    );
+  }
+
+  /**
+   * zoom out for the chart
+   */
+  @Method()
+  async zoomOut() {
+    return this.chartHC.zoomOut();
+  }
+
   componentDidRender() {
     Highcharts3d(Highcharts);
     HighchartsMore(Highcharts);
@@ -154,6 +183,7 @@ export class QueryViewerChart {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       () => {}
     );
+
     if (this.chartHC) {
       // console.log("Works");
     }

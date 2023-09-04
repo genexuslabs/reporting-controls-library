@@ -27,7 +27,7 @@ export type IsChartTypesFunction = (
   plotSeries: QueryViewerPlotSeries
 ) => ChartTypes;
 
-const isTimeline = (type: QueryViewerChartType) =>
+export const isTimeline = (type: QueryViewerChartType) =>
   type === QueryViewerChartType.Timeline ||
   type === QueryViewerChartType.SmoothTimeline ||
   type === QueryViewerChartType.StepTimeline;

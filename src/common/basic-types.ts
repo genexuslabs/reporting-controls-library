@@ -254,3 +254,8 @@ export type QueryViewerChartPoint = {
   Value_N: string;
   Value_D: string;
 };
+
+export type QueryViewerSliderRange = {
+  start: number;
+  end: number;
+};

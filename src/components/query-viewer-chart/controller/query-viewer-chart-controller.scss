@@ -1,0 +1,50 @@
+.gx-query-viewer-chart-controller__header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.gx-query-viewer-chart-controller__header-compare-container {
+  display: grid;
+  grid-template-columns: min-content 1fr;
+}
+
+.gx-query-viewer-chart-controller__header-form-field {
+  width: max-content;
+  justify-self: center;
+  --gx-form-field-label-width-column: max-content;
+}
+
+.gx-query-viewer-chart-controller__header-zoom-options {
+  display: grid;
+  grid-template-columns: min-content 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.gx-query-viewer-chart-controller__header-zoom-button
+  .option-and-label-container
+  .option-container {
+  display: none;
+}
+
+.gx-query-viewer-chart-controller__header-zoom-button
+  .option-and-label-container
+  .label-of-the-option {
+  padding-left: 7px;
+  padding-right: 7px;
+  cursor: pointer;
+}
+
+.gx-query-viewer-chart_timeline-footer {
+  width: 100%;
+}
+
+.gx-query-viewer-chart-controller__header-zoom-button
+  .option-and-label-container
+  .label-of-the-option:active {
+  text-decoration: underline;
+}
+
+.gx-query-viewer-chart-controller__header-zoom-button
+  .option-and-label-container
+  .label-of-the-option:hover {
+  text-decoration: underline;
+}

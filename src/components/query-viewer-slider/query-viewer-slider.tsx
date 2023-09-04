@@ -7,6 +7,7 @@ import {
   Prop,
   h
 } from "@stencil/core";
+import { QueryViewerSliderRange } from "../../common/basic-types";
 
 const DEFAULT_MIN_VALUE = 0;
 const DEFAULT_MAX_VALUE = 100;
@@ -15,11 +16,6 @@ const SLIDER_START_WIDTH = "--slider-start-width";
 const SLIDER_END_WIDTH = "--slider-end-width";
 const SLIDER_START_VALUE = "--slider-start-value";
 const SLIDER_END_VALUE = "--slider-end-value";
-
-export type QueryViewerSliderRange = {
-  start: number;
-  end: number;
-};
 
 @Component({
   tag: "gx-query-viewer-slider",
