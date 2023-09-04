@@ -61,6 +61,15 @@ import {
 } from "date-fns";
 
 const DEFAULTCHARTSPACING = 10;
+const HOURSPERDAY = 24;
+const SECONDSPERHOUR = 3600;
+const MILISECONDPERHOUR = 1000;
+const AVERAGEDAYSPERMONTH = 30.42;
+const AVERAGEDAYSPERTWOMONTHS = 60.83;
+const AVERAGEDAYSPERTHREEMONTHS = 91.25;
+const AVERAGEDAYSPERSIXMONTHS = 182.5;
+const AVERGAEDAYSPERYEAR = 365;
+
 const getSpacing = (chartTypes: ChartTypes) =>
   chartTypes.Timeline
     ? [DEFAULTCHARTSPACING, 0, DEFAULTCHARTSPACING, 0] // top, right, bottom, left
@@ -385,9 +394,12 @@ function getXAxisObject(
       const maxDateX = fromStringToDateISO(
         chartMetadataAndData.Categories.MaxValue
       );
-      if (maxDateX.getTime() - minDateX.getTime() < 10 * 24 * 3600 * 1000) {
+      if (
+        maxDateX.getTime() - minDateX.getTime() <
+        10 * HOURSPERDAY * SECONDSPERHOUR * MILISECONDPERHOUR
+      ) {
         // Si el rango de fechas es menor a 10 dias, setea el intervalo del eje X cada un dia
-        xAxis.tickInterval = 24 * 3600 * 1000;
+        xAxis.tickInterval = HOURSPERDAY * SECONDSPERHOUR * MILISECONDPERHOUR;
       }
     }
   }
@@ -2047,11 +2059,24 @@ export async function optionsHeaderSelect(
   minDate.setTime(extremes.dataMin + minDate.getTimezoneOffset() * 60000);
   maxDate.setTime(extremes.dataMax + maxDate.getTimezoneOffset() * 60000);
 
-  const include1m = winTime > 30.42 * 24 * 3600 * 1000; // 30.42 promedio de dias por mes, 24 horas, 3600 segundos, 1000ms
-  const include2m = winTime > 60.83 * 24 * 3600 * 1000; // 60.83 promedio de dias en 2 meses, 24 horas, 3600 segundos, 1000ms
-  const include3m = winTime > 91.25 * 24 * 3600 * 1000; // 91.25 promedio de dias en 3 meses, 24 horas, 3600 segundos, 1000ms
-  const include6m = winTime > 182.5 * 24 * 3600 * 1000; // 182.5 promedio de dias en 6 meses, 24 horas, 3600 segundos, 1000ms
-  const include1y = winTime > 365 * 24 * 3600 * 1000; // 365 de dias en un año, 24 horas, 3600 segundos, 1000ms
+  const include1m =
+    winTime >
+    AVERAGEDAYSPERMONTH * HOURSPERDAY * SECONDSPERHOUR * MILISECONDPERHOUR;
+  const include2m =
+    winTime >
+    AVERAGEDAYSPERTWOMONTHS * HOURSPERDAY * SECONDSPERHOUR * MILISECONDPERHOUR;
+  const include3m =
+    winTime >
+    AVERAGEDAYSPERTHREEMONTHS *
+      HOURSPERDAY *
+      SECONDSPERHOUR *
+      MILISECONDPERHOUR;
+  const include6m =
+    winTime >
+    AVERAGEDAYSPERSIXMONTHS * HOURSPERDAY * SECONDSPERHOUR * MILISECONDPERHOUR;
+  const include1y =
+    winTime >
+    AVERGAEDAYSPERYEAR * HOURSPERDAY * SECONDSPERHOUR * MILISECONDPERHOUR;
 
   const showYears = getYear(minDate) !== getYear(maxDate);
   const showSemesters = getMonth(minDate) <= 6 && getMonth(maxDate) >= 7;
