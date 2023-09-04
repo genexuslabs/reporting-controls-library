@@ -1893,7 +1893,6 @@ export async function GroupAndCompareTimeline(
 ) {
   // Obtiene el tipo de periodo contra el que se quiere comparar
   const extremes: ExtremesObject = await chart.getExtremes();
-  console.log("AQUI");
   // ToDo: check if this fixed applied
   if (extremes.userMin !== undefined) {
     extremes.min = extremes.userMin;
