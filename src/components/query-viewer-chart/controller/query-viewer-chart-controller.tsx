@@ -21,6 +21,7 @@ import {
 import { getAllHighchartOptions, getChartGroup } from "./chart-utils";
 
 import {
+  GroupAndCompareTimeline,
   // GroupAndCompareTimeline,
   fillHeaderAndFooter
 } from "./highcharts-options";
@@ -38,7 +39,15 @@ export class QueryViewerChart {
     chartTypes: ChartTypes;
   };
 
-  // private timelineCompareWith = false;
+  private timelinePeriod: "PrevPeriod" | "PrevYear" = "PrevPeriod";
+  private timelineGroupBy:
+    | "Days"
+    | "Weeks"
+    | "Months"
+    | "Quarters"
+    | "Semesters"
+    | "Years" = "Days";
+  private timelineCompareWith = false;
   private chartComponent: HTMLGxQueryViewerChartElement;
 
   @Element() el: HTMLGxQueryViewerChartControllerElement;
@@ -155,19 +164,33 @@ export class QueryViewerChart {
     return arrOptions;
   }
 
-  private handlePeriodChange = (event: CustomEvent<{ value: string }>) => {
-    console.log(event.detail.value);
-    return event;
+  private groupAndCompareTimeline() {
+    GroupAndCompareTimeline(
+      this.chartComponent,
+      this.timelineCompareWith,
+      this.timelinePeriod,
+      this.timelineGroupBy,
+      this.chartMetadataAndData.chart,
+      this.serviceResponse.MetaData
+    );
+  }
+
+  private handlePeriodChange = (event: CustomEvent) => {
+    const value = event.detail.value;
+    this.timelinePeriod = value;
+    this.groupAndCompareTimeline();
   };
 
   private handleGroupBy = (event: CustomEvent) => {
-    console.log(event);
-    return event;
+    const value = event.detail.value;
+    this.timelineGroupBy = value;
+    this.groupAndCompareTimeline();
   };
 
   private handleCompareChange = (event: CustomEvent) => {
-    console.log(event);
-    return event;
+    const value: boolean = event.detail.target.checked;
+    this.timelineCompareWith = value;
+    this.groupAndCompareTimeline();
   };
 
   private updateZoom = async (event: CustomEvent<QueryViewerSliderRange>) => {
@@ -176,28 +199,18 @@ export class QueryViewerChart {
     if (minPercent === 0 && maxPercent === 100) {
       this.chartComponent.zoomOut();
     } else {
-      const extremes = this.chartComponent.getExtremes();
+      const extremes = await this.chartComponent.getExtremes();
       const minDate =
-        (await extremes).dataMin +
-        (minPercent / 100) *
-          ((await extremes).dataMax - (await extremes).dataMin);
+        extremes.dataMin +
+        (minPercent / 100) * (extremes.dataMax - extremes.dataMin);
       const maxDate =
-        (await extremes).dataMin +
-        (maxPercent / 100) *
-          ((await extremes).dataMax - (await extremes).dataMin);
+        extremes.dataMin +
+        (maxPercent / 100) * (extremes.dataMax - extremes.dataMin);
       // const redraw = !this.handleCompareChange;
       this.chartComponent.setExtremes(minDate, maxDate, true);
     }
-    if (this.handleCompareChange) {
-      // GroupAndCompareTimeline(
-      //   this.chartComponent,
-      //   this.handleCompareChange,
-      //   this.handlePeriodChange,
-      //   this.handleGroupBy,
-      //   this.chartMetadataAndData,
-      //   this.chartMetadataAndData.chartTypes,
-      //   this.serviceResponse.MetaData
-      // );
+    if (this.timelineCompareWith) {
+      this.groupAndCompareTimeline();
     }
     // if (sliderResizingRight || sliderResizingLeft) {
     //   deselectZoom(prevClickedZoomId);
@@ -206,7 +219,8 @@ export class QueryViewerChart {
   };
 
   private changeZoomOptions = (event: CustomEvent) => {
-    console.log((event.target as HTMLInputElement).value);
+    // console.log((event.target as HTMLInputElement).value);
+    return event;
   };
 
   private renderZoomOptions(options: {

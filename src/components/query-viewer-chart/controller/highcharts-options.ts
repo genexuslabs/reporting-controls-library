@@ -374,7 +374,6 @@ function getXAxisObject(
     xAxis.id = "xaxis";
     xAxis.minRange = 1; // 1ms máximo zoom (el default es demasiado grande)
     const dataType = XAxisDataType(serviceResponseMetadata);
-    // ToDo: Para la timeline
     if (
       dataType === QueryViewerDataType.Date &&
       chartMetadataAndData.Categories.MaxValue != null &&
@@ -387,6 +386,7 @@ function getXAxisObject(
         chartMetadataAndData.Categories.MaxValue
       );
       if (maxDateX.getTime() - minDateX.getTime() < 10 * 24 * 3600 * 1000) {
+        // Si el rango de fechas es menor a 10 dias, setea el intervalo del eje X cada un dia
         xAxis.tickInterval = 24 * 3600 * 1000;
       }
     }
@@ -662,11 +662,7 @@ function getYAxisObject(
       }
     }
   }
-  if (chartTypes.Combination && !chartTypes.Splitted) {
-    return yAxisArray;
-  } else {
-    return yAxis;
-  }
+  return chartTypes.Combination && !chartTypes.Splitted ? yAxisArray : yAxis;
 }
 
 function NumberOfCharts(
@@ -797,10 +793,7 @@ function getPlotOptionsObject(
         (chartMetadataAndData.Series.DataFields.length === 1 && showValues) ||
         chartTypes.Splitted,
       y: 0,
-      borderWidth: 0,
-      style: {
-        fontSize: "14px"
-      }
+      borderWidth: 0
 
       // ToDo: implement this
       // formatter: () => CircularGaugeTooltipAndDataLabelFormatter(this, qViewer)
@@ -1334,9 +1327,6 @@ function getTooltipObject(
     // tooltip.formatter = function () {
     //   return CircularGaugeTooltipAndDataLabelFormatter(this);
     // };
-    tooltip.style = {
-      fontSize: "14px"
-    };
     tooltip.valueSuffix = "%";
     tooltip.pointFormat =
       '<br><span style="font-size:2em; color: {point.color}; font-weight: bold">{point.y}</span>';
@@ -1600,13 +1590,12 @@ function getIndividualSerieObject(
 ): SeriesOptionsType {
   // ToDo: check the correct type
   // const serie: SeriesOptionsType = { type: "line" };
-  let serie: any;
-  if (chartTypes.Gauge) {
-    serie = { type: "gauge" };
-  } else {
-    serie = { type: "line" };
-  }
-  serie.type = undefined; // WA to remove TypeScript error
+  const serie: any = { type: undefined }; // WA to remove TypeScript error
+  // if (chartTypes.Gauge) {
+  //   serie = { type: "gauge" };
+  // } else {
+  //   serie = { type: "line" };
+  // }
   // ToDo: implement this
   //   if (qViewer.ItemClick && qViewer.Metadata.Data[serieIndex].RaiseItemClick) {
   //     serie.className = "highcharts-drilldown-point";
@@ -1904,7 +1893,8 @@ export async function GroupAndCompareTimeline(
 ) {
   // Obtiene el tipo de periodo contra el que se quiere comparar
   const extremes: ExtremesObject = await chart.getExtremes();
-
+  console.log("AQUI");
+  // ToDo: check if this fixed applied
   if (extremes.userMin !== undefined) {
     extremes.min = extremes.userMin;
   } // Sin esto, la llamada a setextremes (con redraw en false) realizado en el zoom no actualiza el min hasta el próximo dibujado.
@@ -1952,10 +1942,9 @@ export async function GroupAndCompareTimeline(
   // });
 
   // Carga las series con los datos que correspondan
-  chartmetadataAndData.Series.ByIndex.forEach((_seriesIndex, index) => {
+  chartmetadataAndData.Series.ByIndex.forEach(async (_seriesIndex, index) => {
     const chartSerie = chartmetadataAndData.Series.ByIndex[index];
     const seriesName = chartSerie.Name;
-    let chart: HTMLGxQueryViewerChartElement;
     let serieColorIndex;
     // if (chartTypes.Splitted) {
     // chart = charts[index];
@@ -2040,9 +2029,9 @@ export async function GroupAndCompareTimeline(
         serie1.data.push({ x: timeValue1, y: value, name: name });
       }
     });
-    chart.addSeries(serie1);
+    await chart.addSeries(serie1);
     if (compare) {
-      chart.addSeries(serie2);
+      await chart.addSeries(serie2);
     }
   });
 }
@@ -2059,61 +2048,25 @@ export async function optionsHeaderSelect(
   minDate.setTime(extremes.dataMin + minDate.getTimezoneOffset() * 60000);
   maxDate.setTime(extremes.dataMax + maxDate.getTimezoneOffset() * 60000);
 
-  const include1m = winTime > 30.42 * 24 * 3600 * 1000;
-  const include2m = winTime > 60.83 * 24 * 3600 * 1000;
-  const include3m = winTime > 91.25 * 24 * 3600 * 1000;
-  const include6m = winTime > 182.5 * 24 * 3600 * 1000;
-  const include1y = winTime > 365 * 24 * 3600 * 1000;
+  const include1m = winTime > 30.42 * 24 * 3600 * 1000; // 30.42 promedio de dias por mes, 24 horas, 3600 segundos, 1000ms
+  const include2m = winTime > 60.83 * 24 * 3600 * 1000; // 60.83 promedio de dias en 2 meses, 24 horas, 3600 segundos, 1000ms
+  const include3m = winTime > 91.25 * 24 * 3600 * 1000; // 91.25 promedio de dias en 3 meses, 24 horas, 3600 segundos, 1000ms
+  const include6m = winTime > 182.5 * 24 * 3600 * 1000; // 182.5 promedio de dias en 6 meses, 24 horas, 3600 segundos, 1000ms
+  const include1y = winTime > 365 * 24 * 3600 * 1000; // 365 de dias en un año, 24 horas, 3600 segundos, 1000ms
 
-  let showYears = true;
-  let showSemesters = true;
-  let showQuarters = true;
-  let showMonths = true;
-  let showWeeks = true;
-  let showDays = true;
-  let showHours = true;
-  let showMinutes = true;
-
-  if (getYear(minDate) === getYear(maxDate)) {
-    showYears = false;
-  }
-
-  if (!(getMonth(minDate) <= 6 && getMonth(maxDate) >= 7)) {
-    showSemesters = false;
-  }
-
-  if (
-    !(
-      (getMonth(minDate) <= 3 && getMonth(maxDate) >= 4) ||
-      (getMonth(minDate) <= 6 && getMonth(maxDate) >= 7) ||
-      (getMonth(minDate) <= 9 && getMonth(maxDate) >= 10)
-    )
-  ) {
-    showQuarters = false;
-  }
-
-  if (getMonth(minDate) === getMonth(maxDate)) {
-    showMonths = false;
-  }
-
-  if (
-    getDay(minDate) - daysToWeeks(minDate) ===
-    getDay(maxDate) - daysToWeeks(maxDate)
-  ) {
-    showWeeks = false;
-  }
-
-  if (getDay(minDate) === getDay(maxDate)) {
-    showDays = false;
-  }
-
-  if (getHours(minDate) === getHours(maxDate)) {
-    showHours = false;
-  }
-
-  if (getMinutes(minDate) === getMinutes(maxDate)) {
-    showMinutes = false;
-  }
+  const showYears = getYear(minDate) !== getYear(maxDate);
+  const showSemesters = getMonth(minDate) <= 6 && getMonth(maxDate) >= 7;
+  const showQuarters =
+    (getMonth(minDate) <= 3 && getMonth(maxDate) >= 4) ||
+    (getMonth(minDate) <= 6 && getMonth(maxDate) >= 7) ||
+    (getMonth(minDate) <= 9 && getMonth(maxDate) >= 10);
+  const showMonths = getMonth(minDate) !== getMonth(maxDate);
+  const showWeeks =
+    getDay(minDate) - daysToWeeks(minDate) !==
+    getDay(maxDate) - daysToWeeks(maxDate);
+  const showDays = getDay(minDate) !== getDay(maxDate);
+  const showHours = getHours(minDate) !== getHours(maxDate);
+  const showMinutes = getMinutes(minDate) !== getMinutes(maxDate);
 
   return {
     include1m,

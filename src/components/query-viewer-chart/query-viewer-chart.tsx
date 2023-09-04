@@ -11,7 +11,8 @@ import {
   YAxisOptions,
   XAxisOptions,
   PaneOptions,
-  Axis
+  Axis,
+  SeriesLineOptions
 } from "highcharts";
 
 import Highcharts from "highcharts";
@@ -155,6 +156,14 @@ export class QueryViewerChart {
   @Method()
   async zoomOut() {
     return this.chartHC.zoomOut();
+  }
+
+  /**
+   * get the current extremes for the axis.
+   */
+  @Method()
+  async addSeries(series: SeriesLineOptions) {
+    return this.chartHC.addSeries(series);
   }
 
   componentDidRender() {
