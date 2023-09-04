@@ -1966,7 +1966,7 @@ export async function GroupAndCompareTimeline(
     // }
 
     // Serie con el periodo seleccionado por el usuario
-    const serie1: SeriesLineOptions = {
+    const serieOfUser: SeriesLineOptions = {
       type: "line",
       turboThreshold: 0,
       colorIndex: serieColorIndex,
@@ -1975,11 +1975,11 @@ export async function GroupAndCompareTimeline(
       data: []
     };
 
-    let serie2: SeriesLineOptions;
+    let serieToCompare: SeriesLineOptions;
 
     if (compare) {
       // Serie con el periodo contra el que se va a comparar
-      serie2 = {
+      serieToCompare = {
         className: "highcharts-dashed-series-line",
         type: "line",
         turboThreshold: 0,
@@ -2025,7 +2025,7 @@ export async function GroupAndCompareTimeline(
         }
         if (addToSerie1) {
           const point = { x: timeValue1, y: value, name: name };
-          serie1.data.push(point);
+          serieOfUser.data.push(point);
         }
         if (addToSerie2) {
           const point = {
@@ -2034,15 +2034,15 @@ export async function GroupAndCompareTimeline(
             name: name,
             real_x: originalTimeValue
           };
-          serie2.data.push(point);
+          serieToCompare.data.push(point);
         }
       } else {
-        serie1.data.push({ x: timeValue1, y: value, name: name });
+        serieOfUser.data.push({ x: timeValue1, y: value, name: name });
       }
     });
-    await chart.addSeries(serie1);
+    await chart.addSeries(serieOfUser);
     if (compare) {
-      await chart.addSeries(serie2);
+      await chart.addSeries(serieToCompare);
     }
   });
 }
