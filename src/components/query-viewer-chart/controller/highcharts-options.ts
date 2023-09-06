@@ -51,33 +51,26 @@ import {
 } from "../../../utils/general";
 import { trimUtil } from "../../../services/xml-parser/utils/general";
 import { fromDateToString, fromStringToDateISO } from "../../../utils/date";
-import {
-  daysToWeeks,
-  getYear,
-  getMonth,
-  getDay,
-  getHours,
-  getMinutes
-} from "date-fns";
+import { getYear, getMonth, getDay, getHours, getMinutes } from "date-fns";
 
-const DEFAULTCHARTSPACING = 10;
-const HOURSPERDAY = 24;
-const SECONDSPERHOUR = 3600;
-const MILISECONDPERHOUR = 1000;
-const AVERAGEDAYSPERMONTH = 30.42;
-const AVERAGEDAYSPERTWOMONTHS = 60.83;
-const AVERAGEDAYSPERTHREEMONTHS = 91.25;
-const AVERAGEDAYSPERSIXMONTHS = 182.5;
-const AVERGAEDAYSPERYEAR = 365;
+const DEFAULT_CHART_SPACING = 10;
+export const HOURS_PER_DAY = 24;
+export const SECONDS_PER_HOUR = 3600;
+export const MILLISECONDS_PER_HOUR = 1000;
+export const AVERAGE_DAYS_PER_MONTH = 30.42;
+const AVERAGE_DAYS_PER_TWO_MONTHS = 60.83;
+const AVERAGE_DAYS_PER_THREE_MONTHS = 91.25;
+const AVERAGE_DAYS_PER_SIX_MONTHS = 182.5;
+const AVERAGE_DAYS_PER_YEAR = 365;
 
 const getSpacing = (chartTypes: ChartTypes) =>
   chartTypes.Timeline
-    ? [DEFAULTCHARTSPACING, 0, DEFAULTCHARTSPACING, 0] // top, right, bottom, left
+    ? [DEFAULT_CHART_SPACING, 0, DEFAULT_CHART_SPACING, 0] // top, right, bottom, left
     : [
-        DEFAULTCHARTSPACING,
-        DEFAULTCHARTSPACING,
-        DEFAULTCHARTSPACING,
-        DEFAULTCHARTSPACING
+        DEFAULT_CHART_SPACING,
+        DEFAULT_CHART_SPACING,
+        DEFAULT_CHART_SPACING,
+        DEFAULT_CHART_SPACING
       ];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -396,10 +389,11 @@ function getXAxisObject(
       );
       if (
         maxDateX.getTime() - minDateX.getTime() <
-        10 * HOURSPERDAY * SECONDSPERHOUR * MILISECONDPERHOUR
+        10 * HOURS_PER_DAY * SECONDS_PER_HOUR * MILLISECONDS_PER_HOUR
       ) {
         // Si el rango de fechas es menor a 10 dias, setea el intervalo del eje X cada un dia
-        xAxis.tickInterval = HOURSPERDAY * SECONDSPERHOUR * MILISECONDPERHOUR;
+        xAxis.tickInterval =
+          HOURS_PER_DAY * SECONDS_PER_HOUR * MILLISECONDS_PER_HOUR;
       }
     }
   }
@@ -1479,8 +1473,8 @@ function getGroupStartPoint(
         break;
       case "Weeks":
         let date = fromStringToDateISO(dateStr);
-        const dow = daysToWeeks(date);
-        date = addDays(date, -86400 * (dow - 1));
+        const dow = date.getDay();
+        date = addDays(date, -86400 * dow);
         dateStrStartPoint = fromDateToString(date, false);
         nameStartPoint = formatDate(
           dateStrStartPoint,
@@ -2061,22 +2055,34 @@ export async function optionsHeaderSelect(
 
   const include1m =
     winTime >
-    AVERAGEDAYSPERMONTH * HOURSPERDAY * SECONDSPERHOUR * MILISECONDPERHOUR;
+    AVERAGE_DAYS_PER_MONTH *
+      HOURS_PER_DAY *
+      SECONDS_PER_HOUR *
+      MILLISECONDS_PER_HOUR;
   const include2m =
     winTime >
-    AVERAGEDAYSPERTWOMONTHS * HOURSPERDAY * SECONDSPERHOUR * MILISECONDPERHOUR;
+    AVERAGE_DAYS_PER_TWO_MONTHS *
+      HOURS_PER_DAY *
+      SECONDS_PER_HOUR *
+      MILLISECONDS_PER_HOUR;
   const include3m =
     winTime >
-    AVERAGEDAYSPERTHREEMONTHS *
-      HOURSPERDAY *
-      SECONDSPERHOUR *
-      MILISECONDPERHOUR;
+    AVERAGE_DAYS_PER_THREE_MONTHS *
+      HOURS_PER_DAY *
+      SECONDS_PER_HOUR *
+      MILLISECONDS_PER_HOUR;
   const include6m =
     winTime >
-    AVERAGEDAYSPERSIXMONTHS * HOURSPERDAY * SECONDSPERHOUR * MILISECONDPERHOUR;
+    AVERAGE_DAYS_PER_SIX_MONTHS *
+      HOURS_PER_DAY *
+      SECONDS_PER_HOUR *
+      MILLISECONDS_PER_HOUR;
   const include1y =
     winTime >
-    AVERGAEDAYSPERYEAR * HOURSPERDAY * SECONDSPERHOUR * MILISECONDPERHOUR;
+    AVERAGE_DAYS_PER_YEAR *
+      HOURS_PER_DAY *
+      SECONDS_PER_HOUR *
+      MILLISECONDS_PER_HOUR;
 
   const showYears = getYear(minDate) !== getYear(maxDate);
   const showSemesters = getMonth(minDate) <= 6 && getMonth(maxDate) >= 7;
@@ -2086,8 +2092,8 @@ export async function optionsHeaderSelect(
     (getMonth(minDate) <= 9 && getMonth(maxDate) >= 10);
   const showMonths = getMonth(minDate) !== getMonth(maxDate);
   const showWeeks =
-    getDay(minDate) - daysToWeeks(minDate) !==
-    getDay(maxDate) - daysToWeeks(maxDate);
+    minDate.getDate() - minDate.getDay() !==
+    maxDate.getDate() - maxDate.getDay();
   const showDays = getDay(minDate) !== getDay(maxDate);
   const showHours = getHours(minDate) !== getHours(maxDate);
   const showMinutes = getMinutes(minDate) !== getMinutes(maxDate);
@@ -2150,7 +2156,6 @@ export function fillHeaderAndFooter(
 
   return getTimelineFooterChartOptions(chartType, charts);
 }
-
 /** **********  Fin Timeline **********/
 
 const getTitleObject = (queryTitle: string, serieIndex: number) => ({

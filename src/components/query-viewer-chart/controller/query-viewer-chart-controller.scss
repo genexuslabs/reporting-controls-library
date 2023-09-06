@@ -23,18 +23,20 @@
   width: 100%;
 }
 
-.gx-query-viewer-chart-controller__header-zoom-button
+.gx-query-viewer-chart-controller__header-zoom-button {
+  &--checked {
+    .label-of-the-option {
+      text-decoration: underline;
+    }
+  }
   .option-and-label-container {
-  .option-container {
-    display: none;
-  }
+    .option-container {
+      display: none;
+    }
 
-  .label-of-the-option {
-    padding-inline: 7px;
-    cursor: pointer;
-  }
-
-  .label-of-the-option:hover {
-    text-decoration: underline;
+    .label-of-the-option {
+      padding-inline: 7px;
+      cursor: pointer;
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Component, h, Prop, Host, Element } from "@stencil/core";
+import { Component, h, Prop, Host, Element, State } from "@stencil/core";
 import {
   // QueryViewerServiceDataRow,
   // QueryViewerServiceMetaDataData,
@@ -21,12 +21,21 @@ import {
 import { getAllHighchartOptions, getChartGroup } from "./chart-utils";
 
 import {
+  AVERAGE_DAYS_PER_MONTH,
   GroupAndCompareTimeline,
+  HOURS_PER_DAY,
+  MILLISECONDS_PER_HOUR,
+  SECONDS_PER_HOUR,
   // GroupAndCompareTimeline,
   fillHeaderAndFooter
 } from "./highcharts-options";
 import { Options } from "highcharts";
 import { ChartTypes } from "./chart-types";
+
+const HEADER_ZOOM_BUTTON_CLASS =
+  "gx-query-viewer-chart-controller__header-zoom-button";
+const HEADER_ZOOM_BUTTON_CHECKED_CLASS =
+  "gx-query-viewer-chart-controller__header-zoom-button--checked";
 
 @Component({
   tag: "gx-query-viewer-chart-controller",
@@ -51,6 +60,9 @@ export class QueryViewerChart {
   private chartComponent: HTMLGxQueryViewerChartElement;
 
   @Element() el: HTMLGxQueryViewerChartControllerElement;
+
+  @State() zoom: number;
+
   /**
    * Allow selection
    */
@@ -219,9 +231,33 @@ export class QueryViewerChart {
   };
 
   private changeZoomOptions = (event: CustomEvent) => {
-    // console.log((event.target as HTMLInputElement).value);
-    return event;
+    const zoomSelected = Number((event.target as HTMLInputElement).value);
+    this.doZoom(zoomSelected);
   };
+
+  private async doZoom(zoomFactor: number) {
+    const extremes = await this.chartComponent.getExtremes();
+    const maxDate = extremes.dataMax;
+    let minDate;
+    if (zoomFactor > 0) {
+      minDate =
+        maxDate -
+        AVERAGE_DAYS_PER_MONTH *
+          zoomFactor *
+          HOURS_PER_DAY *
+          SECONDS_PER_HOUR *
+          MILLISECONDS_PER_HOUR;
+    } else {
+      minDate = extremes.dataMin;
+      // ToDo: implement this
+      // jQuery.each(charts, function (index, chart) {
+      //   chart.zoomOut();
+      // });
+      // DisableCompareControls(firstChart.options.qv.viewerId, false);
+    }
+    // var redraw = (this.timelineCompareWith) ? false : true;
+    await this.chartComponent.setExtremes(minDate, maxDate, true);
+  }
 
   private renderZoomOptions(options: {
     include1m: boolean;
@@ -237,48 +273,78 @@ export class QueryViewerChart {
           {options.include1m && (
             <gx-radio-option
               onInput={this.changeZoomOptions}
-              class="gx-query-viewer-chart-controller__header-zoom-button"
+              class={{
+                [HEADER_ZOOM_BUTTON_CLASS]: true,
+                [HEADER_ZOOM_BUTTON_CHECKED_CLASS]: this.zoom === 1
+              }}
               caption="1m"
-              value="1m"
+              value="1"
+              name="zoom"
+              checked={this.zoom === 1}
             ></gx-radio-option>
           )}
           {options.include2m && (
             <gx-radio-option
               onInput={this.changeZoomOptions}
-              class="gx-query-viewer-chart-controller__header-zoom-button"
+              class={{
+                [HEADER_ZOOM_BUTTON_CLASS]: true,
+                [HEADER_ZOOM_BUTTON_CHECKED_CLASS]: this.zoom === 2
+              }}
               caption="2m"
-              value="2m"
+              value="2"
+              name="zoom"
+              checked={this.zoom === 2}
             ></gx-radio-option>
           )}
           {options.include3m && (
             <gx-radio-option
               onInput={this.changeZoomOptions}
-              class="gx-query-viewer-chart-controller__header-zoom-button"
+              class={{
+                [HEADER_ZOOM_BUTTON_CLASS]: true,
+                [HEADER_ZOOM_BUTTON_CHECKED_CLASS]: this.zoom === 3
+              }}
               caption="3m"
-              value="3m"
+              value="3"
+              name="zoom"
+              checked={this.zoom === 3}
             ></gx-radio-option>
           )}
           {options.include6m && (
             <gx-radio-option
               onInput={this.changeZoomOptions}
-              class="gx-query-viewer-chart-controller__header-zoom-button"
+              class={{
+                [HEADER_ZOOM_BUTTON_CLASS]: true,
+                [HEADER_ZOOM_BUTTON_CHECKED_CLASS]: this.zoom === 6
+              }}
               caption="6m"
-              value="6m"
+              value="6"
+              name="zoom"
+              checked={this.zoom === 6}
             ></gx-radio-option>
           )}
           {options.include1y && (
             <gx-radio-option
               onInput={this.changeZoomOptions}
-              class="gx-query-viewer-chart-controller__header-zoom-button"
+              class={{
+                [HEADER_ZOOM_BUTTON_CLASS]: true,
+                [HEADER_ZOOM_BUTTON_CHECKED_CLASS]: this.zoom === 12
+              }}
               caption="1y"
-              value="1y"
+              value="12"
+              name="zoom"
+              checked={this.zoom === 12}
             ></gx-radio-option>
           )}
           <gx-radio-option
             onInput={this.changeZoomOptions}
-            class="gx-query-viewer-chart-controller__header-zoom-button"
+            class={{
+              [HEADER_ZOOM_BUTTON_CLASS]: true,
+              [HEADER_ZOOM_BUTTON_CHECKED_CLASS]: this.zoom === 0
+            }}
             caption="All"
-            value="All"
+            value="0"
+            name="zoom"
+            checked={this.zoom === 0}
           ></gx-radio-option>
         </gx-radio-group>
       </div>
