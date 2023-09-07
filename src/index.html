@@ -709,6 +709,26 @@
           ></gx-query-viewer>
         </gx-query-viewer-slider>
       </div>
+      <gx-query-viewer type="Chart">
+        <gx-query-viewer-controller
+        base-url="http://gma.artech.local/GXqueryAITrunkDesa/API/v1"
+        object-name="CityPopulationForCountry"
+        type="Chart"
+        is-external="true"
+        metadata-name="ReportingShowcase">
+        </gx-query-viewer-controller>
+      </gx-query-viewer>
+
+      <gx-query-viewer type="Chart">
+        <gx-query-viewer-controller
+        base-url="http://gma.artech.local/GXqueryAITrunkDesa/API/v1"
+        query='{ "Id": "8cca6f2c-65e5-4830-aebe-803362c13b3f", "Title": "TITULO DE LA GRAFICA" }'
+        type="Chart"
+        is-external="true"
+        metadata-name="ReportingShowcase">
+        </gx-query-viewer-controller>
+      </gx-query-viewer>
+  
     </div>
   </body>
 </html>

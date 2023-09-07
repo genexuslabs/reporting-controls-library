@@ -16,7 +16,7 @@ const SERVICE_NAME_MAP: { [key in ServiceType]: string } = {
   data: "data"
 };
 
-const SERVICE_POST_INFO_MAP: {
+export const SERVICE_POST_INFO_MAP: {
   [key in ServiceType]: (qViewer: QueryViewer) => any;
 } = {
   metadata: metaData,

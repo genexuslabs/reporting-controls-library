@@ -7,6 +7,7 @@ import {
   QueryViewerSubtotals,
   QueryViewerVisible
 } from "../../common/basic-types";
+import { queryOutputProperty } from "../gxquery-connector";
 import {
   QueryViewerAxisConditionalStyle,
   QueryViewerAxisValueStyle
@@ -15,6 +16,7 @@ import {
 export type QueryViewerServiceResponse = {
   MetaData: QueryViewerServiceMetaData;
   Data: QueryViewerServiceData;
+  Properties: Record<queryOutputProperty, string | number | boolean>;
 };
 
 // MetaData
