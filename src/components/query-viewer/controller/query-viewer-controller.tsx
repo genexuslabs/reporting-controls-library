@@ -15,7 +15,7 @@ import {
   QueryViewerServiceMetaData,
   QueryViewerServiceResponse
 } from "../../../services/types/service-result";
-import { gxqueryConnector } from "../../../services/gxquery-connector";
+import { GXqueryConnector } from "../../../services/gxquery-connector";
 
 @Component({
   tag: "gx-query-viewer-controller",
@@ -147,7 +147,7 @@ export class QueryViewerController {
       const serviceMetaData: QueryViewerServiceMetaData = parseMetadataXML(xml);
 
       // When success, make an async server call for data
-      if (!this.isExternal)
+      if (!this.isExternal) {
         asyncServerCall(
           queryViewerObject,
           this.baseUrl,
@@ -155,18 +155,24 @@ export class QueryViewerController {
           "data",
           this.dataCallback(queryViewerObject, serviceMetaData)
         );
-      else
-      {
-        gxqueryConnector.callGXqueryService(queryViewerObject, this.gxqueryOptions(), "data").then((str) => 
-        { 
-          let callback = this.dataCallback(queryViewerObject, serviceMetaData);
+      } else {
+        GXqueryConnector.CallGXqueryService(
+          queryViewerObject,
+          this.gxqueryOptions(),
+          "data"
+        ).then(str => {
+          const callback = this.dataCallback(
+            queryViewerObject,
+            serviceMetaData
+          );
           callback(str);
-        }).catch((err) => alert(err));
+        });
       }
     };
 
   private dataCallback =
-    (queryViewerObject: QueryViewer, metaData: QueryViewerServiceMetaData) => (xml: string) => {
+    (queryViewerObject: QueryViewer, metaData: QueryViewerServiceMetaData) =>
+    (xml: string) => {
       if (!xml) {
         return;
       }
@@ -195,10 +201,10 @@ export class QueryViewerController {
     ) {
       return;
     }
-    
+
     const queryViewerObject = this.getQueryViewerInformation(objectName);
 
-    if (!this.isExternal)
+    if (!this.isExternal) {
       asyncServerCall(
         queryViewerObject,
         this.baseUrl,
@@ -206,18 +212,25 @@ export class QueryViewerController {
         "metadata",
         this.metaDataCallback(queryViewerObject)
       );
-    else 
-    {
-      gxqueryConnector.callGXqueryService(queryViewerObject, this.gxqueryOptions(), "metadata").then((str) => 
-      { 
-        let callback = this.metaDataCallback(queryViewerObject);
+    } else {
+      GXqueryConnector.CallGXqueryService(
+        queryViewerObject,
+        this.gxqueryOptions(),
+        "metadata"
+      ).then(str => {
+        const callback = this.metaDataCallback(queryViewerObject);
         callback(str);
-      }).catch((err) => alert(err));
-  }
+      });
+    }
   }
 
   private gxqueryOptions() {
-    return { BaseUrl: this.baseUrl, MetadataName: this.metadataName, QueryName: this.objectName, Query: this.query ? JSON.parse(this.query) : undefined };
+    return {
+      BaseUrl: this.baseUrl,
+      MetadataName: this.metadataName,
+      QueryName: this.objectName,
+      Query: this.query ? JSON.parse(this.query) : undefined
+    };
   }
 
   connectedCallback() {

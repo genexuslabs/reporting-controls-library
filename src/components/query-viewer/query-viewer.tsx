@@ -21,7 +21,7 @@ import {
   QueryViewerXAxisLabels
 } from "../../common/basic-types";
 import { QueryViewerServiceResponse } from "../../services/types/service-result";
-import { queryOutputProperty } from "../../services/gxquery-connector";
+import { QueryOutputProperty } from "../../services/gxquery-connector";
 
 @Component({
   tag: "gx-query-viewer",
@@ -100,7 +100,7 @@ export class QueryViewer implements GxComponent {
   @Prop() readonly dataVersionId: number;
 
   /**
-   * Allowing or not Comlumn sort
+   * Allowing or not Column sort
    */
   @Prop() readonly disableColumnSort: boolean;
 
@@ -269,12 +269,37 @@ export class QueryViewer implements GxComponent {
     return (
       <gx-query-viewer-card-controller
         cssClass={this.cssClass}
-        includeMaxMin={this.includeMaxMin || this.getProperty(serviceResponse, "IncludeMaxAndMin") as boolean}
-        includeSparkline={this.includeSparkline || this.getProperty(serviceResponse, "IncludeSparkline") as boolean}
-        includeTrend={this.includeTrend || serviceResponse?.Properties["IncludeTrend"] as boolean}
-        orientation={this.orientation || QueryViewerOrientation[this.getProperty(serviceResponse, "Orientation") as keyof typeof QueryViewerOrientation]}
+        includeMaxMin={
+          this.includeMaxMin ||
+          (this.getProperty(serviceResponse, "IncludeMaxAndMin") as boolean)
+        }
+        includeSparkline={
+          this.includeSparkline ||
+          (this.getProperty(serviceResponse, "IncludeSparkline") as boolean)
+        }
+        includeTrend={
+          this.includeTrend ||
+          (serviceResponse?.Properties["IncludeTrend"] as boolean)
+        }
+        orientation={
+          this.orientation ||
+          QueryViewerOrientation[
+            this.getProperty(
+              serviceResponse,
+              "Orientation"
+            ) as keyof typeof QueryViewerOrientation
+          ]
+        }
         serviceResponse={serviceResponse}
-        showDataAs={this.showDataAs || QueryViewerShowDataAs[this.getProperty(serviceResponse, "ShowDataAs") as keyof typeof QueryViewerShowDataAs]}
+        showDataAs={
+          this.showDataAs ||
+          QueryViewerShowDataAs[
+            this.getProperty(
+              serviceResponse,
+              "ShowDataAs"
+            ) as keyof typeof QueryViewerShowDataAs
+          ]
+        }
         translations={DUMMY_TRANSLATIONS}
         trendPeriod={this.trendPeriod}
       ></gx-query-viewer-card-controller>
@@ -286,24 +311,66 @@ export class QueryViewer implements GxComponent {
       <gx-query-viewer-chart-controller
         allowSelection={this.allowSelection}
         cssClass={this.cssClass}
-        chartType={this.chartType || QueryViewerChartType[this.getProperty(serviceResponse, "ChartType") as keyof typeof QueryViewerChartType]}
-        plotSeries={this.plotSeries || QueryViewerPlotSeries[this.getProperty(serviceResponse, "PlotSeries") as keyof typeof QueryViewerPlotSeries]}
-        queryTitle={this.queryTitle || serviceResponse?.Properties["Title"] as string}
+        chartType={
+          this.chartType ||
+          QueryViewerChartType[
+            this.getProperty(
+              serviceResponse,
+              "ChartType"
+            ) as keyof typeof QueryViewerChartType
+          ]
+        }
+        plotSeries={
+          this.plotSeries ||
+          QueryViewerPlotSeries[
+            this.getProperty(
+              serviceResponse,
+              "PlotSeries"
+            ) as keyof typeof QueryViewerPlotSeries
+          ]
+        }
+        queryTitle={
+          this.queryTitle || (serviceResponse?.Properties["Title"] as string)
+        }
         serviceResponse={serviceResponse}
-        showValues={this.showValues || this.getProperty(serviceResponse, "ShowValues") as boolean}
+        showValues={
+          this.showValues ||
+          (this.getProperty(serviceResponse, "ShowValues") as boolean)
+        }
         translations={DUMMY_TRANSLATIONS}
-        xAxisIntersectionAtZero={this.xAxisIntersectionAtZero || this.getProperty(serviceResponse, "XAxisIntersectionAtZero") as boolean}
-        xAxisLabels={this.xAxisLabels || QueryViewerXAxisLabels[this.getProperty(serviceResponse, "XAxisLabels") as keyof typeof QueryViewerXAxisLabels]}
-        yAxisTitle={this.yAxisTitle || this.getProperty(serviceResponse, "YAxisTitle") as string}
+        xAxisIntersectionAtZero={
+          this.xAxisIntersectionAtZero ||
+          (this.getProperty(
+            serviceResponse,
+            "XAxisIntersectionAtZero"
+          ) as boolean)
+        }
+        xAxisLabels={
+          this.xAxisLabels ||
+          QueryViewerXAxisLabels[
+            this.getProperty(
+              serviceResponse,
+              "XAxisLabels"
+            ) as keyof typeof QueryViewerXAxisLabels
+          ]
+        }
+        yAxisTitle={
+          this.yAxisTitle ||
+          (this.getProperty(serviceResponse, "YAxisTitle") as string)
+        }
       ></gx-query-viewer-chart-controller>
     );
   }
 
-  private getProperty(_serviceResponse: QueryViewerServiceResponse, property: queryOutputProperty): string | number | boolean {
-    if (!_serviceResponse || !_serviceResponse.Properties)
+  private getProperty(
+    _serviceResponse: QueryViewerServiceResponse,
+    property: QueryOutputProperty
+  ): string | number | boolean {
+    if (!_serviceResponse || !_serviceResponse.Properties) {
       return undefined;
-    else
+    } else {
       return _serviceResponse.Properties[property];
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
