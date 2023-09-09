@@ -1,8 +1,7 @@
 import { ServiceType } from "../common/basic-types";
-import { SERVICE_POST_INFO_MAP } from "./services-manager";
-import { QueryViewer } from "./types/json";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
+
 const LOGIN_SERVICE_PATH = "/Session/Login";
 const GETMETADATABYNAME_SERVICE_PATH = "/Metadata/GetByName";
 const GETQUERYBYNAME_SERVICE_PATH = "/Query/GetByName";
@@ -72,34 +71,6 @@ export type Query = {
 };
 
 /**
- * Valid Output section properties for a Query (the values of these properties are the defaults for the same property in QueryViewer once a query is loaded in the control)
- */
-export type QueryOutputProperty =
-  | "OutputType"
-  | "Title"
-  | "ShowValues"
-  | "ShowDataAs"
-  | "Orientation"
-  | "IncludeTrend"
-  | "IncludeSparkline"
-  | "IncludeMaxAndMin"
-  | "ChartType"
-  | "PlotSeries"
-  | "XAxisLabels"
-  | "XAxisIntersectionAtZero"
-  | "XAxisTitle"
-  | "YAxisTitle"
-  | "MapType"
-  | "Region"
-  | "Continent"
-  | "Country"
-  | "Paging"
-  | "PageSize"
-  | "ShowDataLabelsIn"
-  | "TotalForRows"
-  | "TotalForColumns";
-
-/**
  * Generic response to any GXquery API service
  */
 type GenericServiceResponse = {
@@ -123,7 +94,7 @@ type GetMetadataByNameServiceResponse = GenericServiceResponse & {
 /**
  * Response returned by the GetQueryByName service
  */
-type GetQueryByNameServiceResponse = GenericServiceResponse & {
+export type GetQueryByNameServiceResponse = GenericServiceResponse & {
   Query: Query;
 };
 
@@ -157,23 +128,33 @@ export class GXqueryConnector {
   private static _connected: boolean;
   private static _currentSession: Session;
   private static _currentMetadata: Metadata;
+  private static _queryByNameDictionary: { [key: string]: string } = {};
 
   /**
    * Starts a session in GXquery and gets the id for a metadata given its name
    */
-  private static async Connect(options: GXqueryOptions) {
+  private static async Connect(
+    options: GXqueryOptions
+  ): Promise<GenericServiceResponse> {
     GXqueryConnector._connecting = true;
     GXqueryConnector._baseUrl = options.BaseUrl;
-    const resObj: GenericServiceResponse =
-      await GXqueryConnector.GetMetadataByName(options.MetadataName);
+    let resObj = (await GXqueryConnector.Login()) as GenericServiceResponse;
     if (resObj.Errors.length === 0) {
-      GXqueryConnector._connected = true;
+      resObj = await GXqueryConnector.GetMetadataByName(options.MetadataName);
+      if (resObj.Errors.length === 0) {
+        GXqueryConnector._connected = true;
+      }
     }
     GXqueryConnector._connecting = false;
     return resObj;
   }
 
-  private static async CheckConnection(options: GXqueryOptions) {
+  /**
+   * Test if connected to GXquery and connects if not
+   */
+  private static async CheckConnection(
+    options: GXqueryOptions
+  ): Promise<GenericServiceResponse> {
     let resObj: GenericServiceResponse;
     if (GXqueryConnector._connected) {
       resObj = { Errors: [] };
@@ -199,8 +180,8 @@ export class GXqueryConnector {
     service: string,
     method: HttpMethod,
     serviceParameters: string
-  ) {
-    let serviceURL = GXqueryConnector._baseUrl + service;
+  ): Promise<GenericServiceResponse> {
+    let serviceURL = GXqueryConnector._baseUrl + "/API/V1" + service;
     let body: string;
     if (method === "GET" || method === "DELETE") {
       serviceURL += "?" + serviceParameters;
@@ -238,22 +219,19 @@ export class GXqueryConnector {
   /**
    * Executes a login in GXquery
    */
-  private static async Login() {
+  private static async Login(): Promise<LoginServiceResponse> {
     const serviceParameters = {
       RepositoryName: "",
       UserName: "administrator",
       UserPassword: "administrator123"
     };
-    const resObj: GenericServiceResponse =
-      await GXqueryConnector.CallRESTService(
-        LOGIN_SERVICE_PATH,
-        "POST",
-        JSON.stringify(serviceParameters)
-      );
+    const resObj = (await GXqueryConnector.CallRESTService(
+      LOGIN_SERVICE_PATH,
+      "POST",
+      JSON.stringify(serviceParameters)
+    )) as LoginServiceResponse;
     if (resObj.Errors.length === 0) {
-      GXqueryConnector._currentSession = (
-        resObj as LoginServiceResponse
-      ).Session;
+      GXqueryConnector._currentSession = resObj.Session;
     }
     return resObj;
   }
@@ -261,23 +239,17 @@ export class GXqueryConnector {
   /**
    * Gets a metadata given its name
    */
-  private static async GetMetadataByName(metadataName: string) {
-    let resObj: GenericServiceResponse = { Errors: [] };
-    if (!GXqueryConnector._currentSession) {
-      resObj = await this.Login();
-    }
+  private static async GetMetadataByName(
+    metadataName: string
+  ): Promise<GetMetadataByNameServiceResponse> {
+    const serviceParameters = `Name=${metadataName}`;
+    const resObj = (await GXqueryConnector.CallRESTService(
+      GETMETADATABYNAME_SERVICE_PATH,
+      "GET",
+      serviceParameters
+    )) as GetMetadataByNameServiceResponse;
     if (resObj.Errors.length === 0) {
-      const serviceParameters = `Name=${metadataName}`;
-      resObj = await GXqueryConnector.CallRESTService(
-        GETMETADATABYNAME_SERVICE_PATH,
-        "GET",
-        serviceParameters
-      );
-      if (resObj.Errors.length === 0) {
-        GXqueryConnector._currentMetadata = (
-          resObj as GetMetadataByNameServiceResponse
-        ).Metadata;
-      }
+      GXqueryConnector._currentMetadata = resObj.Metadata;
     }
     return resObj;
   }
@@ -285,88 +257,44 @@ export class GXqueryConnector {
   /**
    * Gets a query given its name
    */
-  private static async GetQueryByName(qViewer: QueryViewer, queryName: string) {
-    let resObj: GenericServiceResponse = { Errors: [] };
+  public static async GetQueryByName(
+    options: GXqueryOptions
+  ): Promise<GetQueryByNameServiceResponse> {
+    let resObj = await GXqueryConnector.CheckConnection(options);
     if (resObj.Errors.length === 0) {
-      const serviceParameters = `MetadataId=${GXqueryConnector._currentMetadata.Id}&Name=${queryName}`;
-      resObj = await GXqueryConnector.CallRESTService(
+      const serviceParameters = `MetadataId=${GXqueryConnector._currentMetadata.Id}&Name=${options.QueryName}`;
+      resObj = (await GXqueryConnector.CallRESTService(
         GETQUERYBYNAME_SERVICE_PATH,
         "GET",
         serviceParameters
-      );
+      )) as GetQueryByNameServiceResponse;
       if (resObj.Errors.length === 0) {
-        qViewer.QueryObj = (resObj as GetQueryByNameServiceResponse).Query;
+        const query = (resObj as GetQueryByNameServiceResponse).Query;
+        GXqueryConnector._queryByNameDictionary[query.Name.toLowerCase()] =
+          query.Id;
       }
     }
-    return resObj;
-  }
-
-  private static SetQueryViewerProperties(qViewer: QueryViewer) {
-    qViewer.Properties = {
-      OutputType: qViewer.QueryObj.OutputType,
-      Title: qViewer.QueryObj.Title,
-      ShowValues: qViewer.QueryObj.ShowValues,
-      ShowDataAs: qViewer.QueryObj.ShowDataAs,
-      Orientation: qViewer.QueryObj.Orientation,
-      IncludeTrend: qViewer.QueryObj.IncludeTrend,
-      IncludeSparkline: qViewer.QueryObj.IncludeSparkline,
-      IncludeMaxAndMin: qViewer.QueryObj.IncludeMaxAndMin,
-      ChartType: qViewer.QueryObj.ChartType,
-      PlotSeries: qViewer.QueryObj.PlotSeries,
-      XAxisLabels: qViewer.QueryObj.XAxisLabels,
-      XAxisIntersectionAtZero: qViewer.QueryObj.XAxisIntersectionAtZero,
-      XAxisTitle: qViewer.QueryObj.XAxisTitle,
-      YAxisTitle: qViewer.QueryObj.YAxisTitle,
-      MapType: qViewer.QueryObj.MapType,
-      Region: qViewer.QueryObj.Region,
-      Continent: qViewer.QueryObj.Continent,
-      Country: qViewer.QueryObj.Country,
-      Paging: qViewer.QueryObj.Paging,
-      PageSize: qViewer.QueryObj.PageSize,
-      ShowDataLabelsIn: qViewer.QueryObj.ShowDataLabelsIn,
-      TotalForRows: qViewer.QueryObj.TotalForRows,
-      TotalForColumns: qViewer.QueryObj.TotalForColumns
-    };
+    return resObj as GetQueryByNameServiceResponse;
   }
 
   /**
    * Calls a QueryViewer service (data, metadata, etc)
    */
-  public static async CallGXqueryService(
-    qViewer: QueryViewer,
+  public static async CallQueryViewerService(
     options: GXqueryOptions,
-    serviceType: ServiceType
+    serviceType: ServiceType,
+    postInfo: string
   ) {
-    await GXqueryConnector.CheckConnection(options);
-    let resJson: GenericServiceResponse = { Errors: [] };
-    const ServicePathDictionary = {
-      metadata: QVGETMETADATA_SERVICE_PATH,
-      data: QVGETDATA_SERVICE_PATH
-    };
-    const postInfo = JSON.stringify(
-      SERVICE_POST_INFO_MAP[serviceType](qViewer)
-    );
-    if (
-      !qViewer.QueryObj ||
-      (options.QueryName !== "" &&
-        qViewer.QueryObj.Name !== options.QueryName) ||
-      (options.QueryName === "" &&
-        qViewer.QueryObj.Expression !== options.Query.Expression)
-    ) {
-      if (!options.QueryName) {
-        qViewer.QueryObj = options.Query;
-      } else {
-        resJson = await GXqueryConnector.GetQueryByName(
-          qViewer,
-          options.QueryName
-        );
-      }
-      GXqueryConnector.SetQueryViewerProperties(qViewer);
-    }
+    let resJson = await GXqueryConnector.CheckConnection(options);
     if (resJson.Errors.length === 0) {
+      const ServicePathDictionary = {
+        metadata: QVGETMETADATA_SERVICE_PATH,
+        data: QVGETDATA_SERVICE_PATH
+      };
+      const queryId = await GXqueryConnector.GetQueryId(options);
       const serviceParameters = {
         MetadataId: GXqueryConnector._currentMetadata.Id,
-        QueryId: qViewer.QueryObj.Id,
+        QueryId: queryId,
         PostInfoJSON: postInfo
       };
       resJson = await GXqueryConnector.CallRESTService(
@@ -386,6 +314,28 @@ export class GXqueryConnector {
       return serviceResponse || "";
     } else {
       throw new Error(resJson.Errors[0].Message);
+    }
+  }
+
+  private static async GetQueryId(options: GXqueryOptions): Promise<string> {
+    let queryId;
+    if (options.QueryName) {
+      queryId =
+        GXqueryConnector._queryByNameDictionary[
+          options.QueryName.toLocaleLowerCase()
+        ];
+      if (!queryId) {
+        const resJson = await GXqueryConnector.GetQueryByName(options);
+        if (resJson.Errors.length === 0) {
+          return resJson.Query.Id;
+        } else {
+          return "";
+        }
+      } else {
+        return queryId;
+      }
+    } else {
+      return options.Query.Id;
     }
   }
 }

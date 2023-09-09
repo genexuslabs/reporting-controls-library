@@ -2,7 +2,6 @@ import {
   QueryViewerConditionOperator,
   QueryViewerOutputType
 } from "../../common/basic-types";
-import { Query, QueryOutputProperty } from "../gxquery-connector";
 
 export type QueryViewerSDTWithValues = {
   Type: string;
@@ -181,10 +180,6 @@ export type QueryViewer = {
 
   QueryInfo?: any;
   AppSettings?: any;
-
-  // GXquery
-  QueryObj?: Query;
-  Properties?: Record<QueryOutputProperty, string | number | boolean>;
 };
 
 export type QueryViewerAxis = {
