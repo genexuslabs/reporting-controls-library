@@ -34,6 +34,7 @@ module.exports = {
     // - - - - - - - - - - - -
     // TypeScript ESLint
     // - - - - - - - - - - - -
+    "@typescript-eslint/naming-convention": "warn",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-use-before-define": ["error", { functions: false }],
     "@typescript-eslint/no-unused-vars": [
