@@ -1,14 +1,18 @@
-import { Component, Prop, h, Host, Element } from "@stencil/core";
+import { Component, Prop, h, Host, Element, Method } from "@stencil/core";
 import {
   Chart,
   TitleOptions,
+  SubtitleOptions,
   ChartOptions,
   SeriesOptionsType,
   TooltipOptions,
   LegendOptions,
   PlotOptions,
   YAxisOptions,
-  XAxisOptions
+  XAxisOptions,
+  PaneOptions,
+  Axis,
+  SeriesLineOptions
 } from "highcharts";
 
 import Highcharts from "highcharts";
@@ -47,6 +51,11 @@ export class QueryViewerChart {
   @Prop() readonly chartTitle: TitleOptions;
 
   /**
+   * Name of the element
+   */
+  @Prop() readonly subtitleOptions: SubtitleOptions;
+
+  /**
    * Option of the chartType used to visualize and represent data.
    */
   @Prop() readonly chartType: QueryViewerChartType;
@@ -80,6 +89,11 @@ export class QueryViewerChart {
    * Options of the chart.
    */
   @Prop() readonly tooltipOptions: TooltipOptions;
+
+  /**
+   * Options of the chart.
+   */
+  @Prop() readonly paneOptions: PaneOptions;
 
   /**
    * For translate the labels of the outputs
@@ -116,6 +130,42 @@ export class QueryViewerChart {
    */
   @Prop() readonly yAxisTitle: string;
 
+  /**
+   * get the current extremes for the axis.
+   */
+  @Method()
+  async getExtremes() {
+    return (this.chartHC.get("xaxis") as Axis).getExtremes();
+  }
+
+  /**
+   * set the current extremes for the axis.
+   */
+  @Method()
+  async setExtremes(minDate: number, maxDate: number, redraw: boolean) {
+    return (this.chartHC.get("xaxis") as Axis).setExtremes(
+      minDate,
+      maxDate,
+      redraw
+    );
+  }
+
+  /**
+   * zoom out for the chart
+   */
+  @Method()
+  async zoomOut() {
+    return this.chartHC.zoomOut();
+  }
+
+  /**
+   * get the current extremes for the axis.
+   */
+  @Method()
+  async addSeries(series: SeriesLineOptions) {
+    return this.chartHC.addSeries(series);
+  }
+
   componentDidRender() {
     Highcharts3d(Highcharts);
     HighchartsMore(Highcharts);
@@ -127,10 +177,12 @@ export class QueryViewerChart {
       {
         chart: this.chartOptions,
         title: this.chartTitle,
+        subtitle: this.subtitleOptions,
         xAxis: this.xaxisOptions,
         yAxis: this.yaxisOptions,
         legend: this.legendOptions,
         tooltip: this.tooltipOptions,
+        pane: this.paneOptions,
         plotOptions: this.plotOptions,
         series: this.seriesOptions,
         credits: {
@@ -140,6 +192,7 @@ export class QueryViewerChart {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       () => {}
     );
+
     if (this.chartHC) {
       // console.log("Works");
     }

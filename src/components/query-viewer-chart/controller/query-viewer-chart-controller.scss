@@ -1,0 +1,42 @@
+.gx-query-viewer-chart-controller__header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.gx-query-viewer-chart-controller__header-compare-container {
+  display: grid;
+  grid-template-columns: min-content 1fr;
+}
+
+.gx-query-viewer-chart-controller__header-form-field {
+  width: max-content;
+  justify-self: center;
+  --gx-form-field-label-width-column: max-content;
+}
+
+.gx-query-viewer-chart-controller__header-zoom-options {
+  display: grid;
+  grid-template-columns: min-content 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.gx-query-viewer-chart_timeline-footer {
+  width: 100%;
+}
+
+.gx-query-viewer-chart-controller__header-zoom-button {
+  &--checked {
+    .label-of-the-option {
+      text-decoration: underline;
+    }
+  }
+  .option-and-label-container {
+    .option-container {
+      display: none;
+    }
+
+    .label-of-the-option {
+      padding-inline: 7px;
+      cursor: pointer;
+    }
+  }
+}

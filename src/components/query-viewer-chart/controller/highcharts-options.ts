@@ -1,6 +1,8 @@
 import {
+  QueryViewerAggregationType,
   QueryViewerChartSerie,
   QueryViewerChartType,
+  QueryViewerDataType,
   QueryViewerOutputType,
   QueryViewerVisible,
   QueryViewerXAxisLabels
@@ -22,9 +24,14 @@ import {
   SeriesOptionsType,
   PaneOptions,
   PaneBackgroundOptions,
-  XAxisPlotBandsOptions
+  XAxisPlotBandsOptions,
+  Options,
+  ExtremesObject,
+  SeriesLineOptions
+  // ExtremesObject,
+  // SeriesLineOptions
 } from "highcharts";
-import { ChartTypes } from "./chart-types";
+import { ChartTypes, IS_CHART_TYPE } from "./chart-types";
 import {
   ChartGroupLower,
   PieConnectorPosition,
@@ -32,23 +39,38 @@ import {
   PieLabelPosition,
   getChartGroup
 } from "./chart-utils";
-import { ChartMetadataAndData } from "./processDataAndMetadata";
+import { ChartMetadataAndData, XAxisDataType } from "./processDataAndMetadata";
 import {
   QueryViewerServiceMetaData,
   QueryViewerServiceMetaDataData
 } from "../../../services/types/service-result";
-import { SelectionAllowed, TooltipFormatter } from "../../../utils/general";
+import {
+  SelectionAllowed,
+  TooltipFormatter,
+  aggregate
+} from "../../../utils/general";
 import { trimUtil } from "../../../services/xml-parser/utils/general";
+import { fromDateToString, fromStringToDateISO } from "../../../utils/date";
+import { getYear, getMonth, getDay, getHours, getMinutes } from "date-fns";
 
-const DEFAULTCHARTSPACING = 10;
+const DEFAULT_CHART_SPACING = 10;
+export const HOURS_PER_DAY = 24;
+export const SECONDS_PER_HOUR = 3600;
+export const MILLISECONDS_PER_HOUR = 1000;
+export const AVERAGE_DAYS_PER_MONTH = 30.42;
+const AVERAGE_DAYS_PER_TWO_MONTHS = 60.83;
+const AVERAGE_DAYS_PER_THREE_MONTHS = 91.25;
+const AVERAGE_DAYS_PER_SIX_MONTHS = 182.5;
+const AVERAGE_DAYS_PER_YEAR = 365;
+
 const getSpacing = (chartTypes: ChartTypes) =>
   chartTypes.Timeline
-    ? [DEFAULTCHARTSPACING, 0, DEFAULTCHARTSPACING, 0] // top, right, bottom, left
+    ? [DEFAULT_CHART_SPACING, 0, DEFAULT_CHART_SPACING, 0] // top, right, bottom, left
     : [
-        DEFAULTCHARTSPACING,
-        DEFAULTCHARTSPACING,
-        DEFAULTCHARTSPACING,
-        DEFAULTCHARTSPACING
+        DEFAULT_CHART_SPACING,
+        DEFAULT_CHART_SPACING,
+        DEFAULT_CHART_SPACING,
+        DEFAULT_CHART_SPACING
       ];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -236,7 +258,6 @@ function getXAxisObject(
   type: QueryViewerChartType,
   chartTypes: ChartTypes,
   XAxisLabels: QueryViewerXAxisLabels
-  // dataType: QueryViewerDataType
 ): XAxisOptions {
   const xAxis: XAxisOptions = {
     tickWidth: 1,
@@ -269,11 +290,9 @@ function getXAxisObject(
       };
     }
     xAxis.lineWidth = 0;
-    if (
-      type === QueryViewerChartType.LinearGauge ||
-      type === QueryViewerChartType.Sparkline
-    ) {
+    if (type === QueryViewerChartType.Sparkline) {
       xAxis.tickPositions = [];
+      xAxis.visible = false;
     }
     if (
       type === QueryViewerChartType.Radar ||
@@ -286,6 +305,7 @@ function getXAxisObject(
   }
 
   if (type === QueryViewerChartType.LinearGauge) {
+    // xAxis.visible = false;
     let widths;
     if (chartTypes.Splitted) {
       widths = linearGaugeWidths(1, 1);
@@ -355,27 +375,27 @@ function getXAxisObject(
     xAxis.type = "datetime";
     xAxis.id = "xaxis";
     xAxis.minRange = 1; // 1ms máximo zoom (el default es demasiado grande)
-    // ToDo: Para la timeline
-    // if (
-    //   dataType === QueryViewerDataType.Date &&
-    //   chartMetadataAndData.Categories.MaxValue != null &&
-    //   chartMetadataAndData.Categories.MinValue != null
-    // ) {
-    //   const minDate = new gx.date.gxdate(
-    //     chartMetadataAndData.Categories.MinValue,
-    //     "Y4MD"
-    //   );
-    //   const maxDate = new gx.date.gxdate(
-    //     chartMetadataAndData.Categories.MaxValue,
-    //     "Y4MD"
-    //   );
-    //   if (
-    //     maxDate.Value.getTime() - minDate.Value.getTime() <
-    //     10 * 24 * 3600 * 1000
-    //   ) {
-    //     xAxis.tickInterval = 24 * 3600 * 1000;
-    //   }
-    // }
+    const dataType = XAxisDataType(serviceResponseMetadata);
+    if (
+      dataType === QueryViewerDataType.Date &&
+      chartMetadataAndData.Categories.MaxValue != null &&
+      chartMetadataAndData.Categories.MinValue != null
+    ) {
+      const minDateX = fromStringToDateISO(
+        chartMetadataAndData.Categories.MinValue
+      );
+      const maxDateX = fromStringToDateISO(
+        chartMetadataAndData.Categories.MaxValue
+      );
+      if (
+        maxDateX.getTime() - minDateX.getTime() <
+        10 * HOURS_PER_DAY * SECONDS_PER_HOUR * MILLISECONDS_PER_HOUR
+      ) {
+        // Si el rango de fechas es menor a 10 dias, setea el intervalo del eje X cada un dia
+        xAxis.tickInterval =
+          HOURS_PER_DAY * SECONDS_PER_HOUR * MILLISECONDS_PER_HOUR;
+      }
+    }
   }
 
   // if (chartTypes.Polar) {
@@ -453,17 +473,21 @@ function getYAxisObject(
   yAxisTitle: string,
   xAxisIntersectionAtZero: boolean,
   seriesIndex: number
-): YAxisOptions {
+): YAxisOptions | YAxisOptions[] {
   const yAxis: YAxisOptions = {
     plotLines: [],
     plotBands: [],
     title: null
   };
+  let yAxisArray: YAxisOptions[] = [];
   if (type === QueryViewerChartType.Sparkline) {
     yAxis["visible"] = false;
     return yAxis;
   }
-
+  if (type === QueryViewerChartType.LinearGauge) {
+    // yAxis["visible"] = false;
+    // yAxis.grid = { enabled: false };
+  }
   let yAxisName = null;
   if (type !== QueryViewerChartType.CircularGauge) {
     yAxisName = chartTypes.Splitted
@@ -472,11 +496,10 @@ function getYAxisObject(
   }
 
   if (chartTypes.Combination && !chartTypes.Splitted) {
-    // ToDo: Refactor this because the type is wrong
-    // yAxis = [
-    //   { title: { text: yAxisName } },
-    //   { title: { text: "" }, opposite: true } // El eje secundario por ahora no es posible setearle titulo
-    // ];
+    yAxisArray = [
+      { title: { text: yAxisName } },
+      { title: { text: "" }, opposite: true } // El eje secundario por ahora no es posible setearle titulo
+    ];
   } else {
     yAxis.title = { text: yAxisName };
   }
@@ -588,7 +611,7 @@ function getYAxisObject(
   }
 
   if (type === QueryViewerChartType.LinearGauge) {
-    yAxis.className = "highcharts-no-axis-line highcharts-no-grid-line"; // Clases no estándar de Highcharts
+    // yAxis.className = "highcharts-no-axis-line highcharts-no-grid-line"; // Clases no estándar de Highcharts
     yAxis.labels = { enabled: false };
   } else if (type === QueryViewerChartType.CircularGauge) {
     yAxis.lineWidth = 0;
@@ -619,14 +642,12 @@ function getYAxisObject(
       anyNegativeValue = true;
     }
   });
-
   if (!anyNegativeValue && !anyPositiveValue) {
     if (chartTypes.Combination && !chartTypes.Splitted) {
-      // ToDo: Check wrong type
-      //   yAxis[0].min = 0;
-      //   yAxis[1].min = 0;
-      //   yAxis[0].max = 1;
-      //   yAxis[1].max = 1;
+      yAxisArray = [
+        { min: 0, max: 1 },
+        { min: 0, max: 1 }
+      ];
     } else {
       yAxis.min = 0;
       yAxis.max = 1;
@@ -634,25 +655,20 @@ function getYAxisObject(
   } else if (xAxisIntersectionAtZero) {
     if (!anyNegativeValue) {
       if (chartTypes.Combination && !chartTypes.Splitted) {
-        // ToDo: Check wrong type
-        // yAxis[0].min = 0;
-        // yAxis[1].min = 0;
+        yAxisArray = [{ min: 0 }, { min: 0 }];
       } else {
         yAxis.min = 0;
       }
     }
     if (!anyPositiveValue) {
       if (chartTypes.Combination && !chartTypes.Splitted) {
-        // ToDo: Check wrong type
-        // yAxis[0].max = 0;
-        // yAxis[1].max = 0;
+        yAxisArray = [{ max: 0 }, { max: 0 }];
       } else {
         yAxis.max = 0;
       }
     }
   }
-
-  return yAxis;
+  return chartTypes.Combination && !chartTypes.Splitted ? yAxisArray : yAxis;
 }
 
 function NumberOfCharts(
@@ -673,14 +689,16 @@ function LinearGaugePlotHeight(
     chartTypes.Splitted ||
     chartMetadataAndData.Series.DataFields.length === 1
   ) {
-    marginBottom = 23 * NumberOfCharts(chartTypes, chartMetadataAndData);
+    // ToDo: improve this
+    marginBottom = 60 * NumberOfCharts(chartTypes, chartMetadataAndData);
   } // por el título del eje Y
   else {
-    marginBottom = 29;
+    // ToDo: improve this
+    marginBottom = 80;
   } // por la leyenda
 
-  // ToDo: implement this
-  return 100 - marginBottom;
+  // ToDo: implement this that change in function of the fontsize
+  return marginBottom;
 }
 
 function getMarker(
@@ -724,8 +742,8 @@ function connector90degrees(
 function linearGaugeWidths(chartSeriesCount: number, serieNumber: number) {
   const width = 1 / chartSeriesCount / 2;
   const center = -0.5 + (serieNumber - 0.5) / chartSeriesCount;
-  const lowerExtreme = center - width / 2;
-  const upperExtreme = center + width / 2;
+  const lowerExtreme = 1;
+  const upperExtreme = 1;
   return {
     Width: width,
     Center: center,
@@ -782,6 +800,7 @@ function getPlotOptionsObject(
         chartTypes.Splitted,
       y: 0,
       borderWidth: 0
+
       // ToDo: implement this
       // formatter: () => CircularGaugeTooltipAndDataLabelFormatter(this, qViewer)
     };
@@ -959,6 +978,7 @@ function getPlotOptionsObject(
       plotOptions.solidgauge = {};
       plotOptions.solidgauge.showInLegend = true;
       plotOptions.solidgauge.rounded = true;
+      plotOptions.solidgauge.lineWidth = 1;
       break;
     case "funnel":
       plotOptions.funnel = {};
@@ -1313,6 +1333,10 @@ function getTooltipObject(
     // tooltip.formatter = function () {
     //   return CircularGaugeTooltipAndDataLabelFormatter(this);
     // };
+    tooltip.valueSuffix = "%";
+    tooltip.pointFormat =
+      '<br><span style="font-size:2em; color: {point.color}; font-weight: bold">{point.y}</span>';
+
     tooltip.positioner = function (labelWidth) {
       return {
         x: (this.chart.plotWidth - labelWidth) / 2,
@@ -1328,16 +1352,256 @@ function getTooltipObject(
   return tooltip;
 }
 
+function yearWith4Digits(xAxisDataType: QueryViewerDataType, name: string) {
+  return xAxisDataType === QueryViewerDataType.Date
+    ? name.length === 10
+    : name.charAt(10) === " ";
+}
+
+function formatDate(
+  dateStr: string,
+  dateFormat: string,
+  yearWith4Digits: boolean,
+  includeMonth: boolean,
+  includeDay: boolean
+) {
+  const year = dateStr.slice(0, 4);
+  const month = dateStr.slice(5, 2);
+  const day = dateStr.slice(8, 2);
+  let date = dateFormat;
+  if (!includeMonth) {
+    date = date.replace("M", "");
+  }
+  if (!includeDay) {
+    date = date.replace("D", "");
+  }
+  let newDate = "";
+  for (let i = 0; i < date.length; i++) {
+    newDate += i === 0 ? "" : "/";
+    newDate += date.charAt(i);
+  }
+  date = newDate.replace("Y", yearWith4Digits ? year : year.slice(2, 2));
+  if (includeMonth) {
+    date = date.replace("M", month);
+  }
+  if (includeDay) {
+    date = date.replace("D", day);
+  }
+  return date;
+}
+
+function addDays(date: Date, days: number) {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+function getGroupStartPoint(
+  dateStr: string,
+  name: string,
+  xAxisDataType: QueryViewerDataType,
+  dateFormat: string,
+  groupOption: string // Check this
+) {
+  let dateStrStartPoint;
+  let nameStartPoint;
+  if (dateStr !== "") {
+    groupOption =
+      groupOption ||
+      (xAxisDataType === QueryViewerDataType.Date ? "Days" : "Seconds");
+    let startingMonth = "";
+    switch (groupOption) {
+      case "Years":
+        dateStrStartPoint = dateStr.slice(0, 4) + "-01-01";
+        nameStartPoint = formatDate(
+          dateStrStartPoint,
+          dateFormat,
+          yearWith4Digits(xAxisDataType, name),
+          false,
+          false
+        );
+        break;
+      case "Months":
+        dateStrStartPoint = dateStr.slice(0, 7) + "-01";
+        nameStartPoint = formatDate(
+          dateStrStartPoint,
+          dateFormat,
+          yearWith4Digits(xAxisDataType, name),
+          true,
+          false
+        );
+        break;
+      case "Semesters":
+        startingMonth = dateStr.slice(5, 2) <= "06" ? "01" : "07";
+        dateStrStartPoint = dateStr.slice(0, 5) + startingMonth + "-01";
+        const semester = dateStr.slice(5, 2) <= "06" ? "01" : "02";
+        const dateStrSemester = dateStr.slice(0, 5) + semester + "-01";
+        nameStartPoint = formatDate(
+          dateStrSemester,
+          dateFormat,
+          yearWith4Digits(xAxisDataType, name),
+          true,
+          false
+        );
+        break;
+      case "Quarters":
+        startingMonth =
+          dateStr.slice(5, 2) <= "03"
+            ? "01"
+            : dateStr.slice(5, 2) <= "06"
+            ? "04"
+            : dateStr.slice(5, 2) <= "09"
+            ? "07"
+            : "10";
+        dateStrStartPoint = dateStr.slice(0, 5) + startingMonth + "-01";
+        const quarter =
+          dateStr.slice(5, 2) <= "03"
+            ? "01"
+            : dateStr.slice(5, 2) <= "06"
+            ? "02"
+            : dateStr.slice(5, 2) <= "09"
+            ? "03"
+            : "04";
+        const dateStrQuarter = dateStr.slice(0, 5) + quarter + "-01";
+        nameStartPoint = formatDate(
+          dateStrQuarter,
+          dateFormat,
+          yearWith4Digits(xAxisDataType, name),
+          true,
+          false
+        );
+        break;
+      case "Weeks":
+        let date = fromStringToDateISO(dateStr);
+        const dow = date.getDay();
+        date = addDays(date, -86400 * dow);
+        dateStrStartPoint = fromDateToString(date, false);
+        nameStartPoint = formatDate(
+          dateStrStartPoint,
+          dateFormat,
+          yearWith4Digits(xAxisDataType, name),
+          true,
+          true
+        );
+        break;
+      case "Days":
+        dateStrStartPoint =
+          xAxisDataType === QueryViewerDataType.Date
+            ? dateStr
+            : dateStr.slice(0, 10);
+        nameStartPoint =
+          xAxisDataType === QueryViewerDataType.Date ? name : name.slice(0, 10);
+        break;
+      case "Hours":
+        dateStrStartPoint = dateStr.slice(0, 13) + ":00:00";
+        nameStartPoint = name.slice(0, 13) + ":00";
+        break;
+      case "Minutes":
+        dateStrStartPoint = dateStr.slice(0, 16) + ":00";
+        nameStartPoint = name.slice(0, 16);
+        break;
+      case "Seconds":
+        dateStrStartPoint = dateStr;
+        nameStartPoint = name;
+        break;
+    }
+  } else {
+    dateStrStartPoint = "";
+    nameStartPoint = "";
+  }
+  return { dateStr: dateStrStartPoint, name: nameStartPoint };
+}
+
+function groupPoints(
+  chartmetadataAndData: ChartMetadataAndData,
+  chartSeriePoints: QueryViewerChartSerie,
+  xAxisDataType: QueryViewerDataType,
+  aggregation: QueryViewerAggregationType,
+  groupOption: string
+) {
+  let lastStartPoint: { dateStr: string; name: string } = {
+    dateStr: null,
+    name: null
+  };
+  let pointAdd: { x: string; y: number; name: string };
+  let currentYValues: number[] = [];
+  let currentYQuantities: number[] = [];
+  const points = [];
+  chartSeriePoints.Points.forEach((point, index) => {
+    const name = chartmetadataAndData.Categories.Values[index].ValueWithPicture;
+    const xValue = chartmetadataAndData.Categories.Values[index].Value;
+    let yValue;
+    let yQuantity;
+    if (point.Value != null) {
+      if (aggregation === QueryViewerAggregationType.Count) {
+        yValue = 0; // No se utiliza
+        yQuantity = parseFloat(trimUtil(point.Value));
+      } else if (aggregation === QueryViewerAggregationType.Average) {
+        yValue = parseFloat(trimUtil(point.Value_N));
+        yQuantity = parseFloat(trimUtil(point.Value_D));
+      } else {
+        yValue = parseFloat(trimUtil(point.Value));
+        yQuantity = 1;
+      }
+    } else {
+      yValue = null;
+      yQuantity = 0;
+    }
+    const currentStartPoint = getGroupStartPoint(
+      xValue,
+      name,
+      xAxisDataType,
+      "", // ToDo: ver como obtener esto: gx.dateFormat,
+      groupOption
+    );
+    if (currentStartPoint.dateStr === lastStartPoint.dateStr || index === 0) {
+      if (yValue != null) {
+        currentYValues.push(yValue);
+        currentYQuantities.push(yQuantity);
+      }
+      if (index === 0) {
+        lastStartPoint = currentStartPoint;
+      }
+    } else {
+      pointAdd = {
+        x: lastStartPoint.dateStr,
+        y: aggregate(aggregation, currentYValues, currentYQuantities),
+        name: lastStartPoint.name
+      };
+      points.push(pointAdd);
+      lastStartPoint = currentStartPoint;
+      currentYValues = [yValue];
+      currentYQuantities = [yQuantity];
+    }
+  });
+  if (currentYValues.length > 0 && currentYQuantities.length > 0) {
+    pointAdd = {
+      x: lastStartPoint.dateStr,
+      y: aggregate(aggregation, currentYValues, currentYQuantities),
+      name: lastStartPoint.name
+    };
+    points.push(pointAdd);
+  }
+  return points;
+}
+
 function getIndividualSerieObject(
   chartTypes: ChartTypes,
   chartType: QueryViewerChartType,
   chartMetadataAndData: ChartMetadataAndData,
   _serieIndex: number,
-  chartSerie: QueryViewerChartSerie
+  chartSerie: QueryViewerChartSerie,
+  metadata: QueryViewerServiceMetaData,
+  groupOption: string
 ): SeriesOptionsType {
   // ToDo: check the correct type
-  const serie: SeriesOptionsType = { type: "line" };
-  serie.type = undefined; // WA to remove TypeScript error
+  // const serie: SeriesOptionsType = { type: "line" };
+  const serie: any = { type: undefined }; // WA to remove TypeScript error
+  // if (chartTypes.Gauge) {
+  //   serie = { type: "gauge" };
+  // } else {
+  //   serie = { type: "line" };
+  // }
   // ToDo: implement this
   //   if (qViewer.ItemClick && qViewer.Metadata.Data[serieIndex].RaiseItemClick) {
   //     serie.className = "highcharts-drilldown-point";
@@ -1369,55 +1633,56 @@ function getIndividualSerieObject(
   //     }
   //   };
   if (chartTypes.Timeline) {
-    // serie.name = chartSerie.Name;
-    // serie.data = [];
-    // serie.turboThreshold = 0;
-    // // if (!qv.util.IsNullColor(chartSerie.Color)) {
-    // //   SetHighchartsColor(qViewer, serie, chartSerie.Color, true);
-    // // }
-    // const points = groupPoints(
-    //   qViewer.Chart.Categories,
-    //   chartSerie.Points,
-    //   qv.util.XAxisDataType(qViewer),
-    //   chartSerie.Aggregation,
-    //   groupOption
-    // );
-    // for (j = 0; j < points.length; j++) {
-    //   const name = points[j].name;
-    //   const xValue = points[j].x;
-    //   const value = points[j].y;
-    //   const date = new gx.date.gxdate(xValue, "Y4MD");
-    //   serie.data[j] = {
-    //     x: date.Value.getTime() - date.Value.getTimezoneOffset() * 60000,
-    //     y: value,
-    //     name: name
-    //   };
-    //   if (qv.util.IsNullColor(chartSerie.Color)) {
-    //     SetHighchartsColor(
-    //       qViewer,
-    //       serie.data[j],
-    //       chartSerie.Points[j].Color,
-    //       true
-    //     );
-    //   }
+    serie.name = chartSerie.Name;
+    serie.data = [];
+    serie.turboThreshold = 0;
+    // if (!qv.util.IsNullColor(chartSerie.Color)) {
+    //   SetHighchartsColor(qViewer, serie, chartSerie.Color, true);
     // }
+    const dataType = XAxisDataType(metadata);
+    const points = groupPoints(
+      chartMetadataAndData,
+      chartSerie,
+      dataType,
+      chartSerie.Aggregation,
+      groupOption
+    );
+    points.forEach((point, index) => {
+      const name = point.name;
+      const xValue = point.x;
+      const value = point.y;
+      const date = fromStringToDateISO(xValue);
+      serie.data[index] = {
+        x: date.getTime() - date.getTimezoneOffset() * 60000,
+        y: value,
+        name: name
+      };
+      // if (IsNullColor(chartSerie.Color)) {
+      //   SetHighchartsColor(
+      //     qViewer,
+      //     serie.data[j],
+      //     chartSerie.point.Color,
+      //     true
+      //   );
+      // }
+    });
   } else {
-    // let widths: {
-    //   Width: number;
-    //   Center: number;
-    //   LowerExtreme: number;
-    //   UpperExtreme: number;
-    // };
-    // if (chartType === QueryViewerChartType.CircularGauge) {
-    // if (chartTypes.Splitted) {
-    //   widths = circularGaugeWidths(1, 1);
-    // } else {
-    //   widths = circularGaugeWidths(
-    //     chartMetadataAndData.Series.DataFields.length,
-    //     _serieIndex + 1
-    //   );
-    // }
-    // }
+    let widths: {
+      Width: number;
+      Center: number;
+      LowerExtreme: number;
+      UpperExtreme: number;
+    };
+    if (chartType === QueryViewerChartType.CircularGauge) {
+      if (chartTypes.Splitted) {
+        widths = circularGaugeWidths(1, 1);
+      } else {
+        widths = circularGaugeWidths(
+          chartMetadataAndData.Series.DataFields.length,
+          _serieIndex + 1
+        );
+      }
+    }
     serie.name = chartSerie.Name;
     serie.data = [];
     serie.turboThreshold = 0;
@@ -1454,33 +1719,32 @@ function getIndividualSerieObject(
         name: name,
         y: value
       };
-      //   if (chartTypes.DatetimeXAxis) {
-      // var xValue = qViewer.Chart.Categories.Values[j].Value;
-      // var date = new gx.date.gxdate(xValue, "Y4MD");
-      // serie.data[j].x =
-      //   date.Value.getTime() - date.Value.getTimezoneOffset() * 60000;
-      // serie.data[j].id = date;
+      if (chartTypes.DatetimeXAxis) {
+        const xValue = chartMetadataAndData.Categories.Values[index].Value;
+        const date = fromStringToDateISO(xValue);
+        serie.data[index].x = date.getTime() - date.getTimezoneOffset() * 60000;
+        serie.data[index].id = date;
+      }
+      if (chartType === QueryViewerChartType.CircularGauge) {
+        serie.data[index].radius = widths.UpperExtreme.toString() + "%";
+        serie.data[index].innerRadius = widths.LowerExtreme.toString() + "%";
+      }
+      // if (chartType == QueryViewerChartType.CircularGauge) {
+      //   let color;
+      //   if (!qv.util.IsNullColor(chartSerie.Color)) {
+      //     color = chartSerie.Color;
+      //   } else {
+      //     color = chartSerie.Points[0].Color;
       //   }
-      //   if (chartType === QueryViewerChartType.CircularGauge) {
-      //     serie.data[j].radius = widths.UpperExtreme.toString() + "%";
-      //     serie.data[j].innerRadius = widths.LowerExtreme.toString() + "%";
-      //   }
-      //   if (type == QueryViewerChartType.CircularGauge) {
-      //     var color;
-      //     if (!qv.util.IsNullColor(chartSerie.Color)) {
-      //       color = chartSerie.Color;
-      //     } else {
-      //       color = chartSerie.Points[0].Color;
-      //     }
-      //     //SetHighchartsColor(qViewer, serie.data[j], color, true);
-      //   } else if (qv.util.IsNullColor(chartSerie.Color)) {
-      //     SetHighchartsColor(
-      //       qViewer,
-      //       serie.data[j],
-      //       chartSerie.Points[j].Color,
-      //       true
-      //     );
-      //   }
+      //   // SetHighchartsColor(qViewer, serie.data[j], color, true);
+      // } else if (qv.util.IsNullColor(chartSerie.Color)) {
+      //   SetHighchartsColor(
+      //     qViewer,
+      //     serie.data[j],
+      //     chartSerie.Points[j].Color,
+      //     true
+      //   );
+      // }
     });
   }
   return serie;
@@ -1490,7 +1754,9 @@ function getSeriesObject(
   chartTypes: ChartTypes,
   chartMetadataAndData: ChartMetadataAndData,
   serieIndex: number,
-  chartType: QueryViewerChartType
+  chartType: QueryViewerChartType,
+  metadata: QueryViewerServiceMetaData,
+  groupOption: string
 ): Array<SeriesOptionsType> {
   const series: SeriesOptionsType[] = [];
   for (
@@ -1505,7 +1771,9 @@ function getSeriesObject(
         chartType,
         chartMetadataAndData,
         seriesIndexAux,
-        chartSerie
+        chartSerie,
+        metadata,
+        groupOption
       );
       const k = serieIndex != null ? serieIndex : seriesIndexAux;
       if (chartTypes.Combination) {
@@ -1529,6 +1797,7 @@ function circularGaugeWidths(chartSeriesCount: number, serieNumber: number) {
   const center = 100 - (width + 1) * (serieNumber - 1);
   const lowerExtreme = center - width / 2;
   const upperExtreme = center + width / 2;
+
   return {
     Width: width,
     Center: center,
@@ -1546,8 +1815,8 @@ function getPaneObject(
   if (chartType !== QueryViewerChartType.CircularGauge) {
     return {};
   }
-  const pane: PaneOptions = { background: [] };
   let widths;
+  const pane: PaneOptions = { background: [] };
   if (chartTypes.Splitted) {
     widths = circularGaugeWidths(1, 1);
   }
@@ -1578,9 +1847,316 @@ function getPaneObject(
       pane.background.push(oneBackground);
     }
   }
-
   return pane;
 }
+
+/** ********** Comienzo Timeline **********/
+
+function getTimelineFooterChartOptions(
+  chartType: QueryViewerChartType,
+  arrOptions: Options[]
+) {
+  const groupChart = IS_CHART_TYPE(chartType, null, null);
+  const series: SeriesOptionsType[] = [];
+  if (!groupChart.Splitted) {
+    arrOptions[0].series.forEach(serie => {
+      series.push(serie);
+    });
+  } else {
+    arrOptions.forEach(option => {
+      series.push(option.series[0]);
+    });
+  }
+  return series;
+}
+
+function getTimeValue(
+  zoom: string,
+  extremes: ExtremesObject,
+  tmpDate: Date
+): number {
+  const zoomMapping: Record<string, (date: Date) => number> = {
+    "1m": date => date.setMonth(date.getMonth() + 1),
+    "2m": date => date.setMonth(date.getMonth() + 2),
+    "3m": date => date.setMonth(date.getMonth() + 3),
+    "6m": date => date.setMonth(date.getMonth() + 6),
+    "12m": date => date.setFullYear(date.getFullYear() + 1)
+  };
+
+  return zoomMapping[zoom]
+    ? zoomMapping[zoom](tmpDate)
+    : tmpDate.getTime() + (extremes.max - extremes.min);
+}
+
+export async function GroupAndCompareTimeline(
+  chart: HTMLGxQueryViewerChartElement,
+  compare: boolean,
+  period: string,
+  groupBy: string,
+  chartmetadataAndData: ChartMetadataAndData,
+  // chartTypes: ChartTypes,
+  metadata: QueryViewerServiceMetaData
+) {
+  // Obtiene el tipo de periodo contra el que se quiere comparar
+  const extremes: ExtremesObject = await chart.getExtremes();
+  // ToDo: check if this fixed applied
+  if (extremes.userMin !== undefined) {
+    extremes.min = extremes.userMin;
+  } // Sin esto, la llamada a setextremes (con redraw en false) realizado en el zoom no actualiza el min hasta el próximo dibujado.
+  if (extremes.userMax !== undefined) {
+    extremes.max = extremes.userMax;
+  } // Sin esto, la llamada a setextremes (con redraw en false) realizado en el zoom no actualiza el min hasta el próximo dibujado.
+
+  let minDateCompare: any;
+  let maxDateCompare: any;
+
+  if (compare) {
+    if (period === "PrevPeriod") {
+      maxDateCompare = new Date(extremes.min);
+      minDateCompare = new Date(extremes.min - (extremes.max - extremes.min));
+    } else if (period === "PrevYear") {
+      minDateCompare = new Date(extremes.min);
+      minDateCompare = new Date(
+        minDateCompare.setFullYear(minDateCompare.getFullYear() - 1)
+      );
+      maxDateCompare = new Date(extremes.max);
+      maxDateCompare = new Date(
+        maxDateCompare.setFullYear(maxDateCompare.getFullYear() - 1)
+      );
+    }
+    minDateCompare = minDateCompare.getTime();
+    maxDateCompare = maxDateCompare.getTime();
+
+    // hideZoom(viewerId + "_Zoom_0m"); // Si esta habilitada la comparación oculto el zoom all
+  } else {
+    // showZoom(viewerId + "_Zoom_0m");
+  }
+
+  // Elimina todas las series existentes de la grafica
+  // jQuery.each(charts, function (index, chart) {
+  //   const series_colorIndexes = [];
+  //   while (chart.series.length > 0) {
+  //     if (!chart.options.qv.colorIndexesUsed) {
+  //       series_colorIndexes.push(chart.series[0].colorIndex);
+  //     }
+  //     chart.series[0].remove(true);
+  //   }
+  //   if (!chart.options.qv.colorIndexesUsed) {
+  //     chart.options.qv.colorIndexesUsed = series_colorIndexes;
+  //   }
+  // });
+
+  // Carga las series con los datos que correspondan
+  chartmetadataAndData.Series.ByIndex.forEach(async (_seriesIndex, index) => {
+    const chartSerie = chartmetadataAndData.Series.ByIndex[index];
+    const seriesName = chartSerie.Name;
+    let serieColorIndex;
+    // if (chartTypes.Splitted) {
+    // chart = charts[index];
+    // serieColorIndex = chart.options.qv.colorIndexesUsed[0];
+    // } else {
+    // chart = charts[0];
+    // serieColorIndex = chart.options.qv.colorIndexesUsed[index];
+    // }
+
+    // Serie con el periodo seleccionado por el usuario
+    const serieOfUser: SeriesLineOptions = {
+      type: "line",
+      turboThreshold: 0,
+      colorIndex: serieColorIndex,
+      id: seriesName + "1",
+      name: seriesName,
+      data: []
+    };
+
+    let serieToCompare: SeriesLineOptions;
+
+    if (compare) {
+      // Serie con el periodo contra el que se va a comparar
+      serieToCompare = {
+        className: "highcharts-dashed-series-line",
+        type: "line",
+        turboThreshold: 0,
+        colorIndex: serieColorIndex,
+        id: seriesName + "2",
+        name: seriesName,
+        data: []
+      };
+    }
+
+    const points = groupPoints(
+      chartmetadataAndData,
+      chartSerie,
+      XAxisDataType(metadata),
+      chartSerie.Aggregation,
+      groupBy
+    );
+
+    points.forEach(point => {
+      const value = point.y;
+      const date = fromStringToDateISO(point.x);
+      const name = point.name;
+      const timeValue1 = date.getTime() - date.getTimezoneOffset() * 60000;
+
+      let timeValue2;
+      const originalTimeValue =
+        date.getTime() - date.getTimezoneOffset() * 60000;
+      if (compare) {
+        let addToSerie1 = false;
+        let addToSerie2 = false;
+        if (timeValue1 <= extremes.max && timeValue1 >= extremes.min) {
+          addToSerie1 = true;
+        }
+        if (timeValue1 <= maxDateCompare && timeValue1 >= minDateCompare) {
+          addToSerie2 = true;
+          const tmpDate = new Date(timeValue1);
+          if (period === "PrevPeriod") {
+            timeValue2 = getTimeValue("", extremes, tmpDate);
+          } else if (period === "PrevYear") {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            timeValue2 = tmpDate.setFullYear(tmpDate.getFullYear() + 1);
+          }
+        }
+        if (addToSerie1) {
+          const point = { x: timeValue1, y: value, name: name };
+          serieOfUser.data.push(point);
+        }
+        if (addToSerie2) {
+          const point = {
+            x: timeValue2,
+            y: value,
+            name: name,
+            real_x: originalTimeValue
+          };
+          serieToCompare.data.push(point);
+        }
+      } else {
+        serieOfUser.data.push({ x: timeValue1, y: value, name: name });
+      }
+    });
+    await chart.addSeries(serieOfUser);
+    if (compare) {
+      await chart.addSeries(serieToCompare);
+    }
+  });
+}
+
+export async function optionsHeaderSelect(
+  chart: HTMLGxQueryViewerChartElement
+) {
+  const extremes = await chart.getExtremes();
+
+  const winTime = extremes.dataMax - extremes.dataMin;
+
+  const minDate = fromStringToDateISO("");
+  const maxDate = fromStringToDateISO("");
+  minDate.setTime(extremes.dataMin + minDate.getTimezoneOffset() * 60000);
+  maxDate.setTime(extremes.dataMax + maxDate.getTimezoneOffset() * 60000);
+
+  const include1m =
+    winTime >
+    AVERAGE_DAYS_PER_MONTH *
+      HOURS_PER_DAY *
+      SECONDS_PER_HOUR *
+      MILLISECONDS_PER_HOUR;
+  const include2m =
+    winTime >
+    AVERAGE_DAYS_PER_TWO_MONTHS *
+      HOURS_PER_DAY *
+      SECONDS_PER_HOUR *
+      MILLISECONDS_PER_HOUR;
+  const include3m =
+    winTime >
+    AVERAGE_DAYS_PER_THREE_MONTHS *
+      HOURS_PER_DAY *
+      SECONDS_PER_HOUR *
+      MILLISECONDS_PER_HOUR;
+  const include6m =
+    winTime >
+    AVERAGE_DAYS_PER_SIX_MONTHS *
+      HOURS_PER_DAY *
+      SECONDS_PER_HOUR *
+      MILLISECONDS_PER_HOUR;
+  const include1y =
+    winTime >
+    AVERAGE_DAYS_PER_YEAR *
+      HOURS_PER_DAY *
+      SECONDS_PER_HOUR *
+      MILLISECONDS_PER_HOUR;
+
+  const showYears = getYear(minDate) !== getYear(maxDate);
+  const showSemesters = getMonth(minDate) <= 6 && getMonth(maxDate) >= 7;
+  const showQuarters =
+    (getMonth(minDate) <= 3 && getMonth(maxDate) >= 4) ||
+    (getMonth(minDate) <= 6 && getMonth(maxDate) >= 7) ||
+    (getMonth(minDate) <= 9 && getMonth(maxDate) >= 10);
+  const showMonths = getMonth(minDate) !== getMonth(maxDate);
+  const showWeeks =
+    minDate.getDate() - minDate.getDay() !==
+    maxDate.getDate() - maxDate.getDay();
+  const showDays = getDay(minDate) !== getDay(maxDate);
+  const showHours = getHours(minDate) !== getHours(maxDate);
+  const showMinutes = getMinutes(minDate) !== getMinutes(maxDate);
+
+  return {
+    include1m,
+    include2m,
+    include3m,
+    include6m,
+    include1y,
+    showYears,
+    showSemesters,
+    showQuarters,
+    showMonths,
+    showWeeks,
+    showDays,
+    showHours,
+    showMinutes
+  };
+}
+
+export function fillHeaderAndFooter(
+  chartType: QueryViewerChartType,
+  charts: Options[]
+) {
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  // Event handlers para las opciones de "compare to past"
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
+  // gx.dom.el(divOptions.id + "_compare_enable").onclick = function () {
+  //   GroupAndCompareTimeline(charts);
+  // };
+  // gx.dom.el(divOptions.id + "_compare_options").onchange = function () {
+  //   if (gx.dom.el(divOptions.id + "_compare_enable").checked) {
+  //     GroupAndCompareTimeline(charts);
+  //   }
+  // };
+  // gx.dom.el(divOptions.id + "_group_options").onchange = function () {
+  //   GroupAndCompareTimeline(charts);
+  // };
+
+  // doZoom(zoomFactor);
+
+  // //////////////////////////////////////////////////////////////////////////////////////////
+  // Carga los links de zooms con los event handlers necesarios
+  // Zoom automatico a x meses
+  // const array_zooms = [0, 1, 2, 3, 6, 12];
+  // for (const index in array_zooms) {
+  //   const x = array_zooms[index];
+  //   const zoomXm = gx.dom.el(viewerId + "_Zoom_" + x + "m");
+  //   if (zoomXm) {
+  //     zoomXm.onclick = doZoom.closure(zoomXm, [x]);
+  //   }
+  // }
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
+  // Al final, se muestra un rango de fechas que despliegue un máximo de 20 puntos
+  // const zoomFactor = getSuitableZoomFactor(firstChart.series[0].points, 20);
+  // triggerZoom(zoomFactor);
+
+  return getTimelineFooterChartOptions(chartType, charts);
+}
+/** **********  Fin Timeline **********/
 
 const getTitleObject = (queryTitle: string, serieIndex: number) => ({
   text: (!serieIndex ? queryTitle : null) || null
@@ -1603,10 +2179,10 @@ export function getHighchartOptions(
   queryTitle: string,
   isRTL: boolean
 ) {
-  //   const groupOption =
-  //     XAxisDataType(serviceResponseMetadata) === QueryViewerDataType.Date
-  //       ? "Days"
-  //       : "Seconds";
+  const groupOption =
+    XAxisDataType(serviceResponseMetadata) === QueryViewerDataType.Date
+      ? "Days"
+      : "Seconds";
 
   const options: HighChartOptions = {
     chart: getChartObject(chartType, chartTypes),
@@ -1661,12 +2237,11 @@ export function getHighchartOptions(
       chartTypes,
       chartMetadataAndData,
       serieIndex,
-      chartType
+      chartType,
+      serviceResponseMetadata,
+      groupOption
     )
   };
-  //   options.qv = {};
-  //   options.qv.viewerId = qViewer.userControlId(); // Almacena el identificador del control en las opciones de la grafica
-  //   options.qv.seriesIndex = serieIndex;
 
   return options;
 }
