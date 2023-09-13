@@ -9,6 +9,9 @@ const GET_QUERY_BY_NAME_SERVICE_PATH = "/Query/GetByName";
 const QV_GET_METADATA_SERVICE_PATH = "/QueryViewer/GetMetadata";
 const QV_GET_DATA_SERVICE_PATH = "/QueryViewer/GetData";
 const GENERIC_ERROR_CODE = -1;
+const REPOSITORY_NAME = "";
+const USER_NAME = "administrator";
+const USER_PASSWORD = "administrator123";
 
 /**
  * Represents a user session in GXquery
@@ -232,9 +235,9 @@ export class GXqueryConnector {
    */
   private static async login(): Promise<LoginServiceResponse> {
     const serviceParameters = {
-      RepositoryName: "",
-      UserName: "administrator",
-      UserPassword: "administrator123"
+      RepositoryName: REPOSITORY_NAME,
+      UserName: USER_NAME,
+      UserPassword: USER_PASSWORD
     };
     const resObj = (await GXqueryConnector.callRESTService(
       LOGIN_SERVICE_PATH,
