@@ -8,16 +8,7 @@ const GET_METADATA_BY_NAME_SERVICE_PATH = "/Metadata/GetByName";
 const GET_QUERY_BY_NAME_SERVICE_PATH = "/Query/GetByName";
 const QV_GET_METADATA_SERVICE_PATH = "/QueryViewer/GetMetadata";
 const QV_GET_DATA_SERVICE_PATH = "/QueryViewer/GetData";
-
-/**
- * Options for the javascript fetch API
- */
-type FetchOptions = {
-  method: HttpMethod;
-  cache: RequestCache;
-  headers: { [key: string]: string };
-  body: string;
-};
+const GENERIC_ERROR_CODE = -1;
 
 /**
  * Represents a user session in GXquery
@@ -123,6 +114,16 @@ export type GXqueryOptions = {
   query?: Query;
 };
 
+/**
+ * Returns a generic error given its code and message
+ */
+const makeGenericError = (
+  code: number,
+  message: string
+): GenericServiceResponse => ({
+  Errors: [{ Code: code, Message: message }]
+});
+
 export class GXqueryConnector {
   private static _baseUrl: string;
   private static _connecting: boolean;
@@ -200,32 +201,28 @@ export class GXqueryConnector {
     } else if (method === "PUT" || method === "POST") {
       body = serviceParameters;
     }
-    const fetchOptions: FetchOptions = {
+    const headers: HeadersInit = GXqueryConnector._currentSession
+      ? {
+          "Content-Type": "application/json",
+          "Authorization": "OAuth " + GXqueryConnector._currentSession.Token
+        }
+      : {
+          "Content-Type": "application/json"
+        };
+    const fetchOptions: RequestInit = {
       method: method,
       cache: "no-store",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: headers,
       body: body
     };
-    if (GXqueryConnector._currentSession) {
-      fetchOptions.headers.Authorization =
-        "OAuth " + GXqueryConnector._currentSession.Token;
-    }
-    let resObj: GenericServiceResponse;
     try {
       const response = await fetch(serviceURL, fetchOptions);
-      if (response.ok) {
-        resObj = await response.json();
-      } else {
-        resObj = {
-          Errors: [{ Code: response.status, Message: response.statusText }]
-        };
-      }
+      return response.ok
+        ? await response.json()
+        : makeGenericError(response.status, response.statusText);
     } catch (err) {
-      resObj = { Errors: [{ Code: -1, Message: err.message }] };
+      return makeGenericError(GENERIC_ERROR_CODE, err.message);
     }
-    return resObj;
   }
 
   /**
