@@ -130,6 +130,18 @@ export class GXqueryConnector {
   private static _currentMetadata: Metadata;
   private static _queryByNameDictionary: { [key: string]: string } = {};
 
+  private static ServicePathDictionary = {
+    metadata: QVGETMETADATA_SERVICE_PATH,
+    data: QVGETDATA_SERVICE_PATH
+  };
+
+  private static serviceResponseDictionary = {
+    metadata: (resJson: GenericServiceResponse) =>
+      (resJson as QVMetadataServiceResponse).Metadata,
+    data: (resJson: GenericServiceResponse) =>
+      (resJson as QVDataServiceResponse).Data
+  };
+
   /**
    * Starts a session in GXquery and gets the id for a metadata given its name
    */
@@ -287,10 +299,6 @@ export class GXqueryConnector {
   ) {
     let resJson = await GXqueryConnector.CheckConnection(options);
     if (resJson.Errors.length === 0) {
-      const ServicePathDictionary = {
-        metadata: QVGETMETADATA_SERVICE_PATH,
-        data: QVGETDATA_SERVICE_PATH
-      };
       const queryId = await GXqueryConnector.GetQueryId(options);
       const serviceParameters = {
         MetadataId: GXqueryConnector._currentMetadata.Id,
@@ -298,19 +306,14 @@ export class GXqueryConnector {
         PostInfoJSON: postInfo
       };
       resJson = await GXqueryConnector.CallRESTService(
-        ServicePathDictionary[serviceType],
+        GXqueryConnector.ServicePathDictionary[serviceType],
         "POST",
         JSON.stringify(serviceParameters)
       );
     }
     if (resJson.Errors.length === 0) {
-      const serviceResponseDictionary = {
-        metadata: (resJson: GenericServiceResponse) =>
-          (resJson as QVMetadataServiceResponse).Metadata,
-        data: (resJson: GenericServiceResponse) =>
-          (resJson as QVDataServiceResponse).Data
-      };
-      const serviceResponse = serviceResponseDictionary[serviceType](resJson);
+      const serviceResponse =
+        GXqueryConnector.serviceResponseDictionary[serviceType](resJson);
       return serviceResponse || "";
     } else {
       throw new Error(resJson.Errors[0].Message);
