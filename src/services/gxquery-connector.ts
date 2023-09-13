@@ -271,21 +271,22 @@ export class GXqueryConnector {
   public static async getQueryByName(
     options: GXqueryOptions
   ): Promise<GetQueryByNameServiceResponse> {
-    let resObj = await GXqueryConnector.checkConnection(options);
-    if (resObj.Errors.length === 0) {
-      const serviceParameters = `MetadataId=${GXqueryConnector._currentMetadata.Id}&Name=${options.queryName}`;
-      resObj = (await GXqueryConnector.callRESTService(
-        GET_QUERY_BY_NAME_SERVICE_PATH,
-        "GET",
-        serviceParameters
-      )) as GetQueryByNameServiceResponse;
-      if (resObj.Errors.length === 0) {
-        const query = (resObj as GetQueryByNameServiceResponse).Query;
-        GXqueryConnector._queryByNameDictionary[query.Name.toLowerCase()] =
-          query.Id;
-      }
+    const connectionStatus = await GXqueryConnector.checkConnection(options);
+    if (connectionStatus.Errors.length > 0) {
+      return { Query: undefined, Errors: connectionStatus.Errors };
     }
-    return resObj as GetQueryByNameServiceResponse;
+    const serviceParameters = `MetadataId=${GXqueryConnector._currentMetadata.Id}&Name=${options.queryName}`;
+    const serviceResponse = await GXqueryConnector.callRESTService(
+      GET_QUERY_BY_NAME_SERVICE_PATH,
+      "GET",
+      serviceParameters
+    );
+    if (serviceResponse.Errors.length === 0) {
+      const query = (serviceResponse as GetQueryByNameServiceResponse).Query;
+      GXqueryConnector._queryByNameDictionary[query.Name.toLowerCase()] =
+        query.Id;
+    }
+    return serviceResponse as GetQueryByNameServiceResponse;
   }
 
   /**
