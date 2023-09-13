@@ -75,7 +75,7 @@ export type Query = {
  * Generic response to any GXquery API service
  */
 type GenericServiceResponse = {
-  Errors: [{ Code: number; Message: string }?];
+  Errors: { Code: number; Message: string }[];
 };
 
 /**
