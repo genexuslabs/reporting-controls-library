@@ -152,15 +152,17 @@ export class GXqueryConnector {
   ): Promise<GenericServiceResponse> {
     GXqueryConnector._connecting = true;
     GXqueryConnector._baseUrl = options.baseUrl;
-    let resObj = (await GXqueryConnector.login()) as GenericServiceResponse;
-    if (resObj.Errors.length === 0) {
-      resObj = await GXqueryConnector.getMetadataByName(options.metadataName);
-      if (resObj.Errors.length === 0) {
-        GXqueryConnector._connected = true;
-      }
+    const loginResponse = await GXqueryConnector.login();
+    if (loginResponse.Errors.length > 0) {
+      GXqueryConnector._connecting = false;
+      return loginResponse;
     }
+    const getMetadataByNameResponse = await GXqueryConnector.getMetadataByName(
+      options.metadataName
+    );
+    GXqueryConnector._connected = getMetadataByNameResponse.Errors.length === 0;
     GXqueryConnector._connecting = false;
-    return resObj;
+    return getMetadataByNameResponse;
   }
 
   /**
