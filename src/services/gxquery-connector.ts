@@ -117,10 +117,10 @@ type QVDataServiceResponse = GenericServiceResponse & {
  * This is the minimum information required to display a query from GXquery
  */
 export type GXqueryOptions = {
-  BaseUrl: string;
-  MetadataName: string;
-  QueryName?: string;
-  Query?: Query;
+  baseUrl: string;
+  metadataName: string;
+  queryName?: string;
+  query?: Query;
 };
 
 export class GXqueryConnector {
@@ -131,7 +131,7 @@ export class GXqueryConnector {
   private static _currentMetadata: Metadata;
   private static _queryByNameDictionary: { [key: string]: string } = {};
 
-  private static ServicePathDictionary = {
+  private static servicePathDictionary = {
     metadata: QV_GET_METADATA_SERVICE_PATH,
     data: QV_GET_DATA_SERVICE_PATH
   };
@@ -146,14 +146,14 @@ export class GXqueryConnector {
   /**
    * Starts a session in GXquery and gets the id for a metadata given its name
    */
-  private static async Connect(
+  private static async connect(
     options: GXqueryOptions
   ): Promise<GenericServiceResponse> {
     GXqueryConnector._connecting = true;
-    GXqueryConnector._baseUrl = options.BaseUrl;
-    let resObj = (await GXqueryConnector.Login()) as GenericServiceResponse;
+    GXqueryConnector._baseUrl = options.baseUrl;
+    let resObj = (await GXqueryConnector.login()) as GenericServiceResponse;
     if (resObj.Errors.length === 0) {
-      resObj = await GXqueryConnector.GetMetadataByName(options.MetadataName);
+      resObj = await GXqueryConnector.getMetadataByName(options.metadataName);
       if (resObj.Errors.length === 0) {
         GXqueryConnector._connected = true;
       }
@@ -165,31 +165,31 @@ export class GXqueryConnector {
   /**
    * Test if connected to GXquery and connects if not
    */
-  private static async CheckConnection(
+  private static async checkConnection(
     options: GXqueryOptions
   ): Promise<GenericServiceResponse> {
     let resObj: GenericServiceResponse;
     if (GXqueryConnector._connected) {
       resObj = { Errors: [] };
     } else if (!GXqueryConnector._connecting) {
-      resObj = await GXqueryConnector.Connect(options);
+      resObj = await GXqueryConnector.connect(options);
     } else {
       do {
-        await GXqueryConnector.Sleep(1000);
+        await GXqueryConnector.sleep(1000);
       } while (!GXqueryConnector._connected);
       resObj = { Errors: [] };
     }
     return resObj;
   }
 
-  private static Sleep(ms: number) {
+  private static sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   /**
    * Calls any REST service
    */
-  private static async CallRESTService(
+  private static async callRESTService(
     service: string,
     method: HttpMethod,
     serviceParameters: string
@@ -232,13 +232,13 @@ export class GXqueryConnector {
   /**
    * Executes a login in GXquery
    */
-  private static async Login(): Promise<LoginServiceResponse> {
+  private static async login(): Promise<LoginServiceResponse> {
     const serviceParameters = {
       RepositoryName: "",
       UserName: "administrator",
       UserPassword: "administrator123"
     };
-    const resObj = (await GXqueryConnector.CallRESTService(
+    const resObj = (await GXqueryConnector.callRESTService(
       LOGIN_SERVICE_PATH,
       "POST",
       JSON.stringify(serviceParameters)
@@ -252,11 +252,11 @@ export class GXqueryConnector {
   /**
    * Gets a metadata given its name
    */
-  private static async GetMetadataByName(
+  private static async getMetadataByName(
     metadataName: string
   ): Promise<GetMetadataByNameServiceResponse> {
     const serviceParameters = `Name=${metadataName}`;
-    const resObj = (await GXqueryConnector.CallRESTService(
+    const resObj = (await GXqueryConnector.callRESTService(
       GET_METADATA_BY_NAME_SERVICE_PATH,
       "GET",
       serviceParameters
@@ -270,13 +270,13 @@ export class GXqueryConnector {
   /**
    * Gets a query given its name
    */
-  public static async GetQueryByName(
+  public static async getQueryByName(
     options: GXqueryOptions
   ): Promise<GetQueryByNameServiceResponse> {
-    let resObj = await GXqueryConnector.CheckConnection(options);
+    let resObj = await GXqueryConnector.checkConnection(options);
     if (resObj.Errors.length === 0) {
-      const serviceParameters = `MetadataId=${GXqueryConnector._currentMetadata.Id}&Name=${options.QueryName}`;
-      resObj = (await GXqueryConnector.CallRESTService(
+      const serviceParameters = `MetadataId=${GXqueryConnector._currentMetadata.Id}&Name=${options.queryName}`;
+      resObj = (await GXqueryConnector.callRESTService(
         GET_QUERY_BY_NAME_SERVICE_PATH,
         "GET",
         serviceParameters
@@ -293,21 +293,21 @@ export class GXqueryConnector {
   /**
    * Calls a QueryViewer service (data, metadata, etc)
    */
-  public static async CallQueryViewerService(
+  public static async callQueryViewerService(
     options: GXqueryOptions,
     serviceType: ServiceType,
     postInfo: string
   ) {
-    let resJson = await GXqueryConnector.CheckConnection(options);
+    let resJson = await GXqueryConnector.checkConnection(options);
     if (resJson.Errors.length === 0) {
-      const queryId = await GXqueryConnector.GetQueryId(options);
+      const queryId = await GXqueryConnector.getQueryId(options);
       const serviceParameters = {
         MetadataId: GXqueryConnector._currentMetadata.Id,
         QueryId: queryId,
         PostInfoJSON: postInfo
       };
-      resJson = await GXqueryConnector.CallRESTService(
-        GXqueryConnector.ServicePathDictionary[serviceType],
+      resJson = await GXqueryConnector.callRESTService(
+        GXqueryConnector.servicePathDictionary[serviceType],
         "POST",
         JSON.stringify(serviceParameters)
       );
@@ -321,15 +321,15 @@ export class GXqueryConnector {
     }
   }
 
-  private static async GetQueryId(options: GXqueryOptions): Promise<string> {
+  private static async getQueryId(options: GXqueryOptions): Promise<string> {
     let queryId;
-    if (options.QueryName) {
+    if (options.queryName) {
       queryId =
         GXqueryConnector._queryByNameDictionary[
-          options.QueryName.toLocaleLowerCase()
+          options.queryName.toLocaleLowerCase()
         ];
       if (!queryId) {
-        const resJson = await GXqueryConnector.GetQueryByName(options);
+        const resJson = await GXqueryConnector.getQueryByName(options);
         if (resJson.Errors.length === 0) {
           return resJson.Query.Id;
         } else {
@@ -339,7 +339,7 @@ export class GXqueryConnector {
         return queryId;
       }
     } else {
-      return options.Query.Id;
+      return options.query.Id;
     }
   }
 }

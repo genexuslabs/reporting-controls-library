@@ -218,12 +218,12 @@ export class QueryViewerController {
 
   private ServicesContext(): ServicesContext {
     return {
-      UseGXquery: this.useGxquery,
-      BaseUrl: this.baseUrl,
-      Generator: this.environment,
-      MetadataName: this.metadataName,
-      ObjectName: this.objectName,
-      SerializedObject: this.serializedObject
+      useGXquery: this.useGxquery,
+      baseUrl: this.baseUrl,
+      generator: this.environment,
+      metadataName: this.metadataName,
+      objectName: this.objectName,
+      serializedObject: this.serializedObject
     };
   }
 

@@ -46,12 +46,12 @@ export const SERVICE_POST_INFO_MAP: {
 };
 
 export type ServicesContext = {
-  UseGXquery: boolean;
-  BaseUrl: string;
-  Generator: GeneratorType;
-  MetadataName: string;
-  ObjectName: string;
-  SerializedObject: string;
+  useGXquery: boolean;
+  baseUrl: string;
+  generator: GeneratorType;
+  metadataName: string;
+  objectName: string;
+  serializedObject: string;
 };
 
 /**
@@ -60,7 +60,7 @@ export type ServicesContext = {
  */
 const foolCache = () => new Date().getTime();
 
-const QueryToQueryProperties = (query: Query): QueryViewerServiceProperties => {
+const queryToQueryProperties = (query: Query): QueryViewerServiceProperties => {
   return {
     Type: QueryViewerOutputType[
       query.OutputType as keyof typeof QueryViewerOutputType
@@ -117,11 +117,11 @@ const QueryToQueryProperties = (query: Query): QueryViewerServiceProperties => {
 
 const contextToGXqueryOptions = (context: ServicesContext): GXqueryOptions => {
   return {
-    BaseUrl: context.BaseUrl,
-    MetadataName: context.MetadataName,
-    QueryName: context.ObjectName,
-    Query: context.SerializedObject
-      ? JSON.parse(context.SerializedObject)
+    baseUrl: context.baseUrl,
+    metadataName: context.metadataName,
+    queryName: context.objectName,
+    query: context.serializedObject
+      ? JSON.parse(context.serializedObject)
       : undefined
   };
 };
@@ -130,19 +130,19 @@ export const asyncGetProperties = (
   context: ServicesContext,
   callbackWhenReady: (prop: QueryViewerServiceProperties) => void
 ) => {
-  if (!context.UseGXquery) {
+  if (!context.useGXquery) {
     callbackWhenReady(undefined); // Not implemented
-  } else if (context.ObjectName) {
-    GXqueryConnector.GetQueryByName(contextToGXqueryOptions(context)).then(
+  } else if (context.objectName) {
+    GXqueryConnector.getQueryByName(contextToGXqueryOptions(context)).then(
       resObj => {
         const query = (resObj as GetQueryByNameServiceResponse).Query;
-        const properties = QueryToQueryProperties(query);
+        const properties = queryToQueryProperties(query);
         callbackWhenReady(properties);
       }
     );
-  } else if (context.SerializedObject) {
-    const query = JSON.parse(context.SerializedObject);
-    const properties = QueryToQueryProperties(query);
+  } else if (context.serializedObject) {
+    const query = JSON.parse(context.serializedObject);
+    const properties = queryToQueryProperties(query);
     callbackWhenReady(properties);
   } else {
     callbackWhenReady(undefined);
@@ -158,10 +158,10 @@ export const asyncServerCall = (
   const postInfo = parseObjectToFormData(
     SERVICE_POST_INFO_MAP[serviceType](qViewer)
   );
-  if (!context.UseGXquery) {
+  if (!context.useGXquery) {
     const serviceURL =
-      context.BaseUrl +
-      GENERATOR[context.Generator] +
+      context.baseUrl +
+      GENERATOR[context.generator] +
       SERVICE_NAME_MAP[serviceType] +
       "," +
       foolCache();
@@ -182,7 +182,7 @@ export const asyncServerCall = (
     );
     xmlHttp.send(postInfo);
   } else {
-    GXqueryConnector.CallQueryViewerService(
+    GXqueryConnector.callQueryViewerService(
       contextToGXqueryOptions(context),
       serviceType,
       postInfo
