@@ -168,18 +168,17 @@ export class GXqueryConnector {
   private static async checkConnection(
     options: GXqueryOptions
   ): Promise<GenericServiceResponse> {
-    let resObj: GenericServiceResponse;
+    const NO_ERRORS_RESPONSE: GenericServiceResponse = { Errors: [] };
     if (GXqueryConnector._connected) {
-      resObj = { Errors: [] };
-    } else if (!GXqueryConnector._connecting) {
-      resObj = await GXqueryConnector.connect(options);
-    } else {
-      do {
-        await GXqueryConnector.sleep(1000);
-      } while (!GXqueryConnector._connected);
-      resObj = { Errors: [] };
+      return NO_ERRORS_RESPONSE;
     }
-    return resObj;
+    if (!GXqueryConnector._connecting) {
+      return await GXqueryConnector.connect(options);
+    }
+    do {
+      await GXqueryConnector.sleep(1000);
+    } while (!GXqueryConnector._connected);
+    return NO_ERRORS_RESPONSE;
   }
 
   private static sleep(ms: number) {
