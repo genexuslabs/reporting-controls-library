@@ -2,11 +2,12 @@ import { ServiceType } from "../common/basic-types";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 
+const API_VERSION_PATH = "/API/V1";
 const LOGIN_SERVICE_PATH = "/Session/Login";
-const GETMETADATABYNAME_SERVICE_PATH = "/Metadata/GetByName";
-const GETQUERYBYNAME_SERVICE_PATH = "/Query/GetByName";
-const QVGETMETADATA_SERVICE_PATH = "/QueryViewer/GetMetadata";
-const QVGETDATA_SERVICE_PATH = "/QueryViewer/GetData";
+const GET_METADATA_BY_NAME_SERVICE_PATH = "/Metadata/GetByName";
+const GET_QUERY_BY_NAME_SERVICE_PATH = "/Query/GetByName";
+const QV_GET_METADATA_SERVICE_PATH = "/QueryViewer/GetMetadata";
+const QV_GET_DATA_SERVICE_PATH = "/QueryViewer/GetData";
 
 /**
  * Options for the javascript fetch API
@@ -131,8 +132,8 @@ export class GXqueryConnector {
   private static _queryByNameDictionary: { [key: string]: string } = {};
 
   private static ServicePathDictionary = {
-    metadata: QVGETMETADATA_SERVICE_PATH,
-    data: QVGETDATA_SERVICE_PATH
+    metadata: QV_GET_METADATA_SERVICE_PATH,
+    data: QV_GET_DATA_SERVICE_PATH
   };
 
   private static serviceResponseDictionary = {
@@ -193,7 +194,7 @@ export class GXqueryConnector {
     method: HttpMethod,
     serviceParameters: string
   ): Promise<GenericServiceResponse> {
-    let serviceURL = GXqueryConnector._baseUrl + "/API/V1" + service;
+    let serviceURL = GXqueryConnector._baseUrl + API_VERSION_PATH + service;
     let body: string;
     if (method === "GET" || method === "DELETE") {
       serviceURL += "?" + serviceParameters;
@@ -256,7 +257,7 @@ export class GXqueryConnector {
   ): Promise<GetMetadataByNameServiceResponse> {
     const serviceParameters = `Name=${metadataName}`;
     const resObj = (await GXqueryConnector.CallRESTService(
-      GETMETADATABYNAME_SERVICE_PATH,
+      GET_METADATA_BY_NAME_SERVICE_PATH,
       "GET",
       serviceParameters
     )) as GetMetadataByNameServiceResponse;
@@ -276,7 +277,7 @@ export class GXqueryConnector {
     if (resObj.Errors.length === 0) {
       const serviceParameters = `MetadataId=${GXqueryConnector._currentMetadata.Id}&Name=${options.QueryName}`;
       resObj = (await GXqueryConnector.CallRESTService(
-        GETQUERYBYNAME_SERVICE_PATH,
+        GET_QUERY_BY_NAME_SERVICE_PATH,
         "GET",
         serviceParameters
       )) as GetQueryByNameServiceResponse;
