@@ -324,24 +324,17 @@ export class GXqueryConnector {
   }
 
   private static async getQueryId(options: GXqueryOptions): Promise<string> {
-    let queryId;
-    if (options.queryName) {
-      queryId =
-        GXqueryConnector._queryByNameDictionary[
-          options.queryName.toLocaleLowerCase()
-        ];
-      if (!queryId) {
-        const resJson = await GXqueryConnector.getQueryByName(options);
-        if (resJson.Errors.length === 0) {
-          return resJson.Query.Id;
-        } else {
-          return "";
-        }
-      } else {
-        return queryId;
-      }
-    } else {
+    if (!options.queryName) {
       return options.query.Id;
     }
+    const queryId =
+      GXqueryConnector._queryByNameDictionary[options.queryName.toLowerCase()];
+    if (queryId) {
+      return queryId;
+    }
+    const queryByNameResponse = await GXqueryConnector.getQueryByName(options);
+    return queryByNameResponse.Errors.length === 0
+      ? (queryByNameResponse as GetQueryByNameServiceResponse).Query.Id
+      : "";
   }
 }
