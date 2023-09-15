@@ -1,11 +1,23 @@
 import {
   QueryViewerAggregationType,
   QueryViewerAxisOrderType,
+  QueryViewerChartType,
+  QueryViewerContinent,
+  QueryViewerCountry,
   QueryViewerDataType,
   QueryViewerExpandCollapseType,
   QueryViewerFilterType,
+  QueryViewerMapType,
+  QueryViewerOrientation,
+  QueryViewerOutputType,
+  QueryViewerPlotSeries,
+  QueryViewerRegion,
+  QueryViewerShowDataAs,
+  QueryViewerShowDataLabelsIn,
   QueryViewerSubtotals,
-  QueryViewerVisible
+  QueryViewerTotal,
+  QueryViewerVisible,
+  QueryViewerXAxisLabels
 } from "../../common/basic-types";
 import {
   QueryViewerAxisConditionalStyle,
@@ -15,6 +27,7 @@ import {
 export type QueryViewerServiceResponse = {
   MetaData: QueryViewerServiceMetaData;
   Data: QueryViewerServiceData;
+  Properties: QueryViewerServiceProperties;
 };
 
 // MetaData
@@ -22,6 +35,32 @@ export type QueryViewerServiceMetaData = {
   TextForNullValues: string;
   Axes: QueryViewerServiceMetaDataAxis[];
   Data: QueryViewerServiceMetaDataData[];
+};
+
+export type QueryViewerServiceProperties = {
+  Type: QueryViewerOutputType;
+  QueryTitle: string;
+  ShowValues: boolean;
+  ShowDataAs: QueryViewerShowDataAs;
+  Orientation: QueryViewerOrientation;
+  IncludeTrend: boolean;
+  IncludeSparkline: boolean;
+  IncludeMaxMin: boolean;
+  ChartType: QueryViewerChartType;
+  PlotSeries: QueryViewerPlotSeries;
+  XAxisLabels: QueryViewerXAxisLabels;
+  XAxisIntersectionAtZero: boolean;
+  XAxisTitle: string;
+  YAxisTitle: string;
+  MapType: QueryViewerMapType;
+  Region: QueryViewerRegion;
+  Continent: QueryViewerContinent;
+  Country: QueryViewerCountry;
+  Paging: boolean;
+  PageSize: number;
+  ShowDataLabelsIn: QueryViewerShowDataLabelsIn;
+  TotalForRows: QueryViewerTotal;
+  TotalForColumns: QueryViewerTotal;
 };
 
 export type QueryViewerServiceMetaDataAxis = {

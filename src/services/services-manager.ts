@@ -1,7 +1,29 @@
 import { QueryViewer } from "./types/json";
 import { data, metaData } from "./post-info";
 import { parseObjectToFormData } from "./utils/common";
-import { GeneratorType, ServiceType } from "../common/basic-types";
+import {
+  GeneratorType,
+  QueryViewerChartType,
+  QueryViewerContinent,
+  QueryViewerCountry,
+  QueryViewerMapType,
+  QueryViewerOrientation,
+  QueryViewerOutputType,
+  QueryViewerPlotSeries,
+  QueryViewerRegion,
+  QueryViewerShowDataAs,
+  QueryViewerShowDataLabelsIn,
+  QueryViewerTotal,
+  QueryViewerXAxisLabels,
+  ServiceType
+} from "../common/basic-types";
+import {
+  GXqueryConnector,
+  GXqueryOptions,
+  GetQueryByNameServiceResponse,
+  Query
+} from "./gxquery-connector";
+import { QueryViewerServiceProperties } from "./types/service-result";
 
 const STATE_DONE = 4;
 const STATUS_OK = 200;
@@ -16,11 +38,20 @@ const SERVICE_NAME_MAP: { [key in ServiceType]: string } = {
   data: "data"
 };
 
-const SERVICE_POST_INFO_MAP: {
+export const SERVICE_POST_INFO_MAP: {
   [key in ServiceType]: (qViewer: QueryViewer) => any;
 } = {
   metadata: metaData,
   data: data
+};
+
+export type ServicesContext = {
+  useGXquery: boolean;
+  baseUrl: string;
+  generator: GeneratorType;
+  metadataName: string;
+  objectName: string;
+  serializedObject: string;
 };
 
 /**
@@ -29,34 +60,134 @@ const SERVICE_POST_INFO_MAP: {
  */
 const foolCache = () => new Date().getTime();
 
+const queryToQueryProperties = (query: Query): QueryViewerServiceProperties => {
+  return {
+    Type: QueryViewerOutputType[
+      query.OutputType as keyof typeof QueryViewerOutputType
+    ],
+    QueryTitle: query.Title,
+    ShowValues: query.ShowValues,
+    ShowDataAs:
+      QueryViewerShowDataAs[
+        query.ShowDataAs as keyof typeof QueryViewerShowDataAs
+      ],
+    Orientation:
+      QueryViewerOrientation[
+        query.Orientation as keyof typeof QueryViewerOrientation
+      ],
+    IncludeTrend: query.IncludeTrend,
+    IncludeSparkline: query.IncludeSparkline,
+    IncludeMaxMin: query.IncludeMaxAndMin,
+    ChartType:
+      QueryViewerChartType[
+        query.ChartType as keyof typeof QueryViewerChartType
+      ],
+    PlotSeries:
+      QueryViewerPlotSeries[
+        query.PlotSeries as keyof typeof QueryViewerPlotSeries
+      ],
+    XAxisLabels:
+      QueryViewerXAxisLabels[
+        query.XAxisLabels as keyof typeof QueryViewerXAxisLabels
+      ],
+    XAxisIntersectionAtZero: query.XAxisIntersectionAtZero,
+    XAxisTitle: query.XAxisTitle,
+    YAxisTitle: query.YAxisTitle,
+    MapType:
+      QueryViewerMapType[query.MapType as keyof typeof QueryViewerMapType],
+    Region: QueryViewerRegion[query.Region as keyof typeof QueryViewerRegion],
+    Continent:
+      QueryViewerContinent[
+        query.Continent as keyof typeof QueryViewerContinent
+      ],
+    Country:
+      QueryViewerCountry[query.Country as keyof typeof QueryViewerCountry],
+    Paging: query.Paging,
+    PageSize: query.PageSize,
+    ShowDataLabelsIn:
+      QueryViewerShowDataLabelsIn[
+        query.ShowDataLabelsIn as keyof typeof QueryViewerShowDataLabelsIn
+      ],
+    TotalForRows:
+      QueryViewerTotal[query.TotalForRows as keyof typeof QueryViewerTotal],
+    TotalForColumns:
+      QueryViewerTotal[query.TotalForColumns as keyof typeof QueryViewerTotal]
+  };
+};
+
+const contextToGXqueryOptions = (context: ServicesContext): GXqueryOptions => {
+  return {
+    baseUrl: context.baseUrl,
+    metadataName: context.metadataName,
+    queryName: context.objectName,
+    query: context.serializedObject
+      ? JSON.parse(context.serializedObject)
+      : undefined
+  };
+};
+
+export const asyncGetProperties = (
+  context: ServicesContext,
+  callbackWhenReady: (prop: QueryViewerServiceProperties) => void
+) => {
+  if (!context.useGXquery) {
+    callbackWhenReady(undefined); // Not implemented
+  } else if (context.objectName) {
+    GXqueryConnector.getQueryByName(contextToGXqueryOptions(context)).then(
+      resObj => {
+        const query = (resObj as GetQueryByNameServiceResponse).Query;
+        const properties = queryToQueryProperties(query);
+        callbackWhenReady(properties);
+      }
+    );
+  } else if (context.serializedObject) {
+    const query = JSON.parse(context.serializedObject);
+    const properties = queryToQueryProperties(query);
+    callbackWhenReady(properties);
+  } else {
+    callbackWhenReady(undefined);
+  }
+};
+
 export const asyncServerCall = (
   qViewer: QueryViewer,
-  baseUrl: string,
-  environment: GeneratorType,
+  context: ServicesContext,
   serviceType: ServiceType,
   callbackWhenReady: (xml: string) => void
 ) => {
-  const serviceURL =
-    baseUrl +
-    GENERATOR[environment] +
-    SERVICE_NAME_MAP[serviceType] +
-    "," +
-    foolCache();
-
   const postInfo = parseObjectToFormData(
     SERVICE_POST_INFO_MAP[serviceType](qViewer)
   );
+  if (!context.useGXquery) {
+    const serviceURL =
+      context.baseUrl +
+      GENERATOR[context.generator] +
+      SERVICE_NAME_MAP[serviceType] +
+      "," +
+      foolCache();
 
-  const xmlHttp = new XMLHttpRequest();
+    const xmlHttp = new XMLHttpRequest();
 
-  // Callback function when ready
-  xmlHttp.onload = () => {
-    if (xmlHttp.readyState === STATE_DONE && xmlHttp.status === STATUS_OK) {
-      callbackWhenReady(xmlHttp.responseText);
-    }
-  };
+    // Callback function when ready
+    xmlHttp.onload = () => {
+      if (xmlHttp.readyState === STATE_DONE && xmlHttp.status === STATUS_OK) {
+        callbackWhenReady(xmlHttp.responseText);
+      }
+    };
 
-  xmlHttp.open("POST", serviceURL); // async
-  xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  xmlHttp.send(postInfo);
+    xmlHttp.open("POST", serviceURL); // async
+    xmlHttp.setRequestHeader(
+      "Content-Type",
+      "application/x-www-form-urlencoded"
+    );
+    xmlHttp.send(postInfo);
+  } else {
+    GXqueryConnector.callQueryViewerService(
+      contextToGXqueryOptions(context),
+      serviceType,
+      postInfo
+    ).then(str => {
+      callbackWhenReady(str);
+    });
+  }
 };

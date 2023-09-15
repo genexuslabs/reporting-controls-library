@@ -12,15 +12,24 @@ import { Component as GxComponent } from "../../common/interfaces";
 import {
   DUMMY_TRANSLATIONS,
   QueryViewerChartType,
+  QueryViewerContinent,
+  QueryViewerCountry,
+  QueryViewerMapType,
   QueryViewerOrientation,
   QueryViewerOutputType,
   QueryViewerPlotSeries,
+  QueryViewerRegion,
   QueryViewerShowDataAs,
+  QueryViewerShowDataLabelsIn,
+  QueryViewerTotal,
   QueryViewerTranslations,
   QueryViewerTrendPeriod,
   QueryViewerXAxisLabels
 } from "../../common/basic-types";
-import { QueryViewerServiceResponse } from "../../services/types/service-result";
+import {
+  QueryViewerServiceProperties,
+  QueryViewerServiceResponse
+} from "../../services/types/service-result";
 
 @Component({
   tag: "gx-query-viewer",
@@ -86,7 +95,7 @@ export class QueryViewer implements GxComponent {
   /**
    * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
    */
-  @Prop() readonly chartType: QueryViewerChartType;
+  @Prop({ mutable: true }) chartType: QueryViewerChartType;
 
   /**
    * A CSS class to set as the `gx-query-viewer` element class.
@@ -99,7 +108,7 @@ export class QueryViewer implements GxComponent {
   @Prop() readonly dataVersionId: number;
 
   /**
-   * Allowing or not Comlumn sort
+   * Allowing or not Column sort
    */
   @Prop() readonly disableColumnSort: boolean;
 
@@ -131,17 +140,17 @@ export class QueryViewer implements GxComponent {
   /**
    * Specifies whether to include the maximum and minimum values in the series.
    */
-  @Prop() readonly includeMaxMin: boolean;
+  @Prop({ mutable: true }) includeMaxMin: boolean;
 
   /**
    * Specifies whether to include a sparkline chart for the values or not.
    */
-  @Prop() readonly includeSparkline: boolean;
+  @Prop({ mutable: true }) includeSparkline: boolean;
 
   /**
    * Specifies whether to include a trend mark for the values or not.
    */
-  @Prop() readonly includeTrend: boolean;
+  @Prop({ mutable: true }) includeTrend: boolean;
 
   /**
    * True if it is external query
@@ -166,23 +175,23 @@ export class QueryViewer implements GxComponent {
   /**
    * Orientation of the graph
    */
-  @Prop() readonly orientation: QueryViewerOrientation =
+  @Prop({ mutable: true }) orientation: QueryViewerOrientation =
     QueryViewerOrientation.Horizontal;
 
   /**
    * If paging true, number of items for a single page
    */
-  @Prop() readonly pageSize: number;
+  @Prop({ mutable: true }) pageSize: number;
 
   /**
    * If type == PivotTable or Table, if true there is paging, else everything in one table
    */
-  @Prop() readonly paging: boolean;
+  @Prop({ mutable: true }) paging: boolean;
 
   /**
    * Timeline
    */
-  @Prop() readonly plotSeries: QueryViewerPlotSeries;
+  @Prop({ mutable: true }) plotSeries: QueryViewerPlotSeries;
 
   /**
    * Specifies the metadata and data that the control will use to render.
@@ -192,7 +201,7 @@ export class QueryViewer implements GxComponent {
   /**
    * Title of the QueryViewer
    */
-  @Prop() readonly queryTitle: string;
+  @Prop({ mutable: true }) queryTitle: string;
 
   /**
    * For timeline for remembering layout
@@ -203,18 +212,28 @@ export class QueryViewer implements GxComponent {
    * Specifies whether to show the actual values, the values as a percentage of
    * the target values, or both.
    */
-  @Prop() readonly showDataAs: QueryViewerShowDataAs =
+  @Prop({ mutable: true }) showDataAs: QueryViewerShowDataAs =
     QueryViewerShowDataAs.Values;
 
   /**
    * Ax to show data labels
    */
-  @Prop() readonly showDataLabelsIn: string;
+  @Prop({ mutable: true }) showDataLabelsIn: QueryViewerShowDataLabelsIn;
+
+  /**
+   * True if grand total is shown for all table rows
+   */
+  @Prop({ mutable: true }) totalForRows: QueryViewerTotal;
+
+  /**
+   * True if grand total is shown for all table columns
+   */
+  @Prop({ mutable: true }) totalForColumns: QueryViewerTotal;
 
   /**
    * if true show values on the graph
    */
-  @Prop() readonly showValues: boolean;
+  @Prop({ mutable: true }) showValues: boolean;
 
   /**
    * Theme for showing the graph
@@ -236,32 +255,93 @@ export class QueryViewer implements GxComponent {
   /**
    * Type of the QueryViewer: Table, PivotTable, Chart, Card
    */
-  @Prop() readonly type: QueryViewerOutputType;
+  @Prop({ mutable: true }) type: QueryViewerOutputType;
 
   /**
    * if true the x Axes intersect at zero
    */
-  @Prop() readonly xAxisIntersectionAtZero: boolean;
+  @Prop({ mutable: true }) xAxisIntersectionAtZero: boolean;
 
   /**
    * Labels for XAxis
    */
-  @Prop() readonly xAxisLabels: QueryViewerXAxisLabels =
+  @Prop({ mutable: true }) xAxisLabels: QueryViewerXAxisLabels =
     QueryViewerXAxisLabels.Horizontally;
 
   /**
    * X Axis title
    */
-  @Prop() readonly xAxisTitle: string;
+  @Prop({ mutable: true }) xAxisTitle: string;
 
   /**
    * Y Axis title
    */
-  @Prop() readonly yAxisTitle: string;
+  @Prop({ mutable: true }) yAxisTitle: string;
+
+  /**
+   * If type == Map, this is the map type: Choropleth or Bubble
+   */
+  @Prop({ mutable: true }) mapType: QueryViewerMapType;
+
+  /**
+   * If type == Map, this is the region to display in the map
+   */
+  @Prop({ mutable: true }) region: QueryViewerRegion;
+
+  /**
+   * If type == Map and region = Continent, this is the continent to display in the map
+   */
+  @Prop({ mutable: true }) continent: QueryViewerContinent;
+
+  /**
+   * If type == Map and region = Country, this is the country to display in the map
+   */
+  @Prop({ mutable: true }) country: QueryViewerCountry;
 
   @Listen("queryViewerServiceResponse")
   handleServiceResponse(event: CustomEvent<QueryViewerServiceResponse>) {
     this.serviceResponse = event.detail;
+    this.setQueryViewerProperties(event.detail.Properties);
+  }
+
+  /**
+   * Set QueryViewer properties with values from the query obtained from the server (unless explicitly set in the web component)
+   */
+  private setQueryViewerProperties(properties: QueryViewerServiceProperties) {
+    if (properties) {
+      this.type = this.type || properties.Type;
+      this.queryTitle = this.queryTitle || properties.QueryTitle;
+      this.showValues = this.showValues || properties.ShowValues;
+      if (this.type === QueryViewerOutputType.Card) {
+        this.showDataAs = this.showDataAs || properties.ShowDataAs;
+        this.orientation = this.orientation || properties.Orientation;
+        this.includeTrend = this.includeTrend || properties.IncludeTrend;
+        this.includeSparkline =
+          this.includeSparkline || properties.IncludeSparkline;
+        this.includeMaxMin = this.includeMaxMin || properties.IncludeMaxMin;
+      } else if (this.type === QueryViewerOutputType.Chart) {
+        this.chartType = this.chartType || properties.ChartType;
+        this.plotSeries = this.plotSeries || properties.PlotSeries;
+        this.xAxisLabels = this.xAxisLabels || properties.XAxisLabels;
+        this.xAxisIntersectionAtZero =
+          this.xAxisIntersectionAtZero || properties.XAxisIntersectionAtZero;
+        this.xAxisTitle = this.xAxisTitle || properties.XAxisTitle;
+        this.yAxisTitle = this.yAxisTitle || properties.YAxisTitle;
+      } else if (this.type === QueryViewerOutputType.Map) {
+        this.mapType = this.mapType || properties.MapType;
+        this.region = this.region || properties.Region;
+        this.continent = this.continent || properties.Continent;
+        this.country = this.country || properties.Country;
+      } else {
+        this.paging = this.paging || properties.Paging;
+        this.pageSize = this.pageSize || properties.PageSize;
+        this.showDataLabelsIn =
+          this.showDataLabelsIn || properties.ShowDataLabelsIn;
+        this.totalForRows = this.totalForRows || properties.TotalForRows;
+        this.totalForColumns =
+          this.totalForColumns || properties.TotalForColumns;
+      }
+    }
   }
 
   private cardRender(serviceResponse: QueryViewerServiceResponse) {
