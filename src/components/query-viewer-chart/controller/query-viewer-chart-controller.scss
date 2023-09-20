@@ -1,3 +1,9 @@
+gx-query-viewer-chart-controller {
+  display: grid;
+  grid-auto-rows: 1fr;
+  align-self: stretch;
+}
+
 .gx-query-viewer-chart-controller__header {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;

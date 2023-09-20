@@ -201,7 +201,10 @@ export class QueryViewerChart {
   render() {
     return (
       <Host>
-        <div ref={el => (this.chartContainer = el as HTMLDivElement)}> </div>
+        <div
+          class="chart-container"
+          ref={el => (this.chartContainer = el as HTMLDivElement)}
+        ></div>
       </Host>
     );
   }
