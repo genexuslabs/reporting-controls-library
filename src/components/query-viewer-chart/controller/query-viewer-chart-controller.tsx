@@ -388,7 +388,7 @@ export class QueryViewerChart {
       )
     );
   }
-
+  // ToDo: improve this implementation
   private renderFooter = (charts: Options[]) => [
     charts.map(({ pane, plotOptions }) => (
       <gx-query-viewer-chart
@@ -447,36 +447,39 @@ export class QueryViewerChart {
         </gx-form-field>
       </div>
     </header>,
-    charts.map(
-      ({
-        chart,
-        // credits,
-        legend,
-        title,
-        subtitle,
-        pane,
-        xAxis,
-        yAxis,
-        plotOptions,
-        tooltip,
-        series
-      }) => (
-        <gx-query-viewer-chart
-          class={{ [`${this.cssClass}__chart`]: !!this.cssClass }}
-          // translations={this.translations}
-          chartTitle={title}
-          subtitleOptions={subtitle}
-          chartOptions={chart}
-          seriesOptions={series}
-          tooltipOptions={tooltip}
-          paneOptions={pane}
-          legendOptions={legend}
-          plotOptions={plotOptions}
-          yaxisOptions={yAxis}
-          xaxisOptions={xAxis}
-        ></gx-query-viewer-chart>
-      )
-    ),
+    <div class="gx-query-viewer-chart-controller__timeline-container">
+      {charts.map(
+        ({
+          chart,
+          // credits,
+          legend,
+          title,
+          subtitle,
+          pane,
+          xAxis,
+          yAxis,
+          plotOptions,
+          tooltip,
+          series
+        }) => (
+          <gx-query-viewer-chart
+            class={{ [`${this.cssClass}__chart`]: !!this.cssClass }}
+            // translations={this.translations}
+            chartTitle={title}
+            subtitleOptions={subtitle}
+            chartOptions={chart}
+            seriesOptions={series}
+            tooltipOptions={tooltip}
+            paneOptions={pane}
+            legendOptions={legend}
+            plotOptions={plotOptions}
+            yaxisOptions={yAxis}
+            xaxisOptions={xAxis}
+            ref={el => (this.chartComponent = el)}
+          ></gx-query-viewer-chart>
+        )
+      )}
+    </div>,
 
     <footer>
       <gx-query-viewer-slider onChange={this.updateCurrentPeriodZoom}>
@@ -489,7 +492,12 @@ export class QueryViewerChart {
     const charts = this.getChartsConfiguration();
 
     return (
-      <Host>
+      <Host
+        class={{
+          "gx-query-viewer-controller--timeline":
+            this.chartMetadataAndData?.chartTypes.Timeline
+        }}
+      >
         {this.chartMetadataAndData?.chartTypes.Timeline
           ? this.renderTimeline(charts)
           : charts.map(
