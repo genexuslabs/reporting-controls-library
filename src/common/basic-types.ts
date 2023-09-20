@@ -198,8 +198,8 @@ export enum QueryViewerOrientation {
 }
 
 export enum QueryViewerPlotSeries {
-  InTheSameChart = "In the same chart",
-  InSeparateCharts = "In separate charts"
+  InTheSameChart = "InTheSameChart",
+  InSeparateCharts = "InSeparateCharts"
 }
 
 export enum QueryViewerXAxisLabels {

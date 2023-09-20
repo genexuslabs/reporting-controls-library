@@ -1,6 +1,18 @@
+gx-query-viewer-chart-controller,
+.gx-query-viewer-chart-controller__timeline-container {
+  display: grid;
+  grid-auto-rows: 1fr;
+  align-self: stretch;
+}
+
+.gx-query-viewer-controller--timeline {
+  grid-template-rows: min-content 1fr min-content;
+}
+
 .gx-query-viewer-chart-controller__header {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: min-content;
 }
 
 .gx-query-viewer-chart-controller__header-compare-container {
@@ -16,7 +28,7 @@
 
 .gx-query-viewer-chart-controller__header-zoom-options {
   display: grid;
-  grid-template-columns: min-content 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: min-content 1fr;
 }
 
 .gx-query-viewer-chart_timeline-footer {
