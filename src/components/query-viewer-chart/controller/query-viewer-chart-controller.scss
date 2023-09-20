@@ -7,6 +7,7 @@ gx-query-viewer-chart-controller {
 .gx-query-viewer-chart-controller__header {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: min-content;
 }
 
 .gx-query-viewer-chart-controller__header-compare-container {
