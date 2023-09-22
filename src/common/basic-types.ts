@@ -507,7 +507,7 @@ export type Query = {
   RemoveDuplicates: boolean;
   MaxRows: string;
   TextForNullValues: string;
-  OutputType: string;
+  OutputType: QueryViewerOutputType;
   Title: string;
   ShowValues: boolean;
   ShowDataAs: string;
@@ -563,6 +563,10 @@ export type GxChatMessageResponse = {
   ChatMessage: GxChatMessage;
   Errors: GxError[];
   Query?: GxQueryItem;
+};
+
+export type GxCommonErrorResponse = {
+  Errors: GxError[];
 };
 
 /**

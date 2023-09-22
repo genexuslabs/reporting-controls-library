@@ -16,20 +16,25 @@
 :host::part(query-viewer__header) {
   align-items: center;
   border-bottom: var(--gx-header-border);
+  color: var(--gx-header-font-color);
   display: flex;
+  font-size: var(--gx-header-font-size);
   height: var(--gx-header-height);
   justify-content: space-between;
   line-height: var(--gx-header-height);
-  // margin-bottom: var(--gx-space-medium);
   margin: 0;
   padding: 0 var(--gx-space-medium);
   position: relative;
-  // width: 100%;
+  width: 100%;
 }
 
 :host::part(query-viewer__title) {
-  font-size: var(--gx-header-font-size);
+  flex: 1;
+  font-size: inherit;
   margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
 }
 
 :host::part(query-viewer__controls) {
@@ -38,16 +43,33 @@
 }
 
 .viewer {
-  display: flex;
+  display: grid;
   height: calc(100% - var(--gx-header-height));
+  align-content: center;
+  text-align: center;
+  justify-content: center;
+  width: 100%;
+  padding: 1em;
+  position: relative;
+}
+
+.viewer-message {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  padding: 0.5em;
+}
+.viewer-message--none {
+  background-color: beige;
+}
+.viewer-message--init {
+  background-color: azure;
+}
+.viewer-message--pending {
+  background-color: aquamarine;
 }
 
 .subtile {
   text-align: center;
   font-style: italic;
-}
-
-gx-query-viewer {
-  align-items: center;
-  justify-content: center;
 }

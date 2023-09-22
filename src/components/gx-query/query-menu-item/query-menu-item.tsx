@@ -202,17 +202,13 @@ export class QueryMenuItem implements GxComponent {
                   <gx-button
                     onClick={this.toggleEdition}
                     accessible-name="edit title"
-                    main-image-srcset={getAssetPath(
-                      "../assets/icons8-edit.svg"
-                    )}
+                    main-image-srcset={getAssetPath("../assets/edit.svg")}
                     tabIndex={0}
                   ></gx-button>,
                   <gx-button
                     onClick={this.handlerDelete}
                     accessible-name="delete title"
-                    main-image-srcset={getAssetPath(
-                      "../assets/icons8-delete.svg"
-                    )}
+                    main-image-srcset={getAssetPath("../assets/delete.svg")}
                     tabIndex={0}
                   ></gx-button>
                 ]
@@ -220,16 +216,12 @@ export class QueryMenuItem implements GxComponent {
                   <gx-button
                     onClick={this.handlerRename}
                     accessible-name="confirm"
-                    main-image-srcset={getAssetPath(
-                      "../assets/icons8-done.svg"
-                    )}
+                    main-image-srcset={getAssetPath("../assets/done.svg")}
                   ></gx-button>,
                   <gx-button
                     onClick={this.handlerCancel}
                     accessible-name="cancel"
-                    main-image-srcset={getAssetPath(
-                      "../assets/icons8-cancel.svg"
-                    )}
+                    main-image-srcset={getAssetPath("../assets/cancel.svg")}
                   ></gx-button>
                 ]}
           </div>

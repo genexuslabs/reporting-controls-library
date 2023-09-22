@@ -2,6 +2,7 @@ import {
   GeneratorType,
   GxChatMessage,
   GxChatMessageResponse,
+  GxCommonErrorResponse,
   GxQueryItem,
   GxQueryListResponse,
   GxQueryOptions,
@@ -24,8 +25,7 @@ import {
   DeleteQueryServiceResponse,
   GXqueryConnector,
   GetQueryByNameServiceResponse,
-  RenameQueryServiceResponse,
-  UpdateQueryServiceResponse
+  RenameQueryServiceResponse
 } from "./gxquery-connector";
 import { data, metaData } from "./post-info";
 import {
@@ -76,6 +76,8 @@ const foolCache = () => new Date().getTime();
 
 const queryToQueryProperties = (query: Query): QueryViewerServiceProperties => {
   return {
+    Id: query.Id,
+    Name: query.Name,
     Type: QueryViewerOutputType[
       query.OutputType as keyof typeof QueryViewerOutputType
     ],
@@ -302,13 +304,13 @@ export const asyncNewChatMessage = (
 export const asyncUpdateQuery = (
   options: GxQueryOptions,
   query: GxQueryItem,
-  callbackWhenReady: (data: UpdateQueryServiceResponse) => void
+  callbackWhenReady: (data: GxCommonErrorResponse) => void
 ) => {
   const queryDto = transformGxQueryItemToQueryDto(query);
   const queryOptions = { ...options, query: queryDto };
   GXqueryConnector.updateQuery(queryOptions)
     .then(resObj => {
-      callbackWhenReady(resObj);
+      callbackWhenReady({ Errors: resObj });
     })
     .catch(err => {
       callbackWhenReady({ Errors: [].concat(err?.message || err || []) });

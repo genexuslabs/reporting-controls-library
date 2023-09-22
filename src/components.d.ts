@@ -512,6 +512,14 @@ export namespace Components {
     }
     interface GxQueryViewerContainer {
         /**
+          * Base URL
+         */
+        "baseUrl": string;
+        /**
+          * Environment of the project: java or net
+         */
+        "environment": GeneratorType;
+        /**
           * This property specifies the items of the chat.
          */
         "mainTitle": string;
@@ -519,6 +527,10 @@ export namespace Components {
           * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
          */
         "metadataName": string;
+        /**
+          * True to tell the controller to connect use GXquery as a queries repository
+         */
+        "useGxquery": true;
     }
     interface GxQueryViewerController {
         /**
@@ -1461,6 +1473,14 @@ declare namespace LocalJSX {
     }
     interface GxQueryViewerContainer {
         /**
+          * Base URL
+         */
+        "baseUrl"?: string;
+        /**
+          * Environment of the project: java or net
+         */
+        "environment"?: GeneratorType;
+        /**
           * This property specifies the items of the chat.
          */
         "mainTitle"?: string;
@@ -1469,6 +1489,10 @@ declare namespace LocalJSX {
          */
         "metadataName"?: string;
         "onGxQuerySaveQuery"?: (event: GxQueryViewerContainerCustomEvent<GxQueryItem>) => void;
+        /**
+          * True to tell the controller to connect use GXquery as a queries repository
+         */
+        "useGxquery"?: true;
     }
     interface GxQueryViewerController {
         /**

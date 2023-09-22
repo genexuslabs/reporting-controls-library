@@ -105,7 +105,7 @@ export type DeleteQueryServiceResponse = GenericServiceResponse;
 /**
  * Response returned by the Query update service
  */
-export type UpdateQueryServiceResponse = GenericServiceResponse;
+export type UpdateQueryServiceResponse = GxError[];
 /**
  * Response returned by the New Query service
  */
@@ -420,7 +420,7 @@ export class GXqueryConnector {
   ): Promise<UpdateQueryServiceResponse> {
     const connectionStatus = await GXqueryConnector.checkConnection(options);
     if (connectionStatus.Errors.length > 0) {
-      return connectionStatus;
+      return connectionStatus.Errors;
     }
     const payload = {
       Query: options.query,
@@ -432,11 +432,7 @@ export class GXqueryConnector {
         "PUT",
         JSON.stringify(payload)
       );
-    return (
-      serviceResponse.hasOwnProperty("Errors")
-        ? serviceResponse
-        : { Errors: [].concat(serviceResponse || []) }
-    ) as UpdateQueryServiceResponse;
+    return serviceResponse;
   }
   /**
    * Create a new query without save it in the database

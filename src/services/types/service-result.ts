@@ -38,6 +38,8 @@ export type QueryViewerServiceMetaData = {
 };
 
 export type QueryViewerServiceProperties = {
+  Id: string;
+  Name: string;
   Type: QueryViewerOutputType;
   QueryTitle: string;
   ShowValues: boolean;

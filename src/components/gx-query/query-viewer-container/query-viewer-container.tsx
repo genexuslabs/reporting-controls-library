@@ -6,12 +6,31 @@ import {
   Listen,
   Prop,
   State,
+  Watch,
   h
 } from "@stencil/core";
-import { GxQueryItem, GxQueryOptions } from "../../../common/basic-types";
-import { asyncUpdateQuery } from "../../../services/services-manager";
+import {
+  GeneratorType,
+  GxCommonErrorResponse,
+  GxQueryItem,
+  GxQueryOptions
+} from "../../../common/basic-types";
+import {
+  ServicesContext,
+  asyncGetProperties,
+  asyncUpdateQuery
+} from "../../../services/services-manager";
+import { QueryViewerServiceProperties } from "../../../services/types/service-result";
+import { sessionSet } from "../../../utils/general";
 
 const PART_PREFIX = "query-viewer__";
+
+enum QVStatus {
+  none,
+  init,
+  pending,
+  complete
+}
 
 @Component({
   tag: "gx-query-viewer-container",
@@ -27,45 +46,103 @@ export class QueryViewerContainer {
    * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true.
    * In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
    */
-  @Prop({ reflect: true }) readonly metadataName = process.env.METADATA_NAME;
+  @Prop() readonly metadataName = process.env.METADATA_NAME;
   /**
-   * This specifies the query id
+   * Base URL
    */
-  @State() queryId: string;
+  @Prop() readonly baseUrl = process.env.BASE_URL;
+  /**
+   * Environment of the project: java or net
+   */
+  @Prop() readonly environment: GeneratorType = "net";
+  /**
+   * True to tell the controller to connect use GXquery as a queries repository
+   */
+  @Prop() readonly useGxquery = true;
+  /**
+   * Name of the Query or Data provider assigned
+   */
+  @State() objectName: string;
   /**
    * This specifies the query id
    */
   @State() query: GxQueryItem;
   /**
+   * This specifies the query properties
+   */
+  @State() queryProperties: QueryViewerServiceProperties;
+  /**
    * Disabled button actions
    */
   @State() disabledActions = true;
+  /**
+   * Query viewer status
+   */
+  @State() queryViewerStatus: QVStatus = QVStatus.none;
   /**
    *
    */
   @Event({ composed: true })
   gxQuerySaveQuery: EventEmitter<GxQueryItem>;
 
+  @Watch("queryViewerStatus")
+  changeQueryViewerStatus(newValue: QVStatus) {
+    switch (newValue) {
+      case QVStatus.init:
+        this.disabledActions = true;
+        break;
+      case QVStatus.pending:
+        this.disabledActions = true;
+        break;
+      case QVStatus.complete:
+        this.disabledActions = true;
+        break;
+      default:
+        this.disabledActions = false;
+        break;
+    }
+  }
+
   @Listen("gxQuerySelect", { target: "window" })
   selectQuery(event: CustomEvent<GxQueryItem>) {
-    this.queryId = event.detail.Id;
+    console.log("Select Query");
     this.query = event.detail;
-    this.disabledActions = false;
+    const context = this.getContext(this.query.Name);
+    asyncGetProperties(context, this.callbackQueryProperties);
+    this.queryViewerStatus = QVStatus.init;
   }
 
   @Listen("gxQueryNewChat", { target: "window" })
   createNewChat() {
-    this.queryId = "new query";
-    this.disabledActions = true;
+    this.query = null;
+    this.queryViewerStatus = QVStatus.none;
   }
 
-  private updateCallback = (response: unknown) => {
-    console.log(response);
-    this.gxQuerySaveQuery.emit(this.query);
+  @Listen("queryViewerServiceResponse", { target: "window" })
+  queryViewerServiceResponse() {
+    console.log("queryViewerServiceResponse");
+    this.queryViewerStatus = QVStatus.complete;
+  }
+
+  private callbackQueryProperties = (
+    properties: QueryViewerServiceProperties
+  ) => {
+    sessionSet(properties.Name, properties);
+    this.queryProperties = properties;
+    // this.disabledActions = false;
+    this.queryViewerStatus = QVStatus.pending;
+  };
+
+  private updateCallback = (response: GxCommonErrorResponse) => {
+    if (response.Errors.length > 0) {
+      console.error(response.Errors);
+    } else {
+      this.gxQuerySaveQuery.emit(this.query);
+    }
+    this.disabledActions = !this.query;
   };
 
   private handleSave = () => {
-    console.log("Save Query");
     if (!this.disabledActions) {
       const options = this.queryOptions();
       asyncUpdateQuery(options, this.query, this.updateCallback);
@@ -78,10 +155,110 @@ export class QueryViewerContainer {
 
   private queryOptions(): GxQueryOptions {
     return {
-      baseUrl: process.env.BASE_URL,
+      baseUrl: this.baseUrl,
       metadataName: this.metadataName
     };
   }
+
+  private getContext(
+    objectName: string,
+    serializedObject = ""
+  ): ServicesContext {
+    return {
+      useGXquery: this.useGxquery,
+      baseUrl: this.baseUrl,
+      generator: this.environment,
+      metadataName: this.metadataName,
+      serializedObject,
+      objectName
+    };
+  }
+
+  /**
+   * Render QueryViewer component
+   */
+  private renderQueryViewer = () => {
+    if (
+      [QVStatus.pending, QVStatus.complete].includes(this.queryViewerStatus)
+    ) {
+      const {
+        ChartType,
+        IncludeMaxMin,
+        IncludeSparkline,
+        IncludeTrend,
+        Name,
+        Orientation,
+        PlotSeries,
+        QueryTitle,
+        ShowDataAs,
+        ShowDataLabelsIn,
+        Type,
+        XAxisIntersectionAtZero,
+        XAxisLabels,
+        XAxisTitle,
+        YAxisTitle
+      } = this.queryProperties;
+      return (
+        <div>
+          <gx-query-viewer type={Type}>
+            <gx-query-viewer-controller
+              use-gxquery={this.useGxquery}
+              metadata-name={this.metadataName}
+              base-url={this.baseUrl}
+              object-name={Name}
+              type={Type}
+              x-axis-intersection-at-zero={XAxisIntersectionAtZero}
+              x-axis-labels={XAxisLabels}
+              x-axis-title={XAxisTitle}
+              y-axis-title={YAxisTitle}
+              chart-type={ChartType}
+              plot-series={PlotSeries}
+              show-data-labels-in={ShowDataLabelsIn}
+              query-title={QueryTitle}
+              include-sparkline={IncludeSparkline}
+              include-trend={IncludeTrend}
+              include-max-min={IncludeMaxMin}
+              show-data-as={ShowDataAs}
+              orientation={Orientation}
+            ></gx-query-viewer-controller>
+          </gx-query-viewer>
+        </div>
+      );
+    }
+
+    return <div>..</div>;
+  };
+
+  /**
+   *
+   * @returns HTMLDivElement
+   */
+  private renderQueryViewerStatus = () => {
+    let message: HTMLDivElement;
+    switch (this.queryViewerStatus) {
+      case QVStatus.none:
+        message = (
+          <div class="viewer-message viewer-message--none">no graph</div>
+        );
+        break;
+
+      case QVStatus.init:
+        message = (
+          <div class="viewer-message viewer-message--init">query selected</div>
+        );
+        break;
+
+      case QVStatus.pending:
+        message = (
+          <div class="viewer-message viewer-message--pending">
+            building graph...
+          </div>
+        );
+        break;
+    }
+
+    return message;
+  };
 
   render() {
     return (
@@ -104,9 +281,10 @@ export class QueryViewerContainer {
           </nav>
         </header>
 
-        <p class="subtile">{!!this.queryId && `Query Id: ${this.queryId}`}</p>
-
-        <div class="viewer"></div>
+        <div class="viewer">
+          {this.renderQueryViewer()}
+          {this.renderQueryViewerStatus()}
+        </div>
       </Host>
     );
   }

@@ -432,7 +432,7 @@ export class QueryMenu implements GxComponent {
               css-class={iconParams.class}
               image-position="before"
               invisible-mode="collapse"
-              main-image-srcset={getAssetPath("../assets/icons8-arrow.svg")}
+              main-image-srcset={getAssetPath("../assets/arrow.svg")}
             ></gx-button>
           </div>
           <div>
@@ -442,9 +442,7 @@ export class QueryMenu implements GxComponent {
               caption={this.newChatCaption}
               image-position="before"
               disabled={this.loading}
-              main-image-srcset={getAssetPath(
-                "../assets/icons8-speech-bubble.svg"
-              )}
+              main-image-srcset={getAssetPath("../assets/speech-bubble.svg")}
             ></gx-button>
           </div>
         </footer>
