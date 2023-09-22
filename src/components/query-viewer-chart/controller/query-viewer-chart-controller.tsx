@@ -497,6 +497,7 @@ export class QueryViewerChart {
           "gx-query-viewer-controller--timeline":
             this.chartMetadataAndData?.chartTypes.Timeline
         }}
+        style={{ "--gx-query-viewer-chart-count": `${charts.length}` }}
       >
         {this.chartMetadataAndData?.chartTypes.Timeline
           ? this.renderTimeline(charts)

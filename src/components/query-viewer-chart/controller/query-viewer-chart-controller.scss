@@ -1,8 +1,7 @@
 gx-query-viewer-chart-controller,
 .gx-query-viewer-chart-controller__timeline-container {
   display: grid;
-  grid-auto-rows: 1fr;
-  align-self: stretch;
+  grid-auto-rows: calc(100% / var(--gx-query-viewer-chart-count));
 }
 
 .gx-query-viewer-controller--timeline {
