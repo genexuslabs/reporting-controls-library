@@ -1,6 +1,5 @@
 import { Component, Event, EventEmitter, Prop, Watch } from "@stencil/core";
 
-import { QueryViewer, QueryViewerCard } from "../../../services/types/json";
 import {
   GeneratorType,
   QueryViewerChartType,
@@ -9,17 +8,18 @@ import {
 } from "../../../common/basic-types";
 import {
   ServicesContext,
-  asyncServerCall,
-  asyncGetProperties
+  asyncGetProperties,
+  asyncServerCall
 } from "../../../services/services-manager";
-import { parseMetadataXML } from "../../../services/xml-parser/metadata-parser";
-import { parseDataXML } from "../../../services/xml-parser/data-parser";
+import { QueryViewer, QueryViewerCard } from "../../../services/types/json";
 import {
   QueryViewerServiceData,
   QueryViewerServiceMetaData,
   QueryViewerServiceProperties,
   QueryViewerServiceResponse
 } from "../../../services/types/service-result";
+import { parseDataXML } from "../../../services/xml-parser/data-parser";
+import { parseMetadataXML } from "../../../services/xml-parser/metadata-parser";
 @Component({
   tag: "gx-query-viewer-controller",
   shadow: false
@@ -115,6 +115,10 @@ export class QueryViewerController {
    * Fired when new metadata and data is fetched
    */
   @Event() queryViewerServiceResponse: EventEmitter<QueryViewerServiceResponse>;
+  /**
+   * Fired when there is an error fetching data
+   */
+  @Event() queryViewerErrorResponse: EventEmitter<string>;
 
   private getQueryViewerInformation(objectName: string): QueryViewer {
     const queryViewerObject: QueryViewer = {
@@ -161,6 +165,7 @@ export class QueryViewerController {
     ) =>
     (xml: string) => {
       if (!xml) {
+        this.queryViewerErrorResponse.emit("Metadata is empty");
         return;
       }
 
@@ -182,6 +187,7 @@ export class QueryViewerController {
     ) =>
     (xml: string) => {
       if (!xml) {
+        this.queryViewerErrorResponse.emit("Data is empty");
         return;
       }
 
@@ -207,6 +213,9 @@ export class QueryViewerController {
       this.type !== QueryViewerOutputType.Card &&
       this.type !== QueryViewerOutputType.Chart
     ) {
+      this.queryViewerErrorResponse.emit(
+        `The output type ${this.type} is unimplemented`
+      );
       return;
     }
 

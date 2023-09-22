@@ -29,6 +29,7 @@ enum QVStatus {
   none,
   init,
   pending,
+  failed,
   complete
 }
 
@@ -80,6 +81,10 @@ export class QueryViewerContainer {
    */
   @State() queryViewerStatus: QVStatus = QVStatus.none;
   /**
+   * Query viewer error message
+   */
+  @State() queryViewerErrorDescription = "";
+  /**
    *
    */
   @Event({ composed: true })
@@ -122,6 +127,12 @@ export class QueryViewerContainer {
   queryViewerServiceResponse() {
     console.log("queryViewerServiceResponse");
     this.queryViewerStatus = QVStatus.complete;
+  }
+  @Listen("queryViewerErrorResponse", { target: "window" })
+  queryViewerErrorResponse(event: CustomEvent<string>) {
+    console.log("queryViewerErrorResponse", event.detail);
+    this.queryViewerStatus = QVStatus.failed;
+    this.queryViewerErrorDescription = event.detail;
   }
 
   private callbackQueryProperties = (
@@ -248,10 +259,18 @@ export class QueryViewerContainer {
         );
         break;
 
+      case QVStatus.failed:
+        message = (
+          <div class="viewer-message viewer-message--danger">
+            Error: {this.queryViewerErrorDescription}
+          </div>
+        );
+        break;
+
       case QVStatus.pending:
         message = (
           <div class="viewer-message viewer-message--pending">
-            building graph...
+            building ({this.queryProperties.Type})...
           </div>
         );
         break;

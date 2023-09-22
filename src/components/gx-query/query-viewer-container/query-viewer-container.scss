@@ -56,17 +56,15 @@
 .viewer-message {
   position: absolute;
   bottom: 10px;
-  right: 10px;
+  left: 10px;
   padding: 0.5em;
-}
-.viewer-message--none {
   background-color: beige;
 }
-.viewer-message--init {
+.viewer-message--none {
   background-color: azure;
 }
-.viewer-message--pending {
-  background-color: aquamarine;
+.viewer-message--danger {
+  background-color: pink;
 }
 
 .subtile {

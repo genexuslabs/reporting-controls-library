@@ -1532,6 +1532,10 @@ declare namespace LocalJSX {
          */
         "objectName"?: string;
         /**
+          * Fired when there is an error fetching data
+         */
+        "onQueryViewerErrorResponse"?: (event: GxQueryViewerControllerCustomEvent<string>) => void;
+        /**
           * Fired when new metadata and data is fetched
          */
         "onQueryViewerServiceResponse"?: (event: GxQueryViewerControllerCustomEvent<QueryViewerServiceResponse>) => void;
