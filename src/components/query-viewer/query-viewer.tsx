@@ -153,11 +153,6 @@ export class QueryViewer implements GxComponent {
   @Prop({ mutable: true }) includeTrend: boolean;
 
   /**
-   * True if it is external query
-   */
-  @Prop() readonly isExternalQuery: boolean;
-
-  /**
    * Language of the QueryViewer
    */
   @Prop() readonly language: string;
