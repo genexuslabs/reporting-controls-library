@@ -1,6 +1,7 @@
 import { differenceInDays } from "date-fns";
 import { GxChatMessage, GxQueryItem, Query } from "../common/basic-types";
 import { ChatMessage } from "./gxquery-connector";
+import { QueryViewerServiceProperties } from "./types/service-result";
 
 const createNewQuery = (query: Query): GxQueryItem => {
   const { Id, Name, Description, Modified, Expression, ...rest } = query;
@@ -17,16 +18,20 @@ const createNewQuery = (query: Query): GxQueryItem => {
   };
 };
 
-const transformGxQueryItemToQueryDto = (query: GxQueryItem): Query => {
-  const { Id, Name, Description, Modified, Expression, ...rest } = query;
+const transformGxQueryItemToQueryDto = (
+  query: GxQueryItem,
+  properties?: QueryViewerServiceProperties
+): Query => {
+  const { Id, Name, Description, Modified, ...rest } = query;
   delete rest.differenceInDays;
+  const queryProperties = (properties || {}) as QueryViewerServiceProperties;
   return {
     ...rest,
+    ...queryProperties,
     Id,
     Name,
     Description,
-    Modified: Modified.toISOString(),
-    Expression
+    Modified: Modified.toISOString()
   };
 };
 

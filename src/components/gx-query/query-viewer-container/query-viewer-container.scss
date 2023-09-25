@@ -39,7 +39,90 @@
 
 :host::part(query-viewer__controls) {
   display: flex;
-  flex-basis: 160px;
+}
+
+.dropdown {
+  position: relative;
+  & button {
+    cursor: pointer;
+  }
+  &.active .dropdown-menu {
+    display: block;
+  }
+  &.active [data-toggle="dropdown"]::after {
+    transform: rotate(180deg);
+  }
+}
+
+.control-item {
+  height: 100%;
+  overflow: hidden;
+  border: 0;
+  background: none;
+  padding: 0 var(--gx-space-medium);
+  display: flex;
+  align-items: center;
+  color: var(--primary-color);
+
+  &[disabled] {
+    color: var(--neutral-300);
+  }
+  &[data-toggle="dropdown"]::after {
+    content: "";
+    display: block;
+    width: 24px;
+    height: 24px;
+    background-image: url("./assets/chevron.svg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    transition: all 0.25s ease;
+  }
+}
+
+.dropdown-menu {
+  background-color: var(--gx-background-color);
+  box-shadow: var(--gx-box-shadow);
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: var(--gx-header-height);
+  right: 0;
+  z-index: 100;
+  & li {
+    list-style: none;
+    margin: 0;
+  }
+}
+
+.dropdown-menu__item {
+  align-items: center;
+  background-color: var(--gx-background-color);
+  border: 0;
+  display: flex;
+  padding: var(--gx-space-medium);
+  white-space: nowrap;
+  gap: 0.5em;
+
+  &::before {
+    content: "";
+    display: block;
+    width: 16px;
+    height: 16px;
+    background-image: url("./assets/img.svg");
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+}
+.dropdown-menu__item:not([disabled]):hover {
+  background-color: var(--neutral-100);
+}
+.dropdown-menu__item--jpg::before {
+  background-image: url("./assets/img.svg");
+}
+.dropdown-menu__item--pdf::before {
+  background-image: url("./assets/file.svg");
 }
 
 .viewer {
@@ -58,16 +141,10 @@
   bottom: 10px;
   left: 10px;
   padding: 0.5em;
-  background-color: beige;
 }
 .viewer-message--none {
   background-color: azure;
 }
 .viewer-message--danger {
   background-color: pink;
-}
-
-.subtile {
-  text-align: center;
-  font-style: italic;
 }

@@ -1,5 +1,6 @@
 import {
   Component,
+  Element,
   Event,
   EventEmitter,
   Host,
@@ -36,11 +37,17 @@ enum QVStatus {
 @Component({
   tag: "gx-query-viewer-container",
   styleUrl: "query-viewer-container.scss",
-  shadow: true
+  shadow: true,
+  assetsDirs: ["../assets"]
 })
 export class QueryViewerContainer {
+  private menuList: HTMLDivElement;
+  private openMenu = false;
+
+  @Element() element: HTMLGxQueryViewerContainerElement;
+
   /**
-   * This property specifies the items of the chat.
+   * This property specifies the title
    */
   @Prop() readonly mainTitle: string;
   /**
@@ -100,7 +107,7 @@ export class QueryViewerContainer {
         this.disabledActions = true;
         break;
       case QVStatus.complete:
-        this.disabledActions = true;
+        this.disabledActions = false;
         break;
       default:
         this.disabledActions = false;
@@ -128,6 +135,7 @@ export class QueryViewerContainer {
     console.log("queryViewerServiceResponse");
     this.queryViewerStatus = QVStatus.complete;
   }
+
   @Listen("queryViewerErrorResponse", { target: "window" })
   queryViewerErrorResponse(event: CustomEvent<string>) {
     console.log("queryViewerErrorResponse", event.detail);
@@ -156,12 +164,23 @@ export class QueryViewerContainer {
   private handleSave = () => {
     if (!this.disabledActions) {
       const options = this.queryOptions();
-      asyncUpdateQuery(options, this.query, this.updateCallback);
+      asyncUpdateQuery(
+        options,
+        this.query,
+        this.queryProperties,
+        this.updateCallback
+      );
     }
   };
 
-  private handleExport = () => {
-    console.log("Export Query");
+  private handleExport = (format: string) => {
+    console.log(`Export Query as ${format}`);
+    this.menuList.classList.remove("active");
+  };
+
+  private toggleMenu = () => {
+    this.menuList.classList.toggle("active");
+    this.openMenu = this.menuList.classList.contains("active");
   };
 
   private queryOptions(): GxQueryOptions {
@@ -287,16 +306,52 @@ export class QueryViewerContainer {
             <h1 part={`${PART_PREFIX}title`}>{this.mainTitle}</h1>
           )}
           <nav part={`${PART_PREFIX}controls`}>
-            <gx-button
-              onClick={this.handleExport}
-              disabled={this.disabledActions}
-              caption="EXPORT"
-            ></gx-button>
-            <gx-button
-              onClick={this.handleSave}
-              disabled={this.disabledActions}
-              caption="SAVE"
-            ></gx-button>
+            <div class="dropdown" ref={el => (this.menuList = el)}>
+              <button
+                aria-expanded={this.openMenu ? "true" : "false"}
+                aria-haspopup="true"
+                class="control-item"
+                data-toggle="dropdown"
+                id="dropdownMenuButton"
+                onClick={this.toggleMenu}
+                type="button"
+              >
+                EXPORT
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li class="">
+                  <button
+                    class="dropdown-menu__item dropdown-menu__item--jpg"
+                    type="button"
+                    onClick={() => this.handleExport("img")}
+                    disabled={this.disabledActions}
+                  >
+                    Export as JPG
+                  </button>
+                </li>
+                <li class="">
+                  <button
+                    class="dropdown-menu__item dropdown-menu__item--pdf"
+                    type="button"
+                    onClick={() => this.handleExport("pdf")}
+                    disabled={this.disabledActions}
+                  >
+                    Export as PDF
+                  </button>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <button
+                class="control-item"
+                disabled={this.disabledActions}
+                id="saveButton"
+                onClick={this.handleSave}
+                type="button"
+              >
+                SAVE
+              </button>
+            </div>
           </nav>
         </header>
 

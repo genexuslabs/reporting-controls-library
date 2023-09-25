@@ -520,7 +520,7 @@ export namespace Components {
          */
         "environment": GeneratorType;
         /**
-          * This property specifies the items of the chat.
+          * This property specifies the title
          */
         "mainTitle": string;
         /**
@@ -1481,7 +1481,7 @@ declare namespace LocalJSX {
          */
         "environment"?: GeneratorType;
         /**
-          * This property specifies the items of the chat.
+          * This property specifies the title
          */
         "mainTitle"?: string;
         /**

@@ -304,9 +304,10 @@ export const asyncNewChatMessage = (
 export const asyncUpdateQuery = (
   options: GxQueryOptions,
   query: GxQueryItem,
+  properties: QueryViewerServiceProperties,
   callbackWhenReady: (data: GxCommonErrorResponse) => void
 ) => {
-  const queryDto = transformGxQueryItemToQueryDto(query);
+  const queryDto = transformGxQueryItemToQueryDto(query, properties);
   const queryOptions = { ...options, query: queryDto };
   GXqueryConnector.updateQuery(queryOptions)
     .then(resObj => {
