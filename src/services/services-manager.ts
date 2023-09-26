@@ -9,8 +9,7 @@ import {
 import { GXqueryConnector, GXqueryOptions } from "./gxquery-connector";
 import {
   QueryViewerServiceData,
-  QueryViewerServiceMetaData,
-  QueryViewerServiceProperties
+  QueryViewerServiceMetaData
 } from "./types/service-result";
 import { parseMetadataXML } from "./xml-parser/metadata-parser";
 import { parseDataXML } from "./xml-parser/data-parser";
@@ -47,7 +46,7 @@ export type ServicesContext = {
 export type CallBackWhenServiceSuccess = (
   metaData: QueryViewerServiceMetaData,
   data: QueryViewerServiceData,
-  queryViewerBaseProperties?: QueryViewerServiceProperties
+  queryViewerBaseProperties?: QueryViewerBase
 ) => void;
 
 /**
@@ -133,36 +132,6 @@ function getMetadataAndDataUsingGenericServices(
   });
 }
 
-const queryToQueryProperties = (
-  query: QueryViewerBase
-): QueryViewerServiceProperties => {
-  return {
-    Type: query.OutputType,
-    QueryTitle: query.Title,
-    ShowValues: query.ShowValues,
-    ShowDataAs: query.ShowDataAs,
-    Orientation: query.Orientation,
-    IncludeTrend: query.IncludeTrend,
-    IncludeSparkline: query.IncludeSparkline,
-    IncludeMaxMin: query.IncludeMaxAndMin,
-    ChartType: query.ChartType,
-    PlotSeries: query.PlotSeries,
-    XAxisLabels: query.XAxisLabels,
-    XAxisIntersectionAtZero: query.XAxisIntersectionAtZero,
-    XAxisTitle: query.XAxisTitle,
-    YAxisTitle: query.YAxisTitle,
-    MapType: query.MapType,
-    Region: query.Region,
-    Continent: query.Continent,
-    Country: query.Country,
-    Paging: query.Paging,
-    PageSize: query.PageSize,
-    ShowDataLabelsIn: query.ShowDataLabelsIn,
-    TotalForRows: query.TotalForRows,
-    TotalForColumns: query.TotalForColumns
-  };
-};
-
 const contextToGXqueryOptions = (context: ServicesContext): GXqueryOptions => {
   return {
     baseUrl: context.baseUrl,
@@ -176,22 +145,18 @@ const contextToGXqueryOptions = (context: ServicesContext): GXqueryOptions => {
 
 function getQueryPropertiesInGXQuery(
   servicesInfo: ServicesContext,
-  callbackWhenReady: (
-    queryViewerBaseProperties: QueryViewerServiceProperties
-  ) => void
+  callbackWhenReady: (queryViewerBaseProperties: QueryViewerBase) => void
 ) {
   if (servicesInfo.objectName) {
     GXqueryConnector.getQueryByName(contextToGXqueryOptions(servicesInfo)).then(
       queryByNameResponse => {
         const query = queryByNameResponse.Query;
-        const properties = queryToQueryProperties(query);
-        callbackWhenReady(properties);
+        callbackWhenReady(query);
       }
     );
   } else if (servicesInfo.serializedObject) {
     const query = JSON.parse(servicesInfo.serializedObject);
-    const properties = queryToQueryProperties(query);
-    callbackWhenReady(properties);
+    callbackWhenReady(query);
   }
 }
 

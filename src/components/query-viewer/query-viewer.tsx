@@ -11,6 +11,7 @@ import {
 import { Component as GxComponent } from "../../common/interfaces";
 import {
   DUMMY_TRANSLATIONS,
+  QueryViewerBase,
   QueryViewerChartType,
   QueryViewerContinent,
   QueryViewerCountry,
@@ -26,10 +27,7 @@ import {
   QueryViewerTrendPeriod,
   QueryViewerXAxisLabels
 } from "../../common/basic-types";
-import {
-  QueryViewerServiceProperties,
-  QueryViewerServiceResponse
-} from "../../services/types/service-result";
+import { QueryViewerServiceResponse } from "../../services/types/service-result";
 
 @Component({
   tag: "gx-query-viewer",
@@ -298,36 +296,38 @@ export class QueryViewer implements GxComponent {
   /**
    * Set QueryViewer properties with values from the query obtained from the server (unless explicitly set in the web component)
    */
-  private setQueryViewerProperties(properties: QueryViewerServiceProperties) {
-    if (properties) {
-      this.type ??= properties.Type;
-      this.queryTitle ??= properties.QueryTitle;
-      this.showValues ??= properties.ShowValues;
-      if (this.type === QueryViewerOutputType.Card) {
-        this.showDataAs ??= properties.ShowDataAs;
-        this.orientation ??= properties.Orientation;
-        this.includeTrend ??= properties.IncludeTrend;
-        this.includeSparkline ??= properties.IncludeSparkline;
-        this.includeMaxMin ??= properties.IncludeMaxMin;
-      } else if (this.type === QueryViewerOutputType.Chart) {
-        this.chartType ??= properties.ChartType;
-        this.plotSeries ??= properties.PlotSeries;
-        this.xAxisLabels ??= properties.XAxisLabels;
-        this.xAxisIntersectionAtZero ??= properties.XAxisIntersectionAtZero;
-        this.xAxisTitle ??= properties.XAxisTitle;
-        this.yAxisTitle ??= properties.YAxisTitle;
-      } else if (this.type === QueryViewerOutputType.Map) {
-        this.mapType ??= properties.MapType;
-        this.region ??= properties.Region;
-        this.continent ??= properties.Continent;
-        this.country ??= properties.Country;
-      } else {
-        this.paging ??= properties.Paging;
-        this.pageSize ??= properties.PageSize;
-        this.showDataLabelsIn ??= properties.ShowDataLabelsIn;
-        this.totalForRows ??= properties.TotalForRows;
-        this.totalForColumns ??= properties.TotalForColumns;
-      }
+  private setQueryViewerProperties(properties: QueryViewerBase) {
+    if (!properties) {
+      return;
+    }
+
+    this.type ??= properties.OutputType;
+    this.queryTitle ??= properties.Title;
+    this.showValues ??= properties.ShowValues;
+    if (this.type === QueryViewerOutputType.Card) {
+      this.showDataAs ??= properties.ShowDataAs;
+      this.orientation ??= properties.Orientation;
+      this.includeTrend ??= properties.IncludeTrend;
+      this.includeSparkline ??= properties.IncludeSparkline;
+      this.includeMaxMin ??= properties.IncludeMaxAndMin;
+    } else if (this.type === QueryViewerOutputType.Chart) {
+      this.chartType ??= properties.ChartType;
+      this.plotSeries ??= properties.PlotSeries;
+      this.xAxisLabels ??= properties.XAxisLabels;
+      this.xAxisIntersectionAtZero ??= properties.XAxisIntersectionAtZero;
+      this.xAxisTitle ??= properties.XAxisTitle;
+      this.yAxisTitle ??= properties.YAxisTitle;
+    } else if (this.type === QueryViewerOutputType.Map) {
+      this.mapType ??= properties.MapType;
+      this.region ??= properties.Region;
+      this.continent ??= properties.Continent;
+      this.country ??= properties.Country;
+    } else {
+      this.paging ??= properties.Paging;
+      this.pageSize ??= properties.PageSize;
+      this.showDataLabelsIn ??= properties.ShowDataLabelsIn;
+      this.totalForRows ??= properties.TotalForRows;
+      this.totalForColumns ??= properties.TotalForColumns;
     }
   }
 
