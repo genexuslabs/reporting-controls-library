@@ -1,18 +1,4 @@
-import {
-  QueryViewerChartType,
-  QueryViewerContinent,
-  QueryViewerCountry,
-  QueryViewerMapType,
-  QueryViewerOrientation,
-  QueryViewerOutputType,
-  QueryViewerPlotSeries,
-  QueryViewerRegion,
-  QueryViewerShowDataAs,
-  QueryViewerShowDataLabelsIn,
-  QueryViewerTotal,
-  QueryViewerXAxisLabels,
-  ServiceType
-} from "../common/basic-types";
+import { QueryViewerBase, ServiceType } from "../common/basic-types";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 
@@ -43,43 +29,6 @@ type Metadata = {
 };
 
 /**
- * Represents query in GXquery
- */
-export type Query = {
-  Id: string;
-  Name: string;
-  Description: string;
-  Expression: string;
-  Modified: string;
-  RemoveDuplicates: boolean;
-  MaxRows: string;
-  TextForNullValues: string;
-  OutputType: QueryViewerOutputType;
-  Title: string;
-  ShowValues: boolean;
-  ShowDataAs: QueryViewerShowDataAs;
-  Orientation: QueryViewerOrientation;
-  IncludeTrend: boolean;
-  IncludeSparkline: boolean;
-  IncludeMaxAndMin: boolean;
-  ChartType: QueryViewerChartType;
-  PlotSeries: QueryViewerPlotSeries;
-  XAxisLabels: QueryViewerXAxisLabels;
-  XAxisIntersectionAtZero: boolean;
-  XAxisTitle: string;
-  YAxisTitle: string;
-  MapType: QueryViewerMapType;
-  Region: QueryViewerRegion;
-  Continent: QueryViewerContinent;
-  Country: QueryViewerCountry;
-  Paging: boolean;
-  PageSize: number;
-  ShowDataLabelsIn: QueryViewerShowDataLabelsIn;
-  TotalForRows: QueryViewerTotal;
-  TotalForColumns: QueryViewerTotal;
-};
-
-/**
  * Generic response to any GXquery API service
  */
 type GenericServiceResponse = {
@@ -104,7 +53,7 @@ type GetMetadataByNameServiceResponse = GenericServiceResponse & {
  * Response returned by the GetQueryByName service
  */
 export type GetQueryByNameServiceResponse = GenericServiceResponse & {
-  Query: Query;
+  Query: QueryViewerBase;
 };
 
 /**
@@ -128,7 +77,7 @@ export type GXqueryOptions = {
   baseUrl: string;
   metadataName: string;
   queryName?: string;
-  query?: Query;
+  query?: QueryViewerBase;
 };
 
 /**

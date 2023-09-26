@@ -1,12 +1,15 @@
 import { QueryViewer } from "./types/json";
 import { data, metaData } from "./post-info";
 import { parseObjectToFormData } from "./utils/common";
-import { GeneratorType, ServiceType } from "../common/basic-types";
+import {
+  GeneratorType,
+  QueryViewerBase,
+  ServiceType
+} from "../common/basic-types";
 import {
   GXqueryConnector,
   GXqueryOptions,
-  GetQueryByNameServiceResponse,
-  Query
+  GetQueryByNameServiceResponse
 } from "./gxquery-connector";
 import { QueryViewerServiceProperties } from "./types/service-result";
 
@@ -45,7 +48,9 @@ export type ServicesContext = {
  */
 const foolCache = () => new Date().getTime();
 
-const queryToQueryProperties = (query: Query): QueryViewerServiceProperties => {
+const queryToQueryProperties = (
+  query: QueryViewerBase
+): QueryViewerServiceProperties => {
   return {
     Type: query.OutputType,
     QueryTitle: query.Title,
