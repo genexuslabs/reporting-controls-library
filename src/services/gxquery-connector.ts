@@ -1,4 +1,18 @@
-import { ServiceType } from "../common/basic-types";
+import {
+  QueryViewerChartType,
+  QueryViewerContinent,
+  QueryViewerCountry,
+  QueryViewerMapType,
+  QueryViewerOrientation,
+  QueryViewerOutputType,
+  QueryViewerPlotSeries,
+  QueryViewerRegion,
+  QueryViewerShowDataAs,
+  QueryViewerShowDataLabelsIn,
+  QueryViewerTotal,
+  QueryViewerXAxisLabels,
+  ServiceType
+} from "../common/basic-types";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 
@@ -40,29 +54,29 @@ export type Query = {
   RemoveDuplicates: boolean;
   MaxRows: string;
   TextForNullValues: string;
-  OutputType: string;
+  OutputType: QueryViewerOutputType;
   Title: string;
   ShowValues: boolean;
-  ShowDataAs: string;
-  Orientation: string;
+  ShowDataAs: QueryViewerShowDataAs;
+  Orientation: QueryViewerOrientation;
   IncludeTrend: boolean;
   IncludeSparkline: boolean;
   IncludeMaxAndMin: boolean;
-  ChartType: string;
-  PlotSeries: string;
-  XAxisLabels: string;
+  ChartType: QueryViewerChartType;
+  PlotSeries: QueryViewerPlotSeries;
+  XAxisLabels: QueryViewerXAxisLabels;
   XAxisIntersectionAtZero: boolean;
   XAxisTitle: string;
   YAxisTitle: string;
-  MapType: string;
-  Region: string;
-  Continent: string;
-  Country: string;
+  MapType: QueryViewerMapType;
+  Region: QueryViewerRegion;
+  Continent: QueryViewerContinent;
+  Country: QueryViewerCountry;
   Paging: boolean;
   PageSize: number;
-  ShowDataLabelsIn: string;
-  TotalForRows: string;
-  TotalForColumns: string;
+  ShowDataLabelsIn: QueryViewerShowDataLabelsIn;
+  TotalForRows: QueryViewerTotal;
+  TotalForColumns: QueryViewerTotal;
 };
 
 /**
