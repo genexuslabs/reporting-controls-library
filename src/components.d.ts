@@ -6,9 +6,9 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { QueryChatItem } from "./components/gx-query/query-chat/query-chat";
-import { GeneratorType, QueryViewerChartType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPlotSeries, QueryViewerShowDataAs, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels, TrendIcon } from "./common/basic-types";
+import { GeneratorType, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerSliderRange, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels, TrendIcon } from "./common/basic-types";
 import { QueryViewerServiceResponse } from "./services/types/service-result";
-import { ChartOptions, LegendOptions, PlotOptions, SeriesOptionsType, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
+import { Axis, ChartOptions, LegendOptions, PaneOptions, PlotOptions, SeriesLineOptions, SeriesOptionsType, SubtitleOptions, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
 import { QueryViewerParameterChangedEvent } from "./components/query-viewer-parameter/query-viewer-parameter";
 export namespace Components {
     interface GxQueryChat {
@@ -49,6 +49,14 @@ export namespace Components {
          */
         "chartType": QueryViewerChartType;
         /**
+          * If type == Map and region = Continent, this is the continent to display in the map
+         */
+        "continent": QueryViewerContinent;
+        /**
+          * If type == Map and region = Country, this is the country to display in the map
+         */
+        "country": QueryViewerCountry;
+        /**
           * A CSS class to set as the `gx-query-viewer` element class.
          */
         "cssClass": string;
@@ -57,7 +65,7 @@ export namespace Components {
          */
         "dataVersionId": number;
         /**
-          * Allowing or not Comlumn sort
+          * Allowing or not Column sort
          */
         "disableColumnSort": boolean;
         /**
@@ -93,13 +101,13 @@ export namespace Components {
          */
         "includeTrend": boolean;
         /**
-          * True if it is external query
-         */
-        "isExternalQuery": boolean;
-        /**
           * Language of the QueryViewer
          */
         "language": string;
+        /**
+          * If type == Map, this is the map type: Choropleth or Bubble
+         */
+        "mapType": QueryViewerMapType;
         /**
           * Object of QueryViewer
          */
@@ -129,6 +137,10 @@ export namespace Components {
          */
         "queryTitle": string;
         /**
+          * If type == Map, this is the region to display in the map
+         */
+        "region": QueryViewerRegion;
+        /**
           * For timeline for remembering layout
          */
         "rememberLayout": boolean;
@@ -143,7 +155,7 @@ export namespace Components {
         /**
           * Ax to show data labels
          */
-        "showDataLabelsIn": string;
+        "showDataLabelsIn": QueryViewerShowDataLabelsIn;
         /**
           * if true show values on the graph
          */
@@ -152,6 +164,14 @@ export namespace Components {
           * Theme for showing the graph
          */
         "theme": string;
+        /**
+          * True if grand total is shown for all table columns
+         */
+        "totalForColumns": QueryViewerTotal;
+        /**
+          * True if grand total is shown for all table rows
+         */
+        "totalForRows": QueryViewerTotal;
         /**
           * For translate the labels of the outputs
          */
@@ -267,6 +287,10 @@ export namespace Components {
     }
     interface GxQueryViewerChart {
         /**
+          * get the current extremes for the axis.
+         */
+        "addSeries": (series: SeriesLineOptions) => Promise<Highcharts.Series>;
+        /**
           * Title that will be displayed on top of the query
          */
         "chartOptions": ChartOptions;
@@ -279,9 +303,17 @@ export namespace Components {
          */
         "chartType": QueryViewerChartType;
         /**
+          * get the current extremes for the axis.
+         */
+        "getExtremes": () => Promise<Highcharts.ExtremesObject>;
+        /**
           * Options of the tooltip, the tooltip appears when hovering over a point in a series.
          */
         "legendOptions": LegendOptions;
+        /**
+          * Options of the chart.
+         */
+        "paneOptions": PaneOptions;
         /**
           * Options of the legend, the legend displays the series in a chart with a predefined symbol and the name of the series.
          */
@@ -295,9 +327,17 @@ export namespace Components {
          */
         "seriesOptions": SeriesOptionsType[];
         /**
+          * set the current extremes for the axis.
+         */
+        "setExtremes": (minDate: number, maxDate: number, redraw: boolean) => Promise<void>;
+        /**
           * Specifies whether the values for the data elements are shown in the chart or not.
          */
         "showValues": boolean;
+        /**
+          * Name of the element
+         */
+        "subtitleOptions": SubtitleOptions;
         /**
           * Options of the chart.
          */
@@ -330,6 +370,10 @@ export namespace Components {
           * Options of the plot for each series type chart.
          */
         "yaxisOptions": YAxisOptions | YAxisOptions[];
+        /**
+          * zoom out for the chart
+         */
+        "zoomOut": () => Promise<void>;
     }
     interface GxQueryViewerChartController {
         /**
@@ -407,6 +451,10 @@ export namespace Components {
          */
         "includeTrend": boolean;
         /**
+          * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
+         */
+        "metadataName": string;
+        /**
           * Name of the Query or Data provider assigned
          */
         "objectName": string;
@@ -423,6 +471,10 @@ export namespace Components {
          */
         "returnSampleData": boolean;
         /**
+          * Use this property to pass a query obtained from GXquery, when useGxquery = true (ignored if objectName is specified, because this property has a greater precedence)
+         */
+        "serializedObject": string;
+        /**
           * @todo Add description and improve type
          */
         "translationType": string;
@@ -430,6 +482,10 @@ export namespace Components {
           * Type of the QueryViewer: Table, PivotTable, Chart, Card
          */
         "type": QueryViewerOutputType;
+        /**
+          * True to tell the controller to connect use GXquery as a queries repository
+         */
+        "useGxquery": boolean;
     }
     interface GxQueryViewerElement {
         /**
@@ -606,6 +662,20 @@ export namespace Components {
          */
         "Value": string;
     }
+    interface GxQueryViewerSlider {
+        /**
+          * This property determines the value of the end position slider.
+         */
+        "endSliderValue": number;
+        /**
+          * This property determines the value of the start position slider.
+         */
+        "startSliderValue": number;
+        /**
+          * This attribute lets you define the steps for each slider.
+         */
+        "step": number;
+    }
 }
 export interface GxQueryViewerCardCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -630,6 +700,10 @@ export interface GxQueryViewerFormatStyleCustomEvent<T> extends CustomEvent<T> {
 export interface GxQueryViewerParameterCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLGxQueryViewerParameterElement;
+}
+export interface GxQueryViewerSliderCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLGxQueryViewerSliderElement;
 }
 declare global {
     interface HTMLGxQueryChatElement extends Components.GxQueryChat, HTMLStencilElement {
@@ -704,6 +778,12 @@ declare global {
         prototype: HTMLGxQueryViewerParameterElement;
         new (): HTMLGxQueryViewerParameterElement;
     };
+    interface HTMLGxQueryViewerSliderElement extends Components.GxQueryViewerSlider, HTMLStencilElement {
+    }
+    var HTMLGxQueryViewerSliderElement: {
+        prototype: HTMLGxQueryViewerSliderElement;
+        new (): HTMLGxQueryViewerSliderElement;
+    };
     interface HTMLElementTagNameMap {
         "gx-query-chat": HTMLGxQueryChatElement;
         "gx-query-sidebar-menu": HTMLGxQuerySidebarMenuElement;
@@ -717,6 +797,7 @@ declare global {
         "gx-query-viewer-element-format": HTMLGxQueryViewerElementFormatElement;
         "gx-query-viewer-format-style": HTMLGxQueryViewerFormatStyleElement;
         "gx-query-viewer-parameter": HTMLGxQueryViewerParameterElement;
+        "gx-query-viewer-slider": HTMLGxQueryViewerSliderElement;
     }
 }
 declare namespace LocalJSX {
@@ -758,6 +839,14 @@ declare namespace LocalJSX {
          */
         "chartType"?: QueryViewerChartType;
         /**
+          * If type == Map and region = Continent, this is the continent to display in the map
+         */
+        "continent"?: QueryViewerContinent;
+        /**
+          * If type == Map and region = Country, this is the country to display in the map
+         */
+        "country"?: QueryViewerCountry;
+        /**
           * A CSS class to set as the `gx-query-viewer` element class.
          */
         "cssClass"?: string;
@@ -766,7 +855,7 @@ declare namespace LocalJSX {
          */
         "dataVersionId"?: number;
         /**
-          * Allowing or not Comlumn sort
+          * Allowing or not Column sort
          */
         "disableColumnSort"?: boolean;
         /**
@@ -802,13 +891,13 @@ declare namespace LocalJSX {
          */
         "includeTrend"?: boolean;
         /**
-          * True if it is external query
-         */
-        "isExternalQuery"?: boolean;
-        /**
           * Language of the QueryViewer
          */
         "language"?: string;
+        /**
+          * If type == Map, this is the map type: Choropleth or Bubble
+         */
+        "mapType"?: QueryViewerMapType;
         /**
           * Object of QueryViewer
          */
@@ -838,6 +927,10 @@ declare namespace LocalJSX {
          */
         "queryTitle"?: string;
         /**
+          * If type == Map, this is the region to display in the map
+         */
+        "region"?: QueryViewerRegion;
+        /**
           * For timeline for remembering layout
          */
         "rememberLayout"?: boolean;
@@ -852,7 +945,7 @@ declare namespace LocalJSX {
         /**
           * Ax to show data labels
          */
-        "showDataLabelsIn"?: string;
+        "showDataLabelsIn"?: QueryViewerShowDataLabelsIn;
         /**
           * if true show values on the graph
          */
@@ -861,6 +954,14 @@ declare namespace LocalJSX {
           * Theme for showing the graph
          */
         "theme"?: string;
+        /**
+          * True if grand total is shown for all table columns
+         */
+        "totalForColumns"?: QueryViewerTotal;
+        /**
+          * True if grand total is shown for all table rows
+         */
+        "totalForRows"?: QueryViewerTotal;
         /**
           * For translate the labels of the outputs
          */
@@ -996,6 +1097,10 @@ declare namespace LocalJSX {
          */
         "legendOptions"?: LegendOptions;
         /**
+          * Options of the chart.
+         */
+        "paneOptions"?: PaneOptions;
+        /**
           * Options of the legend, the legend displays the series in a chart with a predefined symbol and the name of the series.
          */
         "plotOptions"?: PlotOptions;
@@ -1011,6 +1116,10 @@ declare namespace LocalJSX {
           * Specifies whether the values for the data elements are shown in the chart or not.
          */
         "showValues"?: boolean;
+        /**
+          * Name of the element
+         */
+        "subtitleOptions"?: SubtitleOptions;
         /**
           * Options of the chart.
          */
@@ -1120,6 +1229,10 @@ declare namespace LocalJSX {
          */
         "includeTrend"?: boolean;
         /**
+          * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
+         */
+        "metadataName"?: string;
+        /**
           * Name of the Query or Data provider assigned
          */
         "objectName"?: string;
@@ -1140,6 +1253,10 @@ declare namespace LocalJSX {
          */
         "returnSampleData"?: boolean;
         /**
+          * Use this property to pass a query obtained from GXquery, when useGxquery = true (ignored if objectName is specified, because this property has a greater precedence)
+         */
+        "serializedObject"?: string;
+        /**
           * @todo Add description and improve type
          */
         "translationType"?: string;
@@ -1147,6 +1264,10 @@ declare namespace LocalJSX {
           * Type of the QueryViewer: Table, PivotTable, Chart, Card
          */
         "type"?: QueryViewerOutputType;
+        /**
+          * True to tell the controller to connect use GXquery as a queries repository
+         */
+        "useGxquery"?: boolean;
     }
     interface GxQueryViewerElement {
         /**
@@ -1339,6 +1460,24 @@ declare namespace LocalJSX {
          */
         "onParameterValueChanged"?: (event: GxQueryViewerParameterCustomEvent<QueryViewerParameterChangedEvent>) => void;
     }
+    interface GxQueryViewerSlider {
+        /**
+          * This property determines the value of the end position slider.
+         */
+        "endSliderValue"?: number;
+        /**
+          * Fired when a new range of the control is committed by the user.
+         */
+        "onChange"?: (event: GxQueryViewerSliderCustomEvent<QueryViewerSliderRange>) => void;
+        /**
+          * This property determines the value of the start position slider.
+         */
+        "startSliderValue"?: number;
+        /**
+          * This attribute lets you define the steps for each slider.
+         */
+        "step"?: number;
+    }
     interface IntrinsicElements {
         "gx-query-chat": GxQueryChat;
         "gx-query-sidebar-menu": GxQuerySidebarMenu;
@@ -1352,6 +1491,7 @@ declare namespace LocalJSX {
         "gx-query-viewer-element-format": GxQueryViewerElementFormat;
         "gx-query-viewer-format-style": GxQueryViewerFormatStyle;
         "gx-query-viewer-parameter": GxQueryViewerParameter;
+        "gx-query-viewer-slider": GxQueryViewerSlider;
     }
 }
 export { LocalJSX as JSX };
@@ -1370,6 +1510,7 @@ declare module "@stencil/core" {
             "gx-query-viewer-element-format": LocalJSX.GxQueryViewerElementFormat & JSXBase.HTMLAttributes<HTMLGxQueryViewerElementFormatElement>;
             "gx-query-viewer-format-style": LocalJSX.GxQueryViewerFormatStyle & JSXBase.HTMLAttributes<HTMLGxQueryViewerFormatStyleElement>;
             "gx-query-viewer-parameter": LocalJSX.GxQueryViewerParameter & JSXBase.HTMLAttributes<HTMLGxQueryViewerParameterElement>;
+            "gx-query-viewer-slider": LocalJSX.GxQueryViewerSlider & JSXBase.HTMLAttributes<HTMLGxQueryViewerSliderElement>;
         }
     }
 }
