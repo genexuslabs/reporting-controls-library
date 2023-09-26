@@ -1,4 +1,4 @@
-import { ServiceType } from "../common/basic-types";
+import { QueryViewerBase, ServiceType } from "../common/basic-types";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 
@@ -29,43 +29,6 @@ type Metadata = {
 };
 
 /**
- * Represents query in GXquery
- */
-export type Query = {
-  Id: string;
-  Name: string;
-  Description: string;
-  Expression: string;
-  Modified: string;
-  RemoveDuplicates: boolean;
-  MaxRows: string;
-  TextForNullValues: string;
-  OutputType: string;
-  Title: string;
-  ShowValues: boolean;
-  ShowDataAs: string;
-  Orientation: string;
-  IncludeTrend: boolean;
-  IncludeSparkline: boolean;
-  IncludeMaxAndMin: boolean;
-  ChartType: string;
-  PlotSeries: string;
-  XAxisLabels: string;
-  XAxisIntersectionAtZero: boolean;
-  XAxisTitle: string;
-  YAxisTitle: string;
-  MapType: string;
-  Region: string;
-  Continent: string;
-  Country: string;
-  Paging: boolean;
-  PageSize: number;
-  ShowDataLabelsIn: string;
-  TotalForRows: string;
-  TotalForColumns: string;
-};
-
-/**
  * Generic response to any GXquery API service
  */
 type GenericServiceResponse = {
@@ -90,7 +53,7 @@ type GetMetadataByNameServiceResponse = GenericServiceResponse & {
  * Response returned by the GetQueryByName service
  */
 export type GetQueryByNameServiceResponse = GenericServiceResponse & {
-  Query: Query;
+  Query: QueryViewerBase;
 };
 
 /**
@@ -114,7 +77,7 @@ export type GXqueryOptions = {
   baseUrl: string;
   metadataName: string;
   queryName?: string;
-  query?: Query;
+  query?: QueryViewerBase;
 };
 
 /**
