@@ -170,8 +170,7 @@ export class QueryViewer implements GxComponent {
   /**
    * Orientation of the graph
    */
-  @Prop({ mutable: true }) orientation: QueryViewerOrientation =
-    QueryViewerOrientation.Horizontal;
+  @Prop({ mutable: true }) orientation: QueryViewerOrientation;
 
   /**
    * If paging true, number of items for a single page
@@ -207,8 +206,7 @@ export class QueryViewer implements GxComponent {
    * Specifies whether to show the actual values, the values as a percentage of
    * the target values, or both.
    */
-  @Prop({ mutable: true }) showDataAs: QueryViewerShowDataAs =
-    QueryViewerShowDataAs.Values;
+  @Prop({ mutable: true }) showDataAs: QueryViewerShowDataAs;
 
   /**
    * Ax to show data labels
@@ -244,8 +242,7 @@ export class QueryViewer implements GxComponent {
    * If `includeTrend == true`, this attribute specifies the period of time to
    * calculate the trend.
    */
-  @Prop() readonly trendPeriod: QueryViewerTrendPeriod =
-    QueryViewerTrendPeriod.SinceTheBeginning;
+  @Prop() readonly trendPeriod: QueryViewerTrendPeriod;
 
   /**
    * Type of the QueryViewer: Table, PivotTable, Chart, Card
@@ -260,8 +257,7 @@ export class QueryViewer implements GxComponent {
   /**
    * Labels for XAxis
    */
-  @Prop({ mutable: true }) xAxisLabels: QueryViewerXAxisLabels =
-    QueryViewerXAxisLabels.Horizontally;
+  @Prop({ mutable: true }) xAxisLabels: QueryViewerXAxisLabels;
 
   /**
    * X Axis title
@@ -304,37 +300,33 @@ export class QueryViewer implements GxComponent {
    */
   private setQueryViewerProperties(properties: QueryViewerServiceProperties) {
     if (properties) {
-      this.type = this.type || properties.Type;
-      this.queryTitle = this.queryTitle || properties.QueryTitle;
-      this.showValues = this.showValues || properties.ShowValues;
+      this.type ??= properties.Type;
+      this.queryTitle ??= properties.QueryTitle;
+      this.showValues ??= properties.ShowValues;
       if (this.type === QueryViewerOutputType.Card) {
-        this.showDataAs = this.showDataAs || properties.ShowDataAs;
-        this.orientation = this.orientation || properties.Orientation;
-        this.includeTrend = this.includeTrend || properties.IncludeTrend;
-        this.includeSparkline =
-          this.includeSparkline || properties.IncludeSparkline;
-        this.includeMaxMin = this.includeMaxMin || properties.IncludeMaxMin;
+        this.showDataAs ??= properties.ShowDataAs;
+        this.orientation ??= properties.Orientation;
+        this.includeTrend ??= properties.IncludeTrend;
+        this.includeSparkline ??= properties.IncludeSparkline;
+        this.includeMaxMin ??= properties.IncludeMaxMin;
       } else if (this.type === QueryViewerOutputType.Chart) {
-        this.chartType = this.chartType || properties.ChartType;
-        this.plotSeries = this.plotSeries || properties.PlotSeries;
-        this.xAxisLabels = this.xAxisLabels || properties.XAxisLabels;
-        this.xAxisIntersectionAtZero =
-          this.xAxisIntersectionAtZero || properties.XAxisIntersectionAtZero;
-        this.xAxisTitle = this.xAxisTitle || properties.XAxisTitle;
-        this.yAxisTitle = this.yAxisTitle || properties.YAxisTitle;
+        this.chartType ??= properties.ChartType;
+        this.plotSeries ??= properties.PlotSeries;
+        this.xAxisLabels ??= properties.XAxisLabels;
+        this.xAxisIntersectionAtZero ??= properties.XAxisIntersectionAtZero;
+        this.xAxisTitle ??= properties.XAxisTitle;
+        this.yAxisTitle ??= properties.YAxisTitle;
       } else if (this.type === QueryViewerOutputType.Map) {
-        this.mapType = this.mapType || properties.MapType;
-        this.region = this.region || properties.Region;
-        this.continent = this.continent || properties.Continent;
-        this.country = this.country || properties.Country;
+        this.mapType ??= properties.MapType;
+        this.region ??= properties.Region;
+        this.continent ??= properties.Continent;
+        this.country ??= properties.Country;
       } else {
-        this.paging = this.paging || properties.Paging;
-        this.pageSize = this.pageSize || properties.PageSize;
-        this.showDataLabelsIn =
-          this.showDataLabelsIn || properties.ShowDataLabelsIn;
-        this.totalForRows = this.totalForRows || properties.TotalForRows;
-        this.totalForColumns =
-          this.totalForColumns || properties.TotalForColumns;
+        this.paging ??= properties.Paging;
+        this.pageSize ??= properties.PageSize;
+        this.showDataLabelsIn ??= properties.ShowDataLabelsIn;
+        this.totalForRows ??= properties.TotalForRows;
+        this.totalForColumns ??= properties.TotalForColumns;
       }
     }
   }
