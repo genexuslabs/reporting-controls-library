@@ -25,7 +25,7 @@ export namespace Components {
          */
         "mainTitle": string;
         /**
-          * Specify the size of the icon messages
+          * Specify the size of the icon messages. ex 50px
          */
         "messageIconSize": string;
         /**
@@ -33,17 +33,13 @@ export namespace Components {
          */
         "metadataName": "ReportingShowcase";
         /**
-          * Determines if the menu can be minimized
-         */
-        "minimizable": boolean;
-        /**
           * Text that appears in the input control when it has no value set
          */
         "placeholder": string;
         /**
-          * Determines if the menu can be unlocked
+          * Determines if the menu can be unlocked or minimize
          */
-        "unlockable": boolean;
+        "resizewindow": boolean;
     }
     interface GxQueryMenu {
         /**
@@ -97,16 +93,6 @@ export namespace Components {
          */
         "item": GxQueryItem;
         "setFocus": () => Promise<void>;
-    }
-    interface GxQuerySuggestion {
-        /**
-          * Declare the header of the component
-         */
-        "header": string;
-        /**
-          * Declare the list of items to display
-         */
-        "items": string[];
     }
     interface GxQueryViewer {
         /**
@@ -800,10 +786,6 @@ export interface GxQueryMenuItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLGxQueryMenuItemElement;
 }
-export interface GxQuerySuggestionCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLGxQuerySuggestionElement;
-}
 export interface GxQueryViewerCardCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLGxQueryViewerCardElement;
@@ -854,12 +836,6 @@ declare global {
     var HTMLGxQueryMenuItemElement: {
         prototype: HTMLGxQueryMenuItemElement;
         new (): HTMLGxQueryMenuItemElement;
-    };
-    interface HTMLGxQuerySuggestionElement extends Components.GxQuerySuggestion, HTMLStencilElement {
-    }
-    var HTMLGxQuerySuggestionElement: {
-        prototype: HTMLGxQuerySuggestionElement;
-        new (): HTMLGxQuerySuggestionElement;
     };
     interface HTMLGxQueryViewerElement extends Components.GxQueryViewer, HTMLStencilElement {
     }
@@ -937,7 +913,6 @@ declare global {
         "gx-query-chat": HTMLGxQueryChatElement;
         "gx-query-menu": HTMLGxQueryMenuElement;
         "gx-query-menu-item": HTMLGxQueryMenuItemElement;
-        "gx-query-suggestion": HTMLGxQuerySuggestionElement;
         "gx-query-viewer": HTMLGxQueryViewerElement;
         "gx-query-viewer-card": HTMLGxQueryViewerCardElement;
         "gx-query-viewer-card-controller": HTMLGxQueryViewerCardControllerElement;
@@ -967,17 +942,13 @@ declare namespace LocalJSX {
          */
         "mainTitle"?: string;
         /**
-          * Specify the size of the icon messages
+          * Specify the size of the icon messages. ex 50px
          */
         "messageIconSize"?: string;
         /**
           * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
          */
         "metadataName"?: "ReportingShowcase";
-        /**
-          * Determines if the menu can be minimized
-         */
-        "minimizable"?: boolean;
         /**
           * Fired when receive a question answer
          */
@@ -991,9 +962,9 @@ declare namespace LocalJSX {
          */
         "placeholder"?: string;
         /**
-          * Determines if the menu can be unlocked
+          * Determines if the menu can be unlocked or minimize
          */
-        "unlockable"?: boolean;
+        "resizewindow"?: boolean;
     }
     interface GxQueryMenu {
         /**
@@ -1066,20 +1037,6 @@ declare namespace LocalJSX {
           * Trigger the action to select an item
          */
         "onSelectItem"?: (event: GxQueryMenuItemCustomEvent<GxQueryItem>) => void;
-    }
-    interface GxQuerySuggestion {
-        /**
-          * Declare the header of the component
-         */
-        "header"?: string;
-        /**
-          * Declare the list of items to display
-         */
-        "items"?: string[];
-        /**
-          * Emitted when the option is selected.
-         */
-        "onGxSuggestionSelect"?: (event: GxQuerySuggestionCustomEvent<string>) => void;
     }
     interface GxQueryViewer {
         /**
@@ -1781,7 +1738,6 @@ declare namespace LocalJSX {
         "gx-query-chat": GxQueryChat;
         "gx-query-menu": GxQueryMenu;
         "gx-query-menu-item": GxQueryMenuItem;
-        "gx-query-suggestion": GxQuerySuggestion;
         "gx-query-viewer": GxQueryViewer;
         "gx-query-viewer-card": GxQueryViewerCard;
         "gx-query-viewer-card-controller": GxQueryViewerCardController;
@@ -1803,7 +1759,6 @@ declare module "@stencil/core" {
             "gx-query-chat": LocalJSX.GxQueryChat & JSXBase.HTMLAttributes<HTMLGxQueryChatElement>;
             "gx-query-menu": LocalJSX.GxQueryMenu & JSXBase.HTMLAttributes<HTMLGxQueryMenuElement>;
             "gx-query-menu-item": LocalJSX.GxQueryMenuItem & JSXBase.HTMLAttributes<HTMLGxQueryMenuItemElement>;
-            "gx-query-suggestion": LocalJSX.GxQuerySuggestion & JSXBase.HTMLAttributes<HTMLGxQuerySuggestionElement>;
             "gx-query-viewer": LocalJSX.GxQueryViewer & JSXBase.HTMLAttributes<HTMLGxQueryViewerElement>;
             "gx-query-viewer-card": LocalJSX.GxQueryViewerCard & JSXBase.HTMLAttributes<HTMLGxQueryViewerCardElement>;
             "gx-query-viewer-card-controller": LocalJSX.GxQueryViewerCardController & JSXBase.HTMLAttributes<HTMLGxQueryViewerCardControllerElement>;

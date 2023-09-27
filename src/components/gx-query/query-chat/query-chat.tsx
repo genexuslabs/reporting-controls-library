@@ -31,7 +31,7 @@ const PART_PREFIX = "query-chat__";
   tag: "gx-query-chat",
   styleUrl: "query-chat.scss",
   shadow: true,
-  assetsDirs: ["./assets"]
+  assetsDirs: ["assets"]
 })
 export class QueryChat implements GxComponent {
   private inputElement!: HTMLGxEditElement;
@@ -54,13 +54,9 @@ export class QueryChat implements GxComponent {
    */
   @Prop() readonly placeholder: string = "Ask me question";
   /**
-   * Determines if the menu can be unlocked
+   * Determines if the menu can be unlocked or minimize
    */
-  @Prop() readonly unlockable: boolean = true;
-  /**
-   * Determines if the menu can be minimized
-   */
-  @Prop() readonly minimizable: boolean = true;
+  @Prop() readonly resizewindow: boolean = true;
   /**
    * Determines if the menu is unlocked
    */
@@ -70,7 +66,7 @@ export class QueryChat implements GxComponent {
    */
   @Prop({ reflect: true, mutable: true }) isMinimized = false;
   /**
-   * Specify the size of the icon messages
+   * Specify the size of the icon messages. ex 50px
    */
   @Prop({ reflect: true, mutable: true }) messageIconSize = "50px";
   /**
@@ -152,13 +148,13 @@ export class QueryChat implements GxComponent {
   };
 
   private toggleUnlocked = () => {
-    if (this.unlockable) {
+    if (this.resizewindow) {
       this.isUnlocked = !this.isUnlocked;
     }
   };
 
   private toggleMinimized = () => {
-    if (this.minimizable) {
+    if (this.resizewindow) {
       this.isMinimized = !this.isMinimized;
     }
   };
@@ -230,27 +226,27 @@ export class QueryChat implements GxComponent {
         <header role="banner" part={`${PART_PREFIX}header`}>
           <h1 part={`${PART_PREFIX}title`}>{this.mainTitle}</h1>
           <div part={`${PART_PREFIX}controls`}>
-            {this.unlockable && (
+            {this.resizewindow && (
               <gx-button
                 tabindex="0"
                 role="button"
                 accessible-name={this.isUnlocked ? "locked" : "unlocked"}
-                main-image-src="./assets/undock.svg"
+                main-image-src={getAssetPath("assets/undock.svg")}
                 image-position="below"
                 width="20px"
                 height="20px"
                 onClick={this.toggleUnlocked}
               ></gx-button>
             )}
-            {this.minimizable && (
+            {this.resizewindow && (
               <gx-button
                 tabindex="0"
                 role="button"
                 accessible-name={this.isMinimized ? "maximize" : "minimize"}
                 main-image-src={
                   this.isMinimized
-                    ? "./assets/maximize.svg"
-                    : "./assets/minimize.svg"
+                    ? getAssetPath("assets/maximize.svg")
+                    : getAssetPath("assets/minimize.svg")
                 }
                 image-position="below"
                 width="20px"
@@ -308,7 +304,7 @@ export class QueryChat implements GxComponent {
                       cssClass="regenerate-btn"
                       caption="Regenerate answer"
                       image-position="before"
-                      main-image-src={getAssetPath("./assets/reload.svg")}
+                      main-image-src={getAssetPath("assets/reload.svg")}
                       style={{ "--gx-button-image-margin": "10px" }}
                       onClick={this.handleRegenerateAnswer}
                     ></gx-button>

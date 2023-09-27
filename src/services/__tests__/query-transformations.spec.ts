@@ -1,6 +1,5 @@
-import { GxChatMessage, GxQueryItem, Query } from "../../common/basic-types";
+import { GxQueryItem, Query } from "../../common/basic-types";
 import {
-  mapGxQueryItemToChatItem,
   transformQueryDtoListToUIData,
   transformQueryDtoToGxQueryItem
 } from "../query-transformations";
@@ -87,28 +86,6 @@ describe("transformation between dto and ui data", () => {
     } as GxQueryItem;
 
     const result = transformQueryDtoToGxQueryItem(dto);
-    expect(result).toEqual(expected);
-  });
-});
-
-describe("map query item to chat item", () => {
-  it("should return a GxChatItem object", () => {
-    const dto = {
-      Id: "4bf29a4a-b79b-45af-9277-7bc87704df79",
-      Name: "AverageLifeExpectancy",
-      Description: "Average Life Expectancy",
-      Modified: new Date("2023-07-15T14:09:49"),
-      Expression: "CountryName [Name='Element1']",
-      differenceInDays: 31
-    } as GxQueryItem;
-    const expected: GxChatMessage = {
-      id: "4bf29a4a-b79b-45af-9277-7bc87704df79",
-      messageType: "assistant",
-      expression: "CountryName [Name='Element1']",
-      content: "Average Life Expectancy"
-    };
-
-    const result = mapGxQueryItemToChatItem(dto);
     expect(result).toEqual(expected);
   });
 });

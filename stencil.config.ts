@@ -11,7 +11,14 @@ export const config: Config = {
       esmLoaderPath: "../loader"
     },
     {
-      type: "dist-custom-elements"
+      type: "dist-custom-elements",
+      copy: [
+        {
+          src: "**/*.{svg}",
+          dest: "dist/components/assets",
+          warn: true
+        }
+      ]
     },
     {
       type: "docs-readme"

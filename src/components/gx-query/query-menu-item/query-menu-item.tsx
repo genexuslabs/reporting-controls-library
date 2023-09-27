@@ -33,7 +33,8 @@ type KeyEvents =
 @Component({
   tag: "gx-query-menu-item",
   styleUrl: "query-menu-item.scss",
-  shadow: true
+  shadow: true,
+  assetsDirs: ["assets"]
 })
 export class QueryMenuItem implements GxComponent {
   private inputRef!: HTMLGxEditElement;
@@ -94,8 +95,6 @@ export class QueryMenuItem implements GxComponent {
    */
   @Method()
   async setFocus() {
-    console.log(`-- Name: ${this.item.Name} --`);
-
     this.element.setAttribute("aria-selected", "true");
     this.element.setAttribute("tabindex", "0");
     this.element.focus();
@@ -128,7 +127,7 @@ export class QueryMenuItem implements GxComponent {
     [KEY_CODES.EDIT_KEY]: event => {
       event.preventDefault();
       if (!this.editMode && this.isActive) {
-        this.toggleEdition();
+        this.handlerEdit();
       }
     },
     [KEY_CODES.ENTER]: event => {
@@ -139,6 +138,10 @@ export class QueryMenuItem implements GxComponent {
         this.handlerRename();
       }
     }
+  };
+
+  private toggleEditMode = () => {
+    this.editMode = !this.editMode;
   };
 
   private handlerSelect = () => {
@@ -155,16 +158,16 @@ export class QueryMenuItem implements GxComponent {
       ...this.item,
       Name: this.inputRef.value
     } as GxQueryItem);
-    this.toggleEdition();
+    this.toggleEditMode();
   };
 
   private handlerCancel = async () => {
     this.inputRef.value = this.currentTitle;
-    this.toggleEdition();
+    this.toggleEditMode();
   };
 
-  private toggleEdition = () => {
-    this.editMode = !this.editMode;
+  private handlerEdit = () => {
+    this.toggleEditMode();
   };
 
   render() {
@@ -186,42 +189,42 @@ export class QueryMenuItem implements GxComponent {
       <Host tabindex="-1" onClick={!this.editMode ? this.handlerSelect : null}>
         <li part={`${PART_PREFIX}item`} role="option">
           <div
-            part={`${PART_PREFIX}label`}
             aria-controls={this.editControlId}
             aria-expanded={this.editMode ? "true" : "false"}
+            part={`${PART_PREFIX}label`}
           >
             {template}
           </div>
           <div
-            part={`${PART_PREFIX}controls`}
             class="controls"
             id={this.editControlId}
+            part={`${PART_PREFIX}controls`}
           >
             {!this.editMode
               ? [
                   <gx-button
-                    onClick={this.toggleEdition}
                     accessible-name="edit title"
-                    main-image-srcset={getAssetPath("../assets/edit.svg")}
+                    main-image-srcset={getAssetPath("assets/edit.svg")}
+                    onClick={this.handlerEdit}
                     tabIndex={0}
                   ></gx-button>,
                   <gx-button
-                    onClick={this.handlerDelete}
                     accessible-name="delete title"
-                    main-image-srcset={getAssetPath("../assets/delete.svg")}
+                    main-image-srcset={getAssetPath("assets/delete.svg")}
+                    onClick={this.handlerDelete}
                     tabIndex={0}
                   ></gx-button>
                 ]
               : [
                   <gx-button
-                    onClick={this.handlerRename}
                     accessible-name="confirm"
-                    main-image-srcset={getAssetPath("../assets/done.svg")}
+                    main-image-srcset={getAssetPath("assets/done.svg")}
+                    onClick={this.handlerRename}
                   ></gx-button>,
                   <gx-button
-                    onClick={this.handlerCancel}
                     accessible-name="cancel"
-                    main-image-srcset={getAssetPath("../assets/cancel.svg")}
+                    main-image-srcset={getAssetPath("assets/cancel.svg")}
+                    onClick={this.handlerCancel}
                   ></gx-button>
                 ]}
           </div>

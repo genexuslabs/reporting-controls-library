@@ -107,6 +107,13 @@ export type DeleteQueryServiceResponse = GenericServiceResponse;
  */
 export type UpdateQueryServiceResponse = GxError[];
 /**
+ * Input sended to update a Query
+ */
+type UpdateQueryServiceInput = {
+  MetadataId: string;
+  Query: Query;
+};
+/**
  * Response returned by the New Query service
  */
 export type NewQueryServiceResponse = GenericServiceResponse & {
@@ -422,7 +429,7 @@ export class GXqueryConnector {
     if (connectionStatus.Errors.length > 0) {
       return connectionStatus.Errors;
     }
-    const payload = {
+    const payload: UpdateQueryServiceInput = {
       Query: options.query,
       MetadataId: GXqueryConnector._currentMetadata.Id
     };

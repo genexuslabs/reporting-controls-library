@@ -13,6 +13,11 @@
   margin: var(--gx-space-medium);
 }
 
+:host::part(query-viewer__wrap) {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
 :host::part(query-viewer__header) {
   align-items: center;
   border-bottom: var(--gx-header-border);
@@ -39,6 +44,16 @@
 
 :host::part(query-viewer__controls) {
   display: flex;
+}
+
+.loading-backdrop {
+  background-color: var(--gx-backdrop-color);
+  bottom: 10px;
+  margin: 0 10px;
+  position: absolute;
+  top: 10px;
+  width: calc(100% - 20px);
+  z-index: 200;
 }
 
 .dropdown {
@@ -72,7 +87,7 @@
     display: block;
     width: 24px;
     height: 24px;
-    background-image: url("./assets/chevron.svg");
+    background-image: url(build/assets/chevron.svg);
     background-size: cover;
     background-repeat: no-repeat;
     transition: all 0.25s ease;
@@ -110,7 +125,7 @@
     display: block;
     width: 16px;
     height: 16px;
-    background-image: url("./assets/img.svg");
+    background-image: url(build/assets/img.svg);
     background-size: cover;
     background-repeat: no-repeat;
   }
@@ -119,10 +134,10 @@
   background-color: var(--neutral-100);
 }
 .dropdown-menu__item--jpg::before {
-  background-image: url("./assets/img.svg");
+  background-image: url(build/assets/img.svg);
 }
 .dropdown-menu__item--pdf::before {
-  background-image: url("./assets/file.svg");
+  background-image: url(build/assets/file.svg);
 }
 
 .viewer {

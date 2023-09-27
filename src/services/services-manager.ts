@@ -6,19 +6,6 @@ import {
   GxQueryItem,
   GxQueryListResponse,
   GxQueryOptions,
-  Query,
-  QueryViewerChartType,
-  QueryViewerContinent,
-  QueryViewerCountry,
-  QueryViewerMapType,
-  QueryViewerOrientation,
-  QueryViewerOutputType,
-  QueryViewerPlotSeries,
-  QueryViewerRegion,
-  QueryViewerShowDataAs,
-  QueryViewerShowDataLabelsIn,
-  QueryViewerTotal,
-  QueryViewerXAxisLabels,
   ServiceType
 } from "../common/basic-types";
 import {
@@ -29,6 +16,7 @@ import {
 } from "./gxquery-connector";
 import { data, metaData } from "./post-info";
 import {
+  queryToQueryProperties,
   transformGxChatItemToChatMessageDto,
   transformGxQueryItemToQueryDto,
   transformQueryDtoListToUIData,
@@ -73,63 +61,6 @@ export type ServicesContext = {
  * @returns Unique value with each call, using the current date
  */
 const foolCache = () => new Date().getTime();
-
-const queryToQueryProperties = (query: Query): QueryViewerServiceProperties => {
-  return {
-    Id: query.Id,
-    Name: query.Name,
-    Type: QueryViewerOutputType[
-      query.OutputType as keyof typeof QueryViewerOutputType
-    ],
-    QueryTitle: query.Title,
-    ShowValues: query.ShowValues,
-    ShowDataAs:
-      QueryViewerShowDataAs[
-        query.ShowDataAs as keyof typeof QueryViewerShowDataAs
-      ],
-    Orientation:
-      QueryViewerOrientation[
-        query.Orientation as keyof typeof QueryViewerOrientation
-      ],
-    IncludeTrend: query.IncludeTrend,
-    IncludeSparkline: query.IncludeSparkline,
-    IncludeMaxMin: query.IncludeMaxAndMin,
-    ChartType:
-      QueryViewerChartType[
-        query.ChartType as keyof typeof QueryViewerChartType
-      ],
-    PlotSeries:
-      QueryViewerPlotSeries[
-        query.PlotSeries as keyof typeof QueryViewerPlotSeries
-      ],
-    XAxisLabels:
-      QueryViewerXAxisLabels[
-        query.XAxisLabels as keyof typeof QueryViewerXAxisLabels
-      ],
-    XAxisIntersectionAtZero: query.XAxisIntersectionAtZero,
-    XAxisTitle: query.XAxisTitle,
-    YAxisTitle: query.YAxisTitle,
-    MapType:
-      QueryViewerMapType[query.MapType as keyof typeof QueryViewerMapType],
-    Region: QueryViewerRegion[query.Region as keyof typeof QueryViewerRegion],
-    Continent:
-      QueryViewerContinent[
-        query.Continent as keyof typeof QueryViewerContinent
-      ],
-    Country:
-      QueryViewerCountry[query.Country as keyof typeof QueryViewerCountry],
-    Paging: query.Paging,
-    PageSize: query.PageSize,
-    ShowDataLabelsIn:
-      QueryViewerShowDataLabelsIn[
-        query.ShowDataLabelsIn as keyof typeof QueryViewerShowDataLabelsIn
-      ],
-    TotalForRows:
-      QueryViewerTotal[query.TotalForRows as keyof typeof QueryViewerTotal],
-    TotalForColumns:
-      QueryViewerTotal[query.TotalForColumns as keyof typeof QueryViewerTotal]
-  };
-};
 
 const contextToGXqueryOptions = (context: ServicesContext): GxQueryOptions => {
   return {

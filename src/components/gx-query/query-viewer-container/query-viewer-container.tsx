@@ -16,13 +16,13 @@ import {
   GxQueryItem,
   GxQueryOptions
 } from "../../../common/basic-types";
+import { transformGxQueryItemToQVProperties } from "../../../services/query-transformations";
 import {
   ServicesContext,
   asyncGetProperties,
   asyncUpdateQuery
 } from "../../../services/services-manager";
 import { QueryViewerServiceProperties } from "../../../services/types/service-result";
-import { sessionSet } from "../../../utils/general";
 
 const PART_PREFIX = "query-viewer__";
 
@@ -38,7 +38,7 @@ enum QVStatus {
   tag: "gx-query-viewer-container",
   styleUrl: "query-viewer-container.scss",
   shadow: true,
-  assetsDirs: ["../assets"]
+  assetsDirs: ["assets"]
 })
 export class QueryViewerContainer {
   private menuList: HTMLDivElement;
@@ -92,6 +92,10 @@ export class QueryViewerContainer {
    */
   @State() queryViewerErrorDescription = "";
   /**
+   * Loading status
+   */
+  @State() loading = false;
+  /**
    *
    */
   @Event({ composed: true })
@@ -102,15 +106,19 @@ export class QueryViewerContainer {
     switch (newValue) {
       case QVStatus.init:
         this.disabledActions = true;
+        this.loading = true;
         break;
       case QVStatus.pending:
         this.disabledActions = true;
+        this.loading = true;
         break;
       case QVStatus.complete:
         this.disabledActions = false;
+        this.loading = false;
         break;
       default:
         this.disabledActions = false;
+        this.loading = false;
         break;
     }
   }
@@ -118,10 +126,22 @@ export class QueryViewerContainer {
   @Listen("gxQuerySelect", { target: "window" })
   selectQuery(event: CustomEvent<GxQueryItem>) {
     console.log("Select Query");
+    // Avoid apply query already selected
+    if (event.detail?.Id === this.query?.Id) {
+      return;
+    }
+
     this.query = event.detail;
-    const context = this.getContext(this.query.Name);
-    asyncGetProperties(context, this.callbackQueryProperties);
     this.queryViewerStatus = QVStatus.init;
+    if (this.query.ChartType === "") {
+      console.log("Chart type defined");
+      const context = this.getContext(this.query.Name);
+      asyncGetProperties(context, this.callbackQueryProperties);
+    } else {
+      console.log("Fetch properties");
+      const properties = transformGxQueryItemToQVProperties(this.query);
+      this.callbackQueryProperties(properties);
+    }
   }
 
   @Listen("gxQueryNewChat", { target: "window" })
@@ -146,15 +166,14 @@ export class QueryViewerContainer {
   private callbackQueryProperties = (
     properties: QueryViewerServiceProperties
   ) => {
-    sessionSet(properties.Name, properties);
     this.queryProperties = properties;
-    // this.disabledActions = false;
     this.queryViewerStatus = QVStatus.pending;
   };
 
   private updateCallback = (response: GxCommonErrorResponse) => {
     if (response.Errors.length > 0) {
       console.error(response.Errors);
+      this.queryViewerStatus = QVStatus.failed;
     } else {
       this.gxQuerySaveQuery.emit(this.query);
     }
@@ -206,57 +225,44 @@ export class QueryViewerContainer {
 
   /**
    * Render QueryViewer component
+   * @returns HTMLGxQueryViewerElement
    */
   private renderQueryViewer = () => {
+    console.log("renderQueryViewer", this.queryViewerStatus);
     if (
       [QVStatus.pending, QVStatus.complete].includes(this.queryViewerStatus)
     ) {
-      const {
-        ChartType,
-        IncludeMaxMin,
-        IncludeSparkline,
-        IncludeTrend,
-        Name,
-        Orientation,
-        PlotSeries,
-        QueryTitle,
-        ShowDataAs,
-        ShowDataLabelsIn,
-        Type,
-        XAxisIntersectionAtZero,
-        XAxisLabels,
-        XAxisTitle,
-        YAxisTitle
-      } = this.queryProperties;
       return (
         <div>
-          <gx-query-viewer type={Type}>
+          <gx-query-viewer type={this.queryProperties.Type}>
             <gx-query-viewer-controller
-              use-gxquery={this.useGxquery}
-              metadata-name={this.metadataName}
               base-url={this.baseUrl}
-              object-name={Name}
-              type={Type}
-              x-axis-intersection-at-zero={XAxisIntersectionAtZero}
-              x-axis-labels={XAxisLabels}
-              x-axis-title={XAxisTitle}
-              y-axis-title={YAxisTitle}
-              chart-type={ChartType}
-              plot-series={PlotSeries}
-              show-data-labels-in={ShowDataLabelsIn}
-              query-title={QueryTitle}
-              include-sparkline={IncludeSparkline}
-              include-trend={IncludeTrend}
-              include-max-min={IncludeMaxMin}
-              show-data-as={ShowDataAs}
-              orientation={Orientation}
+              chart-type={this.queryProperties.ChartType}
+              include-max-min={this.queryProperties.IncludeMaxMin}
+              include-sparkline={this.queryProperties.IncludeSparkline}
+              include-trend={this.queryProperties.IncludeTrend}
+              metadata-name={this.metadataName}
+              object-name={this.queryProperties.Name}
+              orientation={this.queryProperties.Orientation}
+              plot-series={this.queryProperties.PlotSeries}
+              query-title={this.queryProperties.QueryTitle}
+              show-data-as={this.queryProperties.ShowDataAs}
+              show-data-labels-in={this.queryProperties.ShowDataLabelsIn}
+              type={this.queryProperties.Type}
+              use-gxquery={this.useGxquery}
+              x-axis-intersection-at-zero={
+                this.queryProperties.XAxisIntersectionAtZero
+              }
+              x-axis-labels={this.queryProperties.XAxisLabels}
+              x-axis-title={this.queryProperties.XAxisTitle}
+              y-axis-title={this.queryProperties.YAxisTitle}
             ></gx-query-viewer-controller>
           </gx-query-viewer>
         </div>
       );
     }
 
-    return <div>..</div>;
+    return <div></div>;
   };
 
   /**
@@ -301,63 +307,71 @@ export class QueryViewerContainer {
   render() {
     return (
       <Host>
-        <header part={`${PART_PREFIX}header`}>
-          {this.mainTitle && (
-            <h1 part={`${PART_PREFIX}title`}>{this.mainTitle}</h1>
+        <div part={`${PART_PREFIX}wrap`}>
+          {this.loading && (
+            <div class="loading-backdrop">
+              <gx-loading presented={this.loading}></gx-loading>
+            </div>
           )}
-          <nav part={`${PART_PREFIX}controls`}>
-            <div class="dropdown" ref={el => (this.menuList = el)}>
-              <button
-                aria-expanded={this.openMenu ? "true" : "false"}
-                aria-haspopup="true"
-                class="control-item"
-                data-toggle="dropdown"
-                id="dropdownMenuButton"
-                onClick={this.toggleMenu}
-                type="button"
-              >
-                EXPORT
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <li class="">
-                  <button
-                    class="dropdown-menu__item dropdown-menu__item--jpg"
-                    type="button"
-                    onClick={() => this.handleExport("img")}
-                    disabled={this.disabledActions}
-                  >
-                    Export as JPG
-                  </button>
-                </li>
-                <li class="">
-                  <button
-                    class="dropdown-menu__item dropdown-menu__item--pdf"
-                    type="button"
-                    onClick={() => this.handleExport("pdf")}
-                    disabled={this.disabledActions}
-                  >
-                    Export as PDF
-                  </button>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <button
-                class="control-item"
-                disabled={this.disabledActions}
-                id="saveButton"
-                onClick={this.handleSave}
-                type="button"
-              >
-                SAVE
-              </button>
-            </div>
-          </nav>
-        </header>
 
-        <div class="viewer">
-          {this.renderQueryViewer()}
-          {this.renderQueryViewerStatus()}
+          <header part={`${PART_PREFIX}header`}>
+            {this.mainTitle && (
+              <h1 part={`${PART_PREFIX}title`}>{this.mainTitle}</h1>
+            )}
+            <nav part={`${PART_PREFIX}controls`}>
+              <div class="dropdown" ref={el => (this.menuList = el)}>
+                <button
+                  aria-expanded={this.openMenu ? "true" : "false"}
+                  aria-haspopup="true"
+                  class="control-item"
+                  data-toggle="dropdown"
+                  id="dropdownMenuButton"
+                  onClick={this.toggleMenu}
+                  type="button"
+                >
+                  EXPORT
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <li class="">
+                    <button
+                      class="dropdown-menu__item dropdown-menu__item--jpg"
+                      type="button"
+                      onClick={() => this.handleExport("img")}
+                      disabled={this.disabledActions}
+                    >
+                      Export as JPG
+                    </button>
+                  </li>
+                  <li class="">
+                    <button
+                      class="dropdown-menu__item dropdown-menu__item--pdf"
+                      type="button"
+                      onClick={() => this.handleExport("pdf")}
+                      disabled={this.disabledActions}
+                    >
+                      Export as PDF
+                    </button>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <button
+                  class="control-item"
+                  disabled={this.disabledActions}
+                  id="saveButton"
+                  onClick={this.handleSave}
+                  type="button"
+                >
+                  SAVE
+                </button>
+              </div>
+            </nav>
+          </header>
+
+          <div class="viewer">
+            {this.renderQueryViewer()}
+            {this.renderQueryViewerStatus()}
+          </div>
         </div>
       </Host>
     );

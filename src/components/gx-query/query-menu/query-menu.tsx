@@ -42,7 +42,7 @@ type KeyEvents =
   tag: "gx-query-menu",
   styleUrl: "query-menu.scss",
   shadow: true,
-  assetsDirs: ["../assets"]
+  assetsDirs: ["./assets"]
 })
 export class QueryMenu implements GxComponent {
   private showHeader = false;
@@ -99,7 +99,7 @@ export class QueryMenu implements GxComponent {
    */
   @Prop() readonly metadataName = process.env.METADATA_NAME;
   /**
-   * Sanitized qiery items list
+   * Local list of query items
    */
   @State() _items: GxQueryItem[] = [];
   /**
@@ -111,22 +111,24 @@ export class QueryMenu implements GxComponent {
     items: GxQueryItem[];
   }[] = [];
   /**
-   *
+   * Loading status
    */
   @State() loading = true;
   /**
-   *
+   * Query Id selected
    */
   @State() active = "";
 
   @Listen("gxQuerySaveQuery", { target: "window" })
   saveQuery(event: CustomEvent<GxQueryItem>) {
-    console.log("gxQuerySaveQuery", event.detail);
-    // const index = this._items.findIndex(i => i.id === id);
-    // console.log("remove: ", id, index);
-    // if (event.detail) {
-    //   this._items = [...this._items, event.detail];
-    // }
+    const newItem = event.detail;
+    const items = [...this._items];
+    // Find if id existe in the query list
+    const index = items.findIndex(i => i.Id === newItem.Id);
+    if (index > 0) {
+      delete items[index];
+    }
+    this._items = [...items, newItem];
   }
 
   @Listen("keydown", { capture: true })
@@ -393,59 +395,66 @@ export class QueryMenu implements GxComponent {
 
     return (
       <Host>
-        <section part={`${PART_PREFIX}sidebar`}>
-          {this.showHeader && <slot name="header" />}
+        <div part={`${PART_PREFIX}wrap`}>
+          {this.loading && (
+            <div class="loading-backdrop">
+              <gx-loading presented={this.loading}></gx-loading>
+            </div>
+          )}
 
-          <nav part={`${PART_PREFIX}list`} aria-label="Chat history">
-            <gx-loading presented={this.loading}></gx-loading>
-            {this._filteredItems.map(({ label, items }, index) => (
-              <div>
-                <h2 id={`subtitle${index}`} part={`${PART_PREFIX}subtitle`}>
-                  {label}
-                </h2>
-                <ul
-                  role="listbox"
-                  tabindex="0"
-                  aria-labelledby={`subtitle${index}`}
-                >
-                  {items.map(item => (
-                    <gx-query-menu-item
-                      aria-selected="false"
-                      isActive={this.active === item.Id}
-                      onDeleteItem={this.deleteItem}
-                      onRenameItem={this.renameItem}
-                      onSelectItem={this.selectItem}
-                      item={item}
-                      exportparts="query-item__item,query-item__label,query-item__controls"
-                    ></gx-query-menu-item>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </nav>
-        </section>
+          <section part={`${PART_PREFIX}sidebar`}>
+            {this.showHeader && <slot name="header" />}
 
-        <footer part={`${PART_PREFIX}footer`}>
-          <div>
-            <gx-button
-              onClick={this.toggleView}
-              css-class={iconParams.class}
-              image-position="before"
-              invisible-mode="collapse"
-              main-image-srcset={getAssetPath("../assets/arrow.svg")}
-            ></gx-button>
-          </div>
-          <div>
-            <gx-button
-              onClick={this.createNewChat}
-              css-class="new-chat-btn"
-              caption={this.newChatCaption}
-              image-position="before"
-              disabled={this.loading}
-              main-image-srcset={getAssetPath("../assets/speech-bubble.svg")}
-            ></gx-button>
-          </div>
-        </footer>
+            <nav part={`${PART_PREFIX}list`} aria-label="Chat history">
+              {this._filteredItems.map(({ label, items }, index) => (
+                <div>
+                  <h2 id={`subtitle${index}`} part={`${PART_PREFIX}subtitle`}>
+                    {label}
+                  </h2>
+                  <ul
+                    role="listbox"
+                    tabindex="0"
+                    aria-labelledby={`subtitle${index}`}
+                  >
+                    {items.map(item => (
+                      <gx-query-menu-item
+                        aria-selected="false"
+                        isActive={this.active === item.Id}
+                        onDeleteItem={this.deleteItem}
+                        onRenameItem={this.renameItem}
+                        onSelectItem={this.selectItem}
+                        item={item}
+                        exportparts="query-item__item,query-item__label,query-item__controls"
+                      ></gx-query-menu-item>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </nav>
+          </section>
+
+          <footer part={`${PART_PREFIX}footer`}>
+            <div>
+              <gx-button
+                onClick={this.toggleView}
+                css-class={iconParams.class}
+                image-position="before"
+                invisible-mode="collapse"
+                main-image-srcset={getAssetPath("assets/arrow.svg")}
+              ></gx-button>
+            </div>
+            <div>
+              <gx-button
+                onClick={this.createNewChat}
+                css-class="new-chat-btn"
+                caption={this.newChatCaption}
+                image-position="before"
+                disabled={this.loading}
+                main-image-srcset={getAssetPath("assets/speech-bubble.svg")}
+              ></gx-button>
+            </div>
+          </footer>
+        </div>
       </Host>
     );
   }

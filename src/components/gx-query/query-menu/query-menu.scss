@@ -31,6 +31,10 @@ li {
   }
 }
 
+:host::part(query-menu__wrap) {
+  position: relative;
+}
+
 :host::part(query-menu__sidebar) {
   // align-items: center;
   // box-sizing: border-box;
@@ -70,6 +74,15 @@ li {
 
 .new-chat-btn {
   padding: var(--gx-space-medium);
+}
+
+.loading-backdrop {
+  position: absolute;
+  background-color: var(--gx-backdrop-color);
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 200;
 }
 
 // Scroll
