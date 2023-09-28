@@ -13,16 +13,14 @@ import {
 import {
   GeneratorType,
   GxCommonErrorResponse,
+  GxGetQueryResponse,
   GxQueryItem,
   GxQueryOptions
 } from "../../../common/basic-types";
-import { transformGxQueryItemToQVProperties } from "../../../services/query-transformations";
 import {
-  ServicesContext,
-  asyncGetProperties,
+  asyncGetQueryPropertiesInGXQuery,
   asyncUpdateQuery
 } from "../../../services/services-manager";
-import { QueryViewerServiceProperties } from "../../../services/types/service-result";
 
 const PART_PREFIX = "query-viewer__";
 
@@ -78,7 +76,7 @@ export class QueryViewerContainer {
   /**
    * This specifies the query properties
    */
-  @State() queryProperties: QueryViewerServiceProperties;
+  @State() queryViewerProperties: GxQueryItem;
   /**
    * Disabled button actions
    */
@@ -125,22 +123,26 @@ export class QueryViewerContainer {
 
   @Listen("gxQuerySelect", { target: "window" })
   selectQuery(event: CustomEvent<GxQueryItem>) {
-    console.log("Select Query");
+    console.log("Select Query", event.detail);
     // Avoid apply query already selected
     if (event.detail?.Id === this.query?.Id) {
       return;
     }
 
-    this.query = event.detail;
+    const query = event.detail;
     this.queryViewerStatus = QVStatus.init;
-    if (this.query.ChartType === "") {
+    if (!query?.ChartType) {
       console.log("Chart type defined");
-      const context = this.getContext(this.query.Name);
-      asyncGetProperties(context, this.callbackQueryProperties);
+      const context = this.queryOptions(query.Name);
+      asyncGetQueryPropertiesInGXQuery(
+        context,
+        query,
+        this.callbackQueryProperties
+      );
     } else {
-      console.log("Fetch properties");
-      const properties = transformGxQueryItemToQVProperties(this.query);
-      this.callbackQueryProperties(properties);
+      console.log("Chart type defined");
+      this.queryViewerProperties = query;
+      this.queryViewerStatus = QVStatus.pending;
     }
   }
 
@@ -163,11 +165,10 @@ export class QueryViewerContainer {
     this.queryViewerErrorDescription = event.detail;
   }
 
-  private callbackQueryProperties = (
-    properties: QueryViewerServiceProperties
-  ) => {
-    this.queryProperties = properties;
+  private callbackQueryProperties = (data: GxGetQueryResponse) => {
     this.queryViewerStatus = QVStatus.pending;
+    this.queryViewerProperties = data.Query;
+    console.log(this.queryViewerProperties);
   };
 
   private updateCallback = (response: GxCommonErrorResponse) => {
@@ -183,12 +184,7 @@ export class QueryViewerContainer {
   private handleSave = () => {
     if (!this.disabledActions) {
       const options = this.queryOptions();
-      asyncUpdateQuery(
-        options,
-        this.query,
-        this.queryProperties,
-        this.updateCallback
-      );
+      asyncUpdateQuery(options, this.query, this.updateCallback);
     }
   };
 
@@ -202,24 +198,11 @@ export class QueryViewerContainer {
     this.openMenu = this.menuList.classList.contains("active");
   };
 
-  private queryOptions(): GxQueryOptions {
+  private queryOptions(queryName?: string): GxQueryOptions {
     return {
       baseUrl: this.baseUrl,
-      metadataName: this.metadataName
-    };
-  }
-
-  private getContext(
-    objectName: string,
-    serializedObject = ""
-  ): ServicesContext {
-    return {
-      useGXquery: this.useGxquery,
-      baseUrl: this.baseUrl,
-      generator: this.environment,
       metadataName: this.metadataName,
-      serializedObject,
-      objectName
+      queryName
     };
   }
 
@@ -234,28 +217,30 @@ export class QueryViewerContainer {
     ) {
       return (
         <div>
-          <gx-query-viewer type={this.queryProperties.Type}>
+          <gx-query-viewer
+            title={this.queryViewerProperties.Title}
+            type={this.queryViewerProperties.OutputType}
+          >
             <gx-query-viewer-controller
               base-url={this.baseUrl}
-              chart-type={this.queryProperties.ChartType}
-              include-max-min={this.queryProperties.IncludeMaxMin}
-              include-sparkline={this.queryProperties.IncludeSparkline}
-              include-trend={this.queryProperties.IncludeTrend}
+              chart-type={this.queryViewerProperties.ChartType}
+              include-max-min={this.queryViewerProperties.IncludeMaxAndMin}
+              include-sparkline={this.queryViewerProperties.IncludeSparkline}
+              include-trend={this.queryViewerProperties.IncludeTrend}
               metadata-name={this.metadataName}
-              object-name={this.queryProperties.Name}
-              orientation={this.queryProperties.Orientation}
-              plot-series={this.queryProperties.PlotSeries}
-              query-title={this.queryProperties.QueryTitle}
-              show-data-as={this.queryProperties.ShowDataAs}
-              show-data-labels-in={this.queryProperties.ShowDataLabelsIn}
-              type={this.queryProperties.Type}
+              object-name={this.queryViewerProperties.Name}
+              orientation={this.queryViewerProperties.Orientation}
+              plot-series={this.queryViewerProperties.PlotSeries}
+              show-data-as={this.queryViewerProperties.ShowDataAs}
+              show-data-labels-in={this.queryViewerProperties.ShowDataLabelsIn}
+              type={this.queryViewerProperties.OutputType}
               use-gxquery={this.useGxquery}
               x-axis-intersection-at-zero={
-                this.queryProperties.XAxisIntersectionAtZero
+                this.queryViewerProperties.XAxisIntersectionAtZero
               }
-              x-axis-labels={this.queryProperties.XAxisLabels}
-              x-axis-title={this.queryProperties.XAxisTitle}
-              y-axis-title={this.queryProperties.YAxisTitle}
+              x-axis-labels={this.queryViewerProperties.XAxisLabels}
+              x-axis-title={this.queryViewerProperties.XAxisTitle}
+              y-axis-title={this.queryViewerProperties.YAxisTitle}
             ></gx-query-viewer-controller>
           </gx-query-viewer>
         </div>
@@ -294,9 +279,7 @@ export class QueryViewerContainer {
 
       case QVStatus.pending:
         message = (
-          <div class="viewer-message viewer-message--pending">
-            building ({this.queryProperties.Type})...
-          </div>
+          <div class="viewer-message viewer-message--pending">building ...</div>
         );
         break;
     }

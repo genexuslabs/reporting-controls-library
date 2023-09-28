@@ -3,6 +3,7 @@ import {
   GxChatMessage,
   GxChatMessageResponse,
   GxCommonErrorResponse,
+  GxGetQueryResponse,
   GxQueryItem,
   GxQueryListResponse,
   GxQueryOptions,
@@ -12,7 +13,6 @@ import {
 import {
   DeleteQueryServiceResponse,
   GXqueryConnector,
-  GXqueryOptions,
   RenameQueryServiceResponse
 } from "./gxquery-connector";
 import { data, metaData } from "./post-info";
@@ -26,8 +26,7 @@ import {
 import { QueryViewer } from "./types/json";
 import {
   QueryViewerServiceData,
-  QueryViewerServiceMetaData,
-  QueryViewerServiceProperties
+  QueryViewerServiceMetaData
 } from "./types/service-result";
 import { parseObjectToFormData } from "./utils/common";
 import { parseDataXML } from "./xml-parser/data-parser";
@@ -151,7 +150,7 @@ function getMetadataAndDataUsingGenericServices(
   });
 }
 
-const contextToGXqueryOptions = (context: ServicesContext): GXqueryOptions => {
+const contextToGXqueryOptions = (context: ServicesContext): GxQueryOptions => {
   return {
     baseUrl: context.baseUrl,
     metadataName: context.metadataName,
@@ -319,10 +318,10 @@ export const asyncNewChatMessage = (
 export const asyncUpdateQuery = (
   options: GxQueryOptions,
   query: GxQueryItem,
-  properties: QueryViewerServiceProperties,
   callbackWhenReady: (data: GxCommonErrorResponse) => void
 ) => {
-  const queryDto = transformGxQueryItemToQueryDto(query, properties);
+  // const queryDto = transformGxQueryItemToQueryDto(query, properties);
+  const queryDto = transformGxQueryItemToQueryDto(query);
   const queryOptions = { ...options, query: queryDto };
   GXqueryConnector.updateQuery(queryOptions)
     .then(resObj => {
@@ -330,5 +329,25 @@ export const asyncUpdateQuery = (
     })
     .catch(err => {
       callbackWhenReady({ Errors: [].concat(err?.message || err || []) });
+    });
+};
+
+export const asyncGetQueryPropertiesInGXQuery = (
+  options: GxQueryOptions,
+  gxQuery: GxQueryItem,
+  callbackWhenReady: (data: GxGetQueryResponse) => void
+) => {
+  const query = transformGxQueryItemToQueryDto(gxQuery);
+  GXqueryConnector.getQueryByName({ ...options, query })
+    .then(response => {
+      const { Errors } = response;
+      const Query = transformQueryDtoToGxQueryItem(response.Query);
+      callbackWhenReady({ Query, Errors });
+    })
+    .catch(err => {
+      callbackWhenReady({
+        Query: null,
+        Errors: [].concat(err?.message || err || [])
+      });
     });
 };

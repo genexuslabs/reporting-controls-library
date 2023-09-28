@@ -496,48 +496,11 @@ export type QueryViewerSliderRange = {
 };
 
 /**
- * Represents query in GXquery
- */
-export type Query = {
-  Id: string;
-  Name: string;
-  Description: string;
-  Expression: string;
-  Modified: string;
-  RemoveDuplicates: boolean;
-  MaxRows: string;
-  TextForNullValues: string;
-  OutputType: QueryViewerOutputType;
-  Title: string;
-  ShowValues: boolean;
-  ShowDataAs: string;
-  Orientation: string;
-  IncludeTrend: boolean;
-  IncludeSparkline: boolean;
-  IncludeMaxAndMin: boolean;
-  ChartType: string;
-  PlotSeries: string;
-  XAxisLabels: string;
-  XAxisIntersectionAtZero: boolean;
-  XAxisTitle: string;
-  YAxisTitle: string;
-  MapType: string;
-  Region: string;
-  Continent: string;
-  Country: string;
-  Paging: boolean;
-  PageSize: number;
-  ShowDataLabelsIn: string;
-  TotalForRows: string;
-  TotalForColumns: string;
-};
-
-/**
  * Represent error in GXquery
  */
 export type GxError = { Code: number; Message: string };
 
-export type GxQueryItem = Omit<Query, "Modified"> & {
+export type GxQueryItem = Omit<QueryViewerBase, "Modified"> & {
   Id: string;
   Name: string;
   Description: string;
@@ -549,6 +512,11 @@ export type GxQueryItem = Omit<Query, "Modified"> & {
 export type GxQueryListResponse = {
   Queries: GxQueryItem[];
   Errors: GxError[];
+};
+
+export type ChatMessage = {
+  role: "user" | "assistant";
+  content: string;
 };
 
 export type GxChatMessage = {
@@ -569,6 +537,11 @@ export type GxCommonErrorResponse = {
   Errors: GxError[];
 };
 
+export type GxGetQueryResponse = {
+  Query: GxQueryItem;
+  Errors: GxError[];
+};
+
 /**
  * This is the minimum information required to display a query from GXquery
  */
@@ -576,7 +549,7 @@ export type GxQueryOptions = {
   baseUrl: string;
   metadataName: string;
   queryName?: string;
-  query?: Query;
+  query?: QueryViewerBase;
 };
 
 /**

@@ -1,4 +1,4 @@
-import { GxQueryItem, Query } from "../../common/basic-types";
+import { GxQueryItem, QueryViewerBase } from "../../common/basic-types";
 import {
   transformQueryDtoListToUIData,
   transformQueryDtoToGxQueryItem
@@ -16,7 +16,7 @@ describe("transformation between dto and ui data", () => {
   });
 
   it("should returns a GxQueryItem object", () => {
-    const dto: Partial<Query>[] = [
+    const dto: Partial<QueryViewerBase>[] = [
       {
         Id: "4bf29a4a-b79b-45af-9277-7bc87704df79",
         Name: "AverageLifeExpectancy",
@@ -75,7 +75,7 @@ describe("transformation between dto and ui data", () => {
       Description: "Average Life Expectancy",
       Modified: "2023-07-15T14:09:49",
       Expression: "a"
-    } as Query;
+    } as QueryViewerBase;
     const expected = {
       Id: "4bf29a4a-b79b-45af-9277-7bc87704df79",
       Name: "AverageLifeExpectancy",

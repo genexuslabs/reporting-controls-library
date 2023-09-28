@@ -1,7 +1,7 @@
 import {
+  ChatMessage,
   GxError,
   GxQueryOptions,
-  Query,
   QueryViewerBase,
   ServiceType
 } from "../common/basic-types";
@@ -37,14 +37,6 @@ type Session = {
 type Metadata = {
   Id: string;
   Name: string;
-};
-
-/**
- * Represent GXquery chat messages
- */
-export type ChatMessage = {
-  role: "user" | "assistant";
-  content: string;
 };
 
 /**
@@ -93,7 +85,7 @@ type QVDataServiceResponse = GenericServiceResponse & {
  * Response returned by the QueryList service
  */
 export type GetQueryListServiceResponse = GenericServiceResponse & {
-  Queries: Query[];
+  Queries: QueryViewerBase[];
 };
 /**
  * Response returned by the Query rename service
@@ -113,25 +105,16 @@ export type UpdateQueryServiceResponse = GxError[];
  */
 type UpdateQueryServiceInput = {
   MetadataId: string;
-  Query: Query;
+  Query: QueryViewerBase;
 };
 
 /**
  * Response returned by the New Query service
  */
 export type NewQueryServiceResponse = GenericServiceResponse & {
-  Query: Query;
+  Query: QueryViewerBase;
 };
 
-/**
- * This is the minimum information required to display a query from GXquery
- */
-export type GXqueryOptions = {
-  baseUrl: string;
-  metadataName: string;
-  queryName?: string;
-  query?: QueryViewerBase;
-};
 /**
  * Returns a generic error given its code and message
  */
@@ -297,17 +280,18 @@ export class GXqueryConnector {
       return { Query: undefined, Errors: connectionStatus.Errors };
     }
     const serviceParameters = `MetadataId=${GXqueryConnector._currentMetadata.Id}&Name=${options.queryName}`;
-    const serviceResponse = await GXqueryConnector.callRESTService(
-      GET_QUERY_BY_NAME_SERVICE_PATH,
-      "GET",
-      serviceParameters
-    );
+    const serviceResponse =
+      await GXqueryConnector.callRESTService<GetQueryByNameServiceResponse>(
+        GET_QUERY_BY_NAME_SERVICE_PATH,
+        "GET",
+        serviceParameters
+      );
     if (serviceResponse.Errors.length === 0) {
-      const query = (serviceResponse as GetQueryByNameServiceResponse).Query;
+      const query = serviceResponse.Query;
       GXqueryConnector._queryByNameDictionary[query.Name.toLowerCase()] =
         query.Id;
     }
-    return serviceResponse as GetQueryByNameServiceResponse;
+    return serviceResponse;
   }
 
   /**

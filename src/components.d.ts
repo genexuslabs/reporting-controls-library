@@ -5,11 +5,11 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { ChartOptions, LegendOptions, PaneOptions, PlotOptions, SeriesLineOptions, SeriesOptionsType, SubtitleOptions, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
-import { GeneratorType, GxQueryItem, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerSliderRange, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels, TrendIcon } from "./common/basic-types";
 import { QueryRequest } from "./components/gx-query/query-chat/query-chat";
-import { QueryViewerParameterChangedEvent } from "./components/query-viewer-parameter/query-viewer-parameter";
+import { GeneratorType, GxQueryItem, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerSliderRange, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels, TrendIcon } from "./common/basic-types";
 import { QueryViewerServiceResponse } from "./services/types/service-result";
+import { Axis, ChartOptions, LegendOptions, PaneOptions, PlotOptions, SeriesLineOptions, SeriesOptionsType, SubtitleOptions, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
+import { QueryViewerParameterChangedEvent } from "./components/query-viewer-parameter/query-viewer-parameter";
 export namespace Components {
     interface GxQueryChat {
         /**
@@ -781,20 +781,6 @@ export interface GxQueryMenuCustomEvent<T> extends CustomEvent<T> {
 export interface GxQueryMenuItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLGxQueryMenuItemElement;
-    interface GxQueryViewerSlider {
-        /**
-          * This property determines the value of the end position slider.
-         */
-        "endSliderValue": number;
-        /**
-          * This property determines the value of the start position slider.
-         */
-        "startSliderValue": number;
-        /**
-          * This attribute lets you define the steps for each slider.
-         */
-        "step": number;
-    }
 }
 export interface GxQueryViewerCardCustomEvent<T> extends CustomEvent<T> {
     detail: T;
