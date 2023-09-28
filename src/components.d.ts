@@ -5,11 +5,11 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { QueryRequest } from "./components/gx-query/query-chat/query-chat";
+import { ChartOptions, LegendOptions, PaneOptions, PlotOptions, SeriesLineOptions, SeriesOptionsType, SubtitleOptions, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
 import { GeneratorType, GxQueryItem, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerSliderRange, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels, TrendIcon } from "./common/basic-types";
-import { QueryViewerServiceResponse } from "./services/types/service-result";
-import { Axis, ChartOptions, LegendOptions, PaneOptions, PlotOptions, SeriesLineOptions, SeriesOptionsType, SubtitleOptions, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
+import { QueryRequest } from "./components/gx-query/query-chat/query-chat";
 import { QueryViewerParameterChangedEvent } from "./components/query-viewer-parameter/query-viewer-parameter";
+import { QueryViewerServiceResponse } from "./services/types/service-result";
 export namespace Components {
     interface GxQueryChat {
         /**
@@ -171,10 +171,6 @@ export namespace Components {
           * Specifies whether to include a trend mark for the values or not.
          */
         "includeTrend": boolean;
-        /**
-          * True if it is external query
-         */
-        "isExternalQuery": boolean;
         /**
           * Language of the QueryViewer
          */
@@ -785,6 +781,20 @@ export interface GxQueryMenuCustomEvent<T> extends CustomEvent<T> {
 export interface GxQueryMenuItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLGxQueryMenuItemElement;
+    interface GxQueryViewerSlider {
+        /**
+          * This property determines the value of the end position slider.
+         */
+        "endSliderValue": number;
+        /**
+          * This property determines the value of the start position slider.
+         */
+        "startSliderValue": number;
+        /**
+          * This attribute lets you define the steps for each slider.
+         */
+        "step": number;
+    }
 }
 export interface GxQueryViewerCardCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -1115,10 +1125,6 @@ declare namespace LocalJSX {
           * Specifies whether to include a trend mark for the values or not.
          */
         "includeTrend"?: boolean;
-        /**
-          * True if it is external query
-         */
-        "isExternalQuery"?: boolean;
         /**
           * Language of the QueryViewer
          */

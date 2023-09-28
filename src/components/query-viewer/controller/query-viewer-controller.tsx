@@ -8,18 +8,10 @@ import {
 } from "../../../common/basic-types";
 import {
   ServicesContext,
-  asyncGetProperties,
-  asyncServerCall
+  getMetadataAndData
 } from "../../../services/services-manager";
 import { QueryViewer, QueryViewerCard } from "../../../services/types/json";
-import {
-  QueryViewerServiceData,
-  QueryViewerServiceMetaData,
-  QueryViewerServiceProperties,
-  QueryViewerServiceResponse
-} from "../../../services/types/service-result";
-import { parseDataXML } from "../../../services/xml-parser/data-parser";
-import { parseMetadataXML } from "../../../services/xml-parser/metadata-parser";
+import { QueryViewerServiceResponse } from "../../../services/types/service-result";
 @Component({
   tag: "gx-query-viewer-controller",
   shadow: false
@@ -146,61 +138,6 @@ export class QueryViewerController {
     return queryViewerObject;
   }
 
-  private propertiesCallback =
-    (objectName: string) => (properties: QueryViewerServiceProperties) => {
-      // When success, make an async server call for metadata
-      const queryViewerObject = this.getQueryViewerInformation(objectName);
-      asyncServerCall(
-        queryViewerObject,
-        this.ServicesContext(),
-        "metadata",
-        this.metaDataCallback(queryViewerObject, properties)
-      );
-    };
-
-  private metaDataCallback =
-    (
-      queryViewerObject: QueryViewer,
-      properties: QueryViewerServiceProperties
-    ) =>
-    (xml: string) => {
-      if (!xml) {
-        this.queryViewerErrorResponse.emit("Metadata is empty");
-        return;
-      }
-
-      const serviceMetaData: QueryViewerServiceMetaData = parseMetadataXML(xml);
-
-      // When success, make an async server call for data
-      asyncServerCall(
-        queryViewerObject,
-        this.ServicesContext(),
-        "data",
-        this.dataCallback(properties, serviceMetaData)
-      );
-    };
-
-  private dataCallback =
-    (
-      properties: QueryViewerServiceProperties,
-      metaData: QueryViewerServiceMetaData
-    ) =>
-    (xml: string) => {
-      if (!xml) {
-        this.queryViewerErrorResponse.emit("Data is empty");
-        return;
-      }
-
-      const serviceData: QueryViewerServiceData = parseDataXML(xml);
-
-      // Emit service response
-      this.queryViewerServiceResponse.emit({
-        MetaData: metaData,
-        Data: serviceData,
-        Properties: properties
-      });
-    };
-
   private getPropertiesMetadataAndData(objectName: string) {
     // In some lifecycles this variable is undefined and a couple of ms after,
     // it's defined
@@ -219,14 +156,8 @@ export class QueryViewerController {
       return;
     }
 
-    asyncGetProperties(
-      this.ServicesContext(),
-      this.propertiesCallback(objectName)
-    );
-  }
-
-  private ServicesContext(): ServicesContext {
-    return {
+    const queryViewerObject = this.getQueryViewerInformation(objectName);
+    const servicesInfo: ServicesContext = {
       useGXquery: this.useGxquery,
       baseUrl: this.baseUrl,
       generator: this.environment,
@@ -234,6 +165,19 @@ export class QueryViewerController {
       objectName: this.objectName,
       serializedObject: this.serializedObject
     };
+
+    getMetadataAndData(
+      queryViewerObject,
+      servicesInfo,
+      (metadata, data, queryViewerBaseProperties) => {
+        // Emit service response
+        this.queryViewerServiceResponse.emit({
+          MetaData: metadata,
+          Data: data,
+          Properties: queryViewerBaseProperties
+        });
+      }
+    );
   }
 
   connectedCallback() {

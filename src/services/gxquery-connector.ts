@@ -2,6 +2,7 @@ import {
   GxError,
   GxQueryOptions,
   Query,
+  QueryViewerBase,
   ServiceType
 } from "../common/basic-types";
 
@@ -71,7 +72,7 @@ type GetMetadataByNameServiceResponse = GenericServiceResponse & {
  * Response returned by the GetQueryByName service
  */
 export type GetQueryByNameServiceResponse = GenericServiceResponse & {
-  Query: Query;
+  Query: QueryViewerBase;
 };
 
 /**
@@ -106,6 +107,7 @@ export type DeleteQueryServiceResponse = GenericServiceResponse;
  * Response returned by the Query update service
  */
 export type UpdateQueryServiceResponse = GxError[];
+
 /**
  * Input sended to update a Query
  */
@@ -113,11 +115,22 @@ type UpdateQueryServiceInput = {
   MetadataId: string;
   Query: Query;
 };
+
 /**
  * Response returned by the New Query service
  */
 export type NewQueryServiceResponse = GenericServiceResponse & {
   Query: Query;
+};
+
+/**
+ * This is the minimum information required to display a query from GXquery
+ */
+export type GXqueryOptions = {
+  baseUrl: string;
+  metadataName: string;
+  queryName?: string;
+  query?: QueryViewerBase;
 };
 /**
  * Returns a generic error given its code and message

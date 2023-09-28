@@ -12,7 +12,7 @@
 | `cssClass`                | `css-class`                   | A CSS class to set as the `gx-query-viewer-chart-controller` element class. | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `undefined` |
 | `plotSeries`              | `plot-series`                 | Timeline                                                                    | `QueryViewerPlotSeries.InSeparateCharts \| QueryViewerPlotSeries.InTheSameChart`                                                                                                                                                                                                                                                                                                                                                                                                                                             | `undefined` |
 | `queryTitle`              | `query-title`                 | Title of the QueryViewer                                                    | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `undefined` |
-| `serviceResponse`         | --                            | Specifies the metadata and data that the control will use to render.        | `{ MetaData: QueryViewerServiceMetaData; Data: QueryViewerServiceData; }`                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `undefined` |
+| `serviceResponse`         | --                            | Specifies the metadata and data that the control will use to render.        | `{ MetaData: QueryViewerServiceMetaData; Data: QueryViewerServiceData; Properties: QueryViewerBase; }`                                                                                                                                                                                                                                                                                                                                                                                                                       | `undefined` |
 | `showValues`              | `show-values`                 | if true show values on the graph                                            | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `undefined` |
 | `translations`            | --                            | For translate the labels of the outputs                                     | `{ GXPL_QViewerSinceTheBeginningTrend: string; GXPL_QViewerLastYearTrend: string; GXPL_QViewerLastSemesterTrend: string; GXPL_QViewerLastQuarterTrend: string; GXPL_QViewerLastMonthTrend: string; GXPL_QViewerLastWeekTrend: string; GXPL_QViewerLastDayTrend: string; GXPL_QViewerLastHourTrend: string; GXPL_QViewerLastMinuteTrend: string; GXPL_QViewerLastSecondTrend: string; GXPL_QViewerCardMinimum: string; GXPL_QViewerCardMaximum: string; GXPL_QViewerNoDatetimeAxis: string; GXPL_QViewerNoMapAxis: string; }` | `undefined` |
 | `xAxisIntersectionAtZero` | `x-axis-intersection-at-zero` | if true the x Axes intersect at zero                                        | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `undefined` |
@@ -29,11 +29,25 @@
 ### Depends on
 
 - [gx-query-viewer-chart](..)
+- gx-checkbox
+- gx-form-field
+- gx-select
+- gx-select-option
+- [gx-query-viewer-slider](../../query-viewer-slider)
+- gx-radio-group
+- gx-radio-option
 
 ### Graph
 ```mermaid
 graph TD;
   gx-query-viewer-chart-controller --> gx-query-viewer-chart
+  gx-query-viewer-chart-controller --> gx-checkbox
+  gx-query-viewer-chart-controller --> gx-form-field
+  gx-query-viewer-chart-controller --> gx-select
+  gx-query-viewer-chart-controller --> gx-select-option
+  gx-query-viewer-chart-controller --> gx-query-viewer-slider
+  gx-query-viewer-chart-controller --> gx-radio-group
+  gx-query-viewer-chart-controller --> gx-radio-option
   gx-query-viewer --> gx-query-viewer-chart-controller
   style gx-query-viewer-chart-controller fill:#f9f,stroke:#333,stroke-width:4px
 ```

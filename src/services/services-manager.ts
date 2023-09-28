@@ -6,17 +6,17 @@ import {
   GxQueryItem,
   GxQueryListResponse,
   GxQueryOptions,
+  QueryViewerBase,
   ServiceType
 } from "../common/basic-types";
 import {
   DeleteQueryServiceResponse,
   GXqueryConnector,
-  GetQueryByNameServiceResponse,
+  GXqueryOptions,
   RenameQueryServiceResponse
 } from "./gxquery-connector";
 import { data, metaData } from "./post-info";
 import {
-  queryToQueryProperties,
   transformGxChatItemToChatMessageDto,
   transformGxQueryItemToQueryDto,
   transformQueryDtoListToUIData,
@@ -24,8 +24,14 @@ import {
   transformQueryDtoToGxQueryItem
 } from "./query-transformations";
 import { QueryViewer } from "./types/json";
-import { QueryViewerServiceProperties } from "./types/service-result";
+import {
+  QueryViewerServiceData,
+  QueryViewerServiceMetaData,
+  QueryViewerServiceProperties
+} from "./types/service-result";
 import { parseObjectToFormData } from "./utils/common";
+import { parseDataXML } from "./xml-parser/data-parser";
+import { parseMetadataXML } from "./xml-parser/metadata-parser";
 
 const STATE_DONE = 4;
 const STATUS_OK = 200;
@@ -56,13 +62,96 @@ export type ServicesContext = {
   serializedObject: string;
 };
 
+export type CallBackWhenServiceSuccess = (
+  metaData: QueryViewerServiceMetaData,
+  data: QueryViewerServiceData,
+  queryViewerBaseProperties?: QueryViewerBase
+) => void;
+
 /**
  * Necessary so that the explorer does not cache the results of the services
  * @returns Unique value with each call, using the current date
  */
 const foolCache = () => new Date().getTime();
 
-const contextToGXqueryOptions = (context: ServicesContext): GxQueryOptions => {
+export const getMetadataAndData = (
+  qvInfo: QueryViewer,
+  servicesInfo: ServicesContext,
+  callbackWhenSuccess: CallBackWhenServiceSuccess
+) => {
+  if (servicesInfo.useGXquery) {
+    getMetadataAndDataUsingGXQuery(qvInfo, servicesInfo, callbackWhenSuccess);
+  } else {
+    getMetadataAndDataUsingLocalServices(
+      qvInfo,
+      servicesInfo,
+      callbackWhenSuccess
+    );
+  }
+};
+
+function getMetadataAndDataUsingGXQuery(
+  qvInfo: QueryViewer,
+  servicesInfo: ServicesContext,
+  callbackWhenSuccess: CallBackWhenServiceSuccess
+) {
+  getQueryPropertiesInGXQuery(servicesInfo, queryViewerBaseProperties => {
+    getMetadataAndDataUsingGenericServices(
+      "gx-query",
+      qvInfo,
+      servicesInfo,
+      (metadata, data) =>
+        callbackWhenSuccess(metadata, data, queryViewerBaseProperties)
+    );
+  });
+}
+
+function getMetadataAndDataUsingLocalServices(
+  qvInfo: QueryViewer,
+  servicesInfo: ServicesContext,
+  callbackWhenSuccess: CallBackWhenServiceSuccess
+) {
+  getMetadataAndDataUsingGenericServices(
+    "local",
+    qvInfo,
+    servicesInfo,
+    callbackWhenSuccess
+  );
+}
+
+function getMetadataAndDataUsingGenericServices(
+  serviceProvider: "gx-query" | "local",
+  qvInfo: QueryViewer,
+  servicesInfo: ServicesContext,
+  callbackWhenSuccess: CallBackWhenServiceSuccess
+) {
+  // Determine the service provider
+  const asyncServerCall =
+    serviceProvider === "gx-query"
+      ? asyncServerCallUsingGXQuery
+      : asyncServerCallUsingLocalServices;
+
+  // When success, make an async server call for metadata
+  asyncServerCall(qvInfo, servicesInfo, "metadata", (metadataXML: string) => {
+    if (!metadataXML) {
+      return;
+    }
+    const serviceMetaData: QueryViewerServiceMetaData =
+      parseMetadataXML(metadataXML);
+
+    // When success, make an async server call for data
+    asyncServerCall(qvInfo, servicesInfo, "data", (dataXML: string) => {
+      if (!dataXML) {
+        return;
+      }
+      const serviceData: QueryViewerServiceData = parseDataXML(dataXML);
+
+      callbackWhenSuccess(serviceMetaData, serviceData);
+    });
+  });
+}
+
+const contextToGXqueryOptions = (context: ServicesContext): GXqueryOptions => {
   return {
     baseUrl: context.baseUrl,
     metadataName: context.metadataName,
@@ -73,71 +162,68 @@ const contextToGXqueryOptions = (context: ServicesContext): GxQueryOptions => {
   };
 };
 
-export const asyncGetProperties = (
-  context: ServicesContext,
-  callbackWhenReady: (prop: QueryViewerServiceProperties) => void
-) => {
-  if (!context.useGXquery) {
-    callbackWhenReady(undefined); // Not implemented
-  } else if (context.objectName) {
-    GXqueryConnector.getQueryByName(contextToGXqueryOptions(context)).then(
-      resObj => {
-        const query = (resObj as GetQueryByNameServiceResponse).Query;
-        const properties = queryToQueryProperties(query);
-        callbackWhenReady(properties);
+function getQueryPropertiesInGXQuery(
+  servicesInfo: ServicesContext,
+  callbackWhenReady: (queryViewerBaseProperties: QueryViewerBase) => void
+) {
+  if (servicesInfo.objectName) {
+    GXqueryConnector.getQueryByName(contextToGXqueryOptions(servicesInfo)).then(
+      queryByNameResponse => {
+        const query = queryByNameResponse.Query;
+        callbackWhenReady(query);
       }
     );
-  } else if (context.serializedObject) {
-    const query = JSON.parse(context.serializedObject);
-    const properties = queryToQueryProperties(query);
-    callbackWhenReady(properties);
-  } else {
-    callbackWhenReady(undefined);
+  } else if (servicesInfo.serializedObject) {
+    const query = JSON.parse(servicesInfo.serializedObject);
+    callbackWhenReady(query);
   }
-};
+}
 
-export const asyncServerCall = (
-  qViewer: QueryViewer,
-  context: ServicesContext,
+function asyncServerCallUsingLocalServices(
+  qvInfo: QueryViewer,
+  servicesInfo: ServicesContext,
   serviceType: ServiceType,
   callbackWhenReady: (xml: string) => void
-) => {
+) {
   const postInfo = parseObjectToFormData(
-    SERVICE_POST_INFO_MAP[serviceType](qViewer)
+    SERVICE_POST_INFO_MAP[serviceType](qvInfo)
   );
-  if (!context.useGXquery) {
-    const serviceURL =
-      context.baseUrl +
-      GENERATOR[context.generator] +
-      SERVICE_NAME_MAP[serviceType] +
-      "," +
-      foolCache();
+  const serviceURL =
+    servicesInfo.baseUrl +
+    GENERATOR[servicesInfo.generator] +
+    SERVICE_NAME_MAP[serviceType] +
+    "," +
+    foolCache();
 
-    const xmlHttp = new XMLHttpRequest();
+  const xmlHttp = new XMLHttpRequest();
 
-    // Callback function when ready
-    xmlHttp.onload = () => {
-      if (xmlHttp.readyState === STATE_DONE && xmlHttp.status === STATUS_OK) {
-        callbackWhenReady(xmlHttp.responseText);
-      }
-    };
+  // Callback function when ready
+  xmlHttp.onload = () => {
+    if (xmlHttp.readyState === STATE_DONE && xmlHttp.status === STATUS_OK) {
+      callbackWhenReady(xmlHttp.responseText);
+    }
+  };
+  xmlHttp.open("POST", serviceURL); // async
+  xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  xmlHttp.send(postInfo);
+}
 
-    xmlHttp.open("POST", serviceURL); // async
-    xmlHttp.setRequestHeader(
-      "Content-Type",
-      "application/x-www-form-urlencoded"
-    );
-    xmlHttp.send(postInfo);
-  } else {
-    GXqueryConnector.callQueryViewerService(
-      contextToGXqueryOptions(context),
-      serviceType,
-      postInfo
-    ).then(str => {
-      callbackWhenReady(str);
-    });
-  }
-};
+function asyncServerCallUsingGXQuery(
+  qvInfo: QueryViewer,
+  servicesInfo: ServicesContext,
+  serviceType: ServiceType,
+  callbackWhenReady: (xml: string) => void
+) {
+  const postInfo = parseObjectToFormData(
+    SERVICE_POST_INFO_MAP[serviceType](qvInfo)
+  );
+
+  GXqueryConnector.callQueryViewerService(
+    contextToGXqueryOptions(servicesInfo),
+    serviceType,
+    postInfo
+  ).then(callbackWhenReady);
+}
 
 /**
  * Fetch query list service
@@ -158,8 +244,6 @@ export const asyncGetListQuery = (
       const Errors = [].concat(err?.message || err || []);
       callbackWhenReady({ Queries: [], Errors });
     });
-  // const queries = transformQueryDtoListToUIData(resObj.Queries);
-  // callbackWhenReady(queries);
 };
 
 /**

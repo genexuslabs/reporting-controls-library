@@ -578,3 +578,40 @@ export type GxQueryOptions = {
   queryName?: string;
   query?: Query;
 };
+
+/**
+ * Represents query in GXquery @Todo: extend the QueryViewer class with this interface
+ */
+export interface QueryViewerBase {
+  Id: string;
+  Name: string;
+  Description: string;
+  Expression: string;
+  Modified: string;
+  RemoveDuplicates: boolean;
+  MaxRows: string;
+  TextForNullValues: string;
+  OutputType: QueryViewerOutputType;
+  Title: string;
+  ShowValues: boolean;
+  ShowDataAs: QueryViewerShowDataAs;
+  Orientation: QueryViewerOrientation;
+  IncludeTrend: boolean;
+  IncludeSparkline: boolean;
+  IncludeMaxAndMin: boolean;
+  ChartType: QueryViewerChartType;
+  PlotSeries: QueryViewerPlotSeries;
+  XAxisLabels: QueryViewerXAxisLabels;
+  XAxisIntersectionAtZero: boolean;
+  XAxisTitle: string;
+  YAxisTitle: string;
+  MapType: QueryViewerMapType;
+  Region: QueryViewerRegion;
+  Continent: QueryViewerContinent;
+  Country: QueryViewerCountry;
+  Paging: boolean;
+  PageSize: number;
+  ShowDataLabelsIn: QueryViewerShowDataLabelsIn;
+  TotalForRows: QueryViewerTotal;
+  TotalForColumns: QueryViewerTotal;
+}
