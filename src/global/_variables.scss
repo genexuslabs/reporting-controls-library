@@ -6,7 +6,14 @@
   --neutral-300: #888;
   --neutral-500: #555;
 
+  --gx-menu-item-active-color: rgba(105, 110, 242, 0.3);
+  --gx-menu-item-hover-color: rgba(105, 110, 242, 0.1);
+
+  --gx-backdrop-color: #ffffff80;
+
   --gx-font-family: "Source Sans Pro", sans-serif;
+  --gx-font-size: 1rem;
+  --gx-line-height: 1.4rem;
   --gx-background-color: #ffffff;
   --gx-header-font-color: #000000;
   --gx-header-height: 40px;
@@ -19,20 +26,21 @@
   --gx-scrollbar-color-thumb: var(--neutral-300);
   --gx-scrollbar-color-thumb_hover: var(--neutral-500);
   --gx-border-radius: 10px;
-  --gx-space-medium: 0.75em;
+  --gx-space-medium: 0.5em;
   --gx-space-small: 0.3em;
   --gx-transition: 0.25s all ease;
 
-  --gx-backdrop-color: #ffffff80;
+  --gx-button-size: 18px;
+  --gx-controls-width: 60px;
 
-  --menu-controls-width: 50px;
+  --gx-sidebar-open: 400px;
+  --gx-sidebar-collapsed: 40px;
+
   --menu-width-open: 300px;
   --menu-width-collapsed: 40px;
   --menu-box-border-color: var(--primary-color);
   --menu-box-border-focus-color: var(--neutral-500);
   // --menu-item-active-bg-color: rgb(from var(--primary-color) r g b / 0.1);
-  --menu-item-hover-bg-color: rgba(105, 110, 242, 0.1);
-  --menu-item-active-bg-color: rgba(105, 110, 242, 0.3);
   --menu-footer-height: 60px;
 
   --chat-box-width: 400px;

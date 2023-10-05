@@ -31,8 +31,6 @@ import {
   asyncRenameQuery
 } from "../../../services/services-manager";
 
-const PART_PREFIX = "query-menu__";
-
 type KeyEvents =
   | typeof KEY_CODES.ARROW_UP_KEY
   | typeof KEY_CODES.ARROW_DOWN_KEY
@@ -395,66 +393,64 @@ export class QueryMenu implements GxComponent {
 
     return (
       <Host>
-        <div part={`${PART_PREFIX}wrap`}>
-          {this.loading && (
-            <div class="loading-backdrop">
-              <gx-loading presented={this.loading}></gx-loading>
-            </div>
-          )}
+        {this.loading && (
+          <div class="loading-backdrop">
+            <gx-loading presented={this.loading}></gx-loading>
+          </div>
+        )}
 
-          <section part={`${PART_PREFIX}sidebar`}>
-            {this.showHeader && <slot name="header" />}
+        <section part="sidebar" class="sidebar">
+          {this.showHeader && <slot name="header" />}
 
-            <nav part={`${PART_PREFIX}list`} aria-label="Chat history">
-              {this._filteredItems.map(({ label, items }, index) => (
-                <div>
-                  <h2 id={`subtitle${index}`} part={`${PART_PREFIX}subtitle`}>
-                    {label}
-                  </h2>
-                  <ul
-                    role="listbox"
-                    tabindex="0"
-                    aria-labelledby={`subtitle${index}`}
-                  >
-                    {items.map(item => (
-                      <gx-query-menu-item
-                        aria-selected="false"
-                        isActive={this.active === item.Id}
-                        onDeleteItem={this.deleteItem}
-                        onRenameItem={this.renameItem}
-                        onSelectItem={this.selectItem}
-                        item={item}
-                        exportparts="query-item__item,query-item__label,query-item__controls"
-                      ></gx-query-menu-item>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </nav>
-          </section>
+          <nav part="menu-list" class="list" aria-label="Chat history">
+            {this._filteredItems.map(({ label, items }, index) => (
+              <div>
+                <h2 id={`subtitle${index}`} part="menu-title" class="subtitle">
+                  {label}
+                </h2>
+                <ul
+                  role="listbox"
+                  tabindex="0"
+                  aria-labelledby={`subtitle${index}`}
+                >
+                  {items.map(item => (
+                    <gx-query-menu-item
+                      aria-selected="false"
+                      isActive={this.active === item.Id}
+                      onDeleteItem={this.deleteItem}
+                      onRenameItem={this.renameItem}
+                      onSelectItem={this.selectItem}
+                      item={item}
+                      exportparts="item,item-label,item-controls"
+                    ></gx-query-menu-item>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
+        </section>
 
-          <footer part={`${PART_PREFIX}footer`}>
-            <div>
-              <gx-button
-                onClick={this.toggleView}
-                css-class={iconParams.class}
-                image-position="before"
-                invisible-mode="collapse"
-                main-image-srcset={getAssetPath("assets/arrow.svg")}
-              ></gx-button>
-            </div>
-            <div>
-              <gx-button
-                onClick={this.createNewChat}
-                css-class="new-chat-btn"
-                caption={this.newChatCaption}
-                image-position="before"
-                disabled={this.loading}
-                main-image-srcset={getAssetPath("assets/speech-bubble.svg")}
-              ></gx-button>
-            </div>
-          </footer>
-        </div>
+        <footer part="footer" class="footer">
+          <div>
+            <gx-button
+              onClick={this.toggleView}
+              css-class={iconParams.class}
+              image-position="before"
+              invisible-mode="collapse"
+              main-image-srcset={getAssetPath("assets/arrow.svg")}
+            ></gx-button>
+          </div>
+          <div>
+            <gx-button
+              onClick={this.createNewChat}
+              css-class="new-chat-btn"
+              caption={this.newChatCaption}
+              image-position="before"
+              disabled={this.loading}
+              main-image-srcset={getAssetPath("assets/speech-bubble.svg")}
+            ></gx-button>
+          </div>
+        </footer>
       </Host>
     );
   }

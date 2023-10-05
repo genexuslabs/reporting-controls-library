@@ -18,12 +18,13 @@ li {
   position: relative;
   transition: var(--gx-transition);
   width: var(--menu-width-open);
+  position: relative;
 }
 
 :host([is-collapsed]) {
   width: var(--menu-width-collapsed);
 
-  &::part(query-menu__sidebar) {
+  & .sidebar {
     visibility: hidden;
   }
   .new-chat-btn {
@@ -31,11 +32,11 @@ li {
   }
 }
 
-:host::part(query-menu__wrap) {
+.wrap {
   position: relative;
 }
 
-:host::part(query-menu__sidebar) {
+.sidebar {
   // align-items: center;
   // box-sizing: border-box;
   // display: flex;
@@ -44,20 +45,20 @@ li {
   overflow-y: auto;
 }
 
-:host::part(query-menu__subtitle) {
+.subtitle {
   padding: var(--gx-space-small) var(--gx-space-medium);
   // font-size: 1.2em;
   margin: 0;
 }
 
-:host::part(query-menu__title) {
+.title {
 }
 
-:host::part(query-menu__list) {
+.list {
   width: 100%;
 }
 
-:host::part(query-menu__footer) {
+.footer {
   height: var(--menu-footer-height);
   display: flex;
   justify-content: space-between;
