@@ -79,6 +79,8 @@ export namespace Components {
          */
         "useGxquery": boolean;
     }
+    interface GxQueryMenuController {
+    }
     interface GxQueryMenuItem {
         /**
           * Toggle edit mode
@@ -93,6 +95,24 @@ export namespace Components {
          */
         "item": GxQueryItem;
         "setFocus": () => Promise<void>;
+    }
+    interface GxQuerySidebar {
+        /**
+          * Determines if the sidebar can be collapsed
+         */
+        "collapsible": true;
+        /**
+          * Determines if should display the actions controls
+         */
+        "controls": true;
+        /**
+          * Determines if the sidebar is collapsed
+         */
+        "isCollapsed": boolean;
+        /**
+          * Width of expanded window. Default 300px
+         */
+        "width": "300px";
     }
     interface GxQueryViewer {
         /**
@@ -782,6 +802,10 @@ export interface GxQueryMenuItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLGxQueryMenuItemElement;
 }
+export interface GxQuerySidebarCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLGxQuerySidebarElement;
+}
 export interface GxQueryViewerCardCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLGxQueryViewerCardElement;
@@ -827,11 +851,23 @@ declare global {
         prototype: HTMLGxQueryMenuElement;
         new (): HTMLGxQueryMenuElement;
     };
+    interface HTMLGxQueryMenuControllerElement extends Components.GxQueryMenuController, HTMLStencilElement {
+    }
+    var HTMLGxQueryMenuControllerElement: {
+        prototype: HTMLGxQueryMenuControllerElement;
+        new (): HTMLGxQueryMenuControllerElement;
+    };
     interface HTMLGxQueryMenuItemElement extends Components.GxQueryMenuItem, HTMLStencilElement {
     }
     var HTMLGxQueryMenuItemElement: {
         prototype: HTMLGxQueryMenuItemElement;
         new (): HTMLGxQueryMenuItemElement;
+    };
+    interface HTMLGxQuerySidebarElement extends Components.GxQuerySidebar, HTMLStencilElement {
+    }
+    var HTMLGxQuerySidebarElement: {
+        prototype: HTMLGxQuerySidebarElement;
+        new (): HTMLGxQuerySidebarElement;
     };
     interface HTMLGxQueryViewerElement extends Components.GxQueryViewer, HTMLStencilElement {
     }
@@ -908,7 +944,9 @@ declare global {
     interface HTMLElementTagNameMap {
         "gx-query-chat": HTMLGxQueryChatElement;
         "gx-query-menu": HTMLGxQueryMenuElement;
+        "gx-query-menu-controller": HTMLGxQueryMenuControllerElement;
         "gx-query-menu-item": HTMLGxQueryMenuItemElement;
+        "gx-query-sidebar": HTMLGxQuerySidebarElement;
         "gx-query-viewer": HTMLGxQueryViewerElement;
         "gx-query-viewer-card": HTMLGxQueryViewerCardElement;
         "gx-query-viewer-card-controller": HTMLGxQueryViewerCardControllerElement;
@@ -992,10 +1030,6 @@ declare namespace LocalJSX {
          */
         "newChatCaption"?: "New Chat";
         /**
-          * Crear a new chat
-         */
-        "onGxQueryNewChat"?: (event: GxQueryMenuCustomEvent<null>) => void;
-        /**
           * Select a query
          */
         "onGxQuerySelect"?: (event: GxQueryMenuCustomEvent<GxQueryItem>) => void;
@@ -1007,6 +1041,8 @@ declare namespace LocalJSX {
           * True to tell the controller to connect use GXquery as a queries repository
          */
         "useGxquery"?: boolean;
+    }
+    interface GxQueryMenuController {
     }
     interface GxQueryMenuItem {
         /**
@@ -1033,6 +1069,28 @@ declare namespace LocalJSX {
           * Trigger the action to select an item
          */
         "onSelectItem"?: (event: GxQueryMenuItemCustomEvent<GxQueryItem>) => void;
+    }
+    interface GxQuerySidebar {
+        /**
+          * Determines if the sidebar can be collapsed
+         */
+        "collapsible"?: true;
+        /**
+          * Determines if should display the actions controls
+         */
+        "controls"?: true;
+        /**
+          * Determines if the sidebar is collapsed
+         */
+        "isCollapsed"?: boolean;
+        /**
+          * Crear a new chat
+         */
+        "onGxQueryNewChat"?: (event: GxQuerySidebarCustomEvent<null>) => void;
+        /**
+          * Width of expanded window. Default 300px
+         */
+        "width"?: "300px";
     }
     interface GxQueryViewer {
         /**
@@ -1729,7 +1787,9 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "gx-query-chat": GxQueryChat;
         "gx-query-menu": GxQueryMenu;
+        "gx-query-menu-controller": GxQueryMenuController;
         "gx-query-menu-item": GxQueryMenuItem;
+        "gx-query-sidebar": GxQuerySidebar;
         "gx-query-viewer": GxQueryViewer;
         "gx-query-viewer-card": GxQueryViewerCard;
         "gx-query-viewer-card-controller": GxQueryViewerCardController;
@@ -1750,7 +1810,9 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "gx-query-chat": LocalJSX.GxQueryChat & JSXBase.HTMLAttributes<HTMLGxQueryChatElement>;
             "gx-query-menu": LocalJSX.GxQueryMenu & JSXBase.HTMLAttributes<HTMLGxQueryMenuElement>;
+            "gx-query-menu-controller": LocalJSX.GxQueryMenuController & JSXBase.HTMLAttributes<HTMLGxQueryMenuControllerElement>;
             "gx-query-menu-item": LocalJSX.GxQueryMenuItem & JSXBase.HTMLAttributes<HTMLGxQueryMenuItemElement>;
+            "gx-query-sidebar": LocalJSX.GxQuerySidebar & JSXBase.HTMLAttributes<HTMLGxQuerySidebarElement>;
             "gx-query-viewer": LocalJSX.GxQueryViewer & JSXBase.HTMLAttributes<HTMLGxQueryViewerElement>;
             "gx-query-viewer-card": LocalJSX.GxQueryViewerCard & JSXBase.HTMLAttributes<HTMLGxQueryViewerCardElement>;
             "gx-query-viewer-card-controller": LocalJSX.GxQueryViewerCardController & JSXBase.HTMLAttributes<HTMLGxQueryViewerCardControllerElement>;

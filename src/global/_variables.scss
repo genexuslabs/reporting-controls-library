@@ -33,20 +33,12 @@
   --gx-button-size: 18px;
   --gx-controls-width: 60px;
 
-  --gx-sidebar-open: 400px;
-  --gx-sidebar-collapsed: 40px;
-
-  --menu-width-open: 300px;
-  --menu-width-collapsed: 40px;
-  --menu-box-border-color: var(--primary-color);
-  --menu-box-border-focus-color: var(--neutral-500);
-  // --menu-item-active-bg-color: rgb(from var(--primary-color) r g b / 0.1);
-  --menu-footer-height: 60px;
+  --gx-sidebar-expanded: 300px default;
+  --gx-sidebar-collapsed: 40px default;
 
   --chat-box-width: 400px;
   --chat-box-margin: 1rem;
 
-  --chat-message-padding: 1rem;
   --chat-message-assistant-bg-color: var(--neutral-100);
   --chat-message-user-bg-color: #ffffff;
 

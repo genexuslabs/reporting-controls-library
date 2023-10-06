@@ -31,8 +31,22 @@
 
 | Event                        | Description                                 | Type                                                                                                                |
 | ---------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `queryViewerErrorResponse`   | Fired when there is an error fetching data  | `CustomEvent<string>`                                                                                               |
 | `queryViewerServiceResponse` | Fired when new metadata and data is fetched | `CustomEvent<{ MetaData: QueryViewerServiceMetaData; Data: QueryViewerServiceData; Properties: QueryViewerBase; }>` |
 
+
+## Dependencies
+
+### Used by
+
+ - [gx-query-viewer-container](../../gx-query/query-viewer-container)
+
+### Graph
+```mermaid
+graph TD;
+  gx-query-viewer-container --> gx-query-viewer-controller
+  style gx-query-viewer-controller fill:#f9f,stroke:#333,stroke-width:4px
+```
 
 ----------------------------------------------
 

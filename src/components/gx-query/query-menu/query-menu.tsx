@@ -8,7 +8,6 @@ import {
   Prop,
   State,
   Watch,
-  getAssetPath,
   h
 } from "@stencil/core";
 
@@ -39,11 +38,9 @@ type KeyEvents =
 @Component({
   tag: "gx-query-menu",
   styleUrl: "query-menu.scss",
-  shadow: true,
-  assetsDirs: ["./assets"]
+  shadow: true
 })
 export class QueryMenu implements GxComponent {
-  private showHeader = false;
   private today = new Date();
   private itemToRename: GxQueryItem;
   private itemToDelete: GxQueryItem;
@@ -164,20 +161,9 @@ export class QueryMenu implements GxComponent {
   @Event({ bubbles: true, composed: true, cancelable: false })
   gxQuerySelect: EventEmitter<GxQueryItem>;
 
-  /**
-   * Crear a new chat
-   */
-  @Event({ bubbles: true, composed: true, cancelable: false })
-  gxQueryNewChat: EventEmitter<null>;
-
   connectedCallback() {
     const options = this.queryOptions();
     asyncGetListQuery(options, this.listQueriesCallback);
-  }
-
-  componentWillLoad() {
-    const headerElement = this.element.querySelector("[slot='header']");
-    this.showHeader = !!headerElement;
   }
 
   private keyDownEvents: {
@@ -378,19 +364,7 @@ export class QueryMenu implements GxComponent {
     this.gxQuerySelect.emit(item.detail);
   };
 
-  private createNewChat = () => {
-    this.gxQueryNewChat.emit();
-  };
-
-  private toggleView = () => {
-    this.isCollapsed = !this.isCollapsed;
-  };
-
   render() {
-    const iconParams = this.isCollapsed
-      ? { class: "sidebar-btn--expand", caption: this.expandSidebarLabel }
-      : { class: "sidebar-btn--collapse", caption: this.collapsedSidebarLabel };
-
     return (
       <Host>
         {this.loading && (
@@ -400,8 +374,6 @@ export class QueryMenu implements GxComponent {
         )}
 
         <section part="sidebar" class="sidebar">
-          {this.showHeader && <slot name="header" />}
-
           <nav part="menu-list" class="list" aria-label="Chat history">
             {this._filteredItems.map(({ label, items }, index) => (
               <div>
@@ -429,28 +401,6 @@ export class QueryMenu implements GxComponent {
             ))}
           </nav>
         </section>
-
-        <footer part="footer" class="footer">
-          <div>
-            <gx-button
-              onClick={this.toggleView}
-              css-class={iconParams.class}
-              image-position="before"
-              invisible-mode="collapse"
-              main-image-srcset={getAssetPath("assets/arrow.svg")}
-            ></gx-button>
-          </div>
-          <div>
-            <gx-button
-              onClick={this.createNewChat}
-              css-class="new-chat-btn"
-              caption={this.newChatCaption}
-              image-position="before"
-              disabled={this.loading}
-              main-image-srcset={getAssetPath("assets/speech-bubble.svg")}
-            ></gx-button>
-          </div>
-        </footer>
       </Host>
     );
   }

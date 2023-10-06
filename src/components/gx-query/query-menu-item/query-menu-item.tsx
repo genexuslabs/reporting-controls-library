@@ -7,9 +7,7 @@ import {
   Listen,
   Method,
   Prop,
-  State,
   Watch,
-  getAssetPath,
   h
 } from "@stencil/core";
 import { GxQueryItem } from "../../../common/basic-types";
@@ -23,8 +21,6 @@ export type QueryMenuElement = {
   modified: string;
 };
 
-const PART_PREFIX = "query-item__";
-
 type KeyEvents =
   | typeof KEY_CODES.EDIT_KEY
   | typeof KEY_CODES.ENTER
@@ -33,15 +29,19 @@ type KeyEvents =
 @Component({
   tag: "gx-query-menu-item",
   styleUrl: "query-menu-item.scss",
-  shadow: true,
-  assetsDirs: ["assets"]
+  shadow: true
 })
 export class QueryMenuItem implements GxComponent {
   private inputRef!: HTMLGxEditElement;
   private editControlId: string;
+  private backupInputValue: string;
 
   @Element() element: HTMLGxQueryMenuItemElement;
 
+  /**
+   * Toggle edit mode
+   */
+  @Prop({ reflect: true, mutable: true }) editMode = false;
   /**
    * Id of item active
    */
@@ -50,6 +50,7 @@ export class QueryMenuItem implements GxComponent {
    * This property specify the title of the item.
    */
   @Prop() readonly item: GxQueryItem;
+
   /**
    * Trigger the action to delete the item
    */
@@ -62,18 +63,6 @@ export class QueryMenuItem implements GxComponent {
    * Trigger the action to select an item
    */
   @Event() selectItem: EventEmitter<GxQueryItem>;
-  /**
-   * Toggle edit mode
-   */
-  @Prop({ reflect: true, mutable: true }) editMode = false;
-  /**
-   * Accessibility aria attribute
-   */
-  // @Prop({ reflect: true, mutable: true }) ariaSelected = false;
-  /**
-   * Input value
-   */
-  @State() currentTitle: string;
 
   @Watch("isActive")
   focusItem(newValue: boolean) {
@@ -101,7 +90,7 @@ export class QueryMenuItem implements GxComponent {
   }
 
   componentWillLoad() {
-    this.currentTitle = this.item.Name;
+    this.backupInputValue = this.item.Name;
     this.editControlId = `edit-control-${this.item.Id}`;
   }
 
@@ -144,16 +133,23 @@ export class QueryMenuItem implements GxComponent {
     this.editMode = !this.editMode;
   };
 
-  private handlerSelect = () => {
-    this.selectItem.emit(this.item);
+  private handlerCancel = () => {
+    // Reset item value
+    this.inputRef.value = this.backupInputValue;
+    this.toggleEditMode();
   };
 
-  private handlerDelete = async () => {
+  private handlerDelete = () => {
     this.deleteItem.emit(this.item);
   };
 
-  private handlerRename = async () => {
-    this.currentTitle = this.inputRef.value;
+  private handlerEdit = () => {
+    this.toggleEditMode();
+  };
+
+  private handlerRename = () => {
+    // Save backup input value
+    this.backupInputValue = this.inputRef.value;
     this.renameItem.emit({
       ...this.item,
       Name: this.inputRef.value
@@ -161,13 +157,8 @@ export class QueryMenuItem implements GxComponent {
     this.toggleEditMode();
   };
 
-  private handlerCancel = async () => {
-    this.inputRef.value = this.currentTitle;
-    this.toggleEditMode();
-  };
-
-  private handlerEdit = () => {
-    this.toggleEditMode();
+  private handlerSelect = () => {
+    this.selectItem.emit(this.item);
   };
 
   render() {
@@ -177,55 +168,60 @@ export class QueryMenuItem implements GxComponent {
       template = (
         <gx-edit
           ref={el => (this.inputRef = el) && el.click()}
-          value={this.currentTitle}
+          value={this.item.Name}
           tabIndex={0}
         ></gx-edit>
       );
     } else {
-      template = <span>{this.currentTitle}</span>;
+      template = <span>{this.item.Name}</span>;
     }
 
     return (
-      <Host tabindex="-1" onClick={!this.editMode ? this.handlerSelect : null}>
-        <li part={`${PART_PREFIX}item`} role="option">
+      <Host tabindex="0" onClick={!this.editMode ? this.handlerSelect : null}>
+        <li class="item" part="item" role="option">
           <div
             aria-controls={this.editControlId}
             aria-expanded={this.editMode ? "true" : "false"}
-            part={`${PART_PREFIX}label`}
+            class="label"
+            part="item-label"
           >
             {template}
           </div>
-          <div
-            class="controls"
-            id={this.editControlId}
-            part={`${PART_PREFIX}controls`}
-          >
+          <div class="controls" id={this.editControlId} part="item-controls">
             {!this.editMode
               ? [
-                  <gx-button
-                    accessible-name="edit title"
-                    main-image-srcset={getAssetPath("assets/edit.svg")}
+                  <button
+                    class="btn btn-edit"
                     onClick={this.handlerEdit}
                     tabIndex={0}
-                  ></gx-button>,
-                  <gx-button
-                    accessible-name="delete title"
-                    main-image-srcset={getAssetPath("assets/delete.svg")}
+                  >
+                    Edit title
+                  </button>,
+                  <button
+                    class="btn btn-delete"
                     onClick={this.handlerDelete}
                     tabIndex={0}
-                  ></gx-button>
+                  >
+                    Delete title
+                  </button>
                 ]
               : [
-                  <gx-button
-                    accessible-name="confirm"
-                    main-image-srcset={getAssetPath("assets/done.svg")}
+                  <button
+                    aria-name="Confirm edition"
+                    class="btn btn-done"
                     onClick={this.handlerRename}
-                  ></gx-button>,
-                  <gx-button
-                    accessible-name="cancel"
-                    main-image-srcset={getAssetPath("assets/cancel.svg")}
+                    tabIndex={0}
+                  >
+                    Confirm
+                  </button>,
+                  <button
+                    aria-name="Cancel edition"
+                    class="btn btn-cancel"
                     onClick={this.handlerCancel}
-                  ></gx-button>
+                    tabIndex={0}
+                  >
+                    Cancel
+                  </button>
                 ]}
           </div>
         </li>
