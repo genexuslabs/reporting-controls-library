@@ -58,6 +58,7 @@
   border: 0;
   padding: 0;
   width: var(--gx-sidebar-collapsed);
+  flex-basis: 40px;
   /**/
   background-color: currentColor;
   -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px" fill="currentColor"><path d="M 16.25 1.34375 L 7.25 11.34375 L 6.65625 12 L 7.25 12.65625 L 16.25 22.65625 L 17.75 21.34375 L 9.34375 12 L 17.75 2.65625 Z"/></svg>');

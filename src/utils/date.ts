@@ -50,3 +50,23 @@ export const calculateDateDifference = (
   const differenceInDays = timeDifference / (1000 * 60 * 60 * 24);
   return Math.abs(Math.round(differenceInDays));
 };
+
+/**
+ * Comparative date function
+ * @param a object with a Modified attribute
+ * @param b object with a Modified attribute
+ * @returns Sort list by Modified attribute
+ */
+export const compareModifiedAttr = (
+  a: { Modified: Date },
+  b: { Modified: Date }
+) => {
+  const atime = new Date(a.Modified).getTime();
+  const btime = new Date(b.Modified).getTime();
+  if (atime < btime) {
+    return 1;
+  } else if (atime > btime) {
+    return -1;
+  }
+  return 0;
+};

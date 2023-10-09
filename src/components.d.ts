@@ -43,43 +43,52 @@ export namespace Components {
     }
     interface GxQueryMenu {
         /**
-          * Label to show in the collapsed button
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
          */
-        "collapsedSidebarLabel": "collapse sidebar";
-        /**
-          * Determines if the menu can be collapsed
-         */
-        "collapsible": boolean;
-        /**
-          * Label to show in the collapsed button
-         */
-        "expandSidebarLabel": "expand sidebar";
+        "accessibleName": "Query list";
         /**
           * Show queries items group by month
          */
         "groupItemsByMonth": true;
         /**
-          * Determines if the menu is collapsed
-         */
-        "isCollapsed": boolean;
-        /**
           * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
          */
         "metadataName": string;
-        /**
-          * New Chat button caption
-         */
-        "newChatCaption": "New Chat";
         /**
           * Dates to group queries
          */
         "rangeOfDays": { days: number; label: string }[];
         /**
+          * Add a new query item
+          * @param item GxQueryItem
+         */
+        "saveQuery": (item: GxQueryItem) => Promise<void>;
+        /**
+          * Use this property to pass a query obtained from GXquery. This disabled the call to GxQuery API:    Id: string;    Name: string;    Description: string;    Expression: string;    Modified: string;
+         */
+        "serializedObject": string;
+        /**
+          * True to tell the controller to connect use GXquery as a queries repository
+         */
+        "useGxquery": true;
+    }
+    interface GxQueryMenuController {
+        /**
+          * Base URL of the server
+         */
+        "baseUrl": string;
+        /**
+          * Environment of the project: java or net
+         */
+        "environment": GeneratorType;
+        /**
+          * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
+         */
+        "metadataName": string;
+        /**
           * True to tell the controller to connect use GXquery as a queries repository
          */
         "useGxquery": boolean;
-    }
-    interface GxQueryMenuController {
     }
     interface GxQueryMenuItem {
         /**
@@ -98,6 +107,10 @@ export namespace Components {
     }
     interface GxQuerySidebar {
         /**
+          * Width of expanded window. Default 300px
+         */
+        "collapsedSize": "40px";
+        /**
           * Determines if the sidebar can be collapsed
          */
         "collapsible": true;
@@ -106,13 +119,13 @@ export namespace Components {
          */
         "controls": true;
         /**
+          * Width of expanded window. Default 300px
+         */
+        "expandedSize": "300px";
+        /**
           * Determines if the sidebar is collapsed
          */
         "isCollapsed": boolean;
-        /**
-          * Width of expanded window. Default 300px
-         */
-        "width": "300px";
     }
     interface GxQueryViewer {
         /**
@@ -1002,33 +1015,17 @@ declare namespace LocalJSX {
     }
     interface GxQueryMenu {
         /**
-          * Label to show in the collapsed button
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
          */
-        "collapsedSidebarLabel"?: "collapse sidebar";
-        /**
-          * Determines if the menu can be collapsed
-         */
-        "collapsible"?: boolean;
-        /**
-          * Label to show in the collapsed button
-         */
-        "expandSidebarLabel"?: "expand sidebar";
+        "accessibleName"?: "Query list";
         /**
           * Show queries items group by month
          */
         "groupItemsByMonth"?: true;
         /**
-          * Determines if the menu is collapsed
-         */
-        "isCollapsed"?: boolean;
-        /**
           * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
          */
         "metadataName"?: string;
-        /**
-          * New Chat button caption
-         */
-        "newChatCaption"?: "New Chat";
         /**
           * Select a query
          */
@@ -1038,11 +1035,31 @@ declare namespace LocalJSX {
          */
         "rangeOfDays"?: { days: number; label: string }[];
         /**
+          * Use this property to pass a query obtained from GXquery. This disabled the call to GxQuery API:    Id: string;    Name: string;    Description: string;    Expression: string;    Modified: string;
+         */
+        "serializedObject"?: string;
+        /**
+          * True to tell the controller to connect use GXquery as a queries repository
+         */
+        "useGxquery"?: true;
+    }
+    interface GxQueryMenuController {
+        /**
+          * Base URL of the server
+         */
+        "baseUrl"?: string;
+        /**
+          * Environment of the project: java or net
+         */
+        "environment"?: GeneratorType;
+        /**
+          * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
+         */
+        "metadataName"?: string;
+        /**
           * True to tell the controller to connect use GXquery as a queries repository
          */
         "useGxquery"?: boolean;
-    }
-    interface GxQueryMenuController {
     }
     interface GxQueryMenuItem {
         /**
@@ -1072,6 +1089,10 @@ declare namespace LocalJSX {
     }
     interface GxQuerySidebar {
         /**
+          * Width of expanded window. Default 300px
+         */
+        "collapsedSize"?: "40px";
+        /**
           * Determines if the sidebar can be collapsed
          */
         "collapsible"?: true;
@@ -1080,6 +1101,10 @@ declare namespace LocalJSX {
          */
         "controls"?: true;
         /**
+          * Width of expanded window. Default 300px
+         */
+        "expandedSize"?: "300px";
+        /**
           * Determines if the sidebar is collapsed
          */
         "isCollapsed"?: boolean;
@@ -1087,10 +1112,6 @@ declare namespace LocalJSX {
           * Crear a new chat
          */
         "onGxQueryNewChat"?: (event: GxQuerySidebarCustomEvent<null>) => void;
-        /**
-          * Width of expanded window. Default 300px
-         */
-        "width"?: "300px";
     }
     interface GxQueryViewer {
         /**

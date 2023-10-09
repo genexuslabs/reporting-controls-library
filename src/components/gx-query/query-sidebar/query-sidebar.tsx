@@ -11,6 +11,7 @@ import {
 } from "@stencil/core";
 
 const SIDEBAR_EXPANDED = "--gx-sidebar-expanded";
+const SIDEBAR_COLLAPSED = "--gx-sidebar-collapsed";
 
 @Component({
   tag: "gx-query-sidebar",
@@ -39,7 +40,11 @@ export class QuerySidebar {
   /**
    * Width of expanded window. Default 300px
    */
-  @Prop() readonly width = "300px";
+  @Prop() readonly expandedSize = "300px";
+  /**
+   * Width of expanded window. Default 300px
+   */
+  @Prop() readonly collapsedSize = "40px";
   /**
    *
    */
@@ -61,7 +66,8 @@ export class QuerySidebar {
   }
 
   componentWillLoad() {
-    this.element.style.setProperty(SIDEBAR_EXPANDED, this.width);
+    this.element.style.setProperty(SIDEBAR_EXPANDED, this.expandedSize);
+    this.element.style.setProperty(SIDEBAR_COLLAPSED, this.collapsedSize);
     //
     this.validateSlotHeader();
     this.validateSlotNewChat();

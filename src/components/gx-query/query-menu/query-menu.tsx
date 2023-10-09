@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Host,
   Listen,
+  Method,
   Prop,
   State,
   Watch,
@@ -29,11 +30,18 @@ import {
   asyncGetListQuery,
   asyncRenameQuery
 } from "../../../services/services-manager";
+import { compareModifiedAttr } from "../../../utils/date";
 
 type KeyEvents =
   | typeof KEY_CODES.ARROW_UP_KEY
   | typeof KEY_CODES.ARROW_DOWN_KEY
   | typeof KEY_CODES.TAB;
+
+type GroupedItemList = {
+  label: string;
+  ariaLabel?: string;
+  items: GxQueryItem[];
+};
 
 @Component({
   tag: "gx-query-menu",
@@ -48,25 +56,11 @@ export class QueryMenu implements GxComponent {
   @Element() element: HTMLGxQueryMenuElement;
 
   /**
-   * Determines if the menu can be collapsed
+   * Specifies a short string, typically 1 to 3 words, that authors associate
+   * with an element to provide users of assistive technologies with a label
+   * for the element.
    */
-  @Prop() readonly collapsible: boolean = true;
-  /**
-   * Determines if the menu is collapsed
-   */
-  @Prop({ reflect: true, mutable: true }) isCollapsed = false;
-  /**
-   * Label to show in the collapsed button
-   */
-  @Prop() readonly collapsedSidebarLabel = "collapse sidebar";
-  /**
-   * Label to show in the collapsed button
-   */
-  @Prop() readonly expandSidebarLabel = "expand sidebar";
-  /**
-   * New Chat button caption
-   */
-  @Prop() readonly newChatCaption = "New Chat";
+  @Prop() readonly accessibleName = "Query list";
   /**
    * Dates to group queries
    */
@@ -82,29 +76,34 @@ export class QueryMenu implements GxComponent {
    * Show queries items group by month
    */
   @Prop() readonly groupItemsByMonth = true;
-
   /**
    * True to tell the controller to connect use GXquery as a queries repository
    */
-  @Prop() readonly useGxquery: boolean;
-
+  @Prop() readonly useGxquery = true;
   /**
    * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true.
    * In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
    */
   @Prop() readonly metadataName = process.env.METADATA_NAME;
   /**
+   * Use this property to pass a query obtained from GXquery.
+   * This disabled the call to GxQuery API:
+   *    Id: string;
+   *    Name: string;
+   *    Description: string;
+   *    Expression: string;
+   *    Modified: string;
+   */
+  @Prop() readonly serializedObject: string;
+
+  /**
    * Local list of query items
    */
-  @State() _items: GxQueryItem[] = [];
+  @State() queryItems: GxQueryItem[] = [];
   /**
-   *
+   * Query list grouping by
    */
-  @State() _filteredItems: {
-    label: string;
-    ariaLabel?: string;
-    items: GxQueryItem[];
-  }[] = [];
+  @State() groupedItemList: GroupedItemList[] = [];
   /**
    * Loading status
    */
@@ -114,18 +113,6 @@ export class QueryMenu implements GxComponent {
    */
   @State() active = "";
 
-  @Listen("gxQuerySaveQuery", { target: "window" })
-  saveQuery(event: CustomEvent<GxQueryItem>) {
-    const newItem = event.detail;
-    const items = [...this._items];
-    // Find if id existe in the query list
-    const index = items.findIndex(i => i.Id === newItem.Id);
-    if (index > 0) {
-      delete items[index];
-    }
-    this._items = [...items, newItem];
-  }
-
   @Listen("keydown", { capture: true })
   handleKeyDown(event: KeyboardEvent) {
     const keyHandler = this.keyDownEvents[event.key];
@@ -134,10 +121,9 @@ export class QueryMenu implements GxComponent {
     }
   }
 
-  @Watch("_items")
+  @Watch("queryItems")
   applyFilters(newItems: GxQueryItem[]) {
-    // const newItemsSanitized = [...newItems];
-    const filteredItems: typeof this._filteredItems = [];
+    const filteredItems: typeof this.groupedItemList = [];
     const rangeOfDays = this.generateGroups(newItems);
     newItems.forEach(item => {
       const selected = this.findItemInGroup(rangeOfDays, item.differenceInDays);
@@ -152,7 +138,7 @@ export class QueryMenu implements GxComponent {
         }
       }
     });
-    this._filteredItems = [...filteredItems];
+    this.groupedItemList = [...filteredItems];
   }
 
   /**
@@ -161,9 +147,24 @@ export class QueryMenu implements GxComponent {
   @Event({ bubbles: true, composed: true, cancelable: false })
   gxQuerySelect: EventEmitter<GxQueryItem>;
 
+  /**
+   * Add a new query item
+   * @param item GxQueryItem
+   */
+  @Method()
+  async saveQuery(item: GxQueryItem) {
+    const items = [...this.queryItems];
+    // Find if it exist in the query list
+    const index = items.findIndex(i => i.Id === item.Id);
+    if (index > 0) {
+      delete items[index];
+    }
+    this.queryItems = [...items, item];
+  }
+
   connectedCallback() {
     const options = this.queryOptions();
-    asyncGetListQuery(options, this.listQueriesCallback);
+    asyncGetListQuery(options, this.serializedObject, this.listQueriesCallback);
   }
 
   private keyDownEvents: {
@@ -182,7 +183,7 @@ export class QueryMenu implements GxComponent {
   private listQueriesCallback = (data: GxQueryListResponse) => {
     const { Errors, Queries } = data;
     if (Errors.length === 0) {
-      this._items = [...Queries].sort(this.sortByDate);
+      this.queryItems = [...Queries].sort(compareModifiedAttr);
     } else {
       console.error(Errors);
     }
@@ -192,7 +193,7 @@ export class QueryMenu implements GxComponent {
   private renameQueryCallback = (err: RenameQueryServiceResponse) => {
     if (err.Errors.length === 0) {
       const { Id, Name } = this.itemToRename;
-      const data = [...this._items];
+      const data = [...this.queryItems];
       const index = data.findIndex(i => i.Id === Id);
       const today = new Date();
       const item = {
@@ -202,8 +203,7 @@ export class QueryMenu implements GxComponent {
         differenceInDays: 0
       };
       data.splice(index, 1);
-      const items = [item, ...data].sort(this.sortByDate);
-      this._items = items;
+      this.queryItems = [item, ...data].sort(compareModifiedAttr);
     } else {
       console.error(err);
     }
@@ -212,11 +212,13 @@ export class QueryMenu implements GxComponent {
 
   private deleteQueryCallback = (err: DeleteQueryServiceResponse) => {
     if (err.Errors.length === 0) {
-      const index = this._items.findIndex(i => i.Id === this.itemToDelete.Id);
+      const index = this.queryItems.findIndex(
+        i => i.Id === this.itemToDelete.Id
+      );
       if (index > -1) {
-        const items = [...this._items];
+        const items = [...this.queryItems];
         items.splice(index, 1);
-        this._items = items;
+        this.queryItems = items;
       }
     } else {
       console.error(err);
@@ -257,25 +259,18 @@ export class QueryMenu implements GxComponent {
 
   private findQueryMenuItem = (order: number) => {
     const queryMenuItem = this.findQueryMenuItemSelected();
-    if (
-      queryMenuItem.getAttribute("aria-selected") === "false" &&
-      order === 1
-    ) {
-      return queryMenuItem;
-    }
     const allMenuItems =
       this.element.shadowRoot.querySelectorAll("gx-query-menu-item");
     const index = Array.from(allMenuItems).findIndex(
       ({ item }) => item.Id === queryMenuItem.item.Id
     );
-    const newIndex = index + order;
-    if (order === 1 && newIndex === allMenuItems.length - 1) {
-      return allMenuItems[0];
+    let newIndex = index + order;
+    if (order === 1 && newIndex === allMenuItems.length) {
+      newIndex = 0;
     }
     if (order === -1 && newIndex < 0) {
-      return allMenuItems[allMenuItems.length - 1];
+      newIndex = allMenuItems.length - 1;
     }
-
     return allMenuItems[newIndex];
   };
 
@@ -324,18 +319,6 @@ export class QueryMenu implements GxComponent {
     return rangeOfDays;
   }
 
-  private sortByDate = (a: GxQueryItem, b: GxQueryItem) => {
-    const atime = new Date(a.Modified).getTime();
-    const btime = new Date(b.Modified).getTime();
-    if (atime < btime) {
-      return 1;
-    } else if (atime > btime) {
-      return -1;
-    }
-    // a must be equal to b
-    return 0;
-  };
-
   private deleteItem = (item: GxQueryMenuItemCustomEvent<GxQueryItem>) => {
     if (confirm("Delete query?")) {
       this.loading = true;
@@ -343,9 +326,9 @@ export class QueryMenu implements GxComponent {
       this.itemToDelete = item.detail;
       asyncDeleteQuery(options, this.itemToDelete, this.deleteQueryCallback);
       // if (index > -1) {
-      //   const items = [...this._items];
+      //   const items = [...this.queryItems];
       //   items.splice(index, 1);
-      //   this._items = items;
+      //   this.queryItems = items;
       // }
     }
   };
@@ -364,9 +347,32 @@ export class QueryMenu implements GxComponent {
     this.gxQuerySelect.emit(item.detail);
   };
 
+  private renderQueryList = (groupedItemList: GroupedItemList[]) => {
+    return groupedItemList.map(({ label, items }, index) => (
+      <div>
+        <h2 id={`subtitle${index}`} part="menu-title" class="subtitle">
+          {label}
+        </h2>
+        <ul role="listbox" tabindex="0" aria-labelledby={`subtitle${index}`}>
+          {items.map(item => (
+            <gx-query-menu-item
+              aria-selected="false"
+              isActive={this.active === item.Id}
+              onDeleteItem={this.deleteItem}
+              onRenameItem={this.renameItem}
+              onSelectItem={this.selectItem}
+              item={item}
+              exportparts="item,item-label,item-controls"
+            ></gx-query-menu-item>
+          ))}
+        </ul>
+      </div>
+    ));
+  };
+
   render() {
     return (
-      <Host>
+      <Host aria-label={this.accessibleName}>
         {this.loading && (
           <div class="loading-backdrop">
             <gx-loading presented={this.loading}></gx-loading>
@@ -374,31 +380,8 @@ export class QueryMenu implements GxComponent {
         )}
 
         <section part="sidebar" class="sidebar">
-          <nav part="menu-list" class="list" aria-label="Chat history">
-            {this._filteredItems.map(({ label, items }, index) => (
-              <div>
-                <h2 id={`subtitle${index}`} part="menu-title" class="subtitle">
-                  {label}
-                </h2>
-                <ul
-                  role="listbox"
-                  tabindex="0"
-                  aria-labelledby={`subtitle${index}`}
-                >
-                  {items.map(item => (
-                    <gx-query-menu-item
-                      aria-selected="false"
-                      isActive={this.active === item.Id}
-                      onDeleteItem={this.deleteItem}
-                      onRenameItem={this.renameItem}
-                      onSelectItem={this.selectItem}
-                      item={item}
-                      exportparts="item,item-label,item-controls"
-                    ></gx-query-menu-item>
-                  ))}
-                </ul>
-              </div>
-            ))}
+          <nav part="menu-list" class="list" tabIndex={0}>
+            {this.renderQueryList(this.groupedItemList)}
           </nav>
         </section>
       </Host>

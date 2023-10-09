@@ -227,22 +227,30 @@ function asyncServerCallUsingGXQuery(
 /**
  * Fetch query list service
  * @param options Query options
+ * @param serializedObject List of  QueryViewerBase
  * @param callbackWhenReady Callback function that return data or error
  */
 export const asyncGetListQuery = (
   options: GxQueryOptions,
+  serializedObject: string,
   callbackWhenReady: (data: GxQueryListResponse) => void
 ) => {
-  GXqueryConnector.getQueryList(options)
-    .then(resObj => {
-      const { Errors } = resObj;
-      const Queries = transformQueryDtoListToUIData(resObj.Queries);
-      callbackWhenReady({ Queries, Errors });
-    })
-    .catch(err => {
-      const Errors = [].concat(err?.message || err || []);
-      callbackWhenReady({ Queries: [], Errors });
-    });
+  if (serializedObject) {
+    const items = JSON.parse(serializedObject) as QueryViewerBase[];
+    const Queries = transformQueryDtoListToUIData(items);
+    callbackWhenReady({ Queries, Errors: [] });
+  } else {
+    GXqueryConnector.getQueryList(options)
+      .then(resObj => {
+        const { Errors } = resObj;
+        const Queries = transformQueryDtoListToUIData(resObj.Queries);
+        callbackWhenReady({ Queries, Errors });
+      })
+      .catch(err => {
+        const Errors = [].concat(err?.message || err || []);
+        callbackWhenReady({ Queries: [], Errors });
+      });
+  }
 };
 
 /**
