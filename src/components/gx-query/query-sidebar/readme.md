@@ -7,11 +7,13 @@
 
 ## Properties
 
-| Property      | Attribute      | Description                                | Type      | Default   |
-| ------------- | -------------- | ------------------------------------------ | --------- | --------- |
-| `collapsible` | `collapsible`  | Determines if the sidebar can be collapsed | `boolean` | `true`    |
-| `isCollapsed` | `is-collapsed` | Determines if the sidebar is collapsed     | `boolean` | `false`   |
-| `width`       | `width`        | Width of expanded window. Default 300px    | `"300px"` | `"300px"` |
+| Property        | Attribute        | Description                                       | Type      | Default   |
+| --------------- | ---------------- | ------------------------------------------------- | --------- | --------- |
+| `collapsedSize` | `collapsed-size` | Width of expanded window. Default 300px           | `"40px"`  | `"40px"`  |
+| `collapsible`   | `collapsible`    | Determines if the sidebar can be collapsed        | `boolean` | `true`    |
+| `controls`      | `controls`       | Determines if should display the actions controls | `boolean` | `true`    |
+| `expandedSize`  | `expanded-size`  | Width of expanded window. Default 300px           | `"300px"` | `"300px"` |
+| `isCollapsed`   | `is-collapsed`   | Determines if the sidebar is collapsed            | `boolean` | `false`   |
 
 
 ## Events

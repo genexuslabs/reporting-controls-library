@@ -72,24 +72,6 @@ export namespace Components {
          */
         "useGxquery": true;
     }
-    interface GxQueryMenuController {
-        /**
-          * Base URL of the server
-         */
-        "baseUrl": string;
-        /**
-          * Environment of the project: java or net
-         */
-        "environment": GeneratorType;
-        /**
-          * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
-         */
-        "metadataName": string;
-        /**
-          * True to tell the controller to connect use GXquery as a queries repository
-         */
-        "useGxquery": boolean;
-    }
     interface GxQueryMenuItem {
         /**
           * Toggle edit mode
@@ -864,12 +846,6 @@ declare global {
         prototype: HTMLGxQueryMenuElement;
         new (): HTMLGxQueryMenuElement;
     };
-    interface HTMLGxQueryMenuControllerElement extends Components.GxQueryMenuController, HTMLStencilElement {
-    }
-    var HTMLGxQueryMenuControllerElement: {
-        prototype: HTMLGxQueryMenuControllerElement;
-        new (): HTMLGxQueryMenuControllerElement;
-    };
     interface HTMLGxQueryMenuItemElement extends Components.GxQueryMenuItem, HTMLStencilElement {
     }
     var HTMLGxQueryMenuItemElement: {
@@ -957,7 +933,6 @@ declare global {
     interface HTMLElementTagNameMap {
         "gx-query-chat": HTMLGxQueryChatElement;
         "gx-query-menu": HTMLGxQueryMenuElement;
-        "gx-query-menu-controller": HTMLGxQueryMenuControllerElement;
         "gx-query-menu-item": HTMLGxQueryMenuItemElement;
         "gx-query-sidebar": HTMLGxQuerySidebarElement;
         "gx-query-viewer": HTMLGxQueryViewerElement;
@@ -1042,24 +1017,6 @@ declare namespace LocalJSX {
           * True to tell the controller to connect use GXquery as a queries repository
          */
         "useGxquery"?: true;
-    }
-    interface GxQueryMenuController {
-        /**
-          * Base URL of the server
-         */
-        "baseUrl"?: string;
-        /**
-          * Environment of the project: java or net
-         */
-        "environment"?: GeneratorType;
-        /**
-          * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
-         */
-        "metadataName"?: string;
-        /**
-          * True to tell the controller to connect use GXquery as a queries repository
-         */
-        "useGxquery"?: boolean;
     }
     interface GxQueryMenuItem {
         /**
@@ -1808,7 +1765,6 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "gx-query-chat": GxQueryChat;
         "gx-query-menu": GxQueryMenu;
-        "gx-query-menu-controller": GxQueryMenuController;
         "gx-query-menu-item": GxQueryMenuItem;
         "gx-query-sidebar": GxQuerySidebar;
         "gx-query-viewer": GxQueryViewer;
@@ -1831,7 +1787,6 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "gx-query-chat": LocalJSX.GxQueryChat & JSXBase.HTMLAttributes<HTMLGxQueryChatElement>;
             "gx-query-menu": LocalJSX.GxQueryMenu & JSXBase.HTMLAttributes<HTMLGxQueryMenuElement>;
-            "gx-query-menu-controller": LocalJSX.GxQueryMenuController & JSXBase.HTMLAttributes<HTMLGxQueryMenuControllerElement>;
             "gx-query-menu-item": LocalJSX.GxQueryMenuItem & JSXBase.HTMLAttributes<HTMLGxQueryMenuItemElement>;
             "gx-query-sidebar": LocalJSX.GxQuerySidebar & JSXBase.HTMLAttributes<HTMLGxQuerySidebarElement>;
             "gx-query-viewer": LocalJSX.GxQueryViewer & JSXBase.HTMLAttributes<HTMLGxQueryViewerElement>;
