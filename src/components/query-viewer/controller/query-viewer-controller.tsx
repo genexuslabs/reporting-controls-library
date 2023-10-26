@@ -109,6 +109,10 @@ export class QueryViewerController {
   @Event() queryViewerServiceResponse: EventEmitter<QueryViewerServiceResponse>;
 
   private getQueryViewerInformation(objectName: string): QueryViewer {
+    const useRecordsetCache =
+      this.type === QueryViewerOutputType.PivotTable ||
+      this.type === QueryViewerOutputType.Table;
+
     const queryViewerObject: QueryViewer = {
       ApplicationNamespace: this.applicationNamespace,
       AllowElementsOrderChange: this.allowElementsOrderChange,
@@ -118,10 +122,17 @@ export class QueryViewerController {
       RealType: this.type,
       ReturnSampleData: this.returnSampleData,
       TranslationType: this.translationType,
-      UseRecordsetCache:
-        this.type === QueryViewerOutputType.PivotTable ||
-        this.type === QueryViewerOutputType.Table
+      UseRecordsetCache: useRecordsetCache
     };
+
+    if (useRecordsetCache) {
+      queryViewerObject.RecordsetCache = {
+        ActualKey: "fdgs",
+        OldKey: "",
+        MinutesToKeepInRecordsetCache: 500,
+        MaximumCacheSize: 1000
+      };
+    }
 
     if (this.type === QueryViewerOutputType.Card) {
       (queryViewerObject as QueryViewerCard)["IncludeTrend"] =
@@ -144,7 +155,8 @@ export class QueryViewerController {
     // WA to avoid requests to unimplemented outputs
     if (
       this.type !== QueryViewerOutputType.Card &&
-      this.type !== QueryViewerOutputType.Chart
+      this.type !== QueryViewerOutputType.Chart &&
+      this.type !== QueryViewerOutputType.PivotTable
     ) {
       return;
     }
