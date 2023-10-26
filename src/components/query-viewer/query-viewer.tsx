@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import {
   Component,
   Element,
@@ -50,8 +51,7 @@ export class QueryViewer implements GxComponent {
     [QueryViewerOutputType.Chart]: response => this.chartRender(response),
     [QueryViewerOutputType.Map]: response =>
       this.notImplementedRender(response),
-    [QueryViewerOutputType.PivotTable]: response =>
-      this.notImplementedRender(response),
+    [QueryViewerOutputType.PivotTable]: response => this.pivotRender(response),
     [QueryViewerOutputType.Table]: response =>
       this.notImplementedRender(response),
 
@@ -362,6 +362,22 @@ export class QueryViewer implements GxComponent {
         xAxisLabels={this.xAxisLabels}
         yAxisTitle={this.yAxisTitle}
       ></gx-query-viewer-chart-controller>
+    );
+  }
+
+  private pivotRender(serviceResponse: QueryViewerServiceResponse) {
+    return (
+      <gx-query-viewer-pivot-controller
+        allowSelection={this.allowSelection}
+        cssClass={this.cssClass}
+        pivotTitle={this.queryTitle}
+        paging={this.paging}
+        pageSize={this.pageSize}
+        showDataLabelsIn={this.showDataLabelsIn}
+        serviceResponse={serviceResponse}
+        totalForRows={this.totalForRows}
+        totalForColumns={this.totalForColumns}
+      ></gx-query-viewer-pivot-controller>
     );
   }
 
