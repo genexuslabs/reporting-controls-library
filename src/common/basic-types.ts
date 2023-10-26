@@ -1,3 +1,8 @@
+import {
+  QueryViewerServiceData
+  // QueryViewerServiceMetaData
+} from "../services/types/service-result";
+
 /* eslint-disable camelcase */
 export type GeneratorType = "net" | "java";
 
@@ -440,6 +445,11 @@ export enum QueryViewerCountry {
   Zimbabwe = "ZW"
 }
 
+export enum QueryViewershowDataLabelsIn {
+  ColumnsArea = "Columns area",
+  RowsArea = "Rows area"
+}
+
 export type DateTimePicture = {
   DateFormat: string;
   IncludeHours: boolean;
@@ -494,6 +504,36 @@ export type QueryViewerSliderRange = {
   start: number;
   end: number;
 };
+
+export type QueryViewerPivotParameters = {
+  AllowSelection: boolean;
+  AutoResize: boolean;
+  ControlName: string;
+  DisableColumnSort: boolean;
+  ObjectName: string;
+  PageSize: number;
+  RealType: QueryViewerOutputType;
+  RememberLayout: boolean;
+  SelectLine: boolean;
+  ServerPaging: boolean;
+  ServerPagingCacheSize: number;
+  ServerPagingPivot: boolean;
+  ShowDataLabelsIn: QueryViewerShowDataLabelsIn;
+  Title: string;
+  TotalForColumns: QueryViewerTotal;
+  TotalForRows: QueryViewerTotal;
+  UcId: string;
+  UseRecordsetCache: boolean;
+  data: QueryViewerServiceData;
+  // metadata: QueryViewerServiceMetaData;
+  metadata: string;
+  page: string;
+};
+export enum QueryViewerPivotDataType {
+  PagedRecordSet = "PagedRecordSet",
+  PagedLineSet = "PagedLineSet",
+  NotPaged = "NotPaged"
+}
 
 /**
  * Represents query in GXquery @Todo: extend the QueryViewer class with this interface
