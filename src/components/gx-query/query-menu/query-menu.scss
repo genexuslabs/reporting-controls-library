@@ -1,7 +1,13 @@
 @import "../../../common/base-mixins";
-@import "../../../global/variables";
+@import "../../../global/tokens";
 
 @include box-sizing();
+
+:host {
+  display: block;
+  position: relative;
+  height: 100%;
+}
 
 ul,
 li {
@@ -10,40 +16,15 @@ li {
   padding: 0;
 }
 
-:host {
-  background-color: var(--gx-background-color);
-  display: block;
-  font-family: var(--gx-font-family);
-  position: relative;
-  transition: var(--gx-transition);
-}
-
 .subtitle {
-  padding: var(--gx-space-small) var(--gx-space-medium);
+  font-size: 1.2em;
+  padding: var(--gx-space-medium);
   margin: 0;
-}
-
-.list {
-  width: 100%;
-}
-
-.sidebar-btn--expand {
-  transform: rotate(180deg);
-  padding: var(--gx-space-medium);
-}
-.sidebar-btn--collapse {
-  padding: var(--gx-space-medium);
-}
-
-.new-chat-btn {
-  padding: var(--gx-space-medium);
 }
 
 .loading-backdrop {
   position: absolute;
-  background-color: var(--gx-backdrop-color);
-  top: 0;
-  bottom: 0;
+  background-color: var(--gx-backdrop-color, #ffffffc0);
   width: 100%;
-  z-index: 200;
+  height: 100%;
 }

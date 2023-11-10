@@ -57,7 +57,7 @@
 
 ### Used by
 
- - [gx-query-viewer-container](../gx-query/query-viewer-container)
+ - [gx-query-render](../gx-query/query-render)
 
 ### Depends on
 
@@ -79,7 +79,7 @@ graph TD;
   gx-query-viewer-chart-controller --> gx-query-viewer-slider
   gx-query-viewer-chart-controller --> gx-radio-group
   gx-query-viewer-chart-controller --> gx-radio-option
-  gx-query-viewer-container --> gx-query-viewer
+  gx-query-render --> gx-query-viewer
   style gx-query-viewer fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

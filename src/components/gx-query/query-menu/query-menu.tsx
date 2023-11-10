@@ -12,6 +12,12 @@ import {
   h
 } from "@stencil/core";
 
+import {
+  asyncDeleteQuery,
+  asyncGetListQuery,
+  asyncRenameQuery
+} from "@genexus/reporting-controls-api/dist";
+import { DeleteQueryServiceResponse, RenameQueryServiceResponse } from "@genexus/reporting-controls-api/dist/gxquery-connector";
 import { differenceInDays, endOfMonth, format } from "date-fns";
 import {
   GxQueryItem,
@@ -21,15 +27,6 @@ import {
 import { Component as GxComponent } from "../../../common/interfaces";
 import { KEY_CODES } from "../../../common/reserverd-names";
 import { GxQueryMenuItemCustomEvent } from "../../../components";
-import {
-  DeleteQueryServiceResponse,
-  RenameQueryServiceResponse
-} from "../../../services/gxquery-connector";
-import {
-  asyncDeleteQuery,
-  asyncGetListQuery,
-  asyncRenameQuery
-} from "../../../services/services-manager";
 import { compareModifiedAttr } from "../../../utils/date";
 
 type KeyEvents =
@@ -54,6 +51,11 @@ export class QueryMenu implements GxComponent {
   private itemToDelete: GxQueryItem;
 
   @Element() element: HTMLGxQueryMenuElement;
+
+  @State() queryItems: GxQueryItem[] = [];
+  @State() groupedItemList: GroupedItemList[] = [];
+  @State() loading = true;
+  @State() active = "";
 
   /**
    * Specifies a short string, typically 1 to 3 words, that authors associate
@@ -86,6 +88,10 @@ export class QueryMenu implements GxComponent {
    */
   @Prop() readonly metadataName = process.env.METADATA_NAME;
   /**
+   * Base URL of the server
+   */
+  @Prop() readonly baseUrl = process.env.BASE_URL;
+  /**
    * Use this property to pass a query obtained from GXquery.
    * This disabled the call to GxQuery API:
    *    Id: string;
@@ -95,23 +101,6 @@ export class QueryMenu implements GxComponent {
    *    Modified: string;
    */
   @Prop() readonly serializedObject: string;
-
-  /**
-   * Local list of query items
-   */
-  @State() queryItems: GxQueryItem[] = [];
-  /**
-   * Query list grouping by
-   */
-  @State() groupedItemList: GroupedItemList[] = [];
-  /**
-   * Loading status
-   */
-  @State() loading = true;
-  /**
-   * Query Id selected
-   */
-  @State() active = "";
 
   @Listen("keydown", { capture: true })
   handleKeyDown(event: KeyboardEvent) {
@@ -146,6 +135,16 @@ export class QueryMenu implements GxComponent {
    */
   @Event({ bubbles: true, composed: true, cancelable: false })
   gxQuerySelect: EventEmitter<GxQueryItem>;
+  /**
+   * Delete query
+   */
+  @Event({ bubbles: true, composed: true, cancelable: false })
+  gxQueryDelete: EventEmitter<GxQueryItem>;
+  /**
+   * Rename query
+   */
+  @Event({ bubbles: true, composed: true, cancelable: false })
+  gxQueryRename: EventEmitter<GxQueryItem>;
 
   /**
    * Add a new query item
@@ -204,6 +203,7 @@ export class QueryMenu implements GxComponent {
       };
       data.splice(index, 1);
       this.queryItems = [item, ...data].sort(compareModifiedAttr);
+      this.gxQueryRename.emit(this.itemToRename);
     } else {
       console.error(err);
     }
@@ -219,6 +219,7 @@ export class QueryMenu implements GxComponent {
         const items = [...this.queryItems];
         items.splice(index, 1);
         this.queryItems = items;
+        this.gxQueryDelete.emit(this.itemToDelete);
       }
     } else {
       console.error(err);
@@ -228,7 +229,7 @@ export class QueryMenu implements GxComponent {
 
   private queryOptions(): GxQueryOptions {
     return {
-      baseUrl: process.env.BASE_URL,
+      baseUrl: this.baseUrl,
       metadataName: this.metadataName
     };
   }
@@ -362,7 +363,7 @@ export class QueryMenu implements GxComponent {
               onRenameItem={this.renameItem}
               onSelectItem={this.selectItem}
               item={item}
-              exportparts="item,item-label,item-controls"
+              exportparts="item,active,label,controls"
             ></gx-query-menu-item>
           ))}
         </ul>
@@ -374,16 +375,14 @@ export class QueryMenu implements GxComponent {
     return (
       <Host aria-label={this.accessibleName}>
         {this.loading && (
-          <div class="loading-backdrop">
+          <div class="loading-backdrop" part="loading">
             <gx-loading presented={this.loading}></gx-loading>
           </div>
         )}
 
-        <section part="sidebar" class="sidebar">
-          <nav part="menu-list" class="list" tabIndex={0}>
-            {this.renderQueryList(this.groupedItemList)}
-          </nav>
-        </section>
+        <nav part="list-item" class="list" tabIndex={0}>
+          {this.renderQueryList(this.groupedItemList)}
+        </nav>
       </Host>
     );
   }

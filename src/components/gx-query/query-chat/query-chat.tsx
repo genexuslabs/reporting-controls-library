@@ -21,6 +21,7 @@ import { Component as GxComponent } from "../../../common/interfaces";
 import { KEY_CODES } from "../../../common/reserverd-names";
 import { asyncNewChatMessage } from "../../../services/services-manager";
 
+
 export type QueryRequest = {
   message: string;
 };

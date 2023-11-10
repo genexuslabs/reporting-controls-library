@@ -6,7 +6,8 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { QueryRequest } from "./components/gx-query/query-chat/query-chat";
-import { GeneratorType, GxQueryItem, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerSliderRange, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels, TrendIcon } from "./common/basic-types";
+import { GeneratorType, GxQueryItem, QueryViewerBase, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerSliderRange, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels, TrendIcon } from "./common/basic-types";
+import { QueryViewerServiceData, QueryViewerServiceMetaData } from "@genexus/reporting-controls-api/dist/types/service-result";
 import { QueryViewerServiceResponse } from "./services/types/service-result";
 import { Axis, ChartOptions, LegendOptions, PaneOptions, PlotOptions, SeriesLineOptions, SeriesOptionsType, SubtitleOptions, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
 import { QueryViewerParameterChangedEvent } from "./components/query-viewer-parameter/query-viewer-parameter";
@@ -47,6 +48,10 @@ export namespace Components {
          */
         "accessibleName": "Query list";
         /**
+          * Base URL of the server
+         */
+        "baseUrl": string;
+        /**
           * Show queries items group by month
          */
         "groupItemsByMonth": true;
@@ -86,6 +91,36 @@ export namespace Components {
          */
         "item": GxQueryItem;
         "setFocus": () => Promise<void>;
+    }
+    interface GxQueryRender {
+        /**
+          * Base URL of the server
+         */
+        "baseUrl": string;
+        /**
+          * Data of
+         */
+        "data": QueryViewerServiceData | string;
+        /**
+          * Environment of the project: java or net
+         */
+        "environment": GeneratorType;
+        /**
+          * Data of
+         */
+        "metadata": QueryViewerServiceMetaData | string;
+        /**
+          * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
+         */
+        "metadataName": string;
+        /**
+          * Provide the Query properties
+         */
+        "query": QueryViewerBase;
+        /**
+          * True to tell the controller to connect use GXquery as a queries repository
+         */
+        "useGxquery": true;
     }
     interface GxQuerySidebar {
         /**
@@ -507,28 +542,6 @@ export namespace Components {
          */
         "yAxisTitle": string;
     }
-    interface GxQueryViewerContainer {
-        /**
-          * Base URL
-         */
-        "baseUrl": string;
-        /**
-          * Environment of the project: java or net
-         */
-        "environment": GeneratorType;
-        /**
-          * This property specifies the title
-         */
-        "mainTitle": string;
-        /**
-          * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
-         */
-        "metadataName": string;
-        /**
-          * True to tell the controller to connect use GXquery as a queries repository
-         */
-        "useGxquery": true;
-    }
     interface GxQueryViewerController {
         /**
           * @todo Add description
@@ -805,10 +818,6 @@ export interface GxQueryViewerCardCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLGxQueryViewerCardElement;
 }
-export interface GxQueryViewerContainerCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLGxQueryViewerContainerElement;
-}
 export interface GxQueryViewerControllerCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLGxQueryViewerControllerElement;
@@ -852,6 +861,12 @@ declare global {
         prototype: HTMLGxQueryMenuItemElement;
         new (): HTMLGxQueryMenuItemElement;
     };
+    interface HTMLGxQueryRenderElement extends Components.GxQueryRender, HTMLStencilElement {
+    }
+    var HTMLGxQueryRenderElement: {
+        prototype: HTMLGxQueryRenderElement;
+        new (): HTMLGxQueryRenderElement;
+    };
     interface HTMLGxQuerySidebarElement extends Components.GxQuerySidebar, HTMLStencilElement {
     }
     var HTMLGxQuerySidebarElement: {
@@ -887,12 +902,6 @@ declare global {
     var HTMLGxQueryViewerChartControllerElement: {
         prototype: HTMLGxQueryViewerChartControllerElement;
         new (): HTMLGxQueryViewerChartControllerElement;
-    };
-    interface HTMLGxQueryViewerContainerElement extends Components.GxQueryViewerContainer, HTMLStencilElement {
-    }
-    var HTMLGxQueryViewerContainerElement: {
-        prototype: HTMLGxQueryViewerContainerElement;
-        new (): HTMLGxQueryViewerContainerElement;
     };
     interface HTMLGxQueryViewerControllerElement extends Components.GxQueryViewerController, HTMLStencilElement {
     }
@@ -934,13 +943,13 @@ declare global {
         "gx-query-chat": HTMLGxQueryChatElement;
         "gx-query-menu": HTMLGxQueryMenuElement;
         "gx-query-menu-item": HTMLGxQueryMenuItemElement;
+        "gx-query-render": HTMLGxQueryRenderElement;
         "gx-query-sidebar": HTMLGxQuerySidebarElement;
         "gx-query-viewer": HTMLGxQueryViewerElement;
         "gx-query-viewer-card": HTMLGxQueryViewerCardElement;
         "gx-query-viewer-card-controller": HTMLGxQueryViewerCardControllerElement;
         "gx-query-viewer-chart": HTMLGxQueryViewerChartElement;
         "gx-query-viewer-chart-controller": HTMLGxQueryViewerChartControllerElement;
-        "gx-query-viewer-container": HTMLGxQueryViewerContainerElement;
         "gx-query-viewer-controller": HTMLGxQueryViewerControllerElement;
         "gx-query-viewer-element": HTMLGxQueryViewerElementElement;
         "gx-query-viewer-element-format": HTMLGxQueryViewerElementFormatElement;
@@ -994,6 +1003,10 @@ declare namespace LocalJSX {
          */
         "accessibleName"?: "Query list";
         /**
+          * Base URL of the server
+         */
+        "baseUrl"?: string;
+        /**
           * Show queries items group by month
          */
         "groupItemsByMonth"?: true;
@@ -1001,6 +1014,14 @@ declare namespace LocalJSX {
           * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
          */
         "metadataName"?: string;
+        /**
+          * Delete query
+         */
+        "onGxQueryDelete"?: (event: GxQueryMenuCustomEvent<GxQueryItem>) => void;
+        /**
+          * Rename query
+         */
+        "onGxQueryRename"?: (event: GxQueryMenuCustomEvent<GxQueryItem>) => void;
         /**
           * Select a query
          */
@@ -1043,6 +1064,36 @@ declare namespace LocalJSX {
           * Trigger the action to select an item
          */
         "onSelectItem"?: (event: GxQueryMenuItemCustomEvent<GxQueryItem>) => void;
+    }
+    interface GxQueryRender {
+        /**
+          * Base URL of the server
+         */
+        "baseUrl"?: string;
+        /**
+          * Data of
+         */
+        "data"?: QueryViewerServiceData | string;
+        /**
+          * Environment of the project: java or net
+         */
+        "environment"?: GeneratorType;
+        /**
+          * Data of
+         */
+        "metadata"?: QueryViewerServiceMetaData | string;
+        /**
+          * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
+         */
+        "metadataName"?: string;
+        /**
+          * Provide the Query properties
+         */
+        "query"?: QueryViewerBase;
+        /**
+          * True to tell the controller to connect use GXquery as a queries repository
+         */
+        "useGxquery"?: true;
     }
     interface GxQuerySidebar {
         /**
@@ -1456,29 +1507,6 @@ declare namespace LocalJSX {
          */
         "yAxisTitle"?: string;
     }
-    interface GxQueryViewerContainer {
-        /**
-          * Base URL
-         */
-        "baseUrl"?: string;
-        /**
-          * Environment of the project: java or net
-         */
-        "environment"?: GeneratorType;
-        /**
-          * This property specifies the title
-         */
-        "mainTitle"?: string;
-        /**
-          * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
-         */
-        "metadataName"?: string;
-        "onGxQuerySaveQuery"?: (event: GxQueryViewerContainerCustomEvent<GxQueryItem>) => void;
-        /**
-          * True to tell the controller to connect use GXquery as a queries repository
-         */
-        "useGxquery"?: true;
-    }
     interface GxQueryViewerController {
         /**
           * @todo Add description
@@ -1766,13 +1794,13 @@ declare namespace LocalJSX {
         "gx-query-chat": GxQueryChat;
         "gx-query-menu": GxQueryMenu;
         "gx-query-menu-item": GxQueryMenuItem;
+        "gx-query-render": GxQueryRender;
         "gx-query-sidebar": GxQuerySidebar;
         "gx-query-viewer": GxQueryViewer;
         "gx-query-viewer-card": GxQueryViewerCard;
         "gx-query-viewer-card-controller": GxQueryViewerCardController;
         "gx-query-viewer-chart": GxQueryViewerChart;
         "gx-query-viewer-chart-controller": GxQueryViewerChartController;
-        "gx-query-viewer-container": GxQueryViewerContainer;
         "gx-query-viewer-controller": GxQueryViewerController;
         "gx-query-viewer-element": GxQueryViewerElement;
         "gx-query-viewer-element-format": GxQueryViewerElementFormat;
@@ -1788,13 +1816,13 @@ declare module "@stencil/core" {
             "gx-query-chat": LocalJSX.GxQueryChat & JSXBase.HTMLAttributes<HTMLGxQueryChatElement>;
             "gx-query-menu": LocalJSX.GxQueryMenu & JSXBase.HTMLAttributes<HTMLGxQueryMenuElement>;
             "gx-query-menu-item": LocalJSX.GxQueryMenuItem & JSXBase.HTMLAttributes<HTMLGxQueryMenuItemElement>;
+            "gx-query-render": LocalJSX.GxQueryRender & JSXBase.HTMLAttributes<HTMLGxQueryRenderElement>;
             "gx-query-sidebar": LocalJSX.GxQuerySidebar & JSXBase.HTMLAttributes<HTMLGxQuerySidebarElement>;
             "gx-query-viewer": LocalJSX.GxQueryViewer & JSXBase.HTMLAttributes<HTMLGxQueryViewerElement>;
             "gx-query-viewer-card": LocalJSX.GxQueryViewerCard & JSXBase.HTMLAttributes<HTMLGxQueryViewerCardElement>;
             "gx-query-viewer-card-controller": LocalJSX.GxQueryViewerCardController & JSXBase.HTMLAttributes<HTMLGxQueryViewerCardControllerElement>;
             "gx-query-viewer-chart": LocalJSX.GxQueryViewerChart & JSXBase.HTMLAttributes<HTMLGxQueryViewerChartElement>;
             "gx-query-viewer-chart-controller": LocalJSX.GxQueryViewerChartController & JSXBase.HTMLAttributes<HTMLGxQueryViewerChartControllerElement>;
-            "gx-query-viewer-container": LocalJSX.GxQueryViewerContainer & JSXBase.HTMLAttributes<HTMLGxQueryViewerContainerElement>;
             "gx-query-viewer-controller": LocalJSX.GxQueryViewerController & JSXBase.HTMLAttributes<HTMLGxQueryViewerControllerElement>;
             "gx-query-viewer-element": LocalJSX.GxQueryViewerElement & JSXBase.HTMLAttributes<HTMLGxQueryViewerElementElement>;
             "gx-query-viewer-element-format": LocalJSX.GxQueryViewerElementFormat & JSXBase.HTMLAttributes<HTMLGxQueryViewerElementFormatElement>;

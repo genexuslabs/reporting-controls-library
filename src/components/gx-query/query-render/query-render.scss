@@ -1,0 +1,8 @@
+@import "../../../common/base-mixins";
+@import "../../../global/tokens";
+
+@include box-sizing();
+
+:host {
+  flex: 1 1 0%;
+}

@@ -1,19 +1,15 @@
 @import "../../../common/base-mixins";
-@import "../../../global/variables";
+@import "../../../global/tokens";
 
 @include box-sizing();
+
+:host {
+}
 
 :host([is-active]) {
   .controls {
     display: flex;
   }
-  .item {
-    background-color: var(--gx-menu-item-active-color);
-  }
-}
-
-:host([aria-selected="true"]) li {
-  background-color: var(--gx-menu-item-hover-color);
 }
 
 .maskImage {
@@ -24,16 +20,15 @@
 
 .item {
   align-items: center;
+  border: 2px transparent;
   cursor: pointer;
   display: flex;
   flex: 1 1 0%;
-  font-size: var(--gx-font-size);
-  gap: var(--gx-space-medium);
+  gap: 8px;
   justify-content: space-between;
-  line-height: var(--gx-line-height);
   min-height: 40px;
   overflow: hidden;
-  padding: var(--gx-space-medium);
+  padding: 10px;
 }
 
 .label {
@@ -48,7 +43,6 @@
     content: "";
     display: inline-block;
     height: 18px;
-    line-height: var(--gx-line-height);
     margin-right: 4px;
     width: 20px;
 
@@ -59,22 +53,20 @@
 }
 
 .controls {
-  display: flex;
   display: none;
-  gap: 3px;
+  gap: 8px;
   justify-content: space-evenly;
-  width: var(--gx-controls-width);
 }
 
 .btn {
   color: inherit;
   cursor: pointer;
-  height: var(--gx-button-size);
+  height: 18px;
   line-height: 0;
   overflow: hidden;
   text-indent: -999px;
   text-wrap: wrap;
-  width: var(--gx-button-size);
+  width: 18px;
 }
 .btn-edit {
   @extend .maskImage;

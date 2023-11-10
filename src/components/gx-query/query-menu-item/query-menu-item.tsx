@@ -178,16 +178,16 @@ export class QueryMenuItem implements GxComponent {
 
     return (
       <Host tabindex="0" onClick={!this.editMode ? this.handlerSelect : null}>
-        <li class="item" part="item" role="option">
+        <li class="item" part={`item ${this.isActive ? 'active' : ''}`} role="option">
           <div
             aria-controls={this.editControlId}
             aria-expanded={this.editMode ? "true" : "false"}
             class="label"
-            part="item-label"
+            part="label"
           >
             {template}
           </div>
-          <div class="controls" id={this.editControlId} part="item-controls">
+          <div class="controls" id={this.editControlId} part="controls">
             {!this.editMode
               ? [
                   <button

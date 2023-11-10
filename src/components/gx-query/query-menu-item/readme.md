@@ -38,11 +38,10 @@ Type: `Promise<void>`
 
 ## Shadow Parts
 
-| Part              | Description |
-| ----------------- | ----------- |
-| `"item"`          |             |
-| `"item-controls"` |             |
-| `"item-label"`    |             |
+| Part         | Description |
+| ------------ | ----------- |
+| `"controls"` |             |
+| `"label"`    |             |
 
 
 ## Dependencies
