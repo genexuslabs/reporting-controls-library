@@ -7,7 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { QueryChatItem } from "./components/gx-query/query-chat/query-chat";
 import { GeneratorType, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerSliderRange, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels, TrendIcon } from "./common/basic-types";
-import { QueryViewerServiceResponse } from "./services/types/service-result";
+import { QueryViewerServiceResponse } from "@genexus/reporting-api/dist/types/service-result";
 import { Axis, ChartOptions, LegendOptions, PaneOptions, PlotOptions, SeriesLineOptions, SeriesOptionsType, SubtitleOptions, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
 import { QueryViewerParameterChangedEvent } from "./components/query-viewer-parameter/query-viewer-parameter";
 export namespace Components {
