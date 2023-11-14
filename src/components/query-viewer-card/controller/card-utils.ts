@@ -1,15 +1,15 @@
 import { add, differenceInDays, differenceInSeconds } from "date-fns";
 
 import {
+  QueryViewerServiceData,
+  QueryViewerServiceDataRow,
+  QueryViewerServiceMetaDataData
+} from "@genexus/reporting-api/dist/types/service-result";
+import {
   QueryViewerDataType,
   QueryViewerShowDataAs,
   QueryViewerTrendPeriod
 } from "../../../common/basic-types";
-import {
-  QueryViewerServiceData,
-  QueryViewerServiceDataRow,
-  QueryViewerServiceMetaDataData
-} from "../../../services/types/service-result";
 import { fromDateToString, fromStringToDateISO } from "../../../utils/date";
 
 export type RegressionSeries = {

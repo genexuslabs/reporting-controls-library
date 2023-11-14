@@ -59,12 +59,14 @@
     "jest-cli": "^27.4.5",
     "prettier": "~2.7.0",
     "puppeteer": "^19.4.1",
+    "rollup-plugin-dotenv": "^0.5.0",
     "scss-bundle": "^3.1.1",
     "storybook": "^7.4.5",
     "typescript": "^4.9.0"
   },
   "license": "MIT",
   "dependencies": {
+    "@genexus/reporting-api": "https://github.com/genexuslabs/reporting-api.git",
     "@genexus/web-controls-library": "2.3.0",
     "date-fns": "^2.30.0",
     "highcharts": "^11.1.0",

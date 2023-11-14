@@ -9,14 +9,14 @@ import {
 } from "../common/basic-types";
 import { ChartTypes } from "../components/query-viewer-chart/controller/chart-types";
 import { ChartMetadataAndData } from "../components/query-viewer-chart/controller/processDataAndMetadata";
-// import { QueryViewerAxisConditionalStyle } from "../services/types/json";
-import { TooltipFormatterContextObject } from "highcharts";
+// import { QueryViewerAxisConditionalStyle } from "@genexus/reporting-api/dist/types/json";
 import {
   QueryViewerServiceDataRow,
   QueryViewerServiceMetaData,
   QueryViewerServiceMetaDataAxis,
   QueryViewerServiceMetaDataData
-} from "../services/types/service-result";
+} from "@genexus/reporting-api/dist/types/service-result";
+import { TooltipFormatterContextObject } from "highcharts";
 export function parseNumericPicture(
   dataType: QueryViewerDataType,
   picture: string

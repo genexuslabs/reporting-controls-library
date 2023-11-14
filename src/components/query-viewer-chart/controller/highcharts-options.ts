@@ -1,4 +1,35 @@
 import {
+  QueryViewerServiceMetaData,
+  QueryViewerServiceMetaDataData
+} from "@genexus/reporting-api/dist/types/service-result";
+import { trimUtil } from "@genexus/reporting-api/dist/xml-parser/utils/general";
+import { getDay, getHours, getMinutes, getMonth, getYear } from "date-fns";
+import {
+  AlignValue,
+  ChartOptions,
+  ExtremesObject,
+  Options as HighChartOptions,
+  //   SelectEventObject,
+  LegendOptions,
+  Options,
+  PaneBackgroundOptions,
+  PaneOptions,
+  PlotOptions,
+  PointMarkerOptionsObject,
+  SeriesLineOptions
+  // ExtremesObject,
+  // SeriesLineOptions
+  ,
+  SeriesOptionsType,
+  SubtitleOptions,
+  TooltipFormatterContextObject,
+  TooltipOptions,
+  XAxisOptions,
+  XAxisPlotBandsOptions,
+  YAxisOptions,
+  YAxisPlotLinesOptions
+} from "highcharts";
+import {
   QueryViewerAggregationType,
   QueryViewerChartSerie,
   QueryViewerChartType,
@@ -7,30 +38,12 @@ import {
   QueryViewerVisible,
   QueryViewerXAxisLabels
 } from "../../../common/basic-types";
+import { fromDateToString, fromStringToDateISO } from "../../../utils/date";
 import {
-  Options as HighChartOptions,
-  ChartOptions,
-  //   SelectEventObject,
-  LegendOptions,
-  SubtitleOptions,
-  XAxisOptions,
-  YAxisOptions,
-  YAxisPlotLinesOptions,
-  AlignValue,
-  PlotOptions,
-  PointMarkerOptionsObject,
-  TooltipOptions,
-  TooltipFormatterContextObject,
-  SeriesOptionsType,
-  PaneOptions,
-  PaneBackgroundOptions,
-  XAxisPlotBandsOptions,
-  Options,
-  ExtremesObject,
-  SeriesLineOptions
-  // ExtremesObject,
-  // SeriesLineOptions
-} from "highcharts";
+  SelectionAllowed,
+  TooltipFormatter,
+  aggregate
+} from "../../../utils/general";
 import { ChartTypes, IS_CHART_TYPE } from "./chart-types";
 import {
   ChartGroupLower,
@@ -40,18 +53,6 @@ import {
   getChartGroup
 } from "./chart-utils";
 import { ChartMetadataAndData, XAxisDataType } from "./processDataAndMetadata";
-import {
-  QueryViewerServiceMetaData,
-  QueryViewerServiceMetaDataData
-} from "../../../services/types/service-result";
-import {
-  SelectionAllowed,
-  TooltipFormatter,
-  aggregate
-} from "../../../utils/general";
-import { trimUtil } from "../../../services/xml-parser/utils/general";
-import { fromDateToString, fromStringToDateISO } from "../../../utils/date";
-import { getYear, getMonth, getDay, getHours, getMinutes } from "date-fns";
 
 const DEFAULT_CHART_SPACING = 10;
 export const HOURS_PER_DAY = 24;

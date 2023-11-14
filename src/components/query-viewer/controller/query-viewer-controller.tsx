@@ -6,12 +6,6 @@ import {
   QueryViewerOrientation,
   QueryViewerOutputType
 } from "../../../common/basic-types";
-import {
-  ServicesContext,
-  getMetadataAndData
-} from "../../../services/services-manager";
-import { QueryViewer, QueryViewerCard } from "../../../services/types/json";
-import { QueryViewerServiceResponse } from "../../../services/types/service-result";
 @Component({
   tag: "gx-query-viewer-controller",
   shadow: false
