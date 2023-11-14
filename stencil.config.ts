@@ -1,5 +1,6 @@
 import { Config } from "@stencil/core";
 import { sass } from "@stencil/sass";
+import dotenvPlugin from "rollup-plugin-dotenv";
 
 export const config: Config = {
   namespace: "reporting",
@@ -28,5 +29,5 @@ export const config: Config = {
     // larger bundle size when only the card is used
     { components: ["gx-query-viewer-card", "gx-query-viewer-card-controller"] }
   ],
-  plugins: [sass()]
+  plugins: [sass(), dotenvPlugin()]
 };
