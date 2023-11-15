@@ -82,8 +82,11 @@
         const queryRender = document.querySelector("gx-query-render");
 
         queryRender.query = query;
-        queryRender.data = Data;
-        queryRender.metadata = Metadata;
+        setTimeout(() => {
+          console.log('time is out');
+          queryRender.data = Data;
+          queryRender.metadata = Metadata;
+        }, 2000);
         // queryMenu.serializedObject = serializedStringMock;
         // queryMenu.addEventListener("gxQuerySelect", a => {
         //   console.log("gxQuerySelect", a);
@@ -137,7 +140,6 @@
       </gx-query-sidebar>
 
       <gx-query-render
-        main-title="Flights by Day Time"
         metadata-name="ReportingShowcase"
       >
       </gx-query-render>

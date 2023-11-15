@@ -8,7 +8,6 @@ import {
   h
 } from "@stencil/core";
 
-import { QueryViewerServiceResponse } from "@genexus/reporting-api/dist/types/service-result";
 import {
   DUMMY_TRANSLATIONS,
   QueryViewerBase,
@@ -26,7 +25,8 @@ import {
   QueryViewerTranslations,
   QueryViewerTrendPeriod,
   QueryViewerXAxisLabels
-} from "../../common/basic-types";
+} from "@genexus/reporting-api/dist/types/basic-types";
+import { QueryViewerServiceResponse } from "@genexus/reporting-api/dist/types/service-result";
 import { Component as GxComponent } from "../../common/interfaces";
 
 @Component({

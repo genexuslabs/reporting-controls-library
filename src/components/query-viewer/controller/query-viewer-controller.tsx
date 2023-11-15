@@ -1,11 +1,17 @@
 import { Component, Event, EventEmitter, Prop, Watch } from "@stencil/core";
 
 import {
+  ServicesContext,
+  getMetadataAndData
+} from "@genexus/reporting-api/dist";
+import {
   GeneratorType,
   QueryViewerChartType,
   QueryViewerOrientation,
   QueryViewerOutputType
-} from "../../../common/basic-types";
+} from "@genexus/reporting-api/dist/types/basic-types";
+import { QueryViewer, QueryViewerCard } from "@genexus/reporting-api/dist/types/json";
+import { QueryViewerServiceResponse } from "@genexus/reporting-api/dist/types/service-result";
 @Component({
   tag: "gx-query-viewer-controller",
   shadow: false
@@ -101,10 +107,6 @@ export class QueryViewerController {
    * Fired when new metadata and data is fetched
    */
   @Event() queryViewerServiceResponse: EventEmitter<QueryViewerServiceResponse>;
-  /**
-   * Fired when there is an error fetching data
-   */
-  @Event() queryViewerErrorResponse: EventEmitter<string>;
 
   private getQueryViewerInformation(objectName: string): QueryViewer {
     const queryViewerObject: QueryViewer = {
@@ -144,9 +146,6 @@ export class QueryViewerController {
       this.type !== QueryViewerOutputType.Card &&
       this.type !== QueryViewerOutputType.Chart
     ) {
-      this.queryViewerErrorResponse.emit(
-        `The output type ${this.type} is unimplemented`
-      );
       return;
     }
 

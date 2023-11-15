@@ -13,17 +13,17 @@ import {
 } from "@stencil/core";
 
 import {
+  DeleteQueryServiceResponse, RenameQueryServiceResponse,
   asyncDeleteQuery,
   asyncGetListQuery,
   asyncRenameQuery
-} from "@genexus/reporting-controls-api/dist";
-import { DeleteQueryServiceResponse, RenameQueryServiceResponse } from "@genexus/reporting-controls-api/dist/gxquery-connector";
-import { differenceInDays, endOfMonth, format } from "date-fns";
+} from "@genexus/reporting-api/dist";
 import {
   GxQueryItem,
   GxQueryListResponse,
   GxQueryOptions
-} from "../../../common/basic-types";
+} from "@genexus/reporting-api/dist/types/basic-types";
+import { differenceInDays, endOfMonth, format } from "date-fns";
 import { Component as GxComponent } from "../../../common/interfaces";
 import { KEY_CODES } from "../../../common/reserverd-names";
 import { GxQueryMenuItemCustomEvent } from "../../../components";

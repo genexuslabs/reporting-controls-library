@@ -31,7 +31,6 @@
 
 | Event                        | Description                                 | Type                                                                                                                |
 | ---------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `queryViewerErrorResponse`   | Fired when there is an error fetching data  | `CustomEvent<string>`                                                                                               |
 | `queryViewerServiceResponse` | Fired when new metadata and data is fetched | `CustomEvent<{ MetaData: QueryViewerServiceMetaData; Data: QueryViewerServiceData; Properties: QueryViewerBase; }>` |
 
 

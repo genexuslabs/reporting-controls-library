@@ -20,10 +20,10 @@
 
 ## Events
 
-| Event              | Description                              | Type                                                                                                                                                                |
-| ------------------ | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `gxQuerySelect`    | Fired when receive a question answer     | `CustomEvent<Omit<QueryViewerBase, "Modified"> & { Id: string; Name: string; Description: string; Expression: string; Modified: Date; differenceInDays: number; }>` |
-| `queryChatRequest` | Fired each time the user make a question | `CustomEvent<{ message: string; }>`                                                                                                                                 |
+| Event              | Description                              | Type                                |
+| ------------------ | ---------------------------------------- | ----------------------------------- |
+| `gxQuerySelect`    | Fired when receive a question answer     | `CustomEvent<QueryViewerBase>`      |
+| `queryChatRequest` | Fired each time the user make a question | `CustomEvent<{ message: string; }>` |
 
 
 ## Dependencies

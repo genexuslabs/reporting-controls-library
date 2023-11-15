@@ -11,15 +11,15 @@ import {
   h
 } from "@stencil/core";
 
+import { asyncNewChatMessage } from "@genexus/reporting-api/dist";
 import {
   GxChatMessage,
   GxChatMessageResponse,
-  GxQueryItem,
-  GxQueryOptions
-} from "../../../common/basic-types";
+  GxQueryOptions,
+  QueryViewerBase
+} from "@genexus/reporting-api/dist/types/basic-types";
 import { Component as GxComponent } from "../../../common/interfaces";
 import { KEY_CODES } from "../../../common/reserverd-names";
-import { asyncNewChatMessage } from "../../../services/services-manager";
 
 
 export type QueryRequest = {
@@ -86,14 +86,14 @@ export class QueryChat implements GxComponent {
    * Fired when receive a question answer
    */
   @Event({ bubbles: true, composed: true, cancelable: false })
-  gxQuerySelect: EventEmitter<GxQueryItem>;
+  gxQuerySelect: EventEmitter<QueryViewerBase>;
 
   /**
    * Reset chat when QueryId was trigger by another component
    * @param event query item selected
    */
   @Listen("gxQuerySelect", { target: "window" })
-  checkQuerySelect(event: CustomEvent<GxQueryItem>) {
+  checkQuerySelect(event: CustomEvent<QueryViewerBase>) {
     const lastQuery = this.queryItems.length - 1;
     const chatItemId = lastQuery > 0 ? this.queryItems[lastQuery].id : "";
     if (chatItemId !== event.detail.Id) {
