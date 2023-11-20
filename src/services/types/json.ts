@@ -1,6 +1,8 @@
 import {
   QueryViewerConditionOperator,
-  QueryViewerOutputType
+  QueryViewerOutputType,
+  QueryViewerShowDataLabelsIn,
+  QueryViewerTotal
 } from "../../common/basic-types";
 
 export type QueryViewerSDTWithValues = {
@@ -123,11 +125,75 @@ export type QueryViewerData = QueryViewerBaseInfo & {
   SortAscendingForced: boolean;
 };
 
-export type QueryViewerAttributeValues = QueryViewerBaseInfo & {
+export type QueryViewerPostInfoAttributeValues = QueryViewerBaseInfo & {
   DataField: string;
   PageNumber: number;
   PageSize: number;
   Filter: string;
+};
+
+export type QueryViewerPostInfoCalculatePivottableData = QueryViewerBaseInfo & {
+  SortAscendingForced: boolean;
+  QueryViewerId: number;
+};
+
+export type QueryViewerPostInfoFilter = QueryViewerFilter;
+
+export type QueryViewerPostInfoExpandCollapse = QueryViewerExpandCollapse;
+
+export type QueryViewerPostInfoDataInfo = {
+  DataField: string;
+  Visible: boolean;
+  Position: number;
+};
+
+export type QueryViewerPostInfoAxesInfo = {
+  DataField: string;
+  Visible: boolean;
+  Axis: string;
+  Position: number;
+  Order: string;
+  Subtotals: number | boolean;
+};
+
+export type QueryViewerPostInfoPivotPageData = QueryViewerBasicInfo & {
+  PageNumber: number;
+  PageSize: number;
+  ReturnTotPages: boolean;
+  ShowDataLabelsIn: QueryViewerShowDataLabelsIn;
+  TotalForRows: QueryViewerTotal;
+  TotalForColumns: QueryViewerTotal;
+  AxesInfo?: QueryViewerPostInfoAxesInfo[];
+  DataInfo?: QueryViewerPostInfoDataInfo[];
+  Filters?: QueryViewerPostInfoFilter[];
+  ExpandCollapse?: QueryViewerPostInfoExpandCollapse[];
+  AppSettings?: any;
+  RuntimeParameters: QueryViewerRuntimeParameter[];
+  RuntimeFields: QueryViewerRuntimeField[];
+  AllowElementsOrderChange: boolean;
+  RecordsetCacheInfo: QueryViewerRecordSetCache;
+  LayoutChanged: any;
+  ReturnSampleData: boolean;
+  TranslationType: string;
+};
+
+export type QueryViewerPostInfoTablePageData = QueryViewerBasicInfo & {
+  PageNumber: number;
+  PageSize: number;
+  ReturnTotPages: boolean;
+  Order: {
+    DataField: string;
+    Type: QueryViewerOutputType;
+  };
+  Filters?: QueryViewerPostInfoFilter[];
+  AppSettings?: any;
+  RuntimeParameters: QueryViewerRuntimeParameter[];
+  RuntimeFields: QueryViewerRuntimeField[];
+  AllowElementsOrderChange: boolean;
+  RecordsetCacheInfo: QueryViewerRecordSetCache;
+  LayoutChanged: any;
+  ReturnSampleData: boolean;
+  TranslationType: string;
 };
 
 // - - - - - - - - - - - - - - - - - - - - -
@@ -136,6 +202,12 @@ export type QueryViewerAttributeValues = QueryViewerBaseInfo & {
 export type QueryViewer = {
   // Basic info
   ApplicationNamespace: string;
+
+  AppSettings?: any;
+
+  // Runtime fields
+  Axes: QueryViewerAxis[];
+
   Object?: any; // @todo Check if is necessary
   ObjectName?: string;
 
@@ -152,7 +224,7 @@ export type QueryViewer = {
 
   // Metadata (Separate in a different type)
   RememberLayout?: boolean;
-  ShowDataLabelsIn?: string;
+  ShowDataLabelsIn?: QueryViewerShowDataLabelsIn;
 
   /**
    * `true` when `RealType === "PivotTable"` or `RealType === "Table"`
@@ -169,17 +241,28 @@ export type QueryViewer = {
     MaximumCacheSize: number;
   };
 
+  /**
+   * Use when `RealType === "PivotTable"` or `RealType === "Table"`
+   */
+  Paging?: boolean;
+
   // Runtime parameters
   Parameters: {
     Name: string;
     Value: string;
   }[];
 
-  // Runtime fields
-  Axes: QueryViewerAxis[];
+  /**
+   * Use when `RealType === "PivotTable"` or `RealType === "Table"`
+   */
+  TotalForRows?: QueryViewerTotal;
+
+  /**
+   * Use when `RealType === "PivotTable"` or `RealType === "Table"`
+   */
+  TotalForColumns?: QueryViewerTotal;
 
   QueryInfo?: any;
-  AppSettings?: any;
 };
 
 export type QueryViewerAxis = {
@@ -264,4 +347,41 @@ export type QueryViewerCard = QueryViewer & {
 
 export type QueryViewerChart = QueryViewer & {
   RealChartType: string;
+};
+
+export type QueryViewerFilter = {
+  DataField: string;
+  NullIncluded: boolean;
+  NotNullValues: {
+    DefaultAction: string;
+    Included?: string[];
+    Excluded?: string[];
+  };
+};
+
+export type QueryViewerExpandCollapse = {
+  DataField: string;
+  NullExpanded: boolean;
+  NotNullValues: {
+    DefaultAction: string;
+    Expanded?: string[];
+    Collapsed?: string[];
+  };
+};
+
+export type QueryViewerDataInfo = {
+  DataField: string;
+  Hidden: boolean;
+  Position: number;
+};
+
+export type QueryViewerAxesInfo = {
+  DataField: string;
+  Hidden: boolean;
+  Axis: {
+    Type: string;
+    Position: number;
+  };
+  Order: string;
+  Subtotals: number | boolean;
 };

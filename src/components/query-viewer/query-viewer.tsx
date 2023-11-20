@@ -12,6 +12,7 @@ import {
 import { Component as GxComponent } from "../../common/interfaces";
 import {
   DUMMY_TRANSLATIONS,
+  QueryViewerAutoResizeType,
   QueryViewerBase,
   QueryViewerChartType,
   QueryViewerContinent,
@@ -28,7 +29,14 @@ import {
   QueryViewerTrendPeriod,
   QueryViewerXAxisLabels
 } from "../../common/basic-types";
-import { QueryViewerServiceResponse } from "../../services/types/service-result";
+import {
+  QueryViewerAttributesValuesForTable,
+  QueryViewerAttributesValuesForPivot,
+  QueryViewerPageDataForPivot,
+  QueryViewerPageDataForTable,
+  QueryViewerServiceResponse,
+  QueryViewerServiceResponsePivotTable
+} from "../../services/types/service-result";
 
 @Component({
   tag: "gx-query-viewer",
@@ -43,7 +51,8 @@ export class QueryViewer implements GxComponent {
    */
   private rendersDictionary: {
     [key in QueryViewerOutputType]: (
-      serviceResponse: QueryViewerServiceResponse
+      serviceResponse: QueryViewerServiceResponse,
+      serviceResponsePivotTable: QueryViewerServiceResponsePivotTable
     ) => any;
   } = {
     [QueryViewerOutputType.Card]: response => this.cardRender(response),
@@ -51,19 +60,34 @@ export class QueryViewer implements GxComponent {
     [QueryViewerOutputType.Chart]: response => this.chartRender(response),
     [QueryViewerOutputType.Map]: response =>
       this.notImplementedRender(response),
-    [QueryViewerOutputType.PivotTable]: response => this.pivotRender(response),
-    [QueryViewerOutputType.Table]: response =>
-      this.notImplementedRender(response),
+    [QueryViewerOutputType.PivotTable]: (_, pivotResponse) =>
+      this.pivotRender(pivotResponse),
+    [QueryViewerOutputType.Table]: (_, pivotResponse) =>
+      this.tableRender(pivotResponse),
 
     // @todo Update this option to depend on the assigned object
     [QueryViewerOutputType.Default]: response =>
       this.notImplementedRender(response)
   };
 
+  private controller: HTMLGxQueryViewerControllerElement;
+
   @Element() element: HTMLGxQueryViewerElement;
 
   @State() parameters: string;
   @State() elements: string;
+
+  /**
+   * Response Attribute Values for Table
+   */
+  @Prop({ mutable: true })
+  attributeValuesForPivotTableXml: string;
+
+  /**
+   * Response Attribute Values for Pivot Table
+   */
+  @Prop({ mutable: true })
+  attributeValuesForTableXml: string;
 
   /**
    * Allowing elements order to change
@@ -88,7 +112,13 @@ export class QueryViewer implements GxComponent {
   /**
    * If autoResize, in here select the type, Width, height, or both
    */
-  @Prop() readonly autoResizeType: "Both" | "Vertical" | "Horizontal";
+  @Prop() readonly autoResizeType: QueryViewerAutoResizeType;
+
+  /**
+   * Response Attribute Values
+   */
+  @Prop({ mutable: true })
+  calculatePivottableDataXml: string;
 
   /**
    * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
@@ -191,6 +221,12 @@ export class QueryViewer implements GxComponent {
   @Prop({ mutable: true }) serviceResponse: QueryViewerServiceResponse;
 
   /**
+   * Specifies the metadata that the control will use to render the pivotTable.
+   */
+  @Prop({ mutable: true })
+  serviceResponsePivotTable: QueryViewerServiceResponsePivotTable;
+
+  /**
    * Title of the QueryViewer
    */
   @Prop({ mutable: true }) queryTitle: string;
@@ -287,10 +323,115 @@ export class QueryViewer implements GxComponent {
    */
   @Prop({ mutable: true }) country: QueryViewerCountry;
 
+  /**
+   * Response Page Data
+   */
+  @Prop({ mutable: true }) pageDataForPivotTable: string;
+
+  /**
+   * Response Page Data
+   */
+  @Prop({ mutable: true }) pageDataForTable: string;
+
   @Listen("queryViewerServiceResponse")
   handleServiceResponse(event: CustomEvent<QueryViewerServiceResponse>) {
     this.serviceResponse = event.detail;
     this.setQueryViewerProperties(event.detail.Properties);
+  }
+
+  @Listen("queryViewerServiceResponsePivotTable")
+  handleServiceResponsePivotTable(
+    event: CustomEvent<QueryViewerServiceResponsePivotTable>
+  ) {
+    this.serviceResponsePivotTable = event.detail;
+    this.setQueryViewerProperties(event.detail.Properties);
+  }
+
+  @Listen("RequestPageDataForPivotTable", { target: "document" })
+  handleRequestPageDataForPivotTable(
+    event: CustomEvent<QueryViewerPageDataForPivot>
+  ) {
+    if (this.controller) {
+      event.stopPropagation();
+
+      console.log("hola ", (event as any).parameter);
+      this.controller.getPageDataForPivotTable(
+        (event as any).parameter,
+        this.paging,
+        this.totalForColumns,
+        this.totalForRows
+      );
+    }
+  }
+
+  /** Servicios de la Pivot  **/
+
+  @Listen("pageDataForPivotTable")
+  handlePageDataForPivotTable(event: CustomEvent<string>) {
+    this.pageDataForPivotTable = event.detail;
+  }
+
+  @Listen("RequestAttributeValuesForPivotTable")
+  handleAttributeValuesForPivotTable(
+    event: CustomEvent<QueryViewerAttributesValuesForPivot>
+  ) {
+    if (this.controller) {
+      this.controller.getAttributeValues(event.detail);
+    }
+  }
+
+  @Listen("attributesValuesForPivotTable")
+  handleAttributesValuesPivot(event: CustomEvent<string>) {
+    this.attributeValuesForPivotTableXml = event.detail;
+  }
+
+  @Listen("RequestCalculatePivottableData")
+  handleRequestCalculatePivottableData(event: CustomEvent<string>) {
+    if (this.controller) {
+      this.controller.getCalculatePivottableData(event.detail);
+    }
+  }
+
+  @Listen("calculatePivottableData")
+  handleCalculatePivottableData(event: CustomEvent<string>) {
+    this.calculatePivottableDataXml = event.detail;
+  }
+
+  /**  Servicios de la Table  **/
+
+  @Listen("RequestPageDataForTable", { target: "document" })
+  handleRequestPageDataForTable(
+    event: CustomEvent<QueryViewerPageDataForTable>
+  ) {
+    if (this.controller) {
+      event.stopPropagation();
+      // console.log("hola ", (event as any).parameter);
+      this.controller.getPageDataForTable(
+        (event as any).parameter,
+        this.paging,
+        this.totalForColumns,
+        this.totalForRows
+      );
+    }
+  }
+
+  @Listen("pageDataForTable")
+  handlePageDataForTable(event: CustomEvent<string>) {
+    this.pageDataForTable = event.detail;
+  }
+
+  @Listen("RequestAttributeForTable")
+  handleAttributeForTable(
+    event: CustomEvent<QueryViewerAttributesValuesForTable>
+  ) {
+    if (this.controller) {
+      this.controller.getAttributeValues(event.detail);
+    }
+  }
+
+  @Listen("attributesValuesForTable")
+  handleAttributesValuesTable(event: CustomEvent<string>) {
+    this.attributeValuesForTableXml = event.detail;
   }
 
   /**
@@ -365,30 +506,85 @@ export class QueryViewer implements GxComponent {
     );
   }
 
-  private pivotRender(serviceResponse: QueryViewerServiceResponse) {
+  private pivotRender(
+    serviceResponsePivotTable: QueryViewerServiceResponsePivotTable
+  ) {
     return (
-      <gx-query-viewer-pivot-controller
+      <gx-query-viewer-pivot-render
+        allowElementsOrderChange={this.allowElementsOrderChange}
         allowSelection={this.allowSelection}
         cssClass={this.cssClass}
         pivotTitle={this.queryTitle}
         paging={this.paging}
         pageSize={this.pageSize}
         showDataLabelsIn={this.showDataLabelsIn}
-        serviceResponse={serviceResponse}
+        serviceResponse={serviceResponsePivotTable}
         totalForRows={this.totalForRows}
         totalForColumns={this.totalForColumns}
-      ></gx-query-viewer-pivot-controller>
+        translations={DUMMY_TRANSLATIONS}
+        disableColumnSort={this.disableColumnSort}
+        rememberLayout={this.rememberLayout}
+        pageDataForPivotTable={this.pageDataForPivotTable}
+        attributeValuesForPivotTableXml={this.attributeValuesForPivotTableXml}
+        calculatePivottableDataXml={this.calculatePivottableDataXml}
+      ></gx-query-viewer-pivot-render>
     );
   }
 
+  private tableRender(
+    serviceResponsePivotTable: QueryViewerServiceResponsePivotTable
+  ) {
+    return (
+      <gx-query-viewer-table-render
+        allowElementsOrderChange={this.allowElementsOrderChange}
+        allowSelection={this.allowSelection}
+        cssClass={this.cssClass}
+        tableTitle={this.queryTitle}
+        paging={this.paging}
+        pageSize={this.pageSize}
+        showDataLabelsIn={this.showDataLabelsIn}
+        serviceResponse={serviceResponsePivotTable}
+        totalForRows={this.totalForRows}
+        totalForColumns={this.totalForColumns}
+        translations={DUMMY_TRANSLATIONS}
+        disableColumnSort={this.disableColumnSort}
+        rememberLayout={this.rememberLayout}
+        pageDataForTable={this.pageDataForTable}
+        attributeValuesForTableXml={this.attributeValuesForTableXml}
+      ></gx-query-viewer-table-render>
+    );
+  }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private notImplementedRender(_serviceResponse: QueryViewerServiceResponse) {
     return "";
   }
 
+  componentWillLoad() {
+    this.controller = this.element.querySelector("gx-query-viewer-controller");
+    this.serviceResponse = {
+      Data: [] as any,
+      MetaData: [] as any,
+      Properties: undefined
+    };
+    this.serviceResponsePivotTable = {
+      MetaData: [] as any,
+      Properties: undefined,
+      metadataXML: undefined,
+      objectName: "",
+      useGxQuery: undefined
+    };
+  }
+
   render() {
+    console.log(this.type);
+
     return (
-      <Host>{this.rendersDictionary[this.type](this.serviceResponse)}</Host>
+      <Host>
+        {this.rendersDictionary[this.type](
+          this.serviceResponse,
+          this.serviceResponsePivotTable
+        )}
+      </Host>
     );
   }
 }

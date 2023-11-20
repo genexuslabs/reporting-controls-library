@@ -1,12 +1,36 @@
 import {
-  QueryViewerServiceData
-  // QueryViewerServiceMetaData
+  QueryViewerAttributesValuesForPivot,
+  QueryViewerAttributesValuesForTable,
+  QueryViewerCalculatePivottableData,
+  QueryViewerPageDataForPivot,
+  QueryViewerPageDataForTable,
+  QueryViewerServiceMetaDataAxis,
+  QueryViewerServiceMetaDataData
 } from "../services/types/service-result";
 
 /* eslint-disable camelcase */
 export type GeneratorType = "net" | "java";
 
-export type ServiceType = "metadata" | "data";
+export type ServiceType = "metadata" | "data" | "recordSetCache";
+
+export type ServiceTypeForPivotTable =
+  | "pivotTablePageData"
+  | "attributeValues"
+  | "calculatePivottableData";
+// | "getPivottableDataSync";
+
+export type ServiceTypeForTable = "tablePageData" | "attributeValues";
+
+export type ServicePropertiesForPivotTable = {
+  pageData?: QueryViewerPageDataForPivot;
+  attributeValues?: QueryViewerAttributesValuesForPivot;
+  calculatePivottableData?: QueryViewerCalculatePivottableData;
+};
+
+export type ServicePropertiesForTable = {
+  pageData?: QueryViewerPageDataForTable;
+  attributeValues?: QueryViewerAttributesValuesForTable;
+};
 
 export type QueryViewerTranslations = {
   [key in QueryViewerTranslationsLabels]: string;
@@ -213,6 +237,12 @@ export enum QueryViewerXAxisLabels {
   Rotated45 = "Rotated45",
   Rotated60 = "Rotated60",
   Vertically = "Vertically"
+}
+
+export enum QueryViewerAutoResizeType {
+  Both = "Both",
+  Vertical = "Vertical",
+  Horizontal = "Horizontal"
 }
 
 export enum QueryViewerMapType {
@@ -515,25 +545,55 @@ export type QueryViewerPivotParameters = {
   RealType: QueryViewerOutputType;
   RememberLayout: boolean;
   SelectLine: boolean;
-  ServerPaging: boolean;
-  ServerPagingCacheSize: number;
-  ServerPagingPivot: boolean;
+  ServerPaging?: boolean;
+  ServerPagingCacheSize?: number;
+  ServerPagingPivot?: boolean;
   ShowDataLabelsIn: QueryViewerShowDataLabelsIn;
   Title: string;
   TotalForColumns: QueryViewerTotal;
   TotalForRows: QueryViewerTotal;
   UcId: string;
   UseRecordsetCache: boolean;
-  data: QueryViewerServiceData;
-  // metadata: QueryViewerServiceMetaData;
+  data?: string;
   metadata: string;
-  page: string;
 };
+
+export type QueryViewerPivotParametersUI = QueryViewerPivotParameters & {
+  page: string;
+  content: string;
+  container: HTMLElement;
+};
+
+export type QueryViewerPivotTable = {
+  xml: {
+    metadata: string;
+  };
+  pivotParams: QueryViewerPivotParametersUI;
+  oat_element: any;
+};
+
 export enum QueryViewerPivotDataType {
   PagedRecordSet = "PagedRecordSet",
   PagedLineSet = "PagedLineSet",
   NotPaged = "NotPaged"
 }
+
+export type QueryViewerPivotCollection = {
+  collection: { [key: string]: QueryViewerPivotCollectionProperties };
+  fadeTimeouts: any;
+};
+
+export type QueryViewerPivotCollectionProperties = {
+  AllowElementsOrderChange: boolean;
+  AutoRefreshGroup: string;
+  ControlName: string;
+  debugServices: boolean;
+  Metadata: {
+    Axes: QueryViewerServiceMetaDataAxis[];
+    Data: QueryViewerServiceMetaDataData[];
+  };
+  RememberLayout: boolean;
+};
 
 /**
  * Represents query in GXquery @Todo: extend the QueryViewer class with this interface

@@ -6,11 +6,19 @@ import {
 import { QueryViewerConditionOperator } from "../types/constants";
 import {
   QueryViewer,
+  QueryViewerAxesInfo,
   QueryViewerAxis,
   QueryViewerBaseInfo,
   QueryViewerBasicInfo,
   QueryViewerConditionalStyle,
+  QueryViewerDataInfo,
+  QueryViewerExpandCollapse,
+  QueryViewerFilter,
   QueryViewerGrouping,
+  QueryViewerPostInfoAxesInfo,
+  QueryViewerPostInfoDataInfo,
+  QueryViewerPostInfoExpandCollapse,
+  QueryViewerPostInfoFilter,
   QueryViewerRecordSetCache,
   QueryViewerRuntimeField,
   QueryViewerRuntimeFieldAnalytics,
@@ -337,4 +345,105 @@ export function getBaseInfo(qViewer: QueryViewer): QueryViewerBaseInfo {
   }
 
   return baseInfo;
+}
+
+export const getAxesInfo = (
+  axesInfo: QueryViewerAxesInfo[]
+): QueryViewerPostInfoAxesInfo[] | undefined => {
+  if (axesInfo == null || axesInfo.length === 0) {
+    return undefined;
+  }
+  const postInfoAxesInfo: QueryViewerPostInfoAxesInfo[] = axesInfo.map(
+    axis => ({
+      DataField: axis.DataField,
+      Visible: !axis.Hidden,
+      Axis: axis.Axis.Type,
+      Position: Number.isInteger(axis.Axis.Position) ? axis.Axis.Position : 0,
+      Order: axis.Order,
+      Subtotals: axis.Subtotals
+    })
+  );
+
+  return postInfoAxesInfo;
+};
+
+export const getDataInfo = (
+  dataInfo: QueryViewerDataInfo[]
+): QueryViewerPostInfoDataInfo[] | undefined => {
+  if (dataInfo == null || dataInfo.length === 0) {
+    return undefined;
+  }
+  const postInfoDataInfo: QueryViewerPostInfoDataInfo[] = dataInfo.map(
+    data => ({
+      DataField: data.DataField,
+      Visible: !data.Hidden,
+      Position: Number.isInteger(data.Position) ? data.Position : 0
+    })
+  );
+
+  return postInfoDataInfo;
+};
+
+export function getExpandCollapse(
+  expandCollapse: QueryViewerExpandCollapse[]
+): QueryViewerPostInfoExpandCollapse[] | undefined {
+  if (expandCollapse == null || expandCollapse.length === 0) {
+    return undefined;
+  }
+  const postInfoExpandCollapse = expandCollapse.map(expandCollapse => {
+    const postInfoExpandCollapse: QueryViewerPostInfoExpandCollapse = {
+      DataField: expandCollapse.DataField,
+      NullExpanded: expandCollapse.NullExpanded,
+      NotNullValues: {
+        DefaultAction: expandCollapse.NotNullValues.DefaultAction
+      }
+    };
+
+    // If there are Expanded values
+    if (expandCollapse.NotNullValues.Expanded?.length > 0) {
+      postInfoExpandCollapse.NotNullValues.Expanded =
+        expandCollapse.NotNullValues.Expanded.map(encodeURIComponent);
+    }
+
+    // If there are Collapsed values
+    if (expandCollapse.NotNullValues.Collapsed?.length > 0) {
+      postInfoExpandCollapse.NotNullValues.Collapsed =
+        expandCollapse.NotNullValues.Collapsed.map(encodeURIComponent);
+    }
+
+    return postInfoExpandCollapse;
+  });
+
+  return postInfoExpandCollapse;
+}
+
+export function getFilters(
+  filters: QueryViewerFilter[]
+): QueryViewerPostInfoFilter[] | undefined {
+  if (filters == null || filters.length === 0) {
+    return undefined;
+  }
+  const postInfoFilters = filters.map(filter => {
+    const postInfoFilter: QueryViewerPostInfoFilter = {
+      DataField: filter.DataField,
+      NullIncluded: filter.NullIncluded,
+      NotNullValues: { DefaultAction: filter.NotNullValues.DefaultAction }
+    };
+
+    // If there are Included values
+    if (filter.NotNullValues.Included?.length > 0) {
+      postInfoFilter.NotNullValues.Included =
+        filter.NotNullValues.Included.map(encodeURIComponent);
+    }
+
+    // If there are Excluded values
+    if (filter.NotNullValues.Excluded?.length > 0) {
+      postInfoFilter.NotNullValues.Excluded =
+        filter.NotNullValues.Excluded.map(encodeURIComponent);
+    }
+
+    return postInfoFilter;
+  });
+
+  return postInfoFilters;
 }

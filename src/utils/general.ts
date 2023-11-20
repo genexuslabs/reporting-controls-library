@@ -17,6 +17,29 @@ import {
   QueryViewerServiceMetaDataData
 } from "../services/types/service-result";
 import { TooltipFormatterContextObject } from "highcharts";
+
+const STATE_DONE = 4;
+const STATUS_OK = 200;
+
+export function makeXMLRequest(
+  serviceURL: string,
+  postInfo: string,
+  callbackWhenReady: (xml: string) => void
+) {
+  const xmlHttp = new XMLHttpRequest();
+
+  // Callback function when ready
+  xmlHttp.onload = () => {
+    if (xmlHttp.readyState === STATE_DONE && xmlHttp.status === STATUS_OK) {
+      callbackWhenReady(xmlHttp.responseText);
+    }
+  };
+
+  xmlHttp.open("POST", serviceURL); // async
+  xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  xmlHttp.send(postInfo);
+}
+
 export function parseNumericPicture(
   dataType: QueryViewerDataType,
   picture: string

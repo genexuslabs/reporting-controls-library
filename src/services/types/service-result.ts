@@ -10,13 +10,25 @@ import {
 } from "../../common/basic-types";
 import {
   QueryViewerAxisConditionalStyle,
-  QueryViewerAxisValueStyle
+  QueryViewerAxisValueStyle,
+  QueryViewerAxesInfo,
+  QueryViewerDataInfo,
+  QueryViewerExpandCollapse,
+  QueryViewerFilter
 } from "./json";
 
 export type QueryViewerServiceResponse = {
   MetaData: QueryViewerServiceMetaData;
   Data: QueryViewerServiceData;
   Properties: QueryViewerBase;
+};
+
+export type QueryViewerServiceResponsePivotTable = {
+  MetaData: QueryViewerServiceMetaData;
+  metadataXML: string;
+  Properties: QueryViewerBase;
+  objectName: string;
+  useGxQuery: boolean;
 };
 
 // MetaData
@@ -88,3 +100,49 @@ export type QueryViewerServiceData = {
 };
 
 export type QueryViewerServiceDataRow = { [key: string]: string };
+
+// PageDataPivot
+export type QueryViewerPageDataForPivot = {
+  PageNumber: number;
+  PageSize: number;
+  ReturnTotPages: boolean;
+  AxesInfo: QueryViewerAxesInfo[];
+  DataInfo: QueryViewerDataInfo[];
+  Filters: QueryViewerFilter[];
+  ExpandCollapse: QueryViewerExpandCollapse[];
+  LayoutChange: string;
+  QueryviewerId: number;
+};
+
+// AttributeValuesForPivotTable
+export type QueryViewerAttributesValuesForPivot = {
+  DataField: string;
+  Page: number;
+  PageSize: number;
+  PageNumber: number;
+  Filter: QueryViewerFilter[];
+  FilterText: string;
+  QueryviewerId: number;
+};
+
+// CalculatePivottableData
+export type QueryViewerCalculatePivottableData = {
+  QueryviewerId: number;
+};
+
+// PageDataForTable
+export type QueryViewerPageDataForTable = {
+  PageNumber: number;
+  PageSize: number;
+  RecalculateCantPages: boolean;
+  ReturnTotPages: boolean;
+  DataFieldOrder: string;
+  OrderType: string;
+  Filters: QueryViewerFilter[];
+  LayoutChange: string;
+  QueryviewerId: number;
+};
+
+// AttributeForTable
+export type QueryViewerAttributesValuesForTable =
+  QueryViewerAttributesValuesForPivot;

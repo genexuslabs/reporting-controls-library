@@ -1,7 +1,20 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Component, Listen, h, Prop } from "@stencil/core";
-import { renderJSPivot, OAT, setPageDataForPivotTable } from "jspivottable";
+import { Component, h, Listen, Prop, Watch } from "@stencil/core";
+import {
+  renderJSPivot,
+  OAT,
+  setAttributeValuesForPivotTable,
+  setPivottableDataCalculation,
+  setPageDataForPivotTable
+} from "jspivottable";
+import {
+  QueryViewerPivotCollection,
+  QueryViewerPivotParameters,
+  QueryViewerPivotTable
+} from "../../common/basic-types";
 
+const PIVOT_PAGE = "QUERYVIEWER1_Queryviewer1_GeneralQuery1_pivot_page";
+const PIVOT_CONTENT = "QUERYVIEWER1_Queryviewer1_GeneralQuery1_pivot_content";
 @Component({
   tag: "gx-query-viewer-pivot",
   styleUrl: "query-viewer-pivot.scss",
@@ -9,39 +22,52 @@ import { renderJSPivot, OAT, setPageDataForPivotTable } from "jspivottable";
 })
 export class QueryViewerPivot {
   private queryViewerContainer: HTMLDivElement;
+  private qViewer: QueryViewerPivotTable = undefined;
+  // private parameterSetPageDataForPivotTable: (xml: string) => void;
+
   /**
-   * metadata
+   * Response Attribute Values
    */
-  @Prop() readonly metadata =
-    '<?xml version = "1.0" encoding = "UTF-8"?>\n\r\n<OLAPCube Version="2" format="compact" decimalSeparator="." thousandsSeparator="," dateFormat="MDY" textForNullValues="" ShowDataLabelsIn="Columns">\n\t<OLAPDimension name="Element1" displayName="Datos Dsc" description="Datos Dsc" dataField="F1" visible="Yes" axis="Rows" canDragToPages="true" summarize="yes" align="left" picture="" dataType="character" format="">\n\t</OLAPDimension>\n\t<OLAPDimension name="Element2" displayName="Datos Codigo" description="Datos Codigo" dataField="F2" visible="Yes" axis="Rows" canDragToPages="true" summarize="yes" align="left" picture="" dataType="character" format="">\n\t</OLAPDimension>\n\t<OLAPMeasure name="Element3" displayName="Datos Valor" description="Datos Valor" dataField="F3" visible="Yes" aggregation="" align="right" picture="ZZZ9" targetValue="0" maximumValue="0" dataType="integer" format="">\n\t</OLAPMeasure>\n</OLAPCube>\n';
+  @Prop() readonly attributeValuesForPivotTableXml: string;
+  @Watch("attributeValuesForPivotTableXml")
+  handleAttributesValuesForPivotTableChange(newValue: string) {
+    setAttributeValuesForPivotTable(this.qViewer.oat_element, newValue);
+  }
+
+  /**
+   * Response Page Data
+   */
+  @Prop() readonly pageDataForPivotTable: string;
+  @Watch("pageDataForPivotTable")
+  handlePageDataForPivotTableChange(newValue: string) {
+    setPageDataForPivotTable(this.qViewer.oat_element, newValue);
+  }
+
+  /**
+   * Response calculation PivotTable Data
+   */
+  @Prop() readonly calculatePivottableDataXml: string;
+  @Watch("calculatePivottableDataXml")
+  handlecalculatePivottableDataChange(newValue: string) {
+    setPivottableDataCalculation(this.qViewer.oat_element, newValue);
+    // this.parameterSetPageDataForPivotTable(newValue);
+  }
+
+  /**
+   * pivotParameters
+   */
+  @Prop()
+  readonly pivotParameters: QueryViewerPivotParameters;
+
+  /**
+   * pivotCollection
+   */
+  @Prop() readonly pivotCollection: QueryViewerPivotCollection;
 
   /**
    * data
    */
   @Prop() readonly data: string;
-
-  /**
-   * qv
-   */
-  @Prop() readonly qv = {
-    collection: {
-      QUERYVIEWER1_Queryviewer1: {
-        AutoRefreshGroup: "",
-        debugServices: false,
-        ControlName: "Queryviewer1",
-        Metadata: {
-          Axes: [{ RaiseItemClick: true }, { RaiseItemClick: true }],
-          Data: [{ RaiseItemClick: true }, { RaiseItemClick: true }]
-        }
-      }
-    },
-    fadeTimeouts: {}
-  };
-
-  /**
-   * qViewer
-   */
-  @Prop({ mutable: true }) qViewer = undefined;
 
   /**
    * QueryViewerTranslations
@@ -83,51 +109,155 @@ export class QueryViewerPivot {
   };
 
   @Listen("RequestPageDataForPivotTable", { target: "document" })
-  handledataforpivottable() {
-    console.log("entro al evento");
-    const data =
-      '<?xml version = "1.0" encoding = "UTF-8"?>\n\r\n<Recordset RecordCount="50" PageCount="3">\n\t<Page PageNumber="1">\n\t\t<Columns>\n\t\t\t<Header DataField="F3">\n\t\t\t</Header>\n\t\t</Columns>\n\t\t<Rows>\n\t\t\t<Row>\n\t\t\t\t<Header>\n\t\t\t\t\t<F1>151                 </F1>\n\t\t\t\t\t<F2>1129                </F2>\n\t\t\t\t</Header>\n\t\t\t\t<Cells>\n\t\t\t\t\t<Cell>29</Cell>\n\t\t\t\t</Cells>\n\t\t\t</Row>\n\t\t\t<Row>\n\t\t\t\t<Header Subtotal="true">\n\t\t\t\t\t<F1>151                 </F1>\n\t\t\t\t</Header>\n\t\t\t\t<Cells>\n\t\t\t\t\t<Cell>29</Cell>\n\t\t\t\t</Cells>\n\t\t\t</Row>\n\t\t\t<Row>\n\t\t\t\t<Header>\n\t\t\t\t\t<F1>51                  </F1>\n\t\t\t\t\t<F2>15                  </F2>\n\t\t\t\t</Header>\n\t\t\t\t<Cells>\n\t\t\t\t\t<Cell>15</Cell>\n\t\t\t\t</Cells>\n\t\t\t</Row>\n\t\t\t<Row>\n\t\t\t\t<Header Subtotal="true">\n\t\t\t\t\t<F1>51                  </F1>\n\t\t\t\t</Header>\n\t\t\t\t<Cells>\n\t\t\t\t\t<Cell>15</Cell>\n\t\t\t\t</Cells>\n\t\t\t</Row>\n\t\t\t<Row>\n\t\t\t\t<Header>\n\t\t\t\t\t<F1>51P                 </F1>\n\t\t\t\t\t<F2>156                 </F2>\n\t\t\t\t</Header>\n\t\t\t\t<Cells>\n\t\t\t\t\t<Cell>1</Cell>\n\t\t\t\t</Cells>\n\t\t\t</Row>\n\t\t\t<Row>\n\t\t\t\t<Header Subtotal="true">\n\t\t\t\t\t<F1>51P                 </F1>\n\t\t\t\t</Header>\n\t\t\t\t<Cells>\n\t\t\t\t\t<Cell>1</Cell>\n\t\t\t\t</Cells>\n\t\t\t</Row>\n\t\t\t<Row>\n\t\t\t\t<Header>\n\t\t\t\t\t<F1>5P                  </F1>\n\t\t\t\t\t<F2>352                 </F2>\n\t\t\t\t</Header>\n\t\t\t\t<Cells>\n\t\t\t\t\t<Cell>2</Cell>\n\t\t\t\t</Cells>\n\t\t\t</Row>\n\t\t\t<Row>\n\t\t\t\t<Header Subtotal="true">\n\t\t\t\t\t<F1>5P                  </F1>\n\t\t\t\t</Header>\n\t\t\t\t<Cells>\n\t\t\t\t\t<Cell>2</Cell>\n\t\t\t\t</Cells>\n\t\t\t</Row>\n\t\t\t<Row>\n\t\t\t\t<Header>\n\t\t\t\t\t<F1>89                  </F1>\n\t\t\t\t\t<F2>1895                </F2>\n\t\t\t\t</Header>\n\t\t\t\t<Cells>\n\t\t\t\t\t<Cell>15</Cell>\n\t\t\t\t</Cells>\n\t\t\t</Row>\n\t\t\t<Row>\n\t\t\t\t<Header Subtotal="true">\n\t\t\t\t\t<F1>89                  </F1>\n\t\t\t\t</Header>\n\t\t\t\t<Cells>\n\t\t\t\t\t<Cell>15</Cell>\n\t\t\t\t</Cells>\n\t\t\t</Row>\n\t\t\t<Row>\n\t\t\t\t<Header>\n\t\t\t\t\t<F1>AAB                 </F1>\n\t\t\t\t\t<F2>A32                 </F2>\n\t\t\t\t</Header>\n\t\t\t\t<Cells>\n\t\t\t\t\t<Cell>32</Cell>\n\t\t\t\t</Cells>\n\t\t\t</Row>\n\t\t\t<Row>\n\t\t\t\t<Header Subtotal="true">\n\t\t\t\t\t<F1>AAB                 </F1>\n\t\t\t\t</Header>\n\t\t\t\t<Cells>\n\t\t\t\t\t<Cell>32</Cell>\n\t\t\t\t</Cells>\n\t\t\t</Row>\n\t\t\t<Row>\n\t\t\t\t<Header>\n\t\t\t\t\t<F1>AAM                 </F1>\n\t\t\t\t\t<F2>31                  </F2>\n\t\t\t\t</Header>\n\t\t\t\t<Cells>\n\t\t\t\t\t<Cell>31</Cell>\n\t\t\t\t</Cells>\n\t\t\t</Row>\n\t\t\t<Row>\n\t\t\t\t<Header Subtotal="true">\n\t\t\t\t\t<F1>AAM                 </F1>\n\t\t\t\t</Header>\n\t\t\t\t<Cells>\n\t\t\t\t\t<Cell>31</Cell>\n\t\t\t\t</Cells>\n\t\t\t</Row>\n\t\t\t<Row>\n\t\t\t\t<Header>\n\t\t\t\t\t<F1>AB36                </F1>\n\t\t\t\t\t<F2>36                  </F2>\n\t\t\t\t</Header>\n\t\t\t\t<Cells>\n\t\t\t\t\t<Cell>36</Cell>\n\t\t\t\t</Cells>\n\t\t\t</Row>\n\t\t\t<Row>\n\t\t\t\t<Header Subtotal="true">\n\t\t\t\t\t<F1>AB36                </F1>\n\t\t\t\t</Header>\n\t\t\t\t<Cells>\n\t\t\t\t\t<Cell>36</Cell>\n\t\t\t\t</Cells>\n\t\t\t</Row>\n\t\t\t<Row>\n\t\t\t\t<Header>\n\t\t\t\t\t<F1>AC32                </F1>\n\t\t\t\t\t<F2>32                  </F2>\n\t\t\t\t</Header>\n\t\t\t\t<Cells>\n\t\t\t\t\t<Cell>32</Cell>\n\t\t\t\t</Cells>\n\t\t\t</Row>\n\t\t\t<Row>\n\t\t\t\t<Header Subtotal="true">\n\t\t\t\t\t<F1>AC32                </F1>\n\t\t\t\t</Header>\n\t\t\t\t<Cells>\n\t\t\t\t\t<Cell>32</Cell>\n\t\t\t\t</Cells>\n\t\t\t</Row>\n\t\t\t<Row>\n\t\t\t\t<Header>\n\t\t\t\t\t<F1>AC34                </F1>\n\t\t\t\t\t<F2>34                  </F2>\n\t\t\t\t</Header>\n\t\t\t\t<Cells>\n\t\t\t\t\t<Cell>34</Cell>\n\t\t\t\t</Cells>\n\t\t\t</Row>\n\t\t\t<Row>\n\t\t\t\t<Header Subtotal="true">\n\t\t\t\t\t<F1>AC34                </F1>\n\t\t\t\t</Header>\n\t\t\t\t<Cells>\n\t\t\t\t\t<Cell>34</Cell>\n\t\t\t\t</Cells>\n\t\t\t</Row>\n\t\t</Rows>\n\t</Page>\n</Recordset>\n';
-
-    // const resXML = data;
-    setPageDataForPivotTable(this.qViewer.oat_element, data);
-
-    // if (typeof e.parameter.callback === "function") {
-    //   e.parameter.callback(resXML);
-    // }
+  handleRequestPageDataForPivotTable(event: CustomEvent) {
+    const data = `<?xml version = "1.0" encoding = "UTF-8"?>
+    <Recordset RecordCount="10" PageCount="1">
+      <Page PageNumber="1">
+        <Columns>
+          <Header DataField="F1">
+          </Header>
+        </Columns>
+        <Rows>
+          <Row>
+            <Header>
+              <F2>2023-02-12</F2>
+            </Header>
+            <Cells>
+              <Cell>120</Cell>
+            </Cells>
+          </Row>
+          <Row>
+            <Header>
+              <F2>2023-05-15</F2>
+            </Header>
+            <Cells>
+              <Cell>100</Cell>
+            </Cells>
+          </Row>
+          <Row>
+            <Header>
+              <F2>2023-05-16</F2>
+            </Header>
+            <Cells>
+              <Cell>200</Cell>
+            </Cells>
+          </Row>
+          <Row>
+            <Header>
+              <F2>2023-05-17</F2>
+            </Header>
+            <Cells>
+              <Cell>150</Cell>
+            </Cells>
+          </Row>
+          <Row>
+            <Header>
+              <F2>2023-05-18</F2>
+            </Header>
+            <Cells>
+              <Cell>250</Cell>
+            </Cells>
+          </Row>
+          <Row>
+            <Header>
+              <F2>2023-05-19</F2>
+            </Header>
+            <Cells>
+              <Cell>120</Cell>
+            </Cells>
+          </Row>
+          <Row>
+            <Header>
+              <F2>2023-05-20</F2>
+            </Header>
+            <Cells>
+              <Cell>400</Cell>
+            </Cells>
+          </Row>
+          <Row>
+            <Header>
+              <F2>2023-06-20</F2>
+            </Header>
+            <Cells>
+              <Cell>80</Cell>
+            </Cells>
+          </Row>
+          <Row>
+            <Header>
+              <F2>2023-09-10</F2>
+            </Header>
+            <Cells>
+              <Cell>233</Cell>
+            </Cells>
+          </Row>
+          <Row>
+            <Header Subtotal="true">
+            </Header>
+            <Cells>
+              <Cell>1653</Cell>
+            </Cells>
+          </Row>
+        </Rows>
+      </Page>
+    </Recordset>`;
+    (event as any).parameter.callback(data);
+    // this.parameterSetPageDataForPivotTable = (event as any).parameter.callback;
   }
 
   componentDidLoad() {
+    const metadata = `<?xml version = "1.0" encoding = "UTF-8"?>
+
+    <OLAPCube Version="2" format="compact" decimalSeparator="." thousandsSeparator="," dateFormat="MDY" textForNullValues="" ShowDataLabelsIn="Columns">
+      <OLAPDimension name="Element3" displayName="Fecha" description="Fecha" dataField="F2" visible="Yes" axis="Rows" canDragToPages="true" summarize="yes" align="left" picture="99/99/99" dataType="date" format="">
+      </OLAPDimension>
+      <OLAPMeasure name="Element1" displayName="Sum of Gasto" description="Sum of Gasto" dataField="F1" visible="Yes" aggregation="sum" align="right" picture="ZZZZZZZZ9.99" targetValue="0" maximumValue="0" dataType="real" format="">
+      </OLAPMeasure>
+    </OLAPCube>
+    `;
     this.qViewer = {
-      xml: { metadata: this.metadata },
+      xml: { metadata: metadata },
       pivotParams: {
-        page: "QUERYVIEWER1_Queryviewer1_GeneralQuery1_pivot_page",
-        content: "QUERYVIEWER1_Queryviewer1_GeneralQuery1_pivot_content",
+        page: PIVOT_PAGE,
+        content: PIVOT_CONTENT,
         container: this.queryViewerContainer,
-        RealType: "PivotTable",
+        RealType: "PivotTable" as any,
         ObjectName: "General.Query1",
         ControlName: "Queryviewer1",
         PageSize: 20,
-        metadata: this.metadata,
+        metadata: metadata,
         UcId: "QUERYVIEWER1_Queryviewer1",
         AutoResize: false,
         DisableColumnSort: false,
         RememberLayout: true,
-        ShowDataLabelsIn: "Columns",
+        ShowDataLabelsIn: "Columns" as any,
         ServerPaging: true,
         ServerPagingPivot: true,
         ServerPagingCacheSize: 0,
         UseRecordsetCache: true,
         AllowSelection: false,
         SelectLine: true,
-        TotalForColumns: "Yes",
+        TotalForColumns: "Yes" as any,
+        TotalForRows: undefined,
         Title: ""
-      }
+      },
+      oat_element: undefined
     };
+    // this.qViewer = {
+    //   xml: { metadata: this.pivotParameters.metadata },
+    //   pivotParams: {
+    //     page: PIVOT_PAGE,
+    //     content: PIVOT_CONTENT,
+    //     container: this.queryViewerContainer,
+    //     ...this.pivotParameters
+    //   },
+    //   oat_element: undefined
+    // };
+
     // eslint-disable-next-line eqeqeq
     if (OAT.Loader != undefined) {
       renderJSPivot(
         this.qViewer.pivotParams,
-        this.qv.collection,
+        this.pivotCollection.collection,
         this.QueryViewerTranslations,
         this.qViewer
       );
@@ -135,7 +265,7 @@ export class QueryViewerPivot {
       OAT.Loader.addListener(function () {
         renderJSPivot(
           this.qViewer.pivotParams,
-          this.qv.collection,
+          this.pivotCollection.collection,
           this.QueryViewerTranslations,
           this.qViewer
         );
@@ -150,14 +280,8 @@ export class QueryViewerPivot {
         id="QUERYVIEWER1Container"
         ref={el => (this.queryViewerContainer = el)}
       >
-        <div
-          id="QUERYVIEWER1_Queryviewer1_GeneralQuery1_pivot_page"
-          class="pivot_filter_div"
-        ></div>
-        <div
-          id="QUERYVIEWER1_Queryviewer1_GeneralQuery1_pivot_content"
-          class="conteiner_table_div"
-        ></div>
+        <div id={PIVOT_PAGE} class="pivot_filter_div"></div>
+        <div id={PIVOT_CONTENT} class="conteiner_table_div"></div>
       </div>
     );
   }
