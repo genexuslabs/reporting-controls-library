@@ -5,8 +5,10 @@ import {
   EventEmitter,
   Host,
   Listen,
+  Method,
   Prop,
   State,
+  Watch,
   getAssetPath,
   h
 } from "@stencil/core";
@@ -26,8 +28,6 @@ export type QueryRequest = {
   message: string;
 };
 
-const PART_PREFIX = "query-chat__";
-
 @Component({
   tag: "gx-query-chat",
   styleUrl: "query-chat.scss",
@@ -37,6 +37,7 @@ const PART_PREFIX = "query-chat__";
 export class QueryChat implements GxComponent {
   private inputElement!: HTMLGxEditElement;
   private hasTriggerButton: boolean;
+  private chatElement!: HTMLDivElement;
 
   @Element() element: HTMLGxQueryChatElement;
 
@@ -44,55 +45,38 @@ export class QueryChat implements GxComponent {
   @State() showRegenerate = false;
   @State() lastQuestion = "";
   @State() queryItems: GxChatMessage[] = [];
-  @State() suggested: string[] = [];
 
-  /**
-   * This property specifies the items of the chat.
-   */
-  @Prop() readonly mainTitle: string;
   /**
    * Text that appears in the input control when it has no value set
    */
   @Prop() readonly placeholder: string = "Ask me question";
   /**
-   * Determines if the menu can be unlocked or minimize
-   */
-  @Prop() readonly resizewindow: boolean = true;
-  /**
-   * Determines if the menu is unlocked
-   */
-  @Prop({ reflect: true, mutable: true }) isUnlocked = false;
-  /**
-   * Determines if the menu is minimized
-   */
-  @Prop({ reflect: true, mutable: true }) isMinimized = false;
-  /**
    * Specify the size of the icon messages. ex 50px
    */
-  @Prop({ reflect: true, mutable: true }) messageIconSize = "50px";
+  @Prop({ reflect: true, mutable: true }) messageIconSize = "40px";
   /**
    * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true.
    * In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
    */
-  @Prop() readonly metadataName = "ReportingShowcase";
+  @Prop() readonly metadataName = "";
 
   /**
    * Fired each time the user make a question
    */
   @Event({ bubbles: true, composed: true })
-  queryChatRequest: EventEmitter<QueryRequest>;
+  gxUserRequest: EventEmitter<QueryRequest>;
 
   /**
    * Fired when receive a question answer
    */
   @Event({ bubbles: true, composed: true, cancelable: false })
-  gxQuerySelect: EventEmitter<QueryViewerBase>;
+  gxAssistantResponse: EventEmitter<QueryViewerBase>;
 
   /**
    * Reset chat when QueryId was trigger by another component
    * @param event query item selected
    */
-  @Listen("gxQuerySelect", { target: "window" })
+  @Listen("gxAssistantResponse", { target: "window" })
   checkQuerySelect(event: CustomEvent<QueryViewerBase>) {
     const lastQuery = this.queryItems.length - 1;
     const chatItemId = lastQuery > 0 ? this.queryItems[lastQuery].id : "";
@@ -102,11 +86,19 @@ export class QueryChat implements GxComponent {
   }
 
   /**
-   * Create a new chat
+   * Clean chat
    */
-  @Listen("gxQueryNewChat", { target: "window" })
-  newChat() {
+  @Method()
+  async gxCleanChat() {
     this.resetChat(true);
+  }
+
+  @Watch("queryItems")
+  @Watch("waitingResponse")
+  scrollChat() {
+    if (this.chatElement) {
+      this.chatElement.scrollTop = this.chatElement.scrollHeight;
+    }
   }
 
   componentWillLoad() {
@@ -115,9 +107,7 @@ export class QueryChat implements GxComponent {
   }
 
   componentDidUpdate(): void {
-    // TODO: fix scroll down before add item to the history. Tried to use gx-loading
-    const h = this.element.shadowRoot.querySelector(".history").clientHeight;
-    this.element.shadowRoot.querySelector(".scroll").scrollTo(0, h);
+    this.scrollChat();
   }
 
   /**
@@ -142,22 +132,10 @@ export class QueryChat implements GxComponent {
     } else {
       this.queryItems = [...this.queryItems, ChatMessage];
       if (Query?.Id) {
-        this.gxQuerySelect.emit(Query);
+        this.gxAssistantResponse.emit(Query);
       }
     }
     this.resetChat();
-  };
-
-  private toggleUnlocked = () => {
-    if (this.resizewindow) {
-      this.isUnlocked = !this.isUnlocked;
-    }
-  };
-
-  private toggleMinimized = () => {
-    if (this.resizewindow) {
-      this.isMinimized = !this.isMinimized;
-    }
   };
 
   private request(question?: string) {
@@ -172,7 +150,7 @@ export class QueryChat implements GxComponent {
         content: this.lastQuestion
       });
     }
-    this.queryChatRequest.emit({ message: this.lastQuestion });
+    this.gxUserRequest.emit({ message: this.lastQuestion });
     const options = this.queryOptions();
     asyncNewChatMessage(options, this.queryItems, this.chatResponseCallback);
   }
@@ -207,12 +185,12 @@ export class QueryChat implements GxComponent {
 
   /**
    * Reset chat fields
-   * @param clearHistory clear entire chat history
+   * @param clearQueryHistory clear entire chat history
    */
-  private resetChat = (clearHistory = false): void => {
+  private resetChat = (clearQueryHistory = false): void => {
     this.waitingResponse = false;
     this.inputElement.value = "";
-    if (clearHistory) {
+    if (clearQueryHistory) {
       this.queryItems = [];
     }
     const [lastQuery] = [...this.queryItems].reverse();
@@ -221,122 +199,86 @@ export class QueryChat implements GxComponent {
     this.inputElement.focus();
   };
 
+  private renderLoading = () => {
+    if (!this.waitingResponse) return null;
+    return (
+      <li>
+        <gx-loading presented={this.waitingResponse}></gx-loading>
+      </li>
+    );
+  }
+
   render() {
     return (
       <Host role="application" aria-label="GxQuery Chat">
-        <header role="banner" part={`${PART_PREFIX}header`}>
-          <h1 part={`${PART_PREFIX}title`}>{this.mainTitle}</h1>
-          <div part={`${PART_PREFIX}controls`}>
-            {this.resizewindow && (
-              <gx-button
-                tabindex="0"
-                role="button"
-                accessible-name={this.isUnlocked ? "locked" : "unlocked"}
-                main-image-src={getAssetPath("assets/undock.svg")}
-                image-position="below"
-                width="20px"
-                height="20px"
-                onClick={this.toggleUnlocked}
-              ></gx-button>
-            )}
-            {this.resizewindow && (
-              <gx-button
-                tabindex="0"
-                role="button"
-                accessible-name={this.isMinimized ? "maximize" : "minimize"}
-                main-image-src={
-                  this.isMinimized
-                    ? getAssetPath("assets/maximize.svg")
-                    : getAssetPath("assets/minimize.svg")
-                }
-                image-position="below"
-                width="20px"
-                height="20px"
-                onClick={this.toggleMinimized}
-              ></gx-button>
-            )}
-          </div>
-        </header>
-        <main part={`${PART_PREFIX}container`} aria-hidden={this.isMinimized}>
+        <div class="chat-wrapper">
           <div
+            ref={el => (this.chatElement = el)}
             aria-busy={this.waitingResponse}
             aria-label="Chat history"
             aria-live="polite"
-            class="scroll"
-            role="list"
+            class="chat-history scroll"
+            part="chat-history"
           >
-            <div class="history" part={`${PART_PREFIX}history`}>
-              <div slot="grid-content">
-                {this.queryItems.map(({ content, messageType }) => (
-                  <gx-grid-smart-cell
-                    aria-label={`Message of ${messageType}`}
-                    role="listitem"
-                  >
-                    <div
-                      class="cell"
-                      part={`${PART_PREFIX}${messageType}-message`}
-                    >
-                      <gx-icon
-                        aria-hidden="true"
-                        style={{ "--gx-icon-size": this.messageIconSize }}
-                        type={`message_${messageType}`}
-                      ></gx-icon>
+            <ul slot="grid-content" class="chat-messages">
+              {this.queryItems.map(({ id, content, messageType }) => (
+                <li
+                  key={id}
+                  aria-label={`Message of ${messageType}`}
+                  class={`chat-history__message chat-history__message--${messageType}`}
+                  part={`${messageType}-message`}
+                >
+                  <gx-icon
+                    aria-hidden="true"
+                    class="chat-message__avatar"
+                    style={{ "--gx-icon-size": this.messageIconSize }}
+                    type={`message_${messageType}`}
+                  ></gx-icon>
 
-                      <gx-textblock
-                        format="Text"
-                        innerHTML={content}
-                      ></gx-textblock>
-                    </div>
-                  </gx-grid-smart-cell>
-                ))}
-              </div>
-
-              <gx-loading presented={this.waitingResponse}></gx-loading>
-
-              <gx-query-suggestion
-                header="suggestions"
-                items={this.suggested}
-              ></gx-query-suggestion>
-
-              {!this.waitingResponse && (
-                <div class="cell--last" part={`${PART_PREFIX}regenerate`}>
-                  {this.showRegenerate && (
-                    <gx-button
-                      cssClass="regenerate-btn"
-                      caption="Regenerate answer"
-                      image-position="before"
-                      main-image-src={getAssetPath("assets/reload.svg")}
-                      style={{ "--gx-button-image-margin": "10px" }}
-                      onClick={this.handleRegenerateAnswer}
-                    ></gx-button>
-                  )}
-                </div>
-              )}
-            </div>
+                  <gx-textblock
+                    format="Text"
+                    innerHTML={content}
+                  ></gx-textblock>
+                </li>
+              ))}
+              {this.renderLoading()}
+            </ul>
           </div>
 
-          <gx-form-field part={`${PART_PREFIX}question`}>
-            <gx-edit
-              css-class="input"
-              area="field"
-              disabled={this.waitingResponse}
-              onKeyDown={this.handleSendMessage}
-              placeholder={this.placeholder}
-              ref={el => (this.inputElement = el)}
-              multiline
-              onGxTriggerClick={this.handleTriggerClick}
-              show-trigger
-            >
-              {this.hasTriggerButton ? (
-                <slot name="trigger-content" />
-              ) : (
-                <gx-icon aria-hidden="true" slot="trigger-content" type="sent">
-                  Send question
-                </gx-icon>
-              )}
-            </gx-edit>
-          </gx-form-field>
-        </main>
+          <div class="chat-form">
+            {this.showRegenerate && (
+              <gx-button
+                css-class="regenerate-btn"
+                caption="Regenerate answer"
+                image-position="before"
+                main-image-src={getAssetPath("assets/reload.svg")}
+                style={{ "--gx-button-image-margin": "10px" }}
+                onClick={this.handleRegenerateAnswer}
+              ></gx-button>
+            )}
+            <fom class="chat-question" part={`question`}>
+              <gx-edit
+                css-class="chat-input"
+                area="field"
+                disabled={this.waitingResponse}
+                onKeyDown={this.handleSendMessage}
+                placeholder={this.placeholder}
+                ref={el => (this.inputElement = el)}
+                multiline
+                onGxTriggerClick={this.handleTriggerClick}
+                show-trigger
+              >
+                {this.hasTriggerButton ? (
+                  <slot name="trigger-content" />
+                ) : (
+                  <gx-icon aria-hidden="true" slot="trigger-content" type="sent">
+                    Send question
+                  </gx-icon>
+                )}
+              </gx-edit>
+            </fom>
+          </div>
+        </div>
       </Host>
     );
   }

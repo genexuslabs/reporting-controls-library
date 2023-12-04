@@ -1,7 +1,7 @@
 # Visual Studio Code
 .vs
 
-# Turborepo
+# Monorepo
 .turbo
 
 # Stencil defaults

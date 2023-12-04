@@ -3,9 +3,6 @@
 
 @include box-sizing();
 
-:host {
-}
-
 :host([is-active]) {
   .controls {
     display: flex;
@@ -24,11 +21,11 @@
   cursor: pointer;
   display: flex;
   flex: 1 1 0%;
-  gap: 8px;
+  gap: var(--gx-space-medium);
   justify-content: space-between;
   min-height: 40px;
   overflow: hidden;
-  padding: 10px;
+  padding: var(--gx-space-medium);
 }
 
 .label {

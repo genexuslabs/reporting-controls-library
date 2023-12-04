@@ -14,16 +14,16 @@ const SIDEBAR_EXPANDED = "--gx-sidebar-expanded";
 const SIDEBAR_COLLAPSED = "--gx-sidebar-collapsed";
 
 @Component({
-  tag: "gx-query-sidebar",
-  styleUrl: "query-sidebar.scss",
+  tag: "gx-sidebar",
+  styleUrl: "gx-sidebar.scss",
   shadow: true
 })
-export class QuerySidebar {
+export class GxSidebar {
   private controlElement!: Element;
   private showHeader = false;
   private showControl = false;
 
-  @Element() element: HTMLGxQuerySidebarElement;
+  @Element() element: HTMLGxSidebarElement;
 
   /**
    * Determines if the sidebar can be collapsed
@@ -46,9 +46,21 @@ export class QuerySidebar {
    */
   @Prop() readonly collapsedSize = "40px";
   /**
+   * Label for collapse button
+   */
+  @Prop({ mutable: true, reflect: true }) collapseLabel = "Collapse window";
+  /**
+   * Label for expand button
+   */
+  @Prop({ mutable: true, reflect: true }) expandLabel = "Expand window";
+  /**
+   * Label for expand button
+   */
+  @Prop() newChatLabel = "New Chat";
+  /**
    *
    */
-  @State() collapsibleLabel = "collapse window";
+  @State() buttonLabel: string;
 
   /**
    * Crear a new chat
@@ -58,11 +70,9 @@ export class QuerySidebar {
 
   @Watch("isCollapsed")
   collapsibleChange(newValue: boolean) {
-    if (newValue) {
-      this.collapsibleLabel = "Expand window";
-    } else {
-      this.collapsibleLabel = "Collapse window";
-    }
+    this.buttonLabel = newValue
+      ? this.expandLabel
+      : this.collapseLabel;
   }
 
   componentWillLoad() {
@@ -112,7 +122,7 @@ export class QuerySidebar {
           onClick={this.handleNewChat}
           type="button"
         >
-          New Chat
+          {this.newChatLabel}
         </button>
       </div>
     );
@@ -140,7 +150,7 @@ export class QuerySidebar {
             type="button"
             onClick={this.handleCollapseWindow}
           >
-            {this.collapsibleLabel}
+            {this.buttonLabel}
           </button>
 
           {this.controlsRender()}

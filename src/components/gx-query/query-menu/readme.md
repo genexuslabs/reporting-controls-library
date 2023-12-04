@@ -29,7 +29,7 @@
 
 ## Methods
 
-### `saveQuery(item: GxQueryItem) => Promise<void>`
+### `gxAddQuery(item: GxQueryItem) => Promise<void>`
 
 Add a new query item
 

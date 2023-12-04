@@ -1,5 +1,5 @@
-@import "../../../common/base-mixins";
-@import "../../../global/variables";
+@import "../../common/base-mixins";
+@import "../../global/tokens";
 
 @include box-sizing();
 
@@ -14,7 +14,7 @@
   overflow: hidden;
   transition: width 0.25s ease;
 
-  box-shadow: 2px 2px 8px #0000006c;
+  box-shadow: var(--gx-shadow-md);
 }
 
 :host([is-collapsed]) {
@@ -29,7 +29,6 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  // overflow-y: auto;
   overflow: hidden;
   min-width: var(--gx-sidebar-expanded);
 }
@@ -39,11 +38,10 @@
   flex-shrink: 0;
 }
 
-::slotted([slot="header"]) {
-  background-color: aqua;
-}
+// ::slotted([slot="header"]) {
+//   background-color: aqua;
+// }
 .main-wrapper {
-  // height: 100%;
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
@@ -103,17 +101,12 @@
 }
 /* Track */
 ::-webkit-scrollbar-track {
-  background: var(--gx-scrollbar-color-track);
+  background: var(--gx-scrollbar-track-color);
 }
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: var(--gx-scrollbar-color-thumb);
+  background: var(--gx-scrollbar-thumb-color);
   &:hover {
-    background: var(--gx-scrollbar-color-thumb_hover);
+    background: var(--gx-scrollbar-thumb_hover-color);
   }
-}
-
-button:focus {
-  outline: 2px solid crimson;
-  border-radius: 3px;
 }

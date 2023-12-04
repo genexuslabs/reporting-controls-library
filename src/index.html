@@ -103,7 +103,6 @@
         height: 100vh;
         position: relative;
         display: flex;
-        background-color: rgb(212, 212, 212);
       }
       .control {
         display: block;
@@ -130,24 +129,28 @@
   <body>
     <!-- <gx-query-menu metadata-name="ReportingShowcase"></gx-query-menu> -->
     <div class="container">
-      <gx-query-sidebar aria-label="sidebar menu">
+      <gx-sidebar aria-label="sidebar menu">
         <!-- <h3 slot="header">Large titel asdflaskjf lasdfkj asdfl</h3> -->
         <!-- <button slot="new-chat" class="custom-btn">New chat</button> -->
         <gx-query-menu
           metadata-name="ReportingShowcase"
           serialized-object='[{"Id":"422fcc61-dfdf-4282-b14d-85c28636042e","Name":"AmericanCountriesWithMoreCases","Description":"American Countries With More Cases","Expression":"","Modified":"2023-10-05T21:18:07"},{"Id":"87ff9cc8-6196-4cfa-811a-4a154082274f","Name":"AverageCountriesGDPPerCapita","Description":"Average Countries GDPPer Capita","Expression":"","Modified":"2022-10-31T20:12:21"},{"Id":"94892cdc-665e-4768-a9ea-a376d6905f20","Name":"AverageCountryExtremePoverty","Description":"Average Country Extreme Poverty","Expression":"","Modified":"2023-01-04T14:33:27"},{"Id":"4bf29a4a-b79b-45af-9277-7bc87704df79","Name":"AverageLifeExpectancy","Description":"Average Life Expectancy","Expression":"","Modified":"2023-05-04T18:09:55"}]'
         ></gx-query-menu>
-      </gx-query-sidebar>
+      </gx-sidebar>
 
       <gx-query-render
         metadata-name="ReportingShowcase"
       >
       </gx-query-render>
 
-      <gx-query-chat
-        metadata-name="ReportingShowcase"
-        main-title="AI Query Assistant AI Query Assistant"
-      ></gx-query-chat>
+      <gx-floating-window title="AI Query Assistant" >
+        <gx-query-chat
+          metadata-name="ReportingShowcase"
+          main-title="AI Query Assistant AI Query Assistant"
+        ></gx-query-chat>
+      </gx-floating-window>
+
+
     </div>
 
     <!--

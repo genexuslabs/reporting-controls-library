@@ -151,7 +151,7 @@ export class QueryMenu implements GxComponent {
    * @param item GxQueryItem
    */
   @Method()
-  async saveQuery(item: GxQueryItem) {
+  async gxAddQuery(item: GxQueryItem) {
     const items = [...this.queryItems];
     // Find if it exist in the query list
     const index = items.findIndex(i => i.Id === item.Id);
