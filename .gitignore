@@ -1,6 +1,9 @@
 # Visual Studio Code
 .vs
 
+# Turborepo
+.turbo
+
 # Stencil defaults
 dist/
 www/
