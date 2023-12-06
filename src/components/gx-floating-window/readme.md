@@ -13,7 +13,7 @@
 | `isMinimized`  | `is-minimized`  | Determines if the menu is minimized                | `boolean` | `false`     |
 | `isUnlocked`   | `is-unlocked`   | Determines if the menu is unlocked                 | `boolean` | `false`     |
 | `mainTitle`    | `main-title`    | This property specifies the items of the chat.     | `string`  | `undefined` |
-| `resizewindow` | `resizewindow`  | Determines if the menu can be unlocked or minimize | `boolean` | `true`      |
+| `resizeWindow` | `resize-window` | Determines if the menu can be unlocked or minimize | `boolean` | `true`      |
 
 
 ## Shadow Parts

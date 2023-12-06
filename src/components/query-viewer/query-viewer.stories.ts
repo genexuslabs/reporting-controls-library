@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/web-components";
 
-const serviceResponseCardMock = {
+const serviceResponseCardMock = JSON.stringify({
   MetaData: {
     TextForNullValues: "",
     Axes: [
@@ -174,8 +174,8 @@ const serviceResponseCardMock = {
       }
     ]
   }
-};
-const serviceResponseChartMock = {
+});
+const serviceResponseChartMock = JSON.stringify({
   MetaData: {
     TextForNullValues: "",
     Axes: [
@@ -606,7 +606,7 @@ const serviceResponseChartMock = {
       }
     ]
   }
-};
+});
 
 const meta: Meta<{
   type: string,
@@ -650,7 +650,7 @@ const meta: Meta<{
     }
   },
   args: {
-    serviceResponse: serviceResponseCardMock,
+    serviceResponse: JSON.parse(serviceResponseCardMock),
   }
 };
 export default meta;
@@ -710,13 +710,12 @@ export const Chart: ChartStory = {
     xAxisLabels: "",
     xAxisTitle: "",
     yAxisTitle: "",
-    serviceResponse: serviceResponseChartMock,
+    serviceResponse: JSON.parse(serviceResponseChartMock),
   },
   parameters: {
     controls: { exclude: ['orientation', 'trendPeriod'] }
   }
 };
-
 
 export const Chart3D: ChartStory = {
   name: "Chart with column 3D",
@@ -731,7 +730,7 @@ export const Chart3D: ChartStory = {
     xAxisLabels: "",
     xAxisTitle: "",
     yAxisTitle: "",
-    serviceResponse: serviceResponseChartMock,
+    serviceResponse: JSON.parse(serviceResponseChartMock),
   },
   parameters: {
     controls: { exclude: ['orientation', 'trendPeriod'] }

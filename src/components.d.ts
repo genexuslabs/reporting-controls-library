@@ -32,7 +32,7 @@ export namespace Components {
         /**
           * Determines if the menu can be unlocked or minimize
          */
-        "resizewindow": boolean;
+        "resizeWindow": boolean;
     }
     interface GxQueryChat {
         /**
@@ -1010,7 +1010,7 @@ declare namespace LocalJSX {
         /**
           * Determines if the menu can be unlocked or minimize
          */
-        "resizewindow"?: boolean;
+        "resizeWindow"?: boolean;
     }
     interface GxQueryChat {
         /**
