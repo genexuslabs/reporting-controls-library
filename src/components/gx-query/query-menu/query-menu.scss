@@ -1,0 +1,30 @@
+@import "../../../common/base-mixins";
+@import "../../../global/tokens";
+
+@include box-sizing();
+
+:host {
+  display: block;
+  position: relative;
+  height: 100%;
+}
+
+ul,
+li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.subtitle {
+  font-size: 1.2em;
+  padding: var(--gx-space-medium);
+  margin: 0;
+}
+
+.loading-backdrop {
+  position: absolute;
+  background-color: var(--gx-backdrop-color, #ffffffc0);
+  width: 100%;
+  height: 100%;
+}

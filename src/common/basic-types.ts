@@ -496,6 +496,63 @@ export type QueryViewerSliderRange = {
 };
 
 /**
+ * Represent error in GXquery
+ */
+export type GxError = { Code: number; Message: string };
+
+export type GxQueryItem = Omit<QueryViewerBase, "Modified"> & {
+  Id: string;
+  Name: string;
+  Description: string;
+  Expression: string;
+  Modified: Date;
+  differenceInDays: number;
+};
+
+export type GxQueryListResponse = {
+  Queries: GxQueryItem[];
+  Errors: GxError[];
+};
+
+export type ChatMessage = {
+  role: "user" | "assistant";
+  content: string;
+};
+
+export type GxChatMessage = {
+  id: string;
+  content: string;
+  messageType: "user" | "assistant";
+  expression: string;
+  suggested?: string[];
+};
+
+export type GxChatMessageResponse = {
+  ChatMessage: GxChatMessage;
+  Errors: GxError[];
+  Query?: GxQueryItem;
+};
+
+export type GxCommonErrorResponse = {
+  Errors: GxError[];
+};
+
+export type GxGetQueryResponse = {
+  Query: GxQueryItem;
+  Errors: GxError[];
+};
+
+/**
+ * This is the minimum information required to display a query from GXquery
+ */
+export type GxQueryOptions = {
+  baseUrl: string;
+  metadataName: string;
+  queryName?: string;
+  query?: QueryViewerBase;
+};
+
+/**
  * Represents query in GXquery @Todo: extend the QueryViewer class with this interface
  */
 export interface QueryViewerBase {

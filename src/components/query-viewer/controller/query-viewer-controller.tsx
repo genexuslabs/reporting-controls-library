@@ -3,15 +3,15 @@ import { Component, Event, EventEmitter, Prop, Watch } from "@stencil/core";
 import {
   ServicesContext,
   getMetadataAndData
-} from "@genexus/reporting-api/dist/services-manager";
-import { QueryViewer, QueryViewerCard } from "@genexus/reporting-api/dist/types/json";
-import { QueryViewerServiceResponse } from "@genexus/reporting-api/dist/types/service-result";
+} from "@genexus/reporting-api/dist";
 import {
   GeneratorType,
   QueryViewerChartType,
   QueryViewerOrientation,
   QueryViewerOutputType
-} from "../../../common/basic-types";
+} from "@genexus/reporting-api/dist/types/basic-types";
+import { QueryViewer, QueryViewerCard } from "@genexus/reporting-api/dist/types/json";
+import { QueryViewerServiceResponse } from "@genexus/reporting-api/dist/types/service-result";
 @Component({
   tag: "gx-query-viewer-controller",
   shadow: false

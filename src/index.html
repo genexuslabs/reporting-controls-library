@@ -10,726 +10,164 @@
 
     <script type="module" src="/build/reporting.esm.js"></script>
     <script nomodule src="/build/reporting.js"></script>
+    <script>
+      const query = {
+        Id: "87ff9cc8-6196-4cfa-811a-4a154082274f",
+        Name: "AverageCountriesGDPPerCapita",
+        Description: "Average Countries GDPPer Capita",
+        Expression: "Query AverageCountriesGDPPerCapita [OutputType='Card']\r\n{\r\n\tAverage(CountryGDPPerCapita) [Name='Element3', Description='GDP per capita (average)', Picture='U$S Z,ZZZ,ZZ9.999']\r\n\t#parameters\r\n\t\tCountryName [Name='CountryName', BasedOn='(none)', IsCollection='True']\r\n\t#end\r\n\t#filters\r\n\t\tCountryName in &CountryName when &CountryName.Count > 0\r\n\t\tContinentName = \"South America\"\r\n\t\tnot CountryISO in (\"VE\", \"GY\", \"SR\")\r\n\t#end\r\n}",
+        Modified: "2023-10-24T21:31:05",
+        RemoveDuplicates: false,
+        MaxRows: "",
+        TextForNullValues: "",
+        OutputType: "Card",
+        Title: "",
+        ShowValues: true,
+        ShowDataAs: "Values",
+        Orientation: "Horizontal",
+        IncludeTrend: false,
+        IncludeSparkline: false,
+        IncludeMaxAndMin: false,
+        ChartType: "Column",
+        PlotSeries: "In the same chart",
+        XAxisLabels: "Horizontally",
+        XAxisIntersectionAtZero: false,
+        XAxisTitle: "",
+        YAxisTitle: "",
+        MapType: "Choropleth",
+        Region: "World",
+        Continent: "North America",
+        Country: "United States of America",
+        Paging: true,
+        PageSize: 20,
+        ShowDataLabelsIn: "Columns area",
+        TotalForRows: "Yes",
+        TotalForColumns: "Yes"
+    };
+    const Data = "<?xml version = \"1.0\" encoding = \"UTF-8\"?>\n\r\n<Recordset RecordCount=\"1\" PageCount=\"1\">\n\t<Page PageNumber=\"1\">\n\t\t<Record>\n\t\t\t<F1>14238.027777</F1>\n\t\t\t<F1_N>128142.235</F1_N>\n\t\t\t<F1_D>9</F1_D>\n\t\t</Record>\n\t</Page>\n</Recordset>\n";
+    const Metadata = "<?xml version = \"1.0\" encoding = \"UTF-8\"?>\n\r\n<OLAPCube Version=\"2\" format=\"compact\" decimalSeparator=\".\" thousandsSeparator=\",\" dateFormat=\"MDY\" textForNullValues=\"\" forceDefaultView=\"yes\" ShowDataLabelsIn=\"\">\n\t<OLAPMeasure name=\"Element3\" displayName=\"GDP per capita (average)\" description=\"GDP per capita (average)\" dataField=\"F1\" visible=\"Yes\" aggregation=\"average\" align=\"right\" picture=\"U$S Z,ZZZ,ZZ9.999\" targetValue=\"0\" maximumValue=\"0\" dataType=\"real\" format=\"\">\n\t</OLAPMeasure>\n\t<OLAPMeasure name=\"F1_N\" displayName=\"F1_N\" description=\"F1_N\" dataField=\"F1_N\" visible=\"Never\" aggregation=\"sum\" align=\"right\" picture=\"\" targetValue=\"0\" maximumValue=\"0\" dataType=\"real\" format=\"\" raiseItemClick=\"false\" isComponent=\"true\">\n\t</OLAPMeasure>\n\t<OLAPMeasure name=\"F1_D\" displayName=\"F1_D\" description=\"F1_D\" dataField=\"F1_D\" visible=\"Never\" aggregation=\"count\" align=\"right\" picture=\"\" targetValue=\"0\" maximumValue=\"0\" dataType=\"integer\" format=\"\" raiseItemClick=\"false\" isComponent=\"true\">\n\t</OLAPMeasure>\n</OLAPCube>\n";
+      const serializedObjectMock = [
+        {
+          Id: "422fcc61-dfdf-4282-b14d-85c28636042e",
+          Name: "AmericanCountriesWithMoreCases",
+          Description: "American Countries With More Cases",
+          Expression: "",
+          Modified: "2023-10-05T21:18:07"
+        },
+        {
+          Id: "87ff9cc8-6196-4cfa-811a-4a154082274f",
+          Name: "AverageCountriesGDPPerCapita",
+          Description: "Average Countries GDPPer Capita",
+          Expression: "",
+          Modified: "2022-10-31T20:12:21"
+        },
+        {
+          Id: "94892cdc-665e-4768-a9ea-a376d6905f20",
+          Name: "AverageCountryExtremePoverty",
+          Description: "Average Country Extreme Poverty",
+          Expression: "",
+          Modified: "2023-01-04T14:33:27"
+        },
+        {
+          Id: "4bf29a4a-b79b-45af-9277-7bc87704df79",
+          Name: "AverageLifeExpectancy",
+          Description: "Average Life Expectancy",
+          Expression: "",
+          Modified: "2023-05-04T18:09:55"
+        }
+      ];
+      const serializedStringMock = JSON.stringify(serializedObjectMock);
+      window.addEventListener("appload", () => {
+        const queryMenu = document.querySelector("gx-query-menu");
+        const queryRender = document.querySelector("gx-query-render");
+
+        queryRender.query = query;
+        setTimeout(() => {
+          console.log('time is out');
+          queryRender.data = Data;
+          queryRender.metadata = Metadata;
+        }, 2000);
+        // queryMenu.serializedObject = serializedStringMock;
+        // queryMenu.addEventListener("gxQuerySelect", a => {
+        //   console.log("gxQuerySelect", a);
+        // });
+      });
+    </script>
 
     <style>
       body {
-        display: flex;
-        min-height: 100vh;
         margin: 0;
       }
+      .container {
+        width: 100%;
+        height: 100vh;
+        position: relative;
+        display: flex;
+      }
+      .control {
+        display: block;
+        position: fixed;
+        right: 0;
+        top: 10px;
+      }
+      gx-query-menu::part(query-item__item):hover {
+        /* background-color: #696ef21a; */
+      }
+      gx-query-chat::part(query-chat__header) {
+        /* background-color: aqua; */
+        /* font-size: 12px; */
+      }
+      gx-query-chat {
+        /* --chat-box-bg-color: red; */
+        /* --chat-box-margin: 20px; */
+      }
+      .custom-btn {
+        background-color: red;
+      }
     </style>
-
-    <script>
-      window.addEventListener("appload", () => {
-        const serviceResponseCardMock = {
-          MetaData: {
-            TextForNullValues: "",
-            Axes: [
-              {
-                Name: "Element4",
-                Title: "Booleano",
-                DataField: "F4",
-                DataType: "boolean",
-                Visible: "Yes",
-                Axis: "Rows",
-                CanDragToPages: true,
-                RaiseItemClick: true,
-                IsComponent: false,
-                Style: "",
-                Subtotals: "Yes",
-                Filter: {
-                  Type: "ShowAllValues",
-                  Values: []
-                },
-                ExpandCollapse: {
-                  Type: "ExpandAllValues",
-                  Values: []
-                },
-                Order: {
-                  Type: "None",
-                  Values: []
-                },
-                ValuesStyles: []
-              },
-              {
-                Name: "Element5",
-                Title: "Fecha",
-                DataField: "F5",
-                DataType: "date",
-                Visible: "Yes",
-                Axis: "Rows",
-                Picture: "99/99/99",
-                CanDragToPages: true,
-                RaiseItemClick: true,
-                IsComponent: false,
-                Style: "",
-                Subtotals: "Yes",
-                Filter: {
-                  Type: "ShowAllValues",
-                  Values: []
-                },
-                ExpandCollapse: {
-                  Type: "ExpandAllValues",
-                  Values: []
-                },
-                Order: {
-                  Type: "None",
-                  Values: []
-                },
-                ValuesStyles: []
-              },
-              {
-                Name: "Element6",
-                Title: "Fecha Hora",
-                DataField: "F6",
-                DataType: "datetime",
-                Visible: "Yes",
-                Axis: "Rows",
-                Picture: "99/99/99 99:99",
-                CanDragToPages: true,
-                RaiseItemClick: true,
-                IsComponent: false,
-                Style: "",
-                Subtotals: "Yes",
-                Filter: {
-                  Type: "ShowAllValues",
-                  Values: []
-                },
-                ExpandCollapse: {
-                  Type: "ExpandAllValues",
-                  Values: []
-                },
-                Order: {
-                  Type: "None",
-                  Values: []
-                },
-                ValuesStyles: []
-              }
-            ],
-            Data: [
-              {
-                Name: "Element1",
-                Title: "Entero",
-                DataField: "F1",
-                Aggregation: "",
-                DataType: "integer",
-                Visible: "Yes",
-                Picture: "ZZZZZZZZZZZZZZ9",
-                RaiseItemClick: true,
-                IsComponent: false,
-                TargetValue: 100,
-                MaximumValue: 100,
-                Style: "",
-                ConditionalStyles: [],
-                IsFormula: false,
-                Formula: ""
-              },
-              {
-                Name: "Element2",
-                Title: "Decimal",
-                DataField: "F2",
-                Aggregation: "",
-                DataType: "real",
-                Visible: "Yes",
-                Picture: "ZZZZZZZZZZZZZZ9",
-                RaiseItemClick: true,
-                IsComponent: false,
-                TargetValue: 100,
-                MaximumValue: 100,
-                Style: "",
-                ConditionalStyles: [],
-                IsFormula: false,
-                Formula: ""
-              }
-            ]
-          },
-          Data: {
-            Rows: [
-              {
-                F4: "False",
-                F5: "2022-02-02",
-                F6: "2022-02-02 02:02:02",
-                F1: "2",
-                F2: "2.22",
-                F3: "BR                  "
-              },
-              {
-                F4: "False",
-                F5: "2022-03-03",
-                F6: "2022-03-03 03:03:03",
-                F1: "3",
-                F2: "3.33",
-                F3: "BR                  "
-              },
-              {
-                F4: "False",
-                F5: "2022-04-04",
-                F6: "2022-04-04 04:04:04",
-                F1: "4",
-                F2: "4.44",
-                F3: "PY                  "
-              },
-              {
-                F4: "True",
-                F5: "2022-01-01",
-                F6: "2022-01-01 01:01:01",
-                F1: "1",
-                F2: "1.11",
-                F3: "UY                  "
-              },
-              {
-                F4: "True",
-                F5: "2022-05-05",
-                F6: "2022-05-05 05:05:05",
-                F1: "5",
-                F2: "5.55",
-                F3: "CL                  "
-              },
-              {
-                F4: "True",
-                F5: "2022-06-06",
-                F6: "2022-06-06 06:06:06",
-                F1: "6",
-                F2: "6.66",
-                F3: "BO                  "
-              }
-            ]
-          }
-        };
-
-        const serviceResponseChartMock = {
-          MetaData: {
-            TextForNullValues: "",
-            Axes: [
-              {
-                Name: "Element2",
-                Title: "Country",
-                DataField: "F1",
-                DataType: "character",
-                Visible: "Yes",
-                Axis: "Rows",
-                CanDragToPages: true,
-                RaiseItemClick: true,
-                IsComponent: false,
-                Style: "",
-                Subtotals: "Yes",
-                Filter: {
-                  Type: "ShowSomeValues",
-                  Values: [
-                    "Afghanistan",
-                    "Albania",
-                    "Algeria",
-                    "Angola",
-                    "Anguilla",
-                    "Antigua and Barbuda",
-                    "Argentina",
-                    "Armenia",
-                    "Australia",
-                    "Austria",
-                    "Barbados",
-                    "Belarus",
-                    "Bulgaria",
-                    "Denmark",
-                    "Hungary",
-                    "Madagascar",
-                    "Marshall Islands",
-                    "Azerbaijan",
-                    "Bahamas",
-                    "Bahrain",
-                    "Bangladesh",
-                    "Belgium",
-                    "Belize",
-                    "Benin",
-                    "Bermuda",
-                    "Bhutan",
-                    "Bolivia",
-                    "Bosnia and Herzegovina",
-                    "Botswana",
-                    "Brazil",
-                    "British Virgin Islands",
-                    "Brunei",
-                    "Burkina Faso",
-                    "Burundi",
-                    "Cambodia",
-                    "Cameroon",
-                    "Canada",
-                    "Cape Verde",
-                    "Central African Republic",
-                    "Chad",
-                    "Chile",
-                    "China",
-                    "Colombia",
-                    "Comoros",
-                    "Congo",
-                    "Cook Islands",
-                    "Costa Rica",
-                    "Cote d'Ivoire",
-                    "Croatia",
-                    "Cuba",
-                    "Cyprus",
-                    "Czechia",
-                    "Democratic Republic of Congo",
-                    "Djibouti",
-                    "Dominica",
-                    "Dominican Republic",
-                    "Ecuador",
-                    "Egypt",
-                    "El Salvador",
-                    "Equatorial Guinea",
-                    "Eritrea",
-                    "Estonia",
-                    "Eswatini",
-                    "Ethiopia",
-                    "Faeroe Islands",
-                    "Fiji",
-                    "Finland",
-                    "France",
-                    "Gabon",
-                    "Gambia",
-                    "Georgia",
-                    "Germany",
-                    "Ghana",
-                    "Greece",
-                    "Greenland",
-                    "Grenada",
-                    "Guatemala",
-                    "Guinea",
-                    "Guinea-Bissau",
-                    "Guyana",
-                    "Haiti",
-                    "Honduras",
-                    "Iceland",
-                    "India",
-                    "Indonesia",
-                    "Iran",
-                    "Iraq",
-                    "Ireland",
-                    "Israel",
-                    "Italy",
-                    "Jamaica",
-                    "Japan",
-                    "Jordan",
-                    "Kazakhstan",
-                    "Kenya",
-                    "Kiribati",
-                    "Kosovo",
-                    "Kuwait",
-                    "Kyrgyzstan",
-                    "Laos",
-                    "Latvia",
-                    "Lebanon",
-                    "Lesotho",
-                    "Liberia",
-                    "Libya",
-                    "Liechtenstein",
-                    "Lithuania",
-                    "Luxembourg",
-                    "Malawi",
-                    "Malaysia",
-                    "Maldives",
-                    "Mali",
-                    "Malta",
-                    "Mauritania",
-                    "Mauritius",
-                    "Mexico",
-                    "Micronesia (country)",
-                    "Moldova",
-                    "Monaco",
-                    "Mongolia",
-                    "Montenegro",
-                    "Morocco",
-                    "Mozambique",
-                    "Myanmar",
-                    "Namibia",
-                    "Nauru",
-                    "Nepal",
-                    "Netherlands",
-                    "New Zealand",
-                    "Nicaragua",
-                    "Niger",
-                    "Nigeria",
-                    "North Macedonia",
-                    "Norway",
-                    "Oman",
-                    "Pakistan",
-                    "Palestine",
-                    "Panama",
-                    "Papua New Guinea",
-                    "Paraguay",
-                    "Peru",
-                    "Philippines",
-                    "Poland",
-                    "Portugal",
-                    "Qatar",
-                    "Romania",
-                    "Russia",
-                    "Rwanda",
-                    "Saint Kitts and Nevis",
-                    "Saint Lucia",
-                    "Saint Vincent and the Grenadines",
-                    "Samoa",
-                    "San Marino",
-                    "Sao Tome and Principe",
-                    "Saudi Arabia",
-                    "Senegal",
-                    "Serbia",
-                    "Seychelles",
-                    "Sierra Leone",
-                    "Singapore",
-                    "Slovakia",
-                    "Slovenia",
-                    "Solomon Islands",
-                    "Somalia",
-                    "South Africa",
-                    "South Korea",
-                    "South Sudan",
-                    "Spain",
-                    "Sri Lanka",
-                    "Sudan",
-                    "Suriname",
-                    "Sweden",
-                    "Switzerland",
-                    "Syria",
-                    "Taiwan",
-                    "Tajikistan",
-                    "Tanzania",
-                    "Thailand",
-                    "Timor",
-                    "Togo",
-                    "Tonga",
-                    "Trinidad and Tobago",
-                    "Tunisia",
-                    "Turkey",
-                    "Turkmenistan",
-                    "Tuvalu",
-                    "Uganda",
-                    "Ukraine",
-                    "United Arab Emirates",
-                    "United Kingdom",
-                    "United States",
-                    "Uruguay",
-                    "Uzbekistan",
-                    "Vanuatu",
-                    "Vatican",
-                    "Venezuela",
-                    "Vietnam",
-                    "Yemen",
-                    "Zambia",
-                    "Zimbabwe"
-                  ]
-                },
-                ExpandCollapse: {
-                  Type: "ExpandAllValues",
-                  Values: []
-                },
-                Order: {
-                  Type: "None",
-                  Values: []
-                },
-                ValuesStyles: []
-              }
-            ],
-            Data: [
-              {
-                Name: "Element1",
-                Title: "Population with age < 65",
-                DataField: "F2",
-                Aggregation: "",
-                DataType: "real",
-                Visible: "Yes",
-                Picture: "ZZZZZZZZZZZZZZ9",
-                RaiseItemClick: true,
-                IsComponent: false,
-                TargetValue: 100,
-                MaximumValue: 100,
-                Style: "",
-                ConditionalStyles: [],
-                IsFormula: true,
-                Formula: "(F2_1*(100-F2_2))/100"
-              },
-              {
-                Name: "Element5",
-                Title: "Population with age >= 65",
-                DataField: "F3",
-                Aggregation: "",
-                DataType: "real",
-                Visible: "Yes",
-                Picture: "ZZZZZZZZZZZZZZ9",
-                RaiseItemClick: true,
-                IsComponent: false,
-                TargetValue: 100,
-                MaximumValue: 100,
-                Style: "",
-                ConditionalStyles: [],
-                IsFormula: true,
-                Formula: "(F3_1*F3_2)/100"
-              },
-              {
-                Name: "F2_1",
-                Title: "F2_1",
-                DataField: "F2_1",
-                Aggregation: "",
-                DataType: "integer",
-                Visible: "Never",
-                Picture: "ZZZZZZZZZZZZZZ9",
-                RaiseItemClick: true,
-                IsComponent: true,
-                TargetValue: 100,
-                MaximumValue: 100,
-                Style: "",
-                ConditionalStyles: [],
-                IsFormula: false,
-                Formula: ""
-              },
-              {
-                Name: "F2_2",
-                Title: "F2_2",
-                DataField: "F2_2",
-                Aggregation: "",
-                DataType: "real",
-                Visible: "Never",
-                Picture: "ZZZZZZZZZZZZZZ9.99",
-                RaiseItemClick: true,
-                IsComponent: true,
-                TargetValue: 100,
-                MaximumValue: 100,
-                Style: "",
-                ConditionalStyles: [],
-                IsFormula: false,
-                Formula: ""
-              },
-              {
-                Name: "F3_1",
-                Title: "F3_1",
-                DataField: "F3_1",
-                Aggregation: "",
-                DataType: "integer",
-                Visible: "Never",
-                Picture: "ZZZZZZZZZZZZZZ9",
-                RaiseItemClick: true,
-                IsComponent: true,
-                TargetValue: 100,
-                MaximumValue: 100,
-                Style: "",
-                ConditionalStyles: [],
-                IsFormula: false,
-                Formula: ""
-              },
-              {
-                Name: "F3_2",
-                Title: "F3_2",
-                DataField: "F3_2",
-                Aggregation: "",
-                DataType: "real",
-                Visible: "Never",
-                Picture: "ZZZZZZZZZZZZZZ9.99",
-                RaiseItemClick: true,
-                IsComponent: true,
-                TargetValue: 100,
-                MaximumValue: 100,
-                Style: "",
-                ConditionalStyles: [],
-                IsFormula: false,
-                Formula: ""
-              }
-            ]
-          },
-          Data: {
-            Rows: [
-              {
-                F1: "China                                   ",
-                F2: "1286165331.20866",
-                F3: "153158442.79134",
-                F2_1: "1439323774",
-                F2_2: "10.641",
-                F3_1: "1439323774",
-                F3_2: "10.641"
-              },
-              {
-                F1: "India                                   ",
-                F2: "1297355922.38235",
-                F3: "82648462.61765",
-                F2_1: "1380004385",
-                F2_2: "5.989",
-                F3_1: "1380004385",
-                F3_2: "5.989"
-              },
-              {
-                F1: "United States                           ",
-                F2: "279985209.01789",
-                F3: "51017437.98211",
-                F2_1: "331002647",
-                F2_2: "15.413",
-                F3_1: "331002647",
-                F3_2: "15.413"
-              },
-              {
-                F1: "Indonesia                               ",
-                F2: "258974899.59901",
-                F3: "14548721.40099",
-                F2_1: "273523621",
-                F2_2: "5.319",
-                F3_1: "273523621",
-                F3_2: "5.319"
-              },
-              {
-                F1: "Pakistan                                ",
-                F2: "210963220.72155",
-                F3: "9929110.27845",
-                F2_1: "220892331",
-                F2_2: "4.495",
-                F3_1: "220892331",
-                F3_2: "4.495"
-              },
-              {
-                F1: "Brazil                                  ",
-                F2: "194381328.34232",
-                F3: "18178080.65768",
-                F2_1: "212559409",
-                F2_2: "8.552",
-                F3_1: "212559409",
-                F3_2: "8.552"
-              },
-              {
-                F1: "Nigeria                                 ",
-                F2: "200468686.96163",
-                F3: "5670900.03837",
-                F2_1: "206139587",
-                F2_2: "2.751",
-                F3_1: "206139587",
-                F3_2: "2.751"
-              },
-              {
-                F1: "Bangladesh                              ",
-                F2: "156293518.25466",
-                F3: "8395864.74534",
-                F2_1: "164689383",
-                F2_2: "5.098",
-                F3_1: "164689383",
-                F3_2: "5.098"
-              },
-              {
-                F1: "Russia                                  ",
-                F2: "125243872.2612",
-                F3: "20690587.7388",
-                F2_1: "145934460",
-                F2_2: "14.178",
-                F3_1: "145934460",
-                F3_2: "14.178"
-              },
-              {
-                F1: "Mexico                                  ",
-                F2: "120091834.12679",
-                F3: "8840918.87321",
-                F2_1: "128932753",
-                F2_2: "6.857",
-                F3_1: "128932753",
-                F3_2: "6.857"
-              }
-            ]
-          }
-        };
-
-        const queryViewers = document.querySelectorAll("gx-query-viewer");
-
-        // Card
-        queryViewers[0].serviceResponse = serviceResponseCardMock;
-
-        // Chart
-        queryViewers[1].serviceResponse = serviceResponseChartMock;
-        queryViewers[2].serviceResponse = serviceResponseChartMock;
-        queryViewers[3].serviceResponse = serviceResponseChartMock;
-
-        document
-          .querySelector("gx-query-viewer-slider")
-          .addEventListener("change", event => {
-            console.log("Slider new value:", event.detail);
-          });
-      });
-    </script>
   </head>
   <body>
-    <gx-query-viewer
-      type="Card"
-      include-sparkline
-      include-trend
-      include-max-min
-      trend-period="SinceTheBeginning"
-      show-data-as="Values"
-      orientation="Vertical"
-    ></gx-query-viewer>
-
-    <div
-      style="
-        display: grid;
-        grid-template-columns: 0.5fr 0.5fr;
-        grid-template-rows: min-content min-content;
-      "
-    >
-      <gx-query-viewer
-        type="Chart"
-        chart-type="Column"
-        allow-selection="false"
-        plot-series="InTheSameChart"
-        show-data-labels-in="Columns"
-        query-title="Single data chart"
-        x-axis-intersection-at-zero="false"
-        x-axis-labels=""
-        x-axis-title=""
-        y-axis-title=""
-      ></gx-query-viewer>
-
-      <gx-query-viewer
-        type="Chart"
-        chart-type="Column3D"
-        allow-selection="false"
-        plot-series="InTheSameChart"
-        show-data-labels-in="Columns"
-        query-title="Single data chart"
-        x-axis-intersection-at-zero="false"
-        x-axis-labels=""
-        x-axis-title=""
-        y-axis-title=""
-      ></gx-query-viewer>
-
-      <div style="height: 200px; margin: 40px; display: flex; width: 100%">
-        <gx-query-viewer-slider start-slider-value="50" end-slider-value="80">
-          <gx-query-viewer
-            slot="content"
-            type="Chart"
-            chart-type="Line"
-            allow-selection="false"
-            plot-series="InTheSameChart"
-            show-data-labels-in="Columns"
-            query-title="Single data chart"
-            x-axis-intersection-at-zero="false"
-            x-axis-labels=""
-            x-axis-title=""
-            y-axis-title=""
-          ></gx-query-viewer>
-        </gx-query-viewer-slider>
-      </div>
-      <gx-query-viewer type="Chart">
-        <gx-query-viewer-controller
-          use-gxquery="true"
+    <!-- <gx-query-menu metadata-name="ReportingShowcase"></gx-query-menu> -->
+    <div class="container">
+      <gx-sidebar aria-label="sidebar menu">
+        <!-- <h3 slot="header">Large titel asdflaskjf lasdfkj asdfl</h3> -->
+        <!-- <button slot="new-chat" class="custom-btn">New chat</button> -->
+        <gx-query-menu
           metadata-name="ReportingShowcase"
-          base-url="http://gma.artech.local/GXqueryAIDemo"
-          object-name="CityPopulationForCountry"
-          type="Chart"
-        >
-        </gx-query-viewer-controller>
-      </gx-query-viewer>
+          serialized-object='[{"Id":"422fcc61-dfdf-4282-b14d-85c28636042e","Name":"AmericanCountriesWithMoreCases","Description":"American Countries With More Cases","Expression":"","Modified":"2023-10-05T21:18:07"},{"Id":"87ff9cc8-6196-4cfa-811a-4a154082274f","Name":"AverageCountriesGDPPerCapita","Description":"Average Countries GDPPer Capita","Expression":"","Modified":"2022-10-31T20:12:21"},{"Id":"94892cdc-665e-4768-a9ea-a376d6905f20","Name":"AverageCountryExtremePoverty","Description":"Average Country Extreme Poverty","Expression":"","Modified":"2023-01-04T14:33:27"},{"Id":"4bf29a4a-b79b-45af-9277-7bc87704df79","Name":"AverageLifeExpectancy","Description":"Average Life Expectancy","Expression":"","Modified":"2023-05-04T18:09:55"}]'
+        ></gx-query-menu>
+      </gx-sidebar>
 
-      <gx-query-viewer type="Chart">
-        <gx-query-viewer-controller
-          use-gxquery="true"
+      <gx-query-render
+        metadata-name="ReportingShowcase"
+      >
+      </gx-query-render>
+
+      <gx-floating-window title="AI Query Assistant" >
+        <gx-query-chat
           metadata-name="ReportingShowcase"
-          base-url="http://gma.artech.local/GXqueryAIDemo"
-          serialized-object='{ "Id": "8cca6f2c-65e5-4830-aebe-803362c13b3f", "Title": "TITULO", "ChartType":"Column", "ShowValues":"true" }'
-          type="Chart"
-        >
-        </gx-query-viewer-controller>
-      </gx-query-viewer>
+          main-title="AI Query Assistant AI Query Assistant"
+        ></gx-query-chat>
+      </gx-floating-window>
+
+
     </div>
+
+    <!--
+    <div class="container">
+      <gx-query-menu metadata-name="ReportingShowcase"></gx-query-menu>
+
+      <gx-query-viewer-container
+        main-title="Flights by Day Time"
+        metadata-name="ReportingShowcase"
+      >
+      </gx-query-viewer-container>
+
+      <gx-query-chat
+        metadata-name="ReportingShowcase"
+        main-title="AI Query Assistant AI Query Assistant"
+      ></gx-query-chat>
+    </div>
+     -->
   </body>
 </html>

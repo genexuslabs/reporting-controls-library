@@ -5,23 +5,134 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { QueryChatItem } from "./components/gx-query/query-chat/query-chat";
-import { GeneratorType, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerSliderRange, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels, TrendIcon } from "./common/basic-types";
-import { QueryViewerServiceResponse } from "@genexus/reporting-api/dist/types/service-result";
+import { QueryRequest } from "./components/gx-query/query-chat/query-chat";
+import { GeneratorType, GxQueryItem, QueryViewerBase, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels } from "@genexus/reporting-api/dist/types/basic-types";
+import { GxQueryItem as GxQueryItem1, QueryViewerChartType as QueryViewerChartType1, QueryViewerOrientation as QueryViewerOrientation1, QueryViewerPlotSeries as QueryViewerPlotSeries1, QueryViewerShowDataAs as QueryViewerShowDataAs1, QueryViewerSliderRange, QueryViewerTranslations as QueryViewerTranslations1, QueryViewerTrendPeriod as QueryViewerTrendPeriod1, QueryViewerXAxisLabels as QueryViewerXAxisLabels1, TrendIcon } from "./common/basic-types";
+import { QueryViewerServiceData, QueryViewerServiceMetaData, QueryViewerServiceResponse } from "@genexus/reporting-api/dist/types/service-result";
 import { Axis, ChartOptions, LegendOptions, PaneOptions, PlotOptions, SeriesLineOptions, SeriesOptionsType, SubtitleOptions, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
 import { QueryViewerParameterChangedEvent } from "./components/query-viewer-parameter/query-viewer-parameter";
 export namespace Components {
-    interface GxQueryChat {
+    interface GxFloatingWindow {
+        /**
+          * Width of expanded window. Default 300px
+         */
+        "expandedSize": "300px";
+        /**
+          * Determines if the menu is minimized
+         */
+        "isMinimized": boolean;
+        /**
+          * Determines if the menu is unlocked
+         */
+        "isUnlocked": boolean;
         /**
           * This property specifies the items of the chat.
          */
-        "items": QueryChatItem[];
-    }
-    interface GxQuerySidebarMenu {
+        "mainTitle": string;
         /**
-          * This attribute lets you determine if the control is expanded or collapsed.
+          * Determines if the menu can be unlocked or minimize
          */
-        "expanded": boolean;
+        "resizeWindow": boolean;
+    }
+    interface GxQueryChat {
+        /**
+          * Clean chat
+         */
+        "gxCleanChat": () => Promise<void>;
+        /**
+          * Specify the size of the icon messages. ex 50px
+         */
+        "messageIconSize": string;
+        /**
+          * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
+         */
+        "metadataName": "";
+        /**
+          * Text that appears in the input control when it has no value set
+         */
+        "placeholder": string;
+    }
+    interface GxQueryMenu {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName": "Query list";
+        /**
+          * Base URL of the server
+         */
+        "baseUrl": string;
+        /**
+          * Show queries items group by month
+         */
+        "groupItemsByMonth": true;
+        /**
+          * Add a new query item
+          * @param item GxQueryItem
+         */
+        "gxAddQuery": (item: GxQueryItem) => Promise<void>;
+        /**
+          * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
+         */
+        "metadataName": string;
+        /**
+          * Dates to group queries
+         */
+        "rangeOfDays": { days: number; label: string }[];
+        /**
+          * Use this property to pass a query obtained from GXquery. This disabled the call to GxQuery API:    Id: string;    Name: string;    Description: string;    Expression: string;    Modified: string;
+         */
+        "serializedObject": string;
+        /**
+          * True to tell the controller to connect use GXquery as a queries repository
+         */
+        "useGxquery": true;
+    }
+    interface GxQueryMenuItem {
+        /**
+          * Toggle edit mode
+         */
+        "editMode": boolean;
+        /**
+          * Id of item active
+         */
+        "isActive": boolean;
+        /**
+          * This property specify the title of the item.
+         */
+        "item": GxQueryItem1;
+        "setFocus": () => Promise<void>;
+    }
+    interface GxQueryRender {
+        /**
+          * Base URL of the server
+         */
+        "baseUrl": string;
+        /**
+          * Data for query viewer
+         */
+        "data": QueryViewerServiceData | string;
+        /**
+          * Environment of the project: java or net
+         */
+        "environment": GeneratorType;
+        "fetchingDataLabel": "Fetching data";
+        /**
+          * Metadata for query viewer
+         */
+        "metadata": QueryViewerServiceMetaData | string;
+        /**
+          * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
+         */
+        "metadataName": string;
+        "noDataLabel": "No Data";
+        /**
+          * Provide the Query properties
+         */
+        "query": QueryViewerBase;
+        /**
+          * True to tell the controller to connect use GXquery as a queries repository
+         */
+        "useGxquery": true;
     }
     interface GxQueryViewer {
         /**
@@ -233,7 +344,7 @@ export namespace Components {
         /**
           * For translate the labels of the outputs
          */
-        "translations": QueryViewerTranslations;
+        "translations": QueryViewerTranslations1;
         /**
           * Specifies the icon used for the trend.
          */
@@ -241,7 +352,7 @@ export namespace Components {
         /**
           * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
-        "trendPeriod": QueryViewerTrendPeriod;
+        "trendPeriod": QueryViewerTrendPeriod1;
         /**
           * Specifies the value to show in the card.
          */
@@ -267,7 +378,7 @@ export namespace Components {
         /**
           * Specifies whether to arrange the attributes horizontally or vertically when than one data attribute is present.
          */
-        "orientation": QueryViewerOrientation;
+        "orientation": QueryViewerOrientation1;
         /**
           * Specifies the metadata and data that the control will use to render.
          */
@@ -275,15 +386,15 @@ export namespace Components {
         /**
           * Specifies whether to show the actual values, the values as a percentage of the target values, or both.
          */
-        "showDataAs": QueryViewerShowDataAs;
+        "showDataAs": QueryViewerShowDataAs1;
         /**
           * For translate the labels of the outputs
          */
-        "translations": QueryViewerTranslations;
+        "translations": QueryViewerTranslations1;
         /**
           * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
-        "trendPeriod": QueryViewerTrendPeriod;
+        "trendPeriod": QueryViewerTrendPeriod1;
     }
     interface GxQueryViewerChart {
         /**
@@ -301,7 +412,7 @@ export namespace Components {
         /**
           * Option of the chartType used to visualize and represent data.
          */
-        "chartType": QueryViewerChartType;
+        "chartType": QueryViewerChartType1;
         /**
           * get the current extremes for the axis.
          */
@@ -321,7 +432,7 @@ export namespace Components {
         /**
           * Specifies if the chart series are plotted together in the same chart or alone in separate charts.
          */
-        "plotSeries": QueryViewerPlotSeries;
+        "plotSeries": QueryViewerPlotSeries1;
         /**
           * Options of the X axis (usually this is the horizontal axis).
          */
@@ -345,7 +456,7 @@ export namespace Components {
         /**
           * For translate the labels of the outputs
          */
-        "translations": QueryViewerTranslations;
+        "translations": QueryViewerTranslations1;
         /**
           * Specifies whether the X axis intersects the Y axis at zero or the intersection point is automatically calculated.
          */
@@ -353,7 +464,7 @@ export namespace Components {
         /**
           * Specifies if the labels in the X axis of a chart are shown horizontally or vertically.
          */
-        "xAxisLabels": QueryViewerXAxisLabels;
+        "xAxisLabels": QueryViewerXAxisLabels1;
         /**
           * X axis title, if specified.
          */
@@ -383,7 +494,7 @@ export namespace Components {
         /**
           * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
          */
-        "chartType": QueryViewerChartType;
+        "chartType": QueryViewerChartType1;
         /**
           * A CSS class to set as the `gx-query-viewer-chart-controller` element class.
          */
@@ -391,7 +502,7 @@ export namespace Components {
         /**
           * Timeline
          */
-        "plotSeries": QueryViewerPlotSeries;
+        "plotSeries": QueryViewerPlotSeries1;
         /**
           * Title of the QueryViewer
          */
@@ -407,7 +518,7 @@ export namespace Components {
         /**
           * For translate the labels of the outputs
          */
-        "translations": QueryViewerTranslations;
+        "translations": QueryViewerTranslations1;
         /**
           * if true the x Axes intersect at zero
          */
@@ -415,7 +526,7 @@ export namespace Components {
         /**
           * Labels for XAxis
          */
-        "xAxisLabels": QueryViewerXAxisLabels;
+        "xAxisLabels": QueryViewerXAxisLabels1;
         /**
           * Y Axis title
          */
@@ -676,6 +787,52 @@ export namespace Components {
          */
         "step": number;
     }
+    interface GxSidebar {
+        /**
+          * Label for collapse button
+         */
+        "collapseLabel": string;
+        /**
+          * Width of expanded window. Default 300px
+         */
+        "collapsedSize": "40px";
+        /**
+          * Determines if the sidebar can be collapsed
+         */
+        "collapsible": true;
+        /**
+          * Determines if should display the actions controls
+         */
+        "controls": true;
+        /**
+          * Label for expand button
+         */
+        "expandLabel": string;
+        /**
+          * Width of expanded window. Default 300px
+         */
+        "expandedSize": "300px";
+        /**
+          * Determines if the sidebar is collapsed
+         */
+        "isCollapsed": boolean;
+        /**
+          * Label for expand button
+         */
+        "newChatLabel": string;
+    }
+}
+export interface GxQueryChatCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLGxQueryChatElement;
+}
+export interface GxQueryMenuCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLGxQueryMenuElement;
+}
+export interface GxQueryMenuItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLGxQueryMenuItemElement;
 }
 export interface GxQueryViewerCardCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -705,18 +862,40 @@ export interface GxQueryViewerSliderCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLGxQueryViewerSliderElement;
 }
+export interface GxSidebarCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLGxSidebarElement;
+}
 declare global {
+    interface HTMLGxFloatingWindowElement extends Components.GxFloatingWindow, HTMLStencilElement {
+    }
+    var HTMLGxFloatingWindowElement: {
+        prototype: HTMLGxFloatingWindowElement;
+        new (): HTMLGxFloatingWindowElement;
+    };
     interface HTMLGxQueryChatElement extends Components.GxQueryChat, HTMLStencilElement {
     }
     var HTMLGxQueryChatElement: {
         prototype: HTMLGxQueryChatElement;
         new (): HTMLGxQueryChatElement;
     };
-    interface HTMLGxQuerySidebarMenuElement extends Components.GxQuerySidebarMenu, HTMLStencilElement {
+    interface HTMLGxQueryMenuElement extends Components.GxQueryMenu, HTMLStencilElement {
     }
-    var HTMLGxQuerySidebarMenuElement: {
-        prototype: HTMLGxQuerySidebarMenuElement;
-        new (): HTMLGxQuerySidebarMenuElement;
+    var HTMLGxQueryMenuElement: {
+        prototype: HTMLGxQueryMenuElement;
+        new (): HTMLGxQueryMenuElement;
+    };
+    interface HTMLGxQueryMenuItemElement extends Components.GxQueryMenuItem, HTMLStencilElement {
+    }
+    var HTMLGxQueryMenuItemElement: {
+        prototype: HTMLGxQueryMenuItemElement;
+        new (): HTMLGxQueryMenuItemElement;
+    };
+    interface HTMLGxQueryRenderElement extends Components.GxQueryRender, HTMLStencilElement {
+    }
+    var HTMLGxQueryRenderElement: {
+        prototype: HTMLGxQueryRenderElement;
+        new (): HTMLGxQueryRenderElement;
     };
     interface HTMLGxQueryViewerElement extends Components.GxQueryViewer, HTMLStencilElement {
     }
@@ -784,9 +963,18 @@ declare global {
         prototype: HTMLGxQueryViewerSliderElement;
         new (): HTMLGxQueryViewerSliderElement;
     };
+    interface HTMLGxSidebarElement extends Components.GxSidebar, HTMLStencilElement {
+    }
+    var HTMLGxSidebarElement: {
+        prototype: HTMLGxSidebarElement;
+        new (): HTMLGxSidebarElement;
+    };
     interface HTMLElementTagNameMap {
+        "gx-floating-window": HTMLGxFloatingWindowElement;
         "gx-query-chat": HTMLGxQueryChatElement;
-        "gx-query-sidebar-menu": HTMLGxQuerySidebarMenuElement;
+        "gx-query-menu": HTMLGxQueryMenuElement;
+        "gx-query-menu-item": HTMLGxQueryMenuItemElement;
+        "gx-query-render": HTMLGxQueryRenderElement;
         "gx-query-viewer": HTMLGxQueryViewerElement;
         "gx-query-viewer-card": HTMLGxQueryViewerCardElement;
         "gx-query-viewer-card-controller": HTMLGxQueryViewerCardControllerElement;
@@ -798,20 +986,153 @@ declare global {
         "gx-query-viewer-format-style": HTMLGxQueryViewerFormatStyleElement;
         "gx-query-viewer-parameter": HTMLGxQueryViewerParameterElement;
         "gx-query-viewer-slider": HTMLGxQueryViewerSliderElement;
+        "gx-sidebar": HTMLGxSidebarElement;
     }
 }
 declare namespace LocalJSX {
-    interface GxQueryChat {
+    interface GxFloatingWindow {
+        /**
+          * Width of expanded window. Default 300px
+         */
+        "expandedSize"?: "300px";
+        /**
+          * Determines if the menu is minimized
+         */
+        "isMinimized"?: boolean;
+        /**
+          * Determines if the menu is unlocked
+         */
+        "isUnlocked"?: boolean;
         /**
           * This property specifies the items of the chat.
          */
-        "items"?: QueryChatItem[];
-    }
-    interface GxQuerySidebarMenu {
+        "mainTitle"?: string;
         /**
-          * This attribute lets you determine if the control is expanded or collapsed.
+          * Determines if the menu can be unlocked or minimize
          */
-        "expanded"?: boolean;
+        "resizeWindow"?: boolean;
+    }
+    interface GxQueryChat {
+        /**
+          * Specify the size of the icon messages. ex 50px
+         */
+        "messageIconSize"?: string;
+        /**
+          * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
+         */
+        "metadataName"?: "";
+        /**
+          * Fired when receive a question answer
+         */
+        "onGxAssistantResponse"?: (event: GxQueryChatCustomEvent<QueryViewerBase>) => void;
+        /**
+          * Fired each time the user make a question
+         */
+        "onGxUserRequest"?: (event: GxQueryChatCustomEvent<QueryRequest>) => void;
+        /**
+          * Text that appears in the input control when it has no value set
+         */
+        "placeholder"?: string;
+    }
+    interface GxQueryMenu {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: "Query list";
+        /**
+          * Base URL of the server
+         */
+        "baseUrl"?: string;
+        /**
+          * Show queries items group by month
+         */
+        "groupItemsByMonth"?: true;
+        /**
+          * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
+         */
+        "metadataName"?: string;
+        /**
+          * Delete query
+         */
+        "onGxQueryDelete"?: (event: GxQueryMenuCustomEvent<GxQueryItem>) => void;
+        /**
+          * Rename query
+         */
+        "onGxQueryRename"?: (event: GxQueryMenuCustomEvent<GxQueryItem>) => void;
+        /**
+          * Select a query
+         */
+        "onGxQuerySelect"?: (event: GxQueryMenuCustomEvent<GxQueryItem>) => void;
+        /**
+          * Dates to group queries
+         */
+        "rangeOfDays"?: { days: number; label: string }[];
+        /**
+          * Use this property to pass a query obtained from GXquery. This disabled the call to GxQuery API:    Id: string;    Name: string;    Description: string;    Expression: string;    Modified: string;
+         */
+        "serializedObject"?: string;
+        /**
+          * True to tell the controller to connect use GXquery as a queries repository
+         */
+        "useGxquery"?: true;
+    }
+    interface GxQueryMenuItem {
+        /**
+          * Toggle edit mode
+         */
+        "editMode"?: boolean;
+        /**
+          * Id of item active
+         */
+        "isActive"?: boolean;
+        /**
+          * This property specify the title of the item.
+         */
+        "item"?: GxQueryItem1;
+        /**
+          * Trigger the action to delete the item
+         */
+        "onDeleteItem"?: (event: GxQueryMenuItemCustomEvent<GxQueryItem1>) => void;
+        /**
+          * Trigger the action to delete the item
+         */
+        "onRenameItem"?: (event: GxQueryMenuItemCustomEvent<GxQueryItem1>) => void;
+        /**
+          * Trigger the action to select an item
+         */
+        "onSelectItem"?: (event: GxQueryMenuItemCustomEvent<GxQueryItem1>) => void;
+    }
+    interface GxQueryRender {
+        /**
+          * Base URL of the server
+         */
+        "baseUrl"?: string;
+        /**
+          * Data for query viewer
+         */
+        "data"?: QueryViewerServiceData | string;
+        /**
+          * Environment of the project: java or net
+         */
+        "environment"?: GeneratorType;
+        "fetchingDataLabel"?: "Fetching data";
+        /**
+          * Metadata for query viewer
+         */
+        "metadata"?: QueryViewerServiceMetaData | string;
+        /**
+          * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
+         */
+        "metadataName"?: string;
+        "noDataLabel"?: "No Data";
+        /**
+          * Provide the Query properties
+         */
+        "query"?: QueryViewerBase;
+        /**
+          * True to tell the controller to connect use GXquery as a queries repository
+         */
+        "useGxquery"?: true;
     }
     interface GxQueryViewer {
         /**
@@ -1027,7 +1348,7 @@ declare namespace LocalJSX {
         /**
           * For translate the labels of the outputs
          */
-        "translations"?: QueryViewerTranslations;
+        "translations"?: QueryViewerTranslations1;
         /**
           * Specifies the icon used for the trend.
          */
@@ -1035,7 +1356,7 @@ declare namespace LocalJSX {
         /**
           * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
-        "trendPeriod"?: QueryViewerTrendPeriod;
+        "trendPeriod"?: QueryViewerTrendPeriod1;
         /**
           * Specifies the value to show in the card.
          */
@@ -1061,7 +1382,7 @@ declare namespace LocalJSX {
         /**
           * Specifies whether to arrange the attributes horizontally or vertically when than one data attribute is present.
          */
-        "orientation"?: QueryViewerOrientation;
+        "orientation"?: QueryViewerOrientation1;
         /**
           * Specifies the metadata and data that the control will use to render.
          */
@@ -1069,15 +1390,15 @@ declare namespace LocalJSX {
         /**
           * Specifies whether to show the actual values, the values as a percentage of the target values, or both.
          */
-        "showDataAs"?: QueryViewerShowDataAs;
+        "showDataAs"?: QueryViewerShowDataAs1;
         /**
           * For translate the labels of the outputs
          */
-        "translations"?: QueryViewerTranslations;
+        "translations"?: QueryViewerTranslations1;
         /**
           * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
-        "trendPeriod"?: QueryViewerTrendPeriod;
+        "trendPeriod"?: QueryViewerTrendPeriod1;
     }
     interface GxQueryViewerChart {
         /**
@@ -1091,7 +1412,7 @@ declare namespace LocalJSX {
         /**
           * Option of the chartType used to visualize and represent data.
          */
-        "chartType"?: QueryViewerChartType;
+        "chartType"?: QueryViewerChartType1;
         /**
           * Options of the tooltip, the tooltip appears when hovering over a point in a series.
          */
@@ -1107,7 +1428,7 @@ declare namespace LocalJSX {
         /**
           * Specifies if the chart series are plotted together in the same chart or alone in separate charts.
          */
-        "plotSeries"?: QueryViewerPlotSeries;
+        "plotSeries"?: QueryViewerPlotSeries1;
         /**
           * Options of the X axis (usually this is the horizontal axis).
          */
@@ -1127,7 +1448,7 @@ declare namespace LocalJSX {
         /**
           * For translate the labels of the outputs
          */
-        "translations"?: QueryViewerTranslations;
+        "translations"?: QueryViewerTranslations1;
         /**
           * Specifies whether the X axis intersects the Y axis at zero or the intersection point is automatically calculated.
          */
@@ -1135,7 +1456,7 @@ declare namespace LocalJSX {
         /**
           * Specifies if the labels in the X axis of a chart are shown horizontally or vertically.
          */
-        "xAxisLabels"?: QueryViewerXAxisLabels;
+        "xAxisLabels"?: QueryViewerXAxisLabels1;
         /**
           * X axis title, if specified.
          */
@@ -1161,7 +1482,7 @@ declare namespace LocalJSX {
         /**
           * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
          */
-        "chartType"?: QueryViewerChartType;
+        "chartType"?: QueryViewerChartType1;
         /**
           * A CSS class to set as the `gx-query-viewer-chart-controller` element class.
          */
@@ -1169,7 +1490,7 @@ declare namespace LocalJSX {
         /**
           * Timeline
          */
-        "plotSeries"?: QueryViewerPlotSeries;
+        "plotSeries"?: QueryViewerPlotSeries1;
         /**
           * Title of the QueryViewer
          */
@@ -1185,7 +1506,7 @@ declare namespace LocalJSX {
         /**
           * For translate the labels of the outputs
          */
-        "translations"?: QueryViewerTranslations;
+        "translations"?: QueryViewerTranslations1;
         /**
           * if true the x Axes intersect at zero
          */
@@ -1193,7 +1514,7 @@ declare namespace LocalJSX {
         /**
           * Labels for XAxis
          */
-        "xAxisLabels"?: QueryViewerXAxisLabels;
+        "xAxisLabels"?: QueryViewerXAxisLabels1;
         /**
           * Y Axis title
          */
@@ -1478,9 +1799,50 @@ declare namespace LocalJSX {
          */
         "step"?: number;
     }
+    interface GxSidebar {
+        /**
+          * Label for collapse button
+         */
+        "collapseLabel"?: string;
+        /**
+          * Width of expanded window. Default 300px
+         */
+        "collapsedSize"?: "40px";
+        /**
+          * Determines if the sidebar can be collapsed
+         */
+        "collapsible"?: true;
+        /**
+          * Determines if should display the actions controls
+         */
+        "controls"?: true;
+        /**
+          * Label for expand button
+         */
+        "expandLabel"?: string;
+        /**
+          * Width of expanded window. Default 300px
+         */
+        "expandedSize"?: "300px";
+        /**
+          * Determines if the sidebar is collapsed
+         */
+        "isCollapsed"?: boolean;
+        /**
+          * Label for expand button
+         */
+        "newChatLabel"?: string;
+        /**
+          * Crear a new chat
+         */
+        "onGxQueryNewChat"?: (event: GxSidebarCustomEvent<null>) => void;
+    }
     interface IntrinsicElements {
+        "gx-floating-window": GxFloatingWindow;
         "gx-query-chat": GxQueryChat;
-        "gx-query-sidebar-menu": GxQuerySidebarMenu;
+        "gx-query-menu": GxQueryMenu;
+        "gx-query-menu-item": GxQueryMenuItem;
+        "gx-query-render": GxQueryRender;
         "gx-query-viewer": GxQueryViewer;
         "gx-query-viewer-card": GxQueryViewerCard;
         "gx-query-viewer-card-controller": GxQueryViewerCardController;
@@ -1492,14 +1854,18 @@ declare namespace LocalJSX {
         "gx-query-viewer-format-style": GxQueryViewerFormatStyle;
         "gx-query-viewer-parameter": GxQueryViewerParameter;
         "gx-query-viewer-slider": GxQueryViewerSlider;
+        "gx-sidebar": GxSidebar;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "gx-floating-window": LocalJSX.GxFloatingWindow & JSXBase.HTMLAttributes<HTMLGxFloatingWindowElement>;
             "gx-query-chat": LocalJSX.GxQueryChat & JSXBase.HTMLAttributes<HTMLGxQueryChatElement>;
-            "gx-query-sidebar-menu": LocalJSX.GxQuerySidebarMenu & JSXBase.HTMLAttributes<HTMLGxQuerySidebarMenuElement>;
+            "gx-query-menu": LocalJSX.GxQueryMenu & JSXBase.HTMLAttributes<HTMLGxQueryMenuElement>;
+            "gx-query-menu-item": LocalJSX.GxQueryMenuItem & JSXBase.HTMLAttributes<HTMLGxQueryMenuItemElement>;
+            "gx-query-render": LocalJSX.GxQueryRender & JSXBase.HTMLAttributes<HTMLGxQueryRenderElement>;
             "gx-query-viewer": LocalJSX.GxQueryViewer & JSXBase.HTMLAttributes<HTMLGxQueryViewerElement>;
             "gx-query-viewer-card": LocalJSX.GxQueryViewerCard & JSXBase.HTMLAttributes<HTMLGxQueryViewerCardElement>;
             "gx-query-viewer-card-controller": LocalJSX.GxQueryViewerCardController & JSXBase.HTMLAttributes<HTMLGxQueryViewerCardControllerElement>;
@@ -1511,6 +1877,7 @@ declare module "@stencil/core" {
             "gx-query-viewer-format-style": LocalJSX.GxQueryViewerFormatStyle & JSXBase.HTMLAttributes<HTMLGxQueryViewerFormatStyleElement>;
             "gx-query-viewer-parameter": LocalJSX.GxQueryViewerParameter & JSXBase.HTMLAttributes<HTMLGxQueryViewerParameterElement>;
             "gx-query-viewer-slider": LocalJSX.GxQueryViewerSlider & JSXBase.HTMLAttributes<HTMLGxQueryViewerSliderElement>;
+            "gx-sidebar": LocalJSX.GxSidebar & JSXBase.HTMLAttributes<HTMLGxSidebarElement>;
         }
     }
 }

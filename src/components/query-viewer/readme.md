@@ -55,6 +55,10 @@
 
 ## Dependencies
 
+### Used by
+
+ - [gx-query-render](../gx-query/query-render)
+
 ### Depends on
 
 - [gx-query-viewer-card-controller](../query-viewer-card/controller)
@@ -75,6 +79,7 @@ graph TD;
   gx-query-viewer-chart-controller --> gx-query-viewer-slider
   gx-query-viewer-chart-controller --> gx-radio-group
   gx-query-viewer-chart-controller --> gx-radio-option
+  gx-query-render --> gx-query-viewer
   style gx-query-viewer fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
