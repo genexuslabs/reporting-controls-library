@@ -4,27 +4,32 @@ import {
   QueryViewerCalculatePivottableData,
   QueryViewerPageDataForPivot,
   QueryViewerPageDataForTable,
+  QueryViewerPivotTableDataSync,
   QueryViewerServiceMetaDataAxis,
   QueryViewerServiceMetaDataData
 } from "../services/types/service-result";
 
-/* eslint-disable camelcase */
 export type GeneratorType = "net" | "java";
 
 export type ServiceType = "metadata" | "data" | "recordSetCache";
 
-export type ServiceTypeForPivotTable =
+export type AsyncServiceTypeForPivotTable =
   | "pivotTablePageData"
   | "attributeValues"
-  | "calculatePivottableData";
-// | "getPivottableDataSync";
+  | "calculatePivottableData"
+  | "getPivottableDataSync";
 
-export type ServiceTypeForTable = "tablePageData" | "attributeValues";
+export type AsyncServiceTypeForTable = "tablePageData" | "attributeValues";
+
+export type SyncServiceTypeForPivotTable = "getPivottableDataSync";
+
+export type SyncServiceTypeForTable = SyncServiceTypeForPivotTable;
 
 export type ServicePropertiesForPivotTable = {
   pageData?: QueryViewerPageDataForPivot;
   attributeValues?: QueryViewerAttributesValuesForPivot;
   calculatePivottableData?: QueryViewerCalculatePivottableData;
+  getPivottableDataSync?: QueryViewerPivotTableDataSync;
 };
 
 export type ServicePropertiesForTable = {
