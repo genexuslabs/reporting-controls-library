@@ -135,6 +135,9 @@ export type QueryViewerPivotTableDataSync = {
   QueryviewerId: number;
 };
 
+// TableDataSync
+export type QueryViewerTableDataSync = QueryViewerPivotTableDataSync;
+
 // PageDataForTable
 export type QueryViewerPageDataForTable = {
   PageNumber: number;

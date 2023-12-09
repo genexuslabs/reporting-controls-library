@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Component, h, Listen, Prop, Watch } from "@stencil/core";
+import { Component, h, Prop, Watch } from "@stencil/core";
 import {
   renderJSPivot,
   OAT,
   setPageDataForTable,
-  setAttributeForTable
+  setAttributeForTable,
+  setDataSynForTable
 } from "jspivottable";
 import {
   QueryViewerPivotCollection,
@@ -30,9 +31,8 @@ export class QueryViewerTable {
   @Prop({ mutable: true }) pageDataForTable: string;
   @Watch("pageDataForTable")
   handlePageDataForTableChange(newValue: string) {
-    // console.log(newValue);
+    console.log("pageData", newValue);
     setPageDataForTable(this.qViewer.oat_element, newValue);
-    // this.parameterSetPageDataForPivotTable(newValue);
   }
 
   /**
@@ -41,9 +41,17 @@ export class QueryViewerTable {
   @Prop() readonly attributeValuesForTableXml: string;
   @Watch("attributeValuesForTableXml")
   handleAttributesValuesForTableChange(newValue: string) {
-    console.log(newValue);
+    console.log("attributeValues", newValue);
     setAttributeForTable(this.qViewer.oat_element, newValue);
-    // this.parameterSetPageDataForPivotTable(newValue);
+  }
+
+  /**
+   * Response Table Data Sync
+   */
+  @Prop() readonly getTableDataSyncXml: string;
+  @Watch("getTableDataSyncXml")
+  handleGetTableDataSyncChange(newValue: string) {
+    setDataSynForTable(this.qViewer.oat_element, newValue);
   }
 
   /**
@@ -56,100 +64,6 @@ export class QueryViewerTable {
    * pivotCollection
    */
   @Prop() readonly pivotCollection: QueryViewerPivotCollection;
-
-  /**
-   * data
-   */
-  @Prop() readonly data: string = `<?xml version = "1.0" encoding = "UTF-8"?>
-  <Recordset RecordCount="10" PageCount="1">
-    <Page PageNumber="1">
-      <Columns>
-        <Header DataField="F1">
-        </Header>
-      </Columns>
-      <Rows>
-        <Row>
-          <Header>
-            <F2>2023-02-12</F2>
-          </Header>
-          <Cells>
-            <Cell>120</Cell>
-          </Cells>
-        </Row>
-        <Row>
-          <Header>
-            <F2>2023-05-15</F2>
-          </Header>
-          <Cells>
-            <Cell>100</Cell>
-          </Cells>
-        </Row>
-        <Row>
-          <Header>
-            <F2>2023-05-16</F2>
-          </Header>
-          <Cells>
-            <Cell>200</Cell>
-          </Cells>
-        </Row>
-        <Row>
-          <Header>
-            <F2>2023-05-17</F2>
-          </Header>
-          <Cells>
-            <Cell>150</Cell>
-          </Cells>
-        </Row>
-        <Row>
-          <Header>
-            <F2>2023-05-18</F2>
-          </Header>
-          <Cells>
-            <Cell>250</Cell>
-          </Cells>
-        </Row>
-        <Row>
-          <Header>
-            <F2>2023-05-19</F2>
-          </Header>
-          <Cells>
-            <Cell>120</Cell>
-          </Cells>
-        </Row>
-        <Row>
-          <Header>
-            <F2>2023-05-20</F2>
-          </Header>
-          <Cells>
-            <Cell>400</Cell>
-          </Cells>
-        </Row>
-        <Row>
-          <Header>
-            <F2>2023-06-20</F2>
-          </Header>
-          <Cells>
-            <Cell>80</Cell>
-          </Cells>
-        </Row>
-        <Row>
-          <Header>
-            <F2>2023-09-10</F2>
-          </Header>
-          <Cells>
-            <Cell>233</Cell>
-          </Cells>
-        </Row>
-        <Row>
-          <Header Subtotal="true">
-          </Header>
-          <Cells>
-            <Cell>1653</Cell>
-          </Cells>
-        </Row>
-      </Rows>
-    </Page>
-  </Recordset>`;
 
   /**
    * QueryViewerTranslations
@@ -190,12 +104,6 @@ export class QueryViewerTable {
     GXPL_QViewerJSMoveColumnToRight: "to right"
   };
 
-  @Listen("RequestPageDataForTable", { target: "document" })
-  handleRequestPageDataForTable(event: CustomEvent) {
-    (event as any).parameter.callback(this.data);
-    this.pageDataForTable = (event as any).parameter.callback;
-  }
-
   componentDidLoad() {
     this.qViewer = {
       xml: { metadata: this.pivotParameters.metadata },
@@ -222,20 +130,10 @@ export class QueryViewerTable {
         TotalForColumns: "Yes" as any,
         TotalForRows: undefined,
         Title: "",
-        data: this.data
+        data: this.pageDataForTable
       },
       oat_element: undefined
     };
-    // this.qViewer = {
-    //   xml: { metadata: this.pivotParameters.metadata },
-    //   pivotParams: {
-    //     page: PIVOT_PAGE,
-    //     content: PIVOT_CONTENT,
-    //     container: this.queryViewerContainer,
-    //     ...this.pivotParameters
-    //   },
-    //   oat_element: undefined
-    // };
 
     // eslint-disable-next-line eqeqeq
     if (OAT.Loader != undefined) {

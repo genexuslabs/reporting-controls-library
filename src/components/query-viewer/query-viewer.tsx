@@ -37,7 +37,8 @@ import {
   QueryViewerServiceResponse,
   QueryViewerServiceResponsePivotTable,
   QueryViewerCalculatePivottableData,
-  QueryViewerPivotTableDataSync
+  QueryViewerPivotTableDataSync,
+  QueryViewerTableDataSync
 } from "../../services/types/service-result";
 
 @Component({
@@ -456,6 +457,15 @@ export class QueryViewer implements GxComponent {
   @Listen("attributesValuesForTable")
   handleAttributesValuesTable(event: CustomEvent<string>) {
     this.attributeValuesForTableXml = event.detail;
+  }
+
+  @Listen("requestDataSynForTable")
+  handleRequestRequestDataSynForTable(
+    event: CustomEvent<QueryViewerTableDataSync>
+  ) {
+    if (this.controller) {
+      this.controller.getPivottableDataSync(event.detail);
+    }
   }
 
   /**

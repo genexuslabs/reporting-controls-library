@@ -34,8 +34,7 @@ export class QueryViewerPivotTableRender {
   /**
    * Response Attribute Values for Pivot Table
    */
-  @Prop({ mutable: true })
-  attributeValuesForTableXml: string;
+  @Prop() readonly attributeValuesForTableXml: string;
 
   /**
    * A CSS class to set as the `gx-query-viewer-pivot-controller` element class.
@@ -97,10 +96,17 @@ export class QueryViewerPivotTableRender {
    */
   @Prop() readonly rememberLayout: boolean;
 
+  /**
+   * Response Table Data Sync
+   */
+  @Prop()
+  readonly getTableDataSyncXml: string;
+
   private getPivotTableParms(): QueryViewerPivotParameters | undefined {
     if (!this.serviceResponse) {
       return undefined;
     }
+    console.log("Table", this.serviceResponse);
     return {
       RealType: QueryViewerOutputType.Table,
       ObjectName: this.serviceResponse.objectName,
@@ -125,96 +131,7 @@ export class QueryViewerPivotTableRender {
       TotalForColumns: this.totalForColumns,
       TotalForRows: this.totalForRows,
       Title: this.tableTitle,
-      data: `<?xml version = "1.0" encoding = "UTF-8"?>
-      <Recordset RecordCount="10" PageCount="1">
-        <Page PageNumber="1">
-          <Columns>
-            <Header DataField="F1">
-            </Header>
-          </Columns>
-          <Rows>
-            <Row>
-              <Header>
-                <F2>2023-02-12</F2>
-              </Header>
-              <Cells>
-                <Cell>120</Cell>
-              </Cells>
-            </Row>
-            <Row>
-              <Header>
-                <F2>2023-05-15</F2>
-              </Header>
-              <Cells>
-                <Cell>100</Cell>
-              </Cells>
-            </Row>
-            <Row>
-              <Header>
-                <F2>2023-05-16</F2>
-              </Header>
-              <Cells>
-                <Cell>200</Cell>
-              </Cells>
-            </Row>
-            <Row>
-              <Header>
-                <F2>2023-05-17</F2>
-              </Header>
-              <Cells>
-                <Cell>150</Cell>
-              </Cells>
-            </Row>
-            <Row>
-              <Header>
-                <F2>2023-05-18</F2>
-              </Header>
-              <Cells>
-                <Cell>250</Cell>
-              </Cells>
-            </Row>
-            <Row>
-              <Header>
-                <F2>2023-05-19</F2>
-              </Header>
-              <Cells>
-                <Cell>120</Cell>
-              </Cells>
-            </Row>
-            <Row>
-              <Header>
-                <F2>2023-05-20</F2>
-              </Header>
-              <Cells>
-                <Cell>400</Cell>
-              </Cells>
-            </Row>
-            <Row>
-              <Header>
-                <F2>2023-06-20</F2>
-              </Header>
-              <Cells>
-                <Cell>80</Cell>
-              </Cells>
-            </Row>
-            <Row>
-              <Header>
-                <F2>2023-09-10</F2>
-              </Header>
-              <Cells>
-                <Cell>233</Cell>
-              </Cells>
-            </Row>
-            <Row>
-              <Header Subtotal="true">
-              </Header>
-              <Cells>
-                <Cell>1653</Cell>
-              </Cells>
-            </Row>
-          </Rows>
-        </Page>
-      </Recordset>`
+      data: this.pageDataForTable
     };
   }
 
@@ -259,6 +176,7 @@ export class QueryViewerPivotTableRender {
             pivotParameters={pivotParameters}
             pageDataForTable={this.pageDataForTable}
             attributeValuesForTableXml={this.attributeValuesForTableXml}
+            getTableDataSyncXml={this.getTableDataSyncXml}
           ></gx-query-viewer-table>
         )}
       </Host>
