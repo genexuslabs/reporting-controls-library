@@ -23,7 +23,8 @@ import {
   QueryViewerAttributesValuesForPivot,
   QueryViewerCalculatePivottableData,
   QueryViewerPageDataForPivot,
-  QueryViewerPageDataForTable
+  QueryViewerPageDataForTable,
+  QueryViewerPivotTableDataSync
 } from "./types/service-result";
 
 export const metaData = (qViewer: QueryViewer): QueryViewerMetaData => ({
@@ -148,5 +149,28 @@ export const tablePageData = (
     LayoutChanged: pageDataProperties.LayoutChange,
     ReturnSampleData: qViewer.ReturnSampleData,
     TranslationType: qViewer.TranslationType
+  };
+};
+
+// ToDo: check this implementation
+export const getPivottableDataSync = (
+  qViewer: QueryViewer,
+  getPivottableDataSync: QueryViewerPivotTableDataSync
+): QueryViewerPostInfoCalculatePivottableData => {
+  const runtimeParametersJSON = getRuntimeParameters(qViewer);
+  const runtimeFieldsJSON = getRuntimeFields(qViewer, true);
+  return {
+    ...getBaseInfo(qViewer),
+    AppSettings: qViewer.AppSettings ? qViewer.AppSettings : undefined,
+    RuntimeParameters:
+      runtimeParametersJSON.length > 0 ? runtimeParametersJSON : undefined,
+    RuntimeFields: runtimeFieldsJSON,
+    OutputType: qViewer.RealType,
+    SortAscendingForced: qViewer.AllowElementsOrderChange,
+    AllowElementsOrderChange: qViewer.AllowElementsOrderChange,
+    RecordsetCacheInfo: getRecordSetCacheInfo(qViewer),
+    ReturnSampleData: qViewer.ReturnSampleData,
+    TranslationType: qViewer.TranslationType,
+    QueryViewerId: getPivottableDataSync.QueryviewerId
   };
 };

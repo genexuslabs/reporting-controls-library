@@ -54,6 +54,12 @@ export class QueryViewerPivotTableRender {
   readonly calculatePivottableDataXml: string;
 
   /**
+   * Response Pivot Table Data Sync
+   */
+  @Prop()
+  readonly getPivottableDataSyncXml: string;
+
+  /**
    * A CSS class to set as the `gx-query-viewer-pivot-controller` element class.
    */
   @Prop() readonly cssClass: string;
@@ -238,6 +244,7 @@ export class QueryViewerPivotTableRender {
               this.attributeValuesForPivotTableXml
             }
             calculatePivottableDataXml={this.calculatePivottableDataXml}
+            getPivottableDataSyncXml={this.getPivottableDataSyncXml}
           ></gx-query-viewer-pivot>
         )}
       </Host>

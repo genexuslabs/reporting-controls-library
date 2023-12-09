@@ -5,7 +5,8 @@ import {
   OAT,
   setAttributeValuesForPivotTable,
   setPivottableDataCalculation,
-  setPageDataForPivotTable
+  setPageDataForPivotTable,
+  setDataSynForPivotTable
 } from "jspivottable";
 import {
   QueryViewerPivotCollection,
@@ -50,6 +51,15 @@ export class QueryViewerPivot {
   @Watch("calculatePivottableDataXml")
   handlecalculatePivottableDataChange(newValue: string) {
     setPivottableDataCalculation(this.qViewer.oat_element, newValue);
+  }
+
+  /**
+   * Response calculation PivotTable Data
+   */
+  @Prop() readonly getPivottableDataSyncXml: string;
+  @Watch("getPivottableDataSyncXml")
+  handlegetPivottableDataSyncChange(newValue: string) {
+    setDataSynForPivotTable(this.qViewer.oat_element, newValue);
   }
 
   /**

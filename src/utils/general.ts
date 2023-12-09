@@ -40,6 +40,20 @@ export function makeXMLRequest(
   xmlHttp.send(postInfo);
 }
 
+export function makeXMLRequestSync(serviceURL: string, postInfo: string) {
+  const xmlHttp = new XMLHttpRequest();
+
+  xmlHttp.open("POST", serviceURL); // sync
+  xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  xmlHttp.send(postInfo);
+
+  if (xmlHttp.readyState === STATE_DONE && xmlHttp.status === STATUS_OK) {
+    return xmlHttp.responseText;
+  } else {
+    return null;
+  }
+}
+
 export function parseNumericPicture(
   dataType: QueryViewerDataType,
   picture: string

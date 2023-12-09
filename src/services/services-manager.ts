@@ -3,6 +3,7 @@ import {
   attributeValues,
   calculatePivottableData,
   data,
+  getPivottableDataSync,
   metaData,
   pivotTablePageData,
   recordSetCache,
@@ -18,8 +19,9 @@ import {
   // QueryViewerOutputType,
   // QueryViewerPivotDataType,
   ServiceType,
-  ServiceTypeForPivotTable,
-  ServiceTypeForTable
+  AsyncServiceTypeForPivotTable,
+  AsyncServiceTypeForTable,
+  SyncServiceTypeForPivotTable
 } from "../common/basic-types";
 import { GXqueryConnector, GXqueryOptions } from "./gxquery-connector";
 import {
@@ -28,7 +30,7 @@ import {
 } from "./types/service-result";
 import { parseMetadataXML } from "./xml-parser/metadata-parser";
 import { parseDataXML } from "./xml-parser/data-parser";
-import { makeXMLRequest } from "../utils/general";
+import { makeXMLRequest, makeXMLRequestSync } from "../utils/general";
 
 const GENERATOR: { [key in GeneratorType]: string } = {
   net: "agxpl_get.aspx?",
@@ -42,19 +44,25 @@ const SERVICE_NAME_MAP: { [key in ServiceType]: string } = {
 };
 
 const SERVICE_NAME_FOR_PIVOT_TABLE_MAP: {
-  [key in ServiceTypeForPivotTable]: string;
+  [key in AsyncServiceTypeForPivotTable]: string;
 } = {
   pivotTablePageData: "pagedataforpivottable",
   attributeValues: "attributevalues",
-  calculatePivottableData: "data"
-  // getPivottableDataSync: "getpivottabledatasync"
+  calculatePivottableData: "data",
+  getPivottableDataSync: "getpivottabledatasync"
 };
 
 const SERVICE_NAME_FOR_TABLE_MAP: {
-  [key in ServiceTypeForTable]: string;
+  [key in AsyncServiceTypeForTable]: string;
 } = {
   tablePageData: "pagedatafortable",
   attributeValues: "attributevalues"
+};
+
+const SERVICE_NAME_FOR_SYNC_PIVOT_TABLE_MAP: {
+  [key in SyncServiceTypeForPivotTable]: string;
+} = {
+  getPivottableDataSync: "getpivottabledatasync"
 };
 
 export const SERVICE_POST_INFO_MAP: {
@@ -66,7 +74,7 @@ export const SERVICE_POST_INFO_MAP: {
 };
 
 export const SERVICE_POST_INFO_FOR_PIVOT_TABLE_MAP: {
-  [key in ServiceTypeForPivotTable]: (
+  [key in AsyncServiceTypeForPivotTable]: (
     qViewer: QueryViewer,
     properties: ServicePropertiesForPivotTable
   ) => any;
@@ -76,11 +84,13 @@ export const SERVICE_POST_INFO_FOR_PIVOT_TABLE_MAP: {
   attributeValues: (qViewer, properties) =>
     attributeValues(qViewer, properties.attributeValues),
   calculatePivottableData: (qViewer, properties) =>
-    calculatePivottableData(qViewer, properties.calculatePivottableData)
+    calculatePivottableData(qViewer, properties.calculatePivottableData),
+  getPivottableDataSync: (qViewer, properties) =>
+    getPivottableDataSync(qViewer, properties.getPivottableDataSync)
 };
 
 export const SERVICE_POST_INFO_FOR_TABLE_MAP: {
-  [key in ServiceTypeForTable]: (
+  [key in AsyncServiceTypeForTable]: (
     qViewer: QueryViewer,
     properties: ServicePropertiesForTable
   ) => any;
@@ -314,8 +324,6 @@ function asyncServerCallUsingLocalServices(
   const postInfo = parseObjectToFormData(
     SERVICE_POST_INFO_MAP[serviceType](qvInfo)
   );
-  console.log("qvInfo", qvInfo);
-  console.log("serviceType, POST INFO", serviceType, postInfo);
   const serviceURL =
     servicesInfo.baseUrl +
     GENERATOR[servicesInfo.generator] +
@@ -362,7 +370,7 @@ export const makeRequestForPivotTable = (
   qvInfo: QueryViewer,
   properties: ServicePropertiesForPivotTable,
   servicesInfo: ServicesContext,
-  serviceType: ServiceTypeForPivotTable,
+  serviceType: AsyncServiceTypeForPivotTable,
   callbackWhenSuccess: (xml: string) => void
 ) => {
   qvInfo.RecordsetCache = {
@@ -394,7 +402,7 @@ export const makeRequestForTable = (
   qvInfo: QueryViewer,
   properties: ServicePropertiesForTable,
   servicesInfo: ServicesContext,
-  serviceType: ServiceTypeForTable,
+  serviceType: AsyncServiceTypeForTable,
   callbackWhenSuccess: (xml: string) => void
 ) => {
   qvInfo.RecordsetCache = {
@@ -426,7 +434,7 @@ function asyncServerCallUsingLocalServicesForPivotTable(
   qvInfo: QueryViewer,
   properties: ServicePropertiesForPivotTable,
   servicesInfo: ServicesContext,
-  serviceType: ServiceTypeForPivotTable,
+  serviceType: AsyncServiceTypeForPivotTable,
   callbackWhenReady: (response: string) => void
 ) {
   const postInfo = parseObjectToFormData(
@@ -445,7 +453,7 @@ function asyncServerCallUsingLocalServicesForTable(
   qvInfo: QueryViewer,
   properties: ServicePropertiesForTable,
   servicesInfo: ServicesContext,
-  serviceType: ServiceTypeForTable,
+  serviceType: AsyncServiceTypeForTable,
   callbackWhenReady: (response: string) => void
 ) {
   const postInfo = parseObjectToFormData(
@@ -476,3 +484,48 @@ function asyncServerCallUsingLocalServicesForTable(
 //     postInfo
 //   ).then(callbackWhenReady);
 // }
+
+export const makeRequestForSyncServicesPivotTable = (
+  qvInfo: QueryViewer,
+  properties: ServicePropertiesForPivotTable,
+  servicesInfo: ServicesContext,
+  serviceType: SyncServiceTypeForPivotTable
+) => {
+  qvInfo.RecordsetCache = {
+    ActualKey: servicesInfo.actualKey,
+    OldKey: servicesInfo.oldKey,
+    MinutesToKeepInRecordsetCache: 5,
+    MaximumCacheSize: 100
+  };
+
+  // Determine the service provider
+  const syncServerCall = syncServerCallUsingLocalServices;
+
+  const response = syncServerCall(
+    qvInfo,
+    properties,
+    servicesInfo,
+    serviceType
+  );
+
+  return response;
+};
+
+function syncServerCallUsingLocalServices(
+  qvInfo: QueryViewer,
+  properties: ServicePropertiesForPivotTable,
+  servicesInfo: ServicesContext,
+  serviceType: SyncServiceTypeForPivotTable
+) {
+  const postInfo = parseObjectToFormData(
+    SERVICE_POST_INFO_FOR_PIVOT_TABLE_MAP[serviceType](qvInfo, properties)
+  );
+  const serviceURL =
+    servicesInfo.baseUrl +
+    GENERATOR[servicesInfo.generator] +
+    SERVICE_NAME_FOR_SYNC_PIVOT_TABLE_MAP[serviceType] +
+    "," +
+    foolCache();
+  const response = makeXMLRequestSync(serviceURL, postInfo);
+  return response;
+}

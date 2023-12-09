@@ -23,12 +23,15 @@ import {
   // getPagePivotTable,
   getPivotTableMetadata,
   makeRequestForPivotTable,
+  makeRequestForSyncServicesPivotTable,
   makeRequestForTable
 } from "../../../services/services-manager";
 import {
   QueryViewerAttributesValuesForPivot,
+  QueryViewerCalculatePivottableData,
   QueryViewerPageDataForPivot,
   QueryViewerPageDataForTable,
+  QueryViewerPivotTableDataSync,
   QueryViewerServiceResponse,
   QueryViewerServiceResponsePivotTable
 } from "../../../services/types/service-result";
@@ -177,7 +180,12 @@ export class QueryViewerController {
   @Event() pageDataForTable: EventEmitter<string>;
 
   /**
-   * PivotTable's Method
+   * Fired when data is ready to use in the PivotTable
+   */
+  @Event() syncPivotTableData: EventEmitter<string>;
+
+  /**
+   * PivotTable's Method for PivotTable Page Data
    */
   @Method()
   async getPageDataForPivotTable(
@@ -207,7 +215,7 @@ export class QueryViewerController {
   }
 
   /**
-   * PivotTable's Method
+   * PivotTable's Method for Attributes Values
    */
   @Method()
   async getAttributeValues(properties: QueryViewerAttributesValuesForPivot) {
@@ -227,10 +235,12 @@ export class QueryViewerController {
   }
 
   /**
-   * PivotTable's Method
+   * PivotTable's Method for Calculate PivotTable Data
    */
   @Method()
-  async getCalculatePivottableData(properties: any) {
+  async getCalculatePivottableData(
+    properties: QueryViewerCalculatePivottableData
+  ) {
     const qvInfo = this.getQueryViewerInformation(this.objectName);
     const servicesInfo = this.getServiceContext();
     const callbackWhenSuccess = (xml: string) => {
@@ -244,6 +254,25 @@ export class QueryViewerController {
       "calculatePivottableData",
       callbackWhenSuccess
     );
+  }
+
+  /**
+   * PivotTable's Method for PivotTable Data Sync Response
+   */
+  @Method()
+  // eslint-disable-next-line @stencil-community/async-methods
+  getPivottableDataSync(properties: QueryViewerPivotTableDataSync) {
+    const qvInfo = this.getQueryViewerInformation(this.objectName);
+    const servicesInfo = this.getServiceContext();
+
+    const responseXml = makeRequestForSyncServicesPivotTable(
+      qvInfo,
+      { calculatePivottableData: properties },
+      servicesInfo,
+      "getPivottableDataSync"
+    );
+
+    this.syncPivotTableData.emit(responseXml);
   }
 
   /**

@@ -35,7 +35,9 @@ import {
   QueryViewerPageDataForPivot,
   QueryViewerPageDataForTable,
   QueryViewerServiceResponse,
-  QueryViewerServiceResponsePivotTable
+  QueryViewerServiceResponsePivotTable,
+  QueryViewerCalculatePivottableData,
+  QueryViewerPivotTableDataSync
 } from "../../services/types/service-result";
 
 @Component({
@@ -117,10 +119,16 @@ export class QueryViewer implements GxComponent {
   @Prop() readonly autoResizeType: QueryViewerAutoResizeType;
 
   /**
-   * Response Attribute Values
+   * Response Pivot Table Data Calculation
    */
   @Prop({ mutable: true })
   calculatePivottableDataXml: string;
+
+  /**
+   * Response Pivot Table Data Sync
+   */
+  @Prop({ mutable: true })
+  pivottableDataSyncXml: string;
 
   /**
    * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
@@ -341,6 +349,8 @@ export class QueryViewer implements GxComponent {
     this.setQueryViewerProperties(event.detail.Properties);
   }
 
+  /** Servicios de la Pivot  **/
+
   @Listen("queryViewerServiceResponsePivotTable")
   handleServiceResponsePivotTable(
     event: CustomEvent<QueryViewerServiceResponsePivotTable>
@@ -364,13 +374,6 @@ export class QueryViewer implements GxComponent {
     }
   }
 
-  /** Servicios de la Pivot  **/
-
-  @Listen("pageDataForPivotTable")
-  handlePageDataForPivotTable(event: CustomEvent<string>) {
-    this.pageDataForPivotTable = event.detail;
-  }
-
   @Listen("RequestAttributeValuesForPivotTable")
   handleAttributeValuesForPivotTable(
     event: CustomEvent<QueryViewerAttributesValuesForPivot>
@@ -380,21 +383,42 @@ export class QueryViewer implements GxComponent {
     }
   }
 
-  @Listen("attributesValuesForPivotTable")
-  handleAttributesValuesPivot(event: CustomEvent<string>) {
-    this.attributeValuesForPivotTableXml = event.detail;
-  }
-
   @Listen("RequestCalculatePivottableData")
-  handleRequestCalculatePivottableData(event: CustomEvent<string>) {
+  handleRequestCalculatePivottableData(
+    event: CustomEvent<QueryViewerCalculatePivottableData>
+  ) {
     if (this.controller) {
       this.controller.getCalculatePivottableData(event.detail);
     }
   }
 
+  @Listen("RequestDataSynForPivotTable")
+  handleRequestRequestDataSynForPivotTable(
+    event: CustomEvent<QueryViewerPivotTableDataSync>
+  ) {
+    if (this.controller) {
+      this.controller.getPivottableDataSync(event.detail);
+    }
+  }
+
+  @Listen("pageDataForPivotTable")
+  handlePageDataForPivotTable(event: CustomEvent<string>) {
+    this.pageDataForPivotTable = event.detail;
+  }
+
+  @Listen("attributesValuesForPivotTable")
+  handleAttributesValuesPivot(event: CustomEvent<string>) {
+    this.attributeValuesForPivotTableXml = event.detail;
+  }
+
   @Listen("calculatePivottableData")
   handleCalculatePivottableData(event: CustomEvent<string>) {
     this.calculatePivottableDataXml = event.detail;
+  }
+
+  @Listen("getPivottableDataSync")
+  handleGetPivottableDataSync(event: CustomEvent<string>) {
+    this.pivottableDataSyncXml = event.detail;
   }
 
   /**  Servicios de la Table  **/
@@ -527,6 +551,7 @@ export class QueryViewer implements GxComponent {
         pageDataForPivotTable={this.pageDataForPivotTable}
         attributeValuesForPivotTableXml={this.attributeValuesForPivotTableXml}
         calculatePivottableDataXml={this.calculatePivottableDataXml}
+        getPivottableDataSyncXml={this.pivottableDataSyncXml}
       ></gx-query-viewer-pivot-render>
     );
   }

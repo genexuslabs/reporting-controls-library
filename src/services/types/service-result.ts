@@ -130,6 +130,11 @@ export type QueryViewerCalculatePivottableData = {
   QueryviewerId: number;
 };
 
+// PivotTableDataSync
+export type QueryViewerPivotTableDataSync = {
+  QueryviewerId: number;
+};
+
 // PageDataForTable
 export type QueryViewerPageDataForTable = {
   PageNumber: number;
