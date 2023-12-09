@@ -197,17 +197,8 @@ export class QueryViewerTable {
   }
 
   componentDidLoad() {
-    const metadata = `<?xml version = "1.0" encoding = "UTF-8"?>
-
-    <OLAPCube Version="2" format="compact" decimalSeparator="." thousandsSeparator="," dateFormat="MDY" textForNullValues="" ShowDataLabelsIn="Columns">
-      <OLAPDimension name="Element3" displayName="Fecha" description="Fecha" dataField="F2" visible="Yes" axis="Rows" canDragToPages="true" summarize="yes" align="left" picture="99/99/99" dataType="date" format="">
-      </OLAPDimension>
-      <OLAPMeasure name="Element1" displayName="Sum of Gasto" description="Sum of Gasto" dataField="F1" visible="Yes" aggregation="sum" align="right" picture="ZZZZZZZZ9.99" targetValue="0" maximumValue="0" dataType="real" format="">
-      </OLAPMeasure>
-    </OLAPCube>
-    `;
     this.qViewer = {
-      xml: { metadata: metadata },
+      xml: { metadata: this.pivotParameters.metadata },
       pivotParams: {
         page: TABLE_PAGE,
         content: TABLE_CONTENT,
@@ -216,7 +207,7 @@ export class QueryViewerTable {
         ObjectName: "General.Query1",
         ControlName: "Queryviewer1",
         PageSize: 20,
-        metadata: metadata,
+        metadata: this.pivotParameters.metadata,
         UcId: "QUERYVIEWER1_Queryviewer1",
         AutoResize: false,
         DisableColumnSort: false,

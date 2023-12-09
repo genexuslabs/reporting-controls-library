@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Component, h, Listen, Prop, Watch } from "@stencil/core";
+import { Component, h, Prop, Watch } from "@stencil/core";
 import {
   renderJSPivot,
   OAT,
@@ -50,7 +50,6 @@ export class QueryViewerPivot {
   @Watch("calculatePivottableDataXml")
   handlecalculatePivottableDataChange(newValue: string) {
     setPivottableDataCalculation(this.qViewer.oat_element, newValue);
-    // this.parameterSetPageDataForPivotTable(newValue);
   }
 
   /**
@@ -108,114 +107,9 @@ export class QueryViewerPivot {
     GXPL_QViewerJSMoveColumnToRight: "to right"
   };
 
-  @Listen("RequestPageDataForPivotTable", { target: "document" })
-  handleRequestPageDataForPivotTable(event: CustomEvent) {
-    const data = `<?xml version = "1.0" encoding = "UTF-8"?>
-    <Recordset RecordCount="10" PageCount="1">
-      <Page PageNumber="1">
-        <Columns>
-          <Header DataField="F1">
-          </Header>
-        </Columns>
-        <Rows>
-          <Row>
-            <Header>
-              <F2>2023-02-12</F2>
-            </Header>
-            <Cells>
-              <Cell>120</Cell>
-            </Cells>
-          </Row>
-          <Row>
-            <Header>
-              <F2>2023-05-15</F2>
-            </Header>
-            <Cells>
-              <Cell>100</Cell>
-            </Cells>
-          </Row>
-          <Row>
-            <Header>
-              <F2>2023-05-16</F2>
-            </Header>
-            <Cells>
-              <Cell>200</Cell>
-            </Cells>
-          </Row>
-          <Row>
-            <Header>
-              <F2>2023-05-17</F2>
-            </Header>
-            <Cells>
-              <Cell>150</Cell>
-            </Cells>
-          </Row>
-          <Row>
-            <Header>
-              <F2>2023-05-18</F2>
-            </Header>
-            <Cells>
-              <Cell>250</Cell>
-            </Cells>
-          </Row>
-          <Row>
-            <Header>
-              <F2>2023-05-19</F2>
-            </Header>
-            <Cells>
-              <Cell>120</Cell>
-            </Cells>
-          </Row>
-          <Row>
-            <Header>
-              <F2>2023-05-20</F2>
-            </Header>
-            <Cells>
-              <Cell>400</Cell>
-            </Cells>
-          </Row>
-          <Row>
-            <Header>
-              <F2>2023-06-20</F2>
-            </Header>
-            <Cells>
-              <Cell>80</Cell>
-            </Cells>
-          </Row>
-          <Row>
-            <Header>
-              <F2>2023-09-10</F2>
-            </Header>
-            <Cells>
-              <Cell>233</Cell>
-            </Cells>
-          </Row>
-          <Row>
-            <Header Subtotal="true">
-            </Header>
-            <Cells>
-              <Cell>1653</Cell>
-            </Cells>
-          </Row>
-        </Rows>
-      </Page>
-    </Recordset>`;
-    (event as any).parameter.callback(data);
-    // this.parameterSetPageDataForPivotTable = (event as any).parameter.callback;
-  }
-
   componentDidLoad() {
-    const metadata = `<?xml version = "1.0" encoding = "UTF-8"?>
-
-    <OLAPCube Version="2" format="compact" decimalSeparator="." thousandsSeparator="," dateFormat="MDY" textForNullValues="" ShowDataLabelsIn="Columns">
-      <OLAPDimension name="Element3" displayName="Fecha" description="Fecha" dataField="F2" visible="Yes" axis="Rows" canDragToPages="true" summarize="yes" align="left" picture="99/99/99" dataType="date" format="">
-      </OLAPDimension>
-      <OLAPMeasure name="Element1" displayName="Sum of Gasto" description="Sum of Gasto" dataField="F1" visible="Yes" aggregation="sum" align="right" picture="ZZZZZZZZ9.99" targetValue="0" maximumValue="0" dataType="real" format="">
-      </OLAPMeasure>
-    </OLAPCube>
-    `;
     this.qViewer = {
-      xml: { metadata: metadata },
+      xml: { metadata: this.pivotParameters.metadata },
       pivotParams: {
         page: PIVOT_PAGE,
         content: PIVOT_CONTENT,
@@ -224,7 +118,7 @@ export class QueryViewerPivot {
         ObjectName: "General.Query1",
         ControlName: "Queryviewer1",
         PageSize: 20,
-        metadata: metadata,
+        metadata: this.pivotParameters.metadata,
         UcId: "QUERYVIEWER1_Queryviewer1",
         AutoResize: false,
         DisableColumnSort: false,

@@ -45,6 +45,8 @@ import {
   assetsDirs: ["assets"]
 })
 export class QueryViewer implements GxComponent {
+  [memberName: string]: any;
+
   /**
    * Dictionary for each type of Query Viewer. Maps Query Viewer types to their
    * corresponding render.
@@ -353,8 +355,6 @@ export class QueryViewer implements GxComponent {
   ) {
     if (this.controller) {
       event.stopPropagation();
-
-      console.log("hola ", (event as any).parameter);
       this.controller.getPageDataForPivotTable(
         (event as any).parameter,
         this.paging,
@@ -561,23 +561,22 @@ export class QueryViewer implements GxComponent {
 
   componentWillLoad() {
     this.controller = this.element.querySelector("gx-query-viewer-controller");
-    this.serviceResponse = {
-      Data: [] as any,
-      MetaData: [] as any,
-      Properties: undefined
-    };
-    this.serviceResponsePivotTable = {
-      MetaData: [] as any,
-      Properties: undefined,
-      metadataXML: undefined,
-      objectName: "",
-      useGxQuery: undefined
-    };
+    // this.serviceResponse = {
+    //   Data: [] as any,
+    //   MetaData: [] as any,
+    //   Properties: undefined
+    // };
+    // this.serviceResponsePivotTable = {
+    //   MetaData: undefined,
+    //   Properties: undefined,
+    //   metadataXML: undefined,
+    //   objectName: "",
+    //   useGxQuery: undefined
+    // };
   }
 
   render() {
     console.log(this.type);
-
     return (
       <Host>
         {this.rendersDictionary[this.type](
