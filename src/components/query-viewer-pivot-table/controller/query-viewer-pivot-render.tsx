@@ -5,20 +5,9 @@ import {
   QueryViewerOutputType,
   QueryViewerPivotCollection,
   QueryViewerPivotParameters,
-  // QueryViewerAutoResizeType,
-  // QueryViewerChartType,
-  // QueryViewerContinent,
-  // QueryViewerCountry,
-  // QueryViewerOrientation,
-  // QueryViewerOutputType,
-  // QueryViewerPivotCollection,
-  // QueryViewerPivotParameters,
-  // QueryViewerPlotSeries,
-  // QueryViewerShowDataAs,
   QueryViewerShowDataLabelsIn,
   QueryViewerTotal,
   QueryViewerTranslations
-  // QueryViewerTrendPeriod
 } from "../../../common/basic-types";
 
 let autoId = 0;

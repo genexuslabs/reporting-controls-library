@@ -24,8 +24,6 @@ const PIVOT_CONTENT = "QUERYVIEWER1_Queryviewer1_GeneralQuery1_pivot_content";
 export class QueryViewerPivot {
   private queryViewerContainer: HTMLDivElement;
   private qViewer: QueryViewerPivotTable = undefined;
-  // private parameterSetPageDataForPivotTable: (xml: string) => void;
-
   /**
    * Response Attribute Values
    */
@@ -49,16 +47,16 @@ export class QueryViewerPivot {
    */
   @Prop() readonly calculatePivottableDataXml: string;
   @Watch("calculatePivottableDataXml")
-  handlecalculatePivottableDataChange(newValue: string) {
+  handleCalculatePivottableDataChange(newValue: string) {
     setPivottableDataCalculation(this.qViewer.oat_element, newValue);
   }
 
   /**
-   * Response calculation PivotTable Data
+   * Response PivotTable Data Sync
    */
   @Prop() readonly getPivottableDataSyncXml: string;
   @Watch("getPivottableDataSyncXml")
-  handlegetPivottableDataSyncChange(newValue: string) {
+  handleGetPivottableDataSyncChange(newValue: string) {
     setDataSynForPivotTable(this.qViewer.oat_element, newValue);
   }
 
