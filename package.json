@@ -56,7 +56,7 @@
     "date-fns": "^2.30.0",
     "highcharts": "^11.1.0",
     "jquery": "^3.7.1",
-    "jspivottable": "^1.1.5",
+    "jspivottable": "1.1.6",
     "material-icons": "^1.13.1"
   }
 }
