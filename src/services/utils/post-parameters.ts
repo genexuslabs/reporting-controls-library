@@ -353,16 +353,16 @@ export const getAxesInfo = (
   if (axesInfo == null || axesInfo.length === 0) {
     return undefined;
   }
-  const postInfoAxesInfo: QueryViewerPostInfoAxesInfo[] = axesInfo.map(
-    axis => ({
-      DataField: axis.DataField,
-      Visible: !axis.Hidden,
-      Axis: axis.Axis.Type,
-      Position: Number.isInteger(axis.Axis.Position) ? axis.Axis.Position : 0,
-      Order: axis.Order,
-      Subtotals: axis.Subtotals
-    })
-  );
+  const postInfoAxesInfo: QueryViewerPostInfoAxesInfo[] = (
+    typeof axesInfo === "object" ? Object.values(axesInfo) : axesInfo
+  ).map(axis => ({
+    DataField: axis.DataField,
+    Visible: !axis.Hidden,
+    Axis: axis.Axis.Type,
+    Position: Number.isInteger(axis.Axis.Position) ? axis.Axis.Position : 0,
+    Order: axis.Order,
+    Subtotals: axis.Subtotals
+  }));
 
   return postInfoAxesInfo;
 };
@@ -373,13 +373,13 @@ export const getDataInfo = (
   if (dataInfo == null || dataInfo.length === 0) {
     return undefined;
   }
-  const postInfoDataInfo: QueryViewerPostInfoDataInfo[] = dataInfo.map(
-    data => ({
-      DataField: data.DataField,
-      Visible: !data.Hidden,
-      Position: Number.isInteger(data.Position) ? data.Position : 0
-    })
-  );
+  const postInfoDataInfo: QueryViewerPostInfoDataInfo[] = (
+    typeof dataInfo === "object" ? Object.values(dataInfo) : dataInfo
+  ).map(data => ({
+    DataField: data.DataField,
+    Visible: !data.Hidden,
+    Position: Number.isInteger(data.Position) ? data.Position : 0
+  }));
 
   return postInfoDataInfo;
 };
