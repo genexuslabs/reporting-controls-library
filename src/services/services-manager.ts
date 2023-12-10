@@ -167,8 +167,11 @@ export const getPivotTableMetadata = (
   callbackWhenSuccess: CallBackWhenPivotTableServiceSuccess
 ) => {
   if (servicesInfo.useGXquery) {
-    // ToDO: implement this
-    // getMetadataAndDataUsingGXQuery(qvInfo, servicesInfo, callbackWhenSuccess);
+    getPivotTableMetadataAndDataUsingGXQuery(
+      qvInfo,
+      servicesInfo,
+      callbackWhenSuccess
+    );
   } else {
     getPivotTableMetadataUsingLocalServices(
       qvInfo,
@@ -177,6 +180,41 @@ export const getPivotTableMetadata = (
     );
   }
 };
+
+function getPivotTableMetadataAndDataUsingGXQuery(
+  qvInfo: QueryViewer,
+  servicesInfo: ServicesContext,
+  callbackWhenSuccess: CallBackWhenPivotTableServiceSuccess
+) {
+  getQueryPropertiesInGXQuery(servicesInfo, queryViewerBaseProperties => {
+    // Make an async server call for metadata
+    asyncServerCallUsingGXQuery(
+      qvInfo,
+      servicesInfo,
+      "metadata",
+      (metadataXML: string) => {
+        if (!metadataXML) {
+          return;
+        }
+        const serviceMetaData: QueryViewerServiceMetaData =
+          parseMetadataXML(metadataXML);
+        getPivotTableMetadataUsingGenericServices(
+          "gx-query",
+          qvInfo,
+          servicesInfo,
+          (_, metadataXML) =>
+            callbackWhenSuccess(
+              servicesInfo.actualKey,
+              servicesInfo.oldKey,
+              serviceMetaData,
+              metadataXML,
+              queryViewerBaseProperties
+            )
+        );
+      }
+    );
+  });
+}
 
 function getMetadataAndDataUsingGXQuery(
   qvInfo: QueryViewer,
