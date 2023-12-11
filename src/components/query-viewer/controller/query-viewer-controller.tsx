@@ -267,7 +267,7 @@ export class QueryViewerController {
 
     const responseXml = makeRequestForSyncServicesPivotTable(
       qvInfo,
-      { calculatePivottableData: properties },
+      { getPivottableDataSync: properties },
       servicesInfo,
       "getPivottableDataSync"
     );
