@@ -636,3 +636,15 @@ export interface QueryViewerBase {
   TotalForRows: QueryViewerTotal;
   TotalForColumns: QueryViewerTotal;
 }
+
+export enum QueryViewerAxisType {
+  Rows = "Rows",
+  Columns = "Columns",
+  Pages = "Pages",
+  Default = ""
+}
+
+export enum QueryViewerElementType {
+  Axis = "Axis",
+  Datum = "Datum"
+}

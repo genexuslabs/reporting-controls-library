@@ -2,7 +2,9 @@ import {
   QueryViewerConditionOperator,
   QueryViewerOutputType,
   QueryViewerShowDataLabelsIn,
-  QueryViewerTotal
+  QueryViewerTotal,
+  QueryViewerAxisType,
+  QueryViewerElementType
 } from "../../common/basic-types";
 
 export type QueryViewerSDTWithValues = {
@@ -270,7 +272,7 @@ export type QueryViewerAxis = {
   Title: string;
   Aggregation: string;
   Visible: string; // Indeed, it's a string
-  Type: "Axis" | "Datum";
+  Type: QueryViewerElementType;
   Axis: string;
 
   Format?: {
@@ -384,4 +386,66 @@ export type QueryViewerAxesInfo = {
   };
   Order: string;
   Subtotals: number | boolean;
+};
+
+export type QueryViewerContextElement = {
+  Name: string;
+  Values: {
+    Item: string;
+  };
+};
+
+export type QueryViewerEventFilters = {
+  Name: string;
+  Values: {
+    Item: string;
+  };
+};
+export type QueryViewerItemClickData = {
+  Name: string;
+  Type: QueryViewerElementType;
+  Axis: QueryViewerAxisType;
+  Value: string;
+  Selected: boolean;
+  Context: QueryViewerContextElement[];
+  Filters: QueryViewerEventFilters[];
+};
+
+export type QueryViewerDragAndDropData = {
+  Name: string;
+  Type: QueryViewerElementType;
+  Axis: QueryViewerAxisType;
+  Position: number;
+};
+
+export type QueryViewerItemCollapseData = {
+  Name: string;
+  Value: string;
+  ExpandedValues: {
+    Item: string;
+  };
+};
+
+export type QueryViewerItemDoubleClickData = {
+  Name: string;
+  Type: QueryViewerElementType;
+  Axis: QueryViewerAxisType;
+  Value: string;
+  Context: QueryViewerContextElement[];
+  Filters: QueryViewerEventFilters[];
+};
+
+export type QueryViewerItemExpandData = {
+  Name: string;
+  Value: string;
+  ExpandedValues: {
+    Item: string;
+  };
+};
+
+export type QueryViewerFilterChangedData = {
+  Name: string;
+  SelectedValues: {
+    Item: string;
+  };
 };
