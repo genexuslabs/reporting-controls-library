@@ -1,4 +1,4 @@
-import { Component, h, Prop, Host, Element } from "@stencil/core";
+import { Component, h, Prop, Host, Element, Method } from "@stencil/core";
 
 import { QueryViewerServiceResponsePivotTable } from "../../../services/types/service-result";
 import {
@@ -18,6 +18,7 @@ let autoId = 0;
 export class QueryViewerPivotTableRender {
   private controllerId: string;
   private ucId: string;
+  private pivotRef: HTMLGxQueryViewerPivotElement;
 
   @Element() element: HTMLGxQueryViewerPivotRenderElement;
 
@@ -107,6 +108,54 @@ export class QueryViewerPivotTableRender {
    * For translate the labels of the outputs
    */
   @Prop() readonly translations: QueryViewerTranslations;
+
+  /**
+   * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
+   */
+  @Method()
+  async getDataPivot(serverData: any) {
+    return this.pivotRef.getDataXML(serverData);
+  }
+
+  /**
+   * Returns an XML on a string variable containing the data which is being visualized at the moment (the difference with the GetData() method it's seen on the Pivot Table, data can be different because of filters application).
+   */
+  @Method()
+  async getFilteredDataPivot() {
+    return this.pivotRef.getFilteredDataPivot();
+  }
+
+  /**
+   * Method to navigate to the next page.
+   */
+  @Method()
+  async nextPage() {
+    return this.pivotRef.nextPage();
+  }
+
+  /**
+   * Method to navigate to the first page.
+   */
+  @Method()
+  async firstPage() {
+    return this.pivotRef.firstPage();
+  }
+
+  /**
+   * Method to navigate to the previous page.
+   */
+  @Method()
+  async previousPage() {
+    return this.pivotRef.previousPage();
+  }
+
+  /**
+   * Method to navigate to the last page.
+   */
+  @Method()
+  async lastPage() {
+    return this.pivotRef.lastPage();
+  }
 
   private getPivotTableParms(): QueryViewerPivotParameters | undefined {
     if (!this.serviceResponse) {
@@ -234,6 +283,7 @@ export class QueryViewerPivotTableRender {
             }
             calculatePivottableDataXml={this.calculatePivottableDataXml}
             getPivottableDataSyncXml={this.getPivottableDataSyncXml}
+            ref={el => (this.pivotRef = el)}
           ></gx-query-viewer-pivot>
         )}
       </Host>

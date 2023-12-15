@@ -1,12 +1,18 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Component, h, Prop, Watch } from "@stencil/core";
+import { Component, h, Method, Prop, Watch } from "@stencil/core";
 import {
   renderJSPivot,
   OAT,
   setAttributeValuesForPivotTable,
   setPivottableDataCalculation,
   setPageDataForPivotTable,
-  setDataSynForPivotTable
+  setDataSynForPivotTable,
+  getDataXML,
+  getFilteredDataXML,
+  moveToNextPage,
+  moveToFirstPage,
+  moveToPreviousPage,
+  moveToLastPage
 } from "jspivottable";
 import {
   QueryViewerPivotCollection,
@@ -114,6 +120,57 @@ export class QueryViewerPivot {
     GXPL_QViewerJSMoveColumnToLeft: "to left",
     GXPL_QViewerJSMoveColumnToRight: "to right"
   };
+
+  /**
+   * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
+   */
+  @Method()
+  async getDataXML(serverData: any) {
+    return getDataXML(this.qViewer.oat_element, serverData);
+  }
+
+  /**
+   * Returns an XML on a string variable containing the data which is being visualized at the moment (the difference with the GetData() method it's seen on the Pivot Table, data can be different because of filters application).
+   */
+  @Method()
+  async getFilteredDataPivot() {
+    return getFilteredDataXML(
+      this.qViewer.oat_element,
+      this.getPivottableDataSyncXml
+    );
+  }
+
+  /**
+   * Method to navigate to the next page.
+   */
+  @Method()
+  async nextPage() {
+    return moveToNextPage();
+  }
+
+  /**
+   * Method to navigate to the first page.
+   */
+  @Method()
+  async firstPage() {
+    return moveToFirstPage();
+  }
+
+  /**
+   * Method to navigate to the previous page.
+   */
+  @Method()
+  async previousPage() {
+    return moveToPreviousPage();
+  }
+
+  /**
+   * Method to navigate to the last page.
+   */
+  @Method()
+  async lastPage() {
+    return moveToLastPage();
+  }
 
   componentDidLoad() {
     this.qViewer = {

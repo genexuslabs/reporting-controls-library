@@ -2,14 +2,18 @@
 import {
   Component,
   Element,
+  EventEmitter,
+  Event,
   Host,
   Listen,
   Prop,
   State,
-  h
+  h,
+  Method
 } from "@stencil/core";
 
 import { Component as GxComponent } from "../../common/interfaces";
+
 import {
   DUMMY_TRANSLATIONS,
   QueryViewerAutoResizeType,
@@ -40,6 +44,27 @@ import {
   QueryViewerPivotTableDataSync,
   QueryViewerTableDataSync
 } from "../../services/types/service-result";
+import {
+  dragAndDropPivotTableEvent,
+  itemClickDataForPivotTable,
+  itemExpandCollapsePivotTableEvent
+  // onFilterChangedPivotTableEvent
+} from "./utils";
+import {
+  PivotTableDragAndDrop,
+  PivotTableExpandCollapse,
+  PivotTableFilterChanged,
+  PivotTableItemClick,
+  PivotTablePageChange,
+  QueryViewerDragAndDropData,
+  QueryViewerFilterChangedData,
+  QueryViewerItemClickData,
+  QueryViewerItemExpandAndCollapseData,
+  TableFilterChanged,
+  TableItemClick,
+  TablePageChange,
+  PivotTableNavigation
+} from "../../global/types";
 
 @Component({
   tag: "gx-query-viewer",
@@ -75,7 +100,9 @@ export class QueryViewer implements GxComponent {
       this.notImplementedRender(response)
   };
 
+  // refs
   private controller: HTMLGxQueryViewerControllerElement;
+  private pivotRenderRef: HTMLGxQueryViewerPivotRenderElement;
 
   @Element() element: HTMLGxQueryViewerElement;
 
@@ -344,6 +371,58 @@ export class QueryViewer implements GxComponent {
    */
   @Prop({ mutable: true }) pageDataForTable: string;
 
+  /**
+   * Event fire when a user click an "actionable" element
+   */
+  @Event() itemClick: EventEmitter<QueryViewerItemClickData>;
+
+  /**
+   * Event fires when a user drops a "draggable" element into its target
+   */
+  @Event() dragAndDrop: EventEmitter<QueryViewerDragAndDropData>;
+
+  /**
+   * Event fires when a user
+   */
+  @Event()
+  itemCollapse: EventEmitter<QueryViewerItemExpandAndCollapseData>;
+
+  /**
+   * Event fires when a user
+   */
+  @Event()
+  itemExpand: EventEmitter<QueryViewerItemExpandAndCollapseData>;
+
+  /**
+   * Event fires when a user
+   */
+  // ToDo: improve this type
+  @Event() changePage: EventEmitter<any>;
+
+  /**
+   * Event fires when a user
+   */
+  @Event() onFirstPage: EventEmitter<any>;
+
+  /**
+   * Event fires when a user
+   */
+  @Event() onPreviousPage: EventEmitter<any>;
+
+  /**
+   * Event fires when a user
+   */
+  @Event() onNextPage: EventEmitter<any>;
+
+  /**
+   * Event fires when a user
+   */
+  @Event() onLastPage: EventEmitter<any>;
+  /**
+   * Event is triggered every time that values are removed from or added to the list of possible values for an attribute
+   */
+  @Event() filterChanged: EventEmitter<QueryViewerFilterChangedData>;
+
   @Listen("queryViewerServiceResponse")
   handleServiceResponse(event: CustomEvent<QueryViewerServiceResponse>) {
     this.serviceResponse = event.detail;
@@ -430,7 +509,6 @@ export class QueryViewer implements GxComponent {
   ) {
     if (this.controller) {
       event.stopPropagation();
-      // console.log("hola ", (event as any).parameter);
       this.controller.getPageDataForTable(
         (event as any).parameter,
         this.paging,
@@ -465,6 +543,160 @@ export class QueryViewer implements GxComponent {
   ) {
     if (this.controller) {
       this.controller.getPivottableDataSync(event.detail);
+    }
+  }
+
+  /** User Events for Pivot Table*/
+
+  @Listen("PivotTableOnItemClickEvent")
+  handlePivotTableOnItemClickEvent(event: CustomEvent<PivotTableItemClick>) {
+    const eventData = itemClickDataForPivotTable(
+      (event as any).parameter.QueryviewerId,
+      (event as any).parameter.Data
+    );
+    this.itemClick.emit(eventData);
+  }
+
+  @Listen("PivotTableOnDragundDropEvent")
+  handlePivotTableOnDragundDropEvent(
+    event: CustomEvent<PivotTableDragAndDrop>
+  ) {
+    const eventData = dragAndDropPivotTableEvent(
+      (event as any).parameter.QueryviewerId,
+      (event as any).parameter.Data
+    );
+    this.dragAndDrop.emit(eventData);
+  }
+
+  @Listen("PivotTableOnItemExpandCollapseEvent")
+  handlePivotTableOnItemExpandCollapseEvent(
+    event: CustomEvent<PivotTableExpandCollapse>
+  ) {
+    const eventData = itemExpandCollapsePivotTableEvent(
+      (event as any).parameter.Queryviewer,
+      (event as any).parameter.Data,
+      (event as any).parameter.IsCollapse
+    );
+
+    if ((event as any).parameter.IsCollapse) {
+      this.itemCollapse.emit(eventData);
+    } else {
+      this.itemExpand.emit(eventData);
+    }
+  }
+
+  @Listen("PivotTableOnPageChangeEvent")
+  handlePivotTableOnPageChangeEvent(event: CustomEvent<PivotTablePageChange>) {
+    let eventData;
+
+    switch ((event as any).parameter.Navigation) {
+      case PivotTableNavigation.OnFirstPage:
+        eventData = this.pivotRenderRef.firstPage();
+        this.OnFirstPage.emit(eventData);
+        break;
+      case PivotTableNavigation.OnLastPage:
+        eventData = this.pivotRenderRef.lastPage();
+        this.OnLastPage.emit(eventData);
+        break;
+      case PivotTableNavigation.OnNextPage:
+        eventData = this.pivotRenderRef.nextPage();
+        this.OnNextPage.emit(eventData);
+        break;
+      case PivotTableNavigation.OnPreviousPage:
+        eventData = this.pivotRenderRef.previousPage();
+        this.OnPreviousPage.emit(eventData);
+        break;
+    }
+  }
+
+  @Listen("PivotTableOnFilterChangedEvent")
+  handlePivotTableOnFilterChangedEvent(
+    event: CustomEvent<PivotTableFilterChanged>
+  ) {
+    console.log(event.detail);
+    // const eventData = onFilterChangedPivotTableEvent(
+    //   (event as any).parameter.QueryviewerId,
+    //   (event as any).parameter.FilterChangedData
+    // );
+    // this.filterChanged.emit(eventData);
+  }
+
+  /** User Events for Table*/
+
+  // ToDo: implement this
+  @Listen("TableOnItemClickEvent")
+  handleTableOnItemClickEvent(event: CustomEvent<TableItemClick>) {
+    console.log(event.detail);
+  }
+  // ToDo: implement this
+  @Listen("TableOnPageChangeEvent")
+  handleTableOnDragundDropEvent(event: CustomEvent<TablePageChange>) {
+    console.log(event.detail);
+  }
+  // ToDo: implement this
+  @Listen("TableOnFilterChangedEvent")
+  handleTableOnFilterChangedEvent(event: CustomEvent<TableFilterChanged>) {
+    console.log(event.detail);
+  }
+
+  /** GX User Events */
+
+  /**
+   * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
+   */
+  @Method()
+  async getData() {
+    if (!this.controller) {
+      return;
+    }
+    switch (this.OutputType) {
+      case QueryViewerOutputType.Card:
+        // ToDo: implement this method to the output card
+        return null;
+      case QueryViewerOutputType.Chart:
+        // ToDo: implement this method to the output chart
+        return null;
+      case QueryViewerOutputType.Map:
+        // ToDo: implement this method to the output map
+        return null;
+      default: // PivotTable and Table
+        const serverData = this.pivotRenderRef.getPivottableDataSyncXml;
+        return this.pivotRenderRef.getDataPivot(serverData);
+    }
+  }
+
+  /**
+   * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
+   */
+  @Method()
+  async getFilteredData() {
+    if (!this.controller) {
+      return;
+    }
+    switch (this.RealType) {
+      case QueryViewerOutputType.Card:
+        // ToDo: implement this method to the output card
+        return null;
+      case QueryViewerOutputType.Chart:
+        // ToDo: implement this method to the output chart
+        return null;
+      case QueryViewerOutputType.Map:
+        // ToDo: implement this method to the output map
+        return null;
+      default: // PivotTable and Table
+        // ToDo: complete this implementation
+        // const serverData = this.pivotRenderRef.getPivottableDataSyncXml;
+        // return this.pivotRenderRef.getFilteredDataPivot(serverData);
+        return null;
+    }
+  }
+
+  /** AutoRefresh */
+
+  @Listen("RequestUpdateLayoutSameGroup")
+  handlePivotTableAutorefresh(event: CustomEvent<any>) {
+    if (this.controller) {
+      console.log(event.detail);
     }
   }
 
@@ -562,6 +794,7 @@ export class QueryViewer implements GxComponent {
         attributeValuesForPivotTableXml={this.attributeValuesForPivotTableXml}
         calculatePivottableDataXml={this.calculatePivottableDataXml}
         getPivottableDataSyncXml={this.pivottableDataSyncXml}
+        ref={el => (this.pivotRenderRef = el)}
       ></gx-query-viewer-pivot-render>
     );
   }

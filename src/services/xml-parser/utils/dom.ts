@@ -30,3 +30,14 @@ export const getCharacterAttribute = (
   attributeName: string,
   defaultValue: string
 ) => element.getAttribute(attributeName) ?? defaultValue;
+
+export const selectXPathNode = (xmlDoc: Document, xpath: string) => {
+  const nodes = xmlDoc.evaluate(
+    xpath,
+    xmlDoc,
+    null,
+    XPathResult.ANY_TYPE,
+    null
+  );
+  return nodes.iterateNext();
+};
