@@ -589,15 +589,15 @@ export type QueryViewerPivotCollection = {
 };
 
 export type QueryViewerPivotCollectionProperties = {
-  AllowElementsOrderChange: boolean;
+  AllowElementsOrderChange?: boolean;
   AutoRefreshGroup: string;
-  ControlName: string;
+  ControlName?: string;
   debugServices: boolean;
   Metadata: {
     Axes: QueryViewerServiceMetaDataAxis[];
     Data: QueryViewerServiceMetaDataData[];
   };
-  RememberLayout: boolean;
+  RememberLayout?: boolean;
 };
 
 /**

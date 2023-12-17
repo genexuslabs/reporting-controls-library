@@ -1,3 +1,4 @@
+import { QueryViewerServiceResponsePivotTable } from "@genexus/reporting-api/dist/types/service-result";
 import {
   QueryViewerAxisType,
   QueryViewerElementType
@@ -64,14 +65,16 @@ export function itemClickDataForPivotTable(
   return eventData;
 }
 
-function getComponentItems(qViewer) {
+function getComponentItems(
+  serviceResponse: QueryViewerServiceResponsePivotTable
+) {
   const componentItems: string[] = [];
-  qViewer.Metadata.Axes.forEach(axis => {
+  serviceResponse.MetaData.Axes.forEach(axis => {
     if (axis.IsComponent) {
       componentItems.push(axis.Name);
     }
   });
-  qViewer.Metadata.Data.forEach(data => {
+  serviceResponse.MetaData.Data.forEach(data => {
     if (data.IsComponent) {
       componentItems.push(data.Name);
     }
@@ -83,7 +86,7 @@ function loadContextItems(
   node: Node,
   excludedItems: string[]
 ): QueryViewerEventFilters[] | QueryViewerContextElement[] {
-  const items = [];
+  const items: QueryViewerContextElement[] = [];
   if (Node === null) {
     return null;
   }

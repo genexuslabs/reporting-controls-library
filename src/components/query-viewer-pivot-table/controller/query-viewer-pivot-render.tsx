@@ -209,44 +209,62 @@ export class QueryViewerPivotTableRender {
   }
 
   private getPivotTableCollection(): QueryViewerPivotCollection {
-    const qv = { collection: {}, fadeTimeouts: {} };
-    qv.collection["QUERYVIEWER1_Queryviewer1"] = {};
-    qv.collection["QUERYVIEWER1_Queryviewer1"].AutoRefreshGroup = "";
-    qv.collection["QUERYVIEWER1_Queryviewer1"].debugServices = false;
-    qv.collection["QUERYVIEWER1_Queryviewer1"].Metadata = {};
-    qv.collection["QUERYVIEWER1_Queryviewer1"].Metadata.Axes = [];
-    qv.collection["QUERYVIEWER1_Queryviewer1"].Metadata.Axes.push({
-      RaiseItemClick: true
-    });
-    qv.collection["QUERYVIEWER1_Queryviewer1"].Metadata.Axes.push({
-      RaiseItemClick: true
-    });
-    qv.collection["QUERYVIEWER1_Queryviewer1"].Metadata.Data = [];
-    qv.collection["QUERYVIEWER1_Queryviewer1"].Metadata.Data.push({
-      RaiseItemClick: true
-    });
-    qv.collection["QUERYVIEWER1_Queryviewer1"].Metadata.Data.push({
-      RaiseItemClick: true
-    });
+    const qv: QueryViewerPivotCollection = {
+      collection: {},
+      fadeTimeouts: {}
+    };
+
+    qv.collection["QUERYVIEWER1_Queryviewer1"] = {
+      AutoRefreshGroup: "",
+      debugServices: false,
+      Metadata: {
+        Axes: this.serviceResponse.MetaData.Axes,
+        Data: this.serviceResponse.MetaData.Data
+      }
+    };
 
     return qv;
-    // return {
-    //   collection: {
-    //     [this.ucId]: {
-    //       AllowElementsOrderChange: this.allowElementsOrderChange,
-    //       AutoRefreshGroup: "",
-    //       debugServices: false,
-    //       ControlName: this.controllerId,
-    //       Metadata: {
-    //         Axes: this.serviceResponse.MetaData.Axes,
-    //         Data: this.serviceResponse.MetaData.Data
-    //       },
-    //       RememberLayout: false
-    //     }
-    //   },
-    //   fadeTimeouts: {}
-    // };
   }
+
+  // private getPivotTableCollection(): QueryViewerPivotCollection {
+  //   const qv = { collection: {}, fadeTimeouts: {} };
+  //   qv.collection["QUERYVIEWER1_Queryviewer1"] = {};
+  //   qv.collection["QUERYVIEWER1_Queryviewer1"].AutoRefreshGroup = "";
+  //   qv.collection["QUERYVIEWER1_Queryviewer1"].debugServices = false;
+  //   qv.collection["QUERYVIEWER1_Queryviewer1"].Metadata = {};
+  //   qv.collection["QUERYVIEWER1_Queryviewer1"].Metadata.Axes = [];
+  //   qv.collection["QUERYVIEWER1_Queryviewer1"].Metadata.Axes.push({
+  //     RaiseItemClick: true
+  //   });
+  //   qv.collection["QUERYVIEWER1_Queryviewer1"].Metadata.Axes.push({
+  //     RaiseItemClick: true
+  //   });
+  //   qv.collection["QUERYVIEWER1_Queryviewer1"].Metadata.Data = [];
+  //   qv.collection["QUERYVIEWER1_Queryviewer1"].Metadata.Data.push({
+  //     RaiseItemClick: true
+  //   });
+  //   qv.collection["QUERYVIEWER1_Queryviewer1"].Metadata.Data.push({
+  //     RaiseItemClick: true
+  //   });
+
+  //   return qv;
+  // return {
+  //   collection: {
+  //     [this.ucId]: {
+  //       AllowElementsOrderChange: this.allowElementsOrderChange,
+  //       AutoRefreshGroup: "",
+  //       debugServices: false,
+  //       ControlName: this.controllerId,
+  //       Metadata: {
+  //         Axes: this.serviceResponse.MetaData.Axes,
+  //         Data: this.serviceResponse.MetaData.Data
+  //       },
+  //       RememberLayout: false
+  //     }
+  //   },
+  //   fadeTimeouts: {}
+  // };
+  // }
 
   // private UpdateQueryViewer(qViewer, sourceElements, allowElementsOrderChange) {
   //   // ToDo: check if this function is neccesary

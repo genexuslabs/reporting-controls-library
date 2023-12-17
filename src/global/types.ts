@@ -5,16 +5,12 @@ import {
 
 export type QueryViewerContextElement = {
   Name: string;
-  Values: {
-    Item: string;
-  };
+  Values: string[];
 };
 
 export type QueryViewerEventFilters = {
   Name: string;
-  Values: {
-    Item: string;
-  };
+  Values: string[];
 };
 
 export type QueryViewerItemClickData = {

@@ -112,14 +112,12 @@ export class QueryViewer implements GxComponent {
   /**
    * Response Attribute Values for Table
    */
-  @Prop({ mutable: true })
-  attributeValuesForPivotTableXml: string;
+  @Prop({ mutable: true }) attributeValuesForPivotTableXml: string;
 
   /**
    * Response Attribute Values for Pivot Table
    */
-  @Prop({ mutable: true })
-  attributeValuesForTableXml: string;
+  @Prop({ mutable: true }) attributeValuesForTableXml: string;
 
   /**
    * Allowing elements order to change
@@ -149,14 +147,12 @@ export class QueryViewer implements GxComponent {
   /**
    * Response Pivot Table Data Calculation
    */
-  @Prop({ mutable: true })
-  calculatePivottableDataXml: string;
+  @Prop({ mutable: true }) calculatePivottableDataXml: string;
 
   /**
    * Response Pivot Table Data Sync
    */
-  @Prop({ mutable: true })
-  pivottableDataSyncXml: string;
+  @Prop({ mutable: true }) pivottableDataSyncXml: string;
 
   /**
    * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
@@ -261,6 +257,7 @@ export class QueryViewer implements GxComponent {
   /**
    * Specifies the metadata that the control will use to render the pivotTable.
    */
+  // eslint-disable-next-line @stencil-community/decorators-style
   @Prop({ mutable: true })
   serviceResponsePivotTable: QueryViewerServiceResponsePivotTable;
 
@@ -665,31 +662,32 @@ export class QueryViewer implements GxComponent {
     }
   }
 
+  // ToDo: complete this implementation
   /**
    * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
    */
-  @Method()
-  async getFilteredData() {
-    if (!this.controller) {
-      return;
-    }
-    switch (this.RealType) {
-      case QueryViewerOutputType.Card:
-        // ToDo: implement this method to the output card
-        return null;
-      case QueryViewerOutputType.Chart:
-        // ToDo: implement this method to the output chart
-        return null;
-      case QueryViewerOutputType.Map:
-        // ToDo: implement this method to the output map
-        return null;
-      default: // PivotTable and Table
-        // ToDo: complete this implementation
-        // const serverData = this.pivotRenderRef.getPivottableDataSyncXml;
-        // return this.pivotRenderRef.getFilteredDataPivot(serverData);
-        return null;
-    }
-  }
+  // @Method()
+  // async getFilteredData() {
+  //   if (!this.controller) {
+  //     return;
+  //   }
+  //   switch (this.RealType) {
+  //     case QueryViewerOutputType.Card:
+  //       // ToDo: implement this method to the output card
+  //       return null;
+  //     case QueryViewerOutputType.Chart:
+  //       // ToDo: implement this method to the output chart
+  //       return null;
+  //     case QueryViewerOutputType.Map:
+  //       // ToDo: implement this method to the output map
+  //       return null;
+  //     default: // PivotTable and Table
+  //       // ToDo: complete this implementation
+  //       // const serverData = this.pivotRenderRef.getPivottableDataSyncXml;
+  //       // return this.pivotRenderRef.getFilteredDataPivot(serverData);
+  //       return null;
+  //   }
+  // }
 
   /** AutoRefresh */
 

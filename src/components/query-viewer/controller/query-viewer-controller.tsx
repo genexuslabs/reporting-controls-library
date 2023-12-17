@@ -19,6 +19,7 @@ import {
 } from "@genexus/reporting-api/dist";
 import {
   GeneratorType,
+  QueryViewerBase,
   QueryViewerChartType,
   QueryViewerOrientation,
   QueryViewerOutputType,
@@ -35,6 +36,7 @@ import {
   QueryViewerPageDataForPivot,
   QueryViewerPageDataForTable,
   QueryViewerPivotTableDataSync,
+  QueryViewerServiceMetaData,
   QueryViewerServiceResponse,
   QueryViewerServiceResponsePivotTable
 } from "@genexus/reporting-api/dist/types/service-result";
@@ -371,11 +373,11 @@ export class QueryViewerController {
     const servicesInfo = this.getServiceContext();
 
     const callbackWhenPivotTableSuccess = (
-      actualKey,
-      oldKey,
-      metadata,
-      metadataXML,
-      queryViewerBaseProperties
+      actualKey: string,
+      oldKey: string,
+      metadata: QueryViewerServiceMetaData,
+      metadataXML: string,
+      queryViewerBaseProperties: QueryViewerBase
     ) => {
       this.recordSetCacheActualKey = actualKey;
       this.recordSetCacheOldKey = oldKey;
@@ -389,7 +391,6 @@ export class QueryViewerController {
         useGxQuery: this.useGxquery
       });
     };
-    console.log(this.showDataLabelsIn);
     if (queryViewerObject.UseRecordsetCache) {
       getPivotTableMetadata(
         queryViewerObject,
