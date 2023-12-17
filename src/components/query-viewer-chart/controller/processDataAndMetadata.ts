@@ -1,4 +1,11 @@
 import {
+  QueryViewerServiceDataRow,
+  QueryViewerServiceMetaData,
+  QueryViewerServiceMetaDataData,
+  QueryViewerServiceResponse
+} from "@genexus/reporting-api/dist/types/service-result";
+import { trimUtil } from "@genexus/reporting-api/dist/xml-parser/utils/general";
+import {
   //   DateTimePicture,
   QueryViewerAggregationType,
   QueryViewerCategoryValue,
@@ -13,13 +20,6 @@ import {
   QueryViewerTranslations,
   QueryViewerVisible
 } from "../../../common/basic-types";
-import {
-  QueryViewerServiceDataRow,
-  QueryViewerServiceMetaData,
-  QueryViewerServiceMetaDataData,
-  QueryViewerServiceResponse
-} from "../../../services/types/service-result";
-import { trimUtil } from "../../../services/xml-parser/utils/general";
 import {
   IsMulticoloredSerie,
   NormalizeTargetAndMaximumValues,

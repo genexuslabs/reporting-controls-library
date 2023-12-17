@@ -2,7 +2,6 @@
 
 <!-- Auto Generated Below -->
 
-
 ## Properties
 
 | Property                          | Attribute                              | Description                                                                                            | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Default     |
@@ -59,7 +58,6 @@
 | `xAxisTitle`                      | `x-axis-title`                         | X Axis title                                                                                           | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `undefined` |
 | `yAxisTitle`                      | `y-axis-title`                         | Y Axis title                                                                                           | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `undefined` |
 
-
 ## Events
 
 | Event            | Description                                                                                                         | Type                                                                                                                                                                                                  |
@@ -75,7 +73,6 @@
 | `onNextPage`     | Event fires when a user                                                                                             | `CustomEvent<any>`                                                                                                                                                                                    |
 | `onPreviousPage` | Event fires when a user                                                                                             | `CustomEvent<any>`                                                                                                                                                                                    |
 
-
 ## Methods
 
 ### `getData() => Promise<any>`
@@ -86,8 +83,6 @@ Returns an XML on a string variable containing all the data for the attributes l
 
 Type: `Promise<any>`
 
-
-
 ### `getFilteredData() => Promise<any>`
 
 Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
@@ -96,10 +91,11 @@ Returns an XML on a string variable containing all the data for the attributes l
 
 Type: `Promise<any>`
 
-
-
-
 ## Dependencies
+
+### Used by
+
+- [gx-query-render](../gx-query/query-render)
 
 ### Depends on
 
@@ -109,6 +105,7 @@ Type: `Promise<any>`
 - [gx-query-viewer-table-render](../query-viewer-table/controller)
 
 ### Graph
+
 ```mermaid
 graph TD;
   gx-query-viewer --> gx-query-viewer-card-controller
@@ -127,9 +124,10 @@ graph TD;
   gx-query-viewer-chart-controller --> gx-radio-option
   gx-query-viewer-pivot-render --> gx-query-viewer-pivot
   gx-query-viewer-table-render --> gx-query-viewer-table
+  gx-query-render --> gx-query-viewer
   style gx-query-viewer fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
-----------------------------------------------
+---
 
-*Built with [StencilJS](https://stenciljs.com/)*
+_Built with [StencilJS](https://stenciljs.com/)_

@@ -1,0 +1,65 @@
+@import "../../common/base-mixins";
+@import "../../global/tokens";
+
+@include box-sizing();
+
+:host {
+  display: block;
+  box-shadow: var(--gx-shadow-md);
+  margin-inline-end: 10px;
+  margin-top: 10px;
+  overflow: hidden;
+  width: var(--gx-sidebar-with);
+  right: 0;
+}
+:host([is-minimized]),
+:host([is-unlocked]) {
+  bottom: 0;
+  position: fixed;
+  z-index: 5;
+}
+:host([is-unlocked]) {
+  height: 50vh;
+}
+:host([is-minimized]) {
+  height: var(--gx-header-height);
+  .main-wrapper {
+    display: none;
+  }
+}
+
+.header {
+  align-items: center;
+  border-bottom: var(--gx-header-border);
+  color: var(--gx-header-font-color);
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.header__title {
+  flex: 1;
+  font-size: inherit;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+  padding: var(--gx-space-medium);
+}
+.header__controls {
+  display: flex;
+  flex-basis: calc(var(--gx-control-btn-width) * 2);
+  justify-content: flex-end;
+}
+
+.controls-btn {
+  height: var(--gx-control-btn-height);
+  width: var(--gx-control-btn-width);
+}
+
+.main-wrapper {
+  height: 100%;
+}
+

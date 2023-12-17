@@ -1,6 +1,9 @@
 # Visual Studio Code
 .vs
 
+# Monorepo
+.turbo
+
 # Stencil defaults
 dist/
 www/
@@ -27,4 +30,5 @@ $RECYCLE.BIN/
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
-.env
+.env*
+!.env.sample

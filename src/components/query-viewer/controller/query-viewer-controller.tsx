@@ -7,15 +7,6 @@ import {
   Watch
 } from "@stencil/core";
 
-import { QueryViewer, QueryViewerCard } from "../../../services/types/json";
-import {
-  GeneratorType,
-  QueryViewerChartType,
-  QueryViewerOrientation,
-  QueryViewerOutputType,
-  QueryViewerShowDataLabelsIn,
-  QueryViewerTotal
-} from "../../../common/basic-types";
 import {
   ServicesContext,
   getMetadataAndData,
@@ -25,7 +16,19 @@ import {
   makeRequestForPivotTable,
   makeRequestForSyncServicesPivotTable,
   makeRequestForTable
-} from "../../../services/services-manager";
+} from "@genexus/reporting-api/dist";
+import {
+  GeneratorType,
+  QueryViewerChartType,
+  QueryViewerOrientation,
+  QueryViewerOutputType,
+  QueryViewerShowDataLabelsIn,
+  QueryViewerTotal
+} from "@genexus/reporting-api/dist/types/basic-types";
+import {
+  QueryViewer,
+  QueryViewerCard
+} from "@genexus/reporting-api/dist/types/json";
 import {
   QueryViewerAttributesValuesForPivot,
   QueryViewerCalculatePivottableData,
@@ -34,7 +37,8 @@ import {
   QueryViewerPivotTableDataSync,
   QueryViewerServiceResponse,
   QueryViewerServiceResponsePivotTable
-} from "../../../services/types/service-result";
+} from "@genexus/reporting-api/dist/types/service-result";
+
 @Component({
   tag: "gx-query-viewer-controller",
   shadow: false

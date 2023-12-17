@@ -1,9 +1,9 @@
-import { Component, h, Prop, Host, Element, State } from "@stencil/core";
 import {
   // QueryViewerServiceDataRow,
   // QueryViewerServiceMetaDataData,
   QueryViewerServiceResponse
-} from "../../../services/types/service-result";
+} from "@genexus/reporting-api/dist/types/service-result";
+import { Component, Element, Host, Prop, State, h } from "@stencil/core";
 import {
   QueryViewerChartType,
   QueryViewerDataType,
@@ -13,13 +13,15 @@ import {
   QueryViewerTranslations,
   QueryViewerXAxisLabels
 } from "../../../common/basic-types";
+import { getAllHighchartOptions, getChartGroup } from "./chart-utils";
 import {
   ChartMetadataAndData,
   XAxisDataType,
   processDataAndMetadata
 } from "./processDataAndMetadata";
-import { getAllHighchartOptions, getChartGroup } from "./chart-utils";
 
+import { Options } from "highcharts";
+import { ChartTypes } from "./chart-types";
 import {
   AVERAGE_DAYS_PER_MONTH,
   GroupAndCompareTimeline,
@@ -29,8 +31,6 @@ import {
   // GroupAndCompareTimeline,
   fillHeaderAndFooter
 } from "./highcharts-options";
-import { Options } from "highcharts";
-import { ChartTypes } from "./chart-types";
 
 const HEADER_ZOOM_BUTTON_CLASS =
   "gx-query-viewer-chart-controller__header-zoom-button";

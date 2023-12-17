@@ -1,0 +1,16 @@
+@import "../../../common/base-mixins";
+@import "../../../global/tokens";
+
+@include box-sizing();
+
+:host {
+  flex: 1 1 0%;
+}
+.wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 100vh;
+  align-items: center;
+  justify-items: center;
+  width: 100%;
+}

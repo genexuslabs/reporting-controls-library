@@ -12,8 +12,6 @@ import {
   Method
 } from "@stencil/core";
 
-import { Component as GxComponent } from "../../common/interfaces";
-
 import {
   DUMMY_TRANSLATIONS,
   QueryViewerAutoResizeType,
@@ -32,18 +30,7 @@ import {
   QueryViewerTranslations,
   QueryViewerTrendPeriod,
   QueryViewerXAxisLabels
-} from "../../common/basic-types";
-import {
-  QueryViewerAttributesValuesForTable,
-  QueryViewerAttributesValuesForPivot,
-  QueryViewerPageDataForPivot,
-  QueryViewerPageDataForTable,
-  QueryViewerServiceResponse,
-  QueryViewerServiceResponsePivotTable,
-  QueryViewerCalculatePivottableData,
-  QueryViewerPivotTableDataSync,
-  QueryViewerTableDataSync
-} from "../../services/types/service-result";
+} from "@genexus/reporting-api/dist/types/basic-types";
 import {
   dragAndDropPivotTableEvent,
   itemClickDataForPivotTable,
@@ -65,6 +52,19 @@ import {
   TablePageChange,
   PivotTableNavigation
 } from "../../global/types";
+
+import {
+  QueryViewerServiceResponse,
+  QueryViewerAttributesValuesForTable,
+  QueryViewerAttributesValuesForPivot,
+  QueryViewerPageDataForPivot,
+  QueryViewerPageDataForTable,
+  QueryViewerServiceResponsePivotTable,
+  QueryViewerCalculatePivottableData,
+  QueryViewerPivotTableDataSync,
+  QueryViewerTableDataSync
+} from "@genexus/reporting-api/dist/types/service-result";
+import { Component as GxComponent } from "../../common/interfaces";
 
 @Component({
   tag: "gx-query-viewer",

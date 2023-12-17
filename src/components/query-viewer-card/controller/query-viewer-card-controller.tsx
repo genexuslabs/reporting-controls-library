@@ -1,10 +1,10 @@
-import { Component, h, Prop, Host, Element, Watch } from "@stencil/core";
+import { Component, Element, Host, Prop, Watch, h } from "@stencil/core";
 
 import {
   QueryViewerServiceDataRow,
   QueryViewerServiceMetaDataData,
   QueryViewerServiceResponse
-} from "../../../services/types/service-result";
+} from "@genexus/reporting-api/dist/types/service-result";
 import {
   QueryViewerDataType,
   QueryViewerOrientation,
