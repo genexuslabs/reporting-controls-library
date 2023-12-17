@@ -33,21 +33,23 @@
 
 ## Events
 
-| Event                                  | Description                                                | Type                                                                                                                                                |
-| -------------------------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `attributeValuesForPivotTable`         | Fired when new page data is ready to use in the PivotTable | `CustomEvent<string>`                                                                                                                               |
-| `calculatePivottableData`              | Fired when new page data is ready to use in the PivotTable | `CustomEvent<string>`                                                                                                                               |
-| `pageDataForPivotTable`                | Fired when new page data is ready to use in the PivotTable | `CustomEvent<string>`                                                                                                                               |
-| `pageDataForTable`                     | Fired when new page data is ready to use in the PivotTable | `CustomEvent<string>`                                                                                                                               |
-| `queryViewerServiceResponse`           | Fired when new metadata and data is fetched                | `CustomEvent<{ MetaData: QueryViewerServiceMetaData; Data: QueryViewerServiceData; Properties: QueryViewerBase; }>`                                 |
-| `queryViewerServiceResponsePivotTable` | Fired when new metadata and data is fetched                | `CustomEvent<{ MetaData: QueryViewerServiceMetaData; metadataXML: string; Properties: QueryViewerBase; objectName: string; useGxQuery: boolean; }>` |
+| Event                                  | Description                                                                                            | Type                                                                                                                                                |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `attributeValuesForPivotTable`         | Fired when new page data is ready to use in the PivotTable                                             | `CustomEvent<string>`                                                                                                                               |
+| `calculatePivottableData`              | Fired when new page data is ready to use in the PivotTable                                             | `CustomEvent<string>`                                                                                                                               |
+| `itemClickPivotTable`                  | ItemClickEvent, executes actions when this event is triggered after clicking on a pivot table element. | `CustomEvent<string>`                                                                                                                               |
+| `pageDataForPivotTable`                | Fired when new page data is ready to use in the PivotTable                                             | `CustomEvent<string>`                                                                                                                               |
+| `pageDataForTable`                     | Fired when new page data is ready to use in the PivotTable                                             | `CustomEvent<string>`                                                                                                                               |
+| `queryViewerServiceResponse`           | Fired when new metadata and data is fetched                                                            | `CustomEvent<{ MetaData: QueryViewerServiceMetaData; Data: QueryViewerServiceData; Properties: QueryViewerBase; }>`                                 |
+| `queryViewerServiceResponsePivotTable` | Fired when new metadata and data is fetched                                                            | `CustomEvent<{ MetaData: QueryViewerServiceMetaData; metadataXML: string; Properties: QueryViewerBase; objectName: string; useGxQuery: boolean; }>` |
+| `syncPivotTableData`                   | Fired when data is ready to use in the PivotTable                                                      | `CustomEvent<string>`                                                                                                                               |
 
 
 ## Methods
 
 ### `getAttributeValues(properties: QueryViewerAttributesValuesForPivot) => Promise<void>`
 
-PivotTable's Method
+PivotTable's Method for Attributes Values
 
 #### Returns
 
@@ -55,9 +57,9 @@ Type: `Promise<void>`
 
 
 
-### `getCalculatePivottableData(properties: any) => Promise<void>`
+### `getCalculatePivottableData(properties: QueryViewerCalculatePivottableData) => Promise<void>`
 
-PivotTable's Method
+PivotTable's Method for Calculate PivotTable Data
 
 #### Returns
 
@@ -67,7 +69,7 @@ Type: `Promise<void>`
 
 ### `getPageDataForPivotTable(properties: QueryViewerPageDataForPivot, paging: boolean, totalForColumns: QueryViewerTotal, totalForRows: QueryViewerTotal) => Promise<void>`
 
-PivotTable's Method
+PivotTable's Method for PivotTable Page Data
 
 #### Returns
 
@@ -78,6 +80,16 @@ Type: `Promise<void>`
 ### `getPageDataForTable(properties: QueryViewerPageDataForTable, paging: boolean, totalForColumns: QueryViewerTotal, totalForRows: QueryViewerTotal) => Promise<void>`
 
 Table's Method
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `getPivottableDataSync(properties: QueryViewerPivotTableDataSync) => Promise<void>`
+
+PivotTable's Method for PivotTable Data Sync Response
 
 #### Returns
 

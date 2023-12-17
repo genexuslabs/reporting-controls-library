@@ -15,6 +15,7 @@
 | `calculatePivottableDataXml`      | `calculate-pivottable-data-xml`        | Response Attribute Values                                                                         | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `undefined` |
 | `cssClass`                        | `css-class`                            | A CSS class to set as the `gx-query-viewer-pivot-controller` element class.                       | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `undefined` |
 | `disableColumnSort`               | `disable-column-sort`                  | Allowing or not Column sort                                                                       | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `undefined` |
+| `getPivottableDataSyncXml`        | `get-pivottable-data-sync-xml`         | Response Pivot Table Data Sync                                                                    | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `undefined` |
 | `pageDataForPivotTable`           | `page-data-for-pivot-table`            | Response Page Data                                                                                | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `undefined` |
 | `pageSize`                        | `page-size`                            | Enables you to define the number of rows that will be shown when the Paging property is activated | `number`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `undefined` |
 | `paging`                          | `paging`                               | This attribute lets you determinate whether there will be paging buttons.                         | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `undefined` |
@@ -25,6 +26,69 @@
 | `totalForColumns`                 | `total-for-columns`                    | Determines whether to show a total of all values in the pivot table columns.                      | `QueryViewerTotal.No \| QueryViewerTotal.Yes`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | `undefined` |
 | `totalForRows`                    | `total-for-rows`                       | Determines whether to show a total of all values in the pivot table rows.                         | `QueryViewerTotal.No \| QueryViewerTotal.Yes`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | `undefined` |
 | `translations`                    | --                                     | For translate the labels of the outputs                                                           | `{ GXPL_QViewerSinceTheBeginningTrend: string; GXPL_QViewerLastYearTrend: string; GXPL_QViewerLastSemesterTrend: string; GXPL_QViewerLastQuarterTrend: string; GXPL_QViewerLastMonthTrend: string; GXPL_QViewerLastWeekTrend: string; GXPL_QViewerLastDayTrend: string; GXPL_QViewerLastHourTrend: string; GXPL_QViewerLastMinuteTrend: string; GXPL_QViewerLastSecondTrend: string; GXPL_QViewerCardMinimum: string; GXPL_QViewerCardMaximum: string; GXPL_QViewerNoDatetimeAxis: string; GXPL_QViewerNoMapAxis: string; }` | `undefined` |
+
+
+## Methods
+
+### `firstPage() => Promise<any>`
+
+Method to navigate to the first page.
+
+#### Returns
+
+Type: `Promise<any>`
+
+
+
+### `getDataPivot(serverData: any) => Promise<any>`
+
+Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
+
+#### Returns
+
+Type: `Promise<any>`
+
+
+
+### `getFilteredDataPivot() => Promise<any>`
+
+Returns an XML on a string variable containing the data which is being visualized at the moment (the difference with the GetData() method it's seen on the Pivot Table, data can be different because of filters application).
+
+#### Returns
+
+Type: `Promise<any>`
+
+
+
+### `lastPage() => Promise<any>`
+
+Method to navigate to the last page.
+
+#### Returns
+
+Type: `Promise<any>`
+
+
+
+### `nextPage() => Promise<any>`
+
+Method to navigate to the next page.
+
+#### Returns
+
+Type: `Promise<any>`
+
+
+
+### `previousPage() => Promise<any>`
+
+Method to navigate to the previous page.
+
+#### Returns
+
+Type: `Promise<any>`
+
+
 
 
 ## Dependencies
