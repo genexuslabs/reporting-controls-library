@@ -185,6 +185,11 @@ export class QueryViewerController {
   @Event() syncPivotTableData: EventEmitter<string>;
 
   /**
+   *  ItemClickEvent, executes actions when this event is triggered after clicking on a pivot table element.
+   */
+  @Event() itemClickPivotTable: EventEmitter<string>;
+
+  /**
    * PivotTable's Method for PivotTable Page Data
    */
   @Method()
