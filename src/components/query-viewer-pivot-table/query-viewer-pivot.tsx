@@ -69,8 +69,7 @@ export class QueryViewerPivot {
   /**
    * pivotParameters
    */
-  @Prop()
-  readonly pivotParameters: QueryViewerPivotParameters;
+  @Prop() readonly pivotParameters: QueryViewerPivotParameters;
 
   /**
    * pivotCollection

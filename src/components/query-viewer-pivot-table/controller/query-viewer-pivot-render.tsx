@@ -1,6 +1,6 @@
 import { Component, h, Prop, Host, Element, Method } from "@stencil/core";
 
-import { QueryViewerServiceResponsePivotTable } from "../../../services/types/service-result";
+import { QueryViewerServiceResponsePivotTable } from "@genexus/reporting-api/dist/types/service-result";
 import {
   QueryViewerOutputType,
   QueryViewerPivotCollection,
@@ -40,14 +40,12 @@ export class QueryViewerPivotTableRender {
   /**
    * Response Attribute Values
    */
-  @Prop()
-  readonly calculatePivottableDataXml: string;
+  @Prop() readonly calculatePivottableDataXml: string;
 
   /**
    * Response Pivot Table Data Sync
    */
-  @Prop()
-  readonly getPivottableDataSyncXml: string;
+  @Prop() readonly getPivottableDataSyncXml: string;
 
   /**
    * A CSS class to set as the `gx-query-viewer-pivot-controller` element class.

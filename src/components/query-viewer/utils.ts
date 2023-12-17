@@ -13,7 +13,7 @@ import {
 import {
   selectXPathNode,
   xmlToDocument
-} from "../../services/xml-parser/utils/dom";
+} from "@genexus/reporting-api/dist/xml-parser/utils/dom";
 
 export function itemClickDataForPivotTable(
   qViewer: any,
