@@ -62,18 +62,18 @@
 
 ## Events
 
-| Event            | Description                                                                                                         | Type                                                                                                                                                                                                  |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `changePage`     | EEvent fired when a user changes pages in the pivot table                                                           | `CustomEvent<any>`                                                                                                                                                                                    |
-| `dragAndDrop`    | Event fires when a user drops a "draggable" element into its target                                                 | `CustomEvent<{ Name: string; Type: QueryViewerElementType; Axis: QueryViewerAxisType; Position: string; }>`                                                                                           |
-| `filterChanged`  | Event is triggered every time that values are removed from or added to the list of possible values for an attribute | `CustomEvent<{ Name: string; SelectedValues: { Item: string; }; }>`                                                                                                                                   |
-| `itemClick`      | Event fire when a user click an "actionable" element                                                                | `CustomEvent<{ Name: string; Type: QueryViewerElementType; Axis: QueryViewerAxisType; Value: string; Selected: boolean; Context: QueryViewerContextElement[]; Filters: QueryViewerEventFilters[]; }>` |
-| `itemCollapse`   | Event fired when a user collapses an item in the pivot table                                                        | `CustomEvent<{ Name: string; Value: string; ExpandedValues: [{ Item: string; }]; }>`                                                                                                                  |
-| `itemExpand`     | Event fired when a user expands an item in the pivot table                                                          | `CustomEvent<{ Name: string; Value: string; ExpandedValues: [{ Item: string; }]; }>`                                                                                                                  |
-| `onFirstPage`    | Event fired when a user navigates to the first page in the pivot table                                              | `CustomEvent<any>`                                                                                                                                                                                    |
-| `onLastPage`     | Event fired when a user navigates to the last page in the pivot table                                               | `CustomEvent<any>`                                                                                                                                                                                    |
-| `onNextPage`     | Event fired when a user navigates to the next page in the pivot table                                               | `CustomEvent<any>`                                                                                                                                                                                    |
-| `onPreviousPage` | Event fired when a user navigates to the previous page in the pivot table                                           | `CustomEvent<any>`                                                                                                                                                                                    |
+| Event           | Description                                                                                                         | Type                                                                                                                                                                                                  |
+| --------------- | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `changePage`    | EEvent fired when a user changes pages in the pivot table                                                           | `CustomEvent<any>`                                                                                                                                                                                    |
+| `dragAndDrop`   | Event fires when a user drops a "draggable" element into its target                                                 | `CustomEvent<{ Name: string; Type: QueryViewerElementType; Axis: QueryViewerAxisType; Position: string; }>`                                                                                           |
+| `filterChanged` | Event is triggered every time that values are removed from or added to the list of possible values for an attribute | `CustomEvent<{ Name: string; SelectedValues: { Item: string; }; }>`                                                                                                                                   |
+| `firstPage`     | Event fired when a user navigates to the first page in the pivot table                                              | `CustomEvent<any>`                                                                                                                                                                                    |
+| `itemClick`     | Event fire when a user click an "actionable" element                                                                | `CustomEvent<{ Name: string; Type: QueryViewerElementType; Axis: QueryViewerAxisType; Value: string; Selected: boolean; Context: QueryViewerContextElement[]; Filters: QueryViewerEventFilters[]; }>` |
+| `itemCollapse`  | Event fired when a user collapses an item in the pivot table                                                        | `CustomEvent<{ Name: string; Value: string; ExpandedValues: [{ Item: string; }]; }>`                                                                                                                  |
+| `itemExpand`    | Event fired when a user expands an item in the pivot table                                                          | `CustomEvent<{ Name: string; Value: string; ExpandedValues: [{ Item: string; }]; }>`                                                                                                                  |
+| `lastPage`      | Event fired when a user navigates to the last page in the pivot table                                               | `CustomEvent<any>`                                                                                                                                                                                    |
+| `nextPage`      | Event fired when a user navigates to the next page in the pivot table                                               | `CustomEvent<any>`                                                                                                                                                                                    |
+| `previousPage`  | Event fired when a user navigates to the previous page in the pivot table                                           | `CustomEvent<any>`                                                                                                                                                                                    |
 
 
 ## Methods
@@ -111,14 +111,14 @@ graph TD;
   gx-query-viewer --> gx-query-viewer-table-render
   gx-query-viewer-card-controller --> gx-query-viewer-card
   gx-query-viewer-card --> gx-query-viewer-chart
-  gx-query-viewer-chart-controller --> gx-query-viewer-chart
-  gx-query-viewer-chart-controller --> gx-checkbox
+  gx-query-viewer-chart-controller --> gx-radio-group
+  gx-query-viewer-chart-controller --> gx-radio-option
   gx-query-viewer-chart-controller --> gx-form-field
   gx-query-viewer-chart-controller --> gx-select
   gx-query-viewer-chart-controller --> gx-select-option
+  gx-query-viewer-chart-controller --> gx-query-viewer-chart
+  gx-query-viewer-chart-controller --> gx-checkbox
   gx-query-viewer-chart-controller --> gx-query-viewer-slider
-  gx-query-viewer-chart-controller --> gx-radio-group
-  gx-query-viewer-chart-controller --> gx-radio-option
   gx-query-viewer-pivot-render --> gx-query-viewer-pivot
   gx-query-viewer-table-render --> gx-query-viewer-table
   gx-query-render --> gx-query-viewer
