@@ -65,7 +65,6 @@ import {
   QueryViewerPivotTableDataSync,
   QueryViewerTableDataSync
 } from "@genexus/reporting-api/dist/types/service-result";
-import { Component as GxComponent } from "../../common/interfaces";
 
 @Component({
   tag: "gx-query-viewer",
@@ -73,9 +72,7 @@ import { Component as GxComponent } from "../../common/interfaces";
   shadow: false,
   assetsDirs: ["assets"]
 })
-export class QueryViewer implements GxComponent {
-  [memberName: string]: any;
-
+export class QueryViewer {
   /**
    * Dictionary for each type of Query Viewer. Maps Query Viewer types to their
    * corresponding render.
@@ -400,22 +397,22 @@ export class QueryViewer implements GxComponent {
   /**
    * Event fired when a user navigates to the first page in the pivot table
    */
-  @Event() onFirstPage: EventEmitter<any>;
+  @Event() firstPage: EventEmitter<any>;
 
   /**
    * Event fired when a user navigates to the previous page in the pivot table
    */
-  @Event() onPreviousPage: EventEmitter<any>;
+  @Event() previousPage: EventEmitter<any>;
 
   /**
    * Event fired when a user navigates to the next page in the pivot table
    */
-  @Event() onNextPage: EventEmitter<any>;
+  @Event() nextPage: EventEmitter<any>;
 
   /**
    * Event fired when a user navigates to the last page in the pivot table
    */
-  @Event() onLastPage: EventEmitter<any>;
+  @Event() lastPage: EventEmitter<any>;
   /**
    * Event is triggered every time that values are removed from or added to the list of possible values for an attribute
    */
@@ -590,19 +587,19 @@ export class QueryViewer implements GxComponent {
     switch ((event as any).parameter.Navigation) {
       case PivotTableNavigation.OnFirstPage:
         eventData = this.pivotRenderRef.firstPage();
-        this.OnFirstPage.emit(eventData);
+        this.firstPage.emit(eventData);
         break;
       case PivotTableNavigation.OnLastPage:
         eventData = this.pivotRenderRef.lastPage();
-        this.OnLastPage.emit(eventData);
+        this.lastPage.emit(eventData);
         break;
       case PivotTableNavigation.OnNextPage:
         eventData = this.pivotRenderRef.nextPage();
-        this.OnNextPage.emit(eventData);
+        this.nextPage.emit(eventData);
         break;
       case PivotTableNavigation.OnPreviousPage:
         eventData = this.pivotRenderRef.previousPage();
-        this.OnPreviousPage.emit(eventData);
+        this.previousPage.emit(eventData);
         break;
     }
   }
@@ -640,7 +637,7 @@ export class QueryViewer implements GxComponent {
     if (!this.controller) {
       return;
     }
-    switch (this.OutputType) {
+    switch (this.type) {
       case QueryViewerOutputType.Card:
         // ToDo: implement this method to the output card
         return null;
