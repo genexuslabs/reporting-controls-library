@@ -79,7 +79,7 @@ Type: `Promise<void>`
 
 ### `getPageDataForTable(properties: QueryViewerPageDataForTable, paging: boolean, totalForColumns: QueryViewerTotal, totalForRows: QueryViewerTotal) => Promise<void>`
 
-Table's Method
+Table's Method for Table Page Data
 
 #### Returns
 
