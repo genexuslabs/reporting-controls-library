@@ -17,6 +17,7 @@ import {
   QueryViewerServiceMetaDataData
 } from "@genexus/reporting-api/dist/types/service-result";
 import { TooltipFormatterContextObject } from "highcharts";
+
 export function parseNumericPicture(
   dataType: QueryViewerDataType,
   picture: string

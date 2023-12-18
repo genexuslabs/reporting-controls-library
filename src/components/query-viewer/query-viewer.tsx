@@ -1,15 +1,20 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import {
   Component,
   Element,
+  EventEmitter,
+  Event,
   Host,
   Listen,
   Prop,
   State,
-  h
+  h,
+  Method
 } from "@stencil/core";
 
 import {
   DUMMY_TRANSLATIONS,
+  QueryViewerAutoResizeType,
   QueryViewerBase,
   QueryViewerChartType,
   QueryViewerContinent,
@@ -26,7 +31,40 @@ import {
   QueryViewerTrendPeriod,
   QueryViewerXAxisLabels
 } from "@genexus/reporting-api/dist/types/basic-types";
-import { QueryViewerServiceResponse } from "@genexus/reporting-api/dist/types/service-result";
+import {
+  dragAndDropPivotTableEvent,
+  itemClickDataForPivotTable,
+  itemExpandCollapsePivotTableEvent,
+  onFilterChangedPivotTableEvent
+  // onFilterChangedPivotTableEvent
+} from "./utils";
+import {
+  PivotTableDragAndDrop,
+  PivotTableExpandCollapse,
+  PivotTableFilterChanged,
+  PivotTableItemClick,
+  PivotTablePageChange,
+  QueryViewerDragAndDropData,
+  QueryViewerFilterChangedData,
+  QueryViewerItemClickData,
+  QueryViewerItemExpandAndCollapseData,
+  // TableFilterChanged,
+  // TableItemClick,
+  // TablePageChange,
+  PivotTableNavigation
+} from "../../global/types";
+
+import {
+  QueryViewerServiceResponse,
+  QueryViewerAttributesValuesForTable,
+  QueryViewerAttributesValuesForPivot,
+  QueryViewerPageDataForPivot,
+  QueryViewerPageDataForTable,
+  QueryViewerServiceResponsePivotTable,
+  QueryViewerCalculatePivottableData,
+  QueryViewerPivotTableDataSync,
+  QueryViewerTableDataSync
+} from "@genexus/reporting-api/dist/types/service-result";
 import { Component as GxComponent } from "../../common/interfaces";
 
 @Component({
@@ -36,13 +74,16 @@ import { Component as GxComponent } from "../../common/interfaces";
   assetsDirs: ["assets"]
 })
 export class QueryViewer implements GxComponent {
+  [memberName: string]: any;
+
   /**
    * Dictionary for each type of Query Viewer. Maps Query Viewer types to their
    * corresponding render.
    */
   private rendersDictionary: {
     [key in QueryViewerOutputType]: (
-      serviceResponse: QueryViewerServiceResponse
+      serviceResponse: QueryViewerServiceResponse,
+      serviceResponsePivotTable: QueryViewerServiceResponsePivotTable
     ) => any;
   } = {
     [QueryViewerOutputType.Card]: response => this.cardRender(response),
@@ -50,20 +91,34 @@ export class QueryViewer implements GxComponent {
     [QueryViewerOutputType.Chart]: response => this.chartRender(response),
     [QueryViewerOutputType.Map]: response =>
       this.notImplementedRender(response),
-    [QueryViewerOutputType.PivotTable]: response =>
-      this.notImplementedRender(response),
-    [QueryViewerOutputType.Table]: response =>
-      this.notImplementedRender(response),
+    [QueryViewerOutputType.PivotTable]: (_, pivotResponse) =>
+      this.pivotRender(pivotResponse),
+    [QueryViewerOutputType.Table]: (_, pivotResponse) =>
+      this.tableRender(pivotResponse),
 
     // @todo Update this option to depend on the assigned object
     [QueryViewerOutputType.Default]: response =>
       this.notImplementedRender(response)
   };
 
+  // refs
+  private controller: HTMLGxQueryViewerControllerElement;
+  private pivotRenderRef: HTMLGxQueryViewerPivotRenderElement;
+
   @Element() element: HTMLGxQueryViewerElement;
 
   @State() parameters: string;
   @State() elements: string;
+
+  /**
+   * Response Attribute Values for Table
+   */
+  @Prop({ mutable: true }) attributeValuesForPivotTableXml: string;
+
+  /**
+   * Response Attribute Values for Pivot Table
+   */
+  @Prop({ mutable: true }) attributeValuesForTableXml: string;
 
   /**
    * Allowing elements order to change
@@ -88,7 +143,17 @@ export class QueryViewer implements GxComponent {
   /**
    * If autoResize, in here select the type, Width, height, or both
    */
-  @Prop() readonly autoResizeType: "Both" | "Vertical" | "Horizontal";
+  @Prop() readonly autoResizeType: QueryViewerAutoResizeType;
+
+  /**
+   * Response Pivot Table Data Calculation
+   */
+  @Prop({ mutable: true }) calculatePivottableDataXml: string;
+
+  /**
+   * Response Pivot Table Data Sync
+   */
+  @Prop({ mutable: true }) pivottableDataSyncXml: string;
 
   /**
    * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
@@ -191,6 +256,13 @@ export class QueryViewer implements GxComponent {
   @Prop({ mutable: true }) serviceResponse: QueryViewerServiceResponse;
 
   /**
+   * Specifies the metadata that the control will use to render the pivotTable.
+   */
+  // eslint-disable-next-line @stencil-community/decorators-style
+  @Prop({ mutable: true })
+  serviceResponsePivotTable: QueryViewerServiceResponsePivotTable;
+
+  /**
    * Title of the QueryViewer
    */
   @Prop({ mutable: true }) queryTitle: string;
@@ -287,11 +359,335 @@ export class QueryViewer implements GxComponent {
    */
   @Prop({ mutable: true }) country: QueryViewerCountry;
 
+  /**
+   * Response Page Data
+   */
+  @Prop({ mutable: true }) pageDataForPivotTable: string;
+
+  /**
+   * Response Page Data
+   */
+  @Prop({ mutable: true }) pageDataForTable: string;
+
+  /**
+   * Event fire when a user click an "actionable" element
+   */
+  @Event() itemClick: EventEmitter<QueryViewerItemClickData>;
+
+  /**
+   * Event fires when a user drops a "draggable" element into its target
+   */
+  @Event() dragAndDrop: EventEmitter<QueryViewerDragAndDropData>;
+
+  /**
+   * Event fired when a user collapses an item in the pivot table
+   */
+  @Event()
+  itemCollapse: EventEmitter<QueryViewerItemExpandAndCollapseData>;
+
+  /**
+   * Event fired when a user expands an item in the pivot table
+   */
+  @Event()
+  itemExpand: EventEmitter<QueryViewerItemExpandAndCollapseData>;
+
+  /**
+   * EEvent fired when a user changes pages in the pivot table
+   */
+  // ToDo: improve this type
+  @Event() changePage: EventEmitter<any>;
+
+  /**
+   * Event fired when a user navigates to the first page in the pivot table
+   */
+  @Event() onFirstPage: EventEmitter<any>;
+
+  /**
+   * Event fired when a user navigates to the previous page in the pivot table
+   */
+  @Event() onPreviousPage: EventEmitter<any>;
+
+  /**
+   * Event fired when a user navigates to the next page in the pivot table
+   */
+  @Event() onNextPage: EventEmitter<any>;
+
+  /**
+   * Event fired when a user navigates to the last page in the pivot table
+   */
+  @Event() onLastPage: EventEmitter<any>;
+  /**
+   * Event is triggered every time that values are removed from or added to the list of possible values for an attribute
+   */
+  @Event() filterChanged: EventEmitter<QueryViewerFilterChangedData>;
+
   @Listen("queryViewerServiceResponse")
   handleServiceResponse(event: CustomEvent<QueryViewerServiceResponse>) {
     this.serviceResponse = event.detail;
     this.setQueryViewerProperties(event.detail.Properties);
   }
+
+  /** Servicios de la Pivot  **/
+
+  @Listen("queryViewerServiceResponsePivotTable")
+  handleServiceResponsePivotTable(
+    event: CustomEvent<QueryViewerServiceResponsePivotTable>
+  ) {
+    this.serviceResponsePivotTable = event.detail;
+    this.setQueryViewerProperties(event.detail.Properties);
+  }
+
+  @Listen("RequestPageDataForPivotTable", { target: "document" })
+  handleRequestPageDataForPivotTable(
+    event: CustomEvent<QueryViewerPageDataForPivot>
+  ) {
+    if (this.controller) {
+      event.stopPropagation();
+      this.controller.getPageDataForPivotTable(
+        (event as any).parameter,
+        this.paging,
+        this.totalForColumns,
+        this.totalForRows
+      );
+    }
+  }
+
+  @Listen("RequestAttributeValuesForPivotTable")
+  handleAttributeValuesForPivotTable(
+    event: CustomEvent<QueryViewerAttributesValuesForPivot>
+  ) {
+    if (this.controller) {
+      this.controller.getAttributeValues(event.detail);
+    }
+  }
+
+  @Listen("RequestCalculatePivottableData")
+  handleRequestCalculatePivottableData(
+    event: CustomEvent<QueryViewerCalculatePivottableData>
+  ) {
+    if (this.controller) {
+      this.controller.getCalculatePivottableData(event.detail);
+    }
+  }
+
+  @Listen("RequestDataSynForPivotTable")
+  handleRequestRequestDataSynForPivotTable(
+    event: CustomEvent<QueryViewerPivotTableDataSync>
+  ) {
+    if (this.controller) {
+      this.controller.getPivottableDataSync(event.detail);
+    }
+  }
+
+  @Listen("pageDataForPivotTable")
+  handlePageDataForPivotTable(event: CustomEvent<string>) {
+    this.pageDataForPivotTable = event.detail;
+  }
+
+  @Listen("attributesValuesForPivotTable")
+  handleAttributesValuesPivot(event: CustomEvent<string>) {
+    this.attributeValuesForPivotTableXml = event.detail;
+  }
+
+  @Listen("calculatePivottableData")
+  handleCalculatePivottableData(event: CustomEvent<string>) {
+    this.calculatePivottableDataXml = event.detail;
+  }
+
+  @Listen("getPivottableDataSync")
+  handleGetPivottableDataSync(event: CustomEvent<string>) {
+    this.pivottableDataSyncXml = event.detail;
+  }
+
+  /** Table Services **/
+
+  @Listen("RequestPageDataForTable", { target: "document" })
+  handleRequestPageDataForTable(
+    event: CustomEvent<QueryViewerPageDataForTable>
+  ) {
+    if (this.controller) {
+      event.stopPropagation();
+      this.controller.getPageDataForTable(
+        (event as any).parameter,
+        this.paging,
+        this.totalForColumns,
+        this.totalForRows
+      );
+    }
+  }
+
+  @Listen("pageDataForTable")
+  handlePageDataForTable(event: CustomEvent<string>) {
+    this.pageDataForTable = event.detail;
+  }
+
+  @Listen("RequestAttributeForTable")
+  handleAttributeForTable(
+    event: CustomEvent<QueryViewerAttributesValuesForTable>
+  ) {
+    if (this.controller) {
+      this.controller.getAttributeValues(event.detail);
+    }
+  }
+
+  @Listen("attributesValuesForTable")
+  handleAttributesValuesTable(event: CustomEvent<string>) {
+    this.attributeValuesForTableXml = event.detail;
+  }
+
+  @Listen("requestDataSynForTable")
+  handleRequestRequestDataSynForTable(
+    event: CustomEvent<QueryViewerTableDataSync>
+  ) {
+    if (this.controller) {
+      this.controller.getPivottableDataSync(event.detail);
+    }
+  }
+
+  /** User Events for Pivot Table*/
+
+  @Listen("PivotTableOnItemClickEvent")
+  handlePivotTableOnItemClickEvent(event: CustomEvent<PivotTableItemClick>) {
+    const eventData = itemClickDataForPivotTable(
+      (event as any).parameter.QueryviewerId,
+      (event as any).parameter.Data
+    );
+    this.itemClick.emit(eventData);
+  }
+
+  @Listen("PivotTableOnDragundDropEvent")
+  handlePivotTableOnDragundDropEvent(
+    event: CustomEvent<PivotTableDragAndDrop>
+  ) {
+    const eventData = dragAndDropPivotTableEvent(
+      (event as any).parameter.QueryviewerId,
+      (event as any).parameter.Data
+    );
+    this.dragAndDrop.emit(eventData);
+  }
+
+  @Listen("PivotTableOnItemExpandCollapseEvent")
+  handlePivotTableOnItemExpandCollapseEvent(
+    event: CustomEvent<PivotTableExpandCollapse>
+  ) {
+    const eventData = itemExpandCollapsePivotTableEvent(
+      (event as any).parameter.Queryviewer,
+      (event as any).parameter.Data,
+      (event as any).parameter.IsCollapse
+    );
+
+    if ((event as any).parameter.IsCollapse) {
+      this.itemCollapse.emit(eventData);
+    } else {
+      this.itemExpand.emit(eventData);
+    }
+  }
+
+  @Listen("PivotTableOnPageChangeEvent")
+  handlePivotTableOnPageChangeEvent(event: CustomEvent<PivotTablePageChange>) {
+    let eventData;
+
+    switch ((event as any).parameter.Navigation) {
+      case PivotTableNavigation.OnFirstPage:
+        eventData = this.pivotRenderRef.firstPage();
+        this.OnFirstPage.emit(eventData);
+        break;
+      case PivotTableNavigation.OnLastPage:
+        eventData = this.pivotRenderRef.lastPage();
+        this.OnLastPage.emit(eventData);
+        break;
+      case PivotTableNavigation.OnNextPage:
+        eventData = this.pivotRenderRef.nextPage();
+        this.OnNextPage.emit(eventData);
+        break;
+      case PivotTableNavigation.OnPreviousPage:
+        eventData = this.pivotRenderRef.previousPage();
+        this.OnPreviousPage.emit(eventData);
+        break;
+    }
+  }
+
+  @Listen("PivotTableOnFilterChangedEvent")
+  handlePivotTableOnFilterChangedEvent(
+    event: CustomEvent<PivotTableFilterChanged>
+  ) {
+    const eventData = onFilterChangedPivotTableEvent(
+      (event as any).parameter.QueryviewerId,
+      (event as any).parameter.FilterChangedData
+    );
+    this.filterChanged.emit(eventData);
+  }
+
+  /** User Events for Table*/
+
+  // ToDo: implement this
+  // @Listen("TableOnItemClickEvent")
+  // handleTableOnItemClickEvent(event: CustomEvent<TableItemClick>) {}
+  // // ToDo: implement this
+  // @Listen("TableOnPageChangeEvent")
+  // handleTableOnDragundDropEvent(event: CustomEvent<TablePageChange>) {}
+  // // ToDo: implement this
+  // @Listen("TableOnFilterChangedEvent")
+  // handleTableOnFilterChangedEvent(event: CustomEvent<TableFilterChanged>) {}
+
+  /** GX User Events */
+
+  /**
+   * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
+   */
+  @Method()
+  async getData() {
+    if (!this.controller) {
+      return;
+    }
+    switch (this.OutputType) {
+      case QueryViewerOutputType.Card:
+        // ToDo: implement this method to the output card
+        return null;
+      case QueryViewerOutputType.Chart:
+        // ToDo: implement this method to the output chart
+        return null;
+      case QueryViewerOutputType.Map:
+        // ToDo: implement this method to the output map
+        return null;
+      default: // PivotTable and Table
+        const serverData = await this.pivotRenderRef.getPivottableDataSyncXml;
+        return this.pivotRenderRef.getDataPivot(serverData);
+    }
+  }
+
+  // ToDo: complete this implementation
+  /**
+   * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
+   */
+  // @Method()
+  // async getFilteredData() {
+  //   if (!this.controller) {
+  //     return;
+  //   }
+  //   switch (this.RealType) {
+  //     case QueryViewerOutputType.Card:
+  //       // ToDo: implement this method to the output card
+  //       return null;
+  //     case QueryViewerOutputType.Chart:
+  //       // ToDo: implement this method to the output chart
+  //       return null;
+  //     case QueryViewerOutputType.Map:
+  //       // ToDo: implement this method to the output map
+  //       return null;
+  //     default: // PivotTable and Table
+  //       // ToDo: complete this implementation
+  //       // const serverData = this.pivotRenderRef.getPivottableDataSyncXml;
+  //       // return this.pivotRenderRef.getFilteredDataPivot(serverData);
+  //       return null;
+  //   }
+  // }
+
+  /** AutoRefresh */
+
+  // ToDo: implement this
+  // @Listen("RequestUpdateLayoutSameGroup")
+  // handlePivotTableAutorefresh(event: CustomEvent<any>) {}
 
   /**
    * Set QueryViewer properties with values from the query obtained from the server (unless explicitly set in the web component)
@@ -365,14 +761,85 @@ export class QueryViewer implements GxComponent {
     );
   }
 
+  private pivotRender(
+    serviceResponsePivotTable: QueryViewerServiceResponsePivotTable
+  ) {
+    return (
+      <gx-query-viewer-pivot-render
+        allowElementsOrderChange={this.allowElementsOrderChange}
+        allowSelection={this.allowSelection}
+        cssClass={this.cssClass}
+        pivotTitle={this.queryTitle}
+        paging={this.paging}
+        pageSize={this.pageSize}
+        showDataLabelsIn={this.showDataLabelsIn}
+        serviceResponse={serviceResponsePivotTable}
+        totalForRows={this.totalForRows}
+        totalForColumns={this.totalForColumns}
+        translations={DUMMY_TRANSLATIONS}
+        disableColumnSort={this.disableColumnSort}
+        rememberLayout={this.rememberLayout}
+        pageDataForPivotTable={this.pageDataForPivotTable}
+        attributeValuesForPivotTableXml={this.attributeValuesForPivotTableXml}
+        calculatePivottableDataXml={this.calculatePivottableDataXml}
+        getPivottableDataSyncXml={this.pivottableDataSyncXml}
+        ref={el => (this.pivotRenderRef = el)}
+      ></gx-query-viewer-pivot-render>
+    );
+  }
+
+  private tableRender(
+    serviceResponsePivotTable: QueryViewerServiceResponsePivotTable
+  ) {
+    return (
+      <gx-query-viewer-table-render
+        allowElementsOrderChange={this.allowElementsOrderChange}
+        allowSelection={this.allowSelection}
+        cssClass={this.cssClass}
+        tableTitle={this.queryTitle}
+        paging={this.paging}
+        pageSize={this.pageSize}
+        showDataLabelsIn={this.showDataLabelsIn}
+        serviceResponse={serviceResponsePivotTable}
+        totalForRows={this.totalForRows}
+        totalForColumns={this.totalForColumns}
+        translations={DUMMY_TRANSLATIONS}
+        disableColumnSort={this.disableColumnSort}
+        rememberLayout={this.rememberLayout}
+        pageDataForTable={this.pageDataForTable}
+        attributeValuesForTableXml={this.attributeValuesForTableXml}
+      ></gx-query-viewer-table-render>
+    );
+  }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private notImplementedRender(_serviceResponse: QueryViewerServiceResponse) {
     return "";
   }
 
+  componentWillLoad() {
+    this.controller = this.element.querySelector("gx-query-viewer-controller");
+    // this.serviceResponse = {
+    //   Data: [] as any,
+    //   MetaData: [] as any,
+    //   Properties: undefined
+    // };
+    // this.serviceResponsePivotTable = {
+    //   MetaData: undefined,
+    //   Properties: undefined,
+    //   metadataXML: undefined,
+    //   objectName: "",
+    //   useGxQuery: undefined
+    // };
+  }
+
   render() {
     return (
-      <Host>{this.rendersDictionary[this.type](this.serviceResponse)}</Host>
+      <Host>
+        {this.rendersDictionary[this.type](
+          this.serviceResponse,
+          this.serviceResponsePivotTable
+        )}
+      </Host>
     );
   }
 }

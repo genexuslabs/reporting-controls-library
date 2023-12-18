@@ -1,7 +1,41 @@
-/* eslint-disable camelcase */
+import {
+  QueryViewerAttributesValuesForPivot,
+  QueryViewerAttributesValuesForTable,
+  QueryViewerCalculatePivottableData,
+  QueryViewerPageDataForPivot,
+  QueryViewerPageDataForTable,
+  QueryViewerPivotTableDataSync,
+  QueryViewerServiceMetaDataAxis,
+  QueryViewerServiceMetaDataData
+} from "@genexus/reporting-api/dist/types/service-result";
+
 export type GeneratorType = "net" | "java";
 
-export type ServiceType = "metadata" | "data";
+export type ServiceType = "metadata" | "data" | "recordSetCache";
+
+export type AsyncServiceTypeForPivotTable =
+  | "pivotTablePageData"
+  | "attributeValues"
+  | "calculatePivottableData"
+  | "getPivottableDataSync";
+
+export type AsyncServiceTypeForTable = "tablePageData" | "attributeValues";
+
+export type SyncServiceTypeForPivotTable = "getPivottableDataSync";
+
+export type SyncServiceTypeForTable = SyncServiceTypeForPivotTable;
+
+export type ServicePropertiesForPivotTable = {
+  pageData?: QueryViewerPageDataForPivot;
+  attributeValues?: QueryViewerAttributesValuesForPivot;
+  calculatePivottableData?: QueryViewerCalculatePivottableData;
+  getPivottableDataSync?: QueryViewerPivotTableDataSync;
+};
+
+export type ServicePropertiesForTable = {
+  pageData?: QueryViewerPageDataForTable;
+  attributeValues?: QueryViewerAttributesValuesForTable;
+};
 
 export type QueryViewerTranslations = {
   [key in QueryViewerTranslationsLabels]: string;
@@ -208,6 +242,12 @@ export enum QueryViewerXAxisLabels {
   Rotated45 = "Rotated45",
   Rotated60 = "Rotated60",
   Vertically = "Vertically"
+}
+
+export enum QueryViewerAutoResizeType {
+  Both = "Both",
+  Vertical = "Vertical",
+  Horizontal = "Horizontal"
 }
 
 export enum QueryViewerMapType {
@@ -440,6 +480,11 @@ export enum QueryViewerCountry {
   Zimbabwe = "ZW"
 }
 
+export enum QueryViewershowDataLabelsIn {
+  ColumnsArea = "Columns area",
+  RowsArea = "Rows area"
+}
+
 export type DateTimePicture = {
   DateFormat: string;
   IncludeHours: boolean;
@@ -493,6 +538,66 @@ export type QueryViewerChartPoint = {
 export type QueryViewerSliderRange = {
   start: number;
   end: number;
+};
+
+export type QueryViewerPivotParameters = {
+  AllowSelection: boolean;
+  AutoResize: boolean;
+  ControlName: string;
+  DisableColumnSort: boolean;
+  ObjectName: string;
+  PageSize: number;
+  RealType: QueryViewerOutputType;
+  RememberLayout: boolean;
+  SelectLine: boolean;
+  ServerPaging?: boolean;
+  ServerPagingCacheSize?: number;
+  ServerPagingPivot?: boolean;
+  ShowDataLabelsIn: QueryViewerShowDataLabelsIn;
+  Title: string;
+  TotalForColumns: QueryViewerTotal;
+  TotalForRows: QueryViewerTotal;
+  UcId: string;
+  UseRecordsetCache: boolean;
+  data?: string;
+  metadata: string;
+};
+
+export type QueryViewerPivotParametersUI = QueryViewerPivotParameters & {
+  page: string;
+  content: string;
+  container: HTMLElement;
+};
+
+export type QueryViewerPivotTable = {
+  xml: {
+    metadata: string;
+  };
+  pivotParams: QueryViewerPivotParametersUI;
+  oat_element: any;
+};
+
+export enum QueryViewerPivotDataType {
+  PagedRecordSet = "PagedRecordSet",
+  PagedLineSet = "PagedLineSet",
+  NotPaged = "NotPaged"
+}
+
+export type QueryViewerPivotCollection = {
+  collection: { [key: string]: QueryViewerPivotCollectionProperties };
+  fadeTimeouts: any;
+};
+
+export type QueryViewerPivotCollectionProperties = {
+  AllowElementsOrderChange?: boolean;
+  AutoRefreshGroup: string;
+  ControlName?: string;
+  debugServices: boolean;
+  Metadata: {
+    Axes: QueryViewerServiceMetaDataAxis[];
+    Data: QueryViewerServiceMetaDataData[];
+  };
+  RememberLayout?: boolean;
 };
 
 /**
@@ -587,4 +692,16 @@ export interface QueryViewerBase {
   ShowDataLabelsIn: QueryViewerShowDataLabelsIn;
   TotalForRows: QueryViewerTotal;
   TotalForColumns: QueryViewerTotal;
+}
+
+export enum QueryViewerAxisType {
+  Rows = "Rows",
+  Columns = "Columns",
+  Pages = "Pages",
+  Default = ""
+}
+
+export enum QueryViewerElementType {
+  Axis = "Axis",
+  Datum = "Datum"
 }

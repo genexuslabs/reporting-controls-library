@@ -1,8 +1,16 @@
 import { Component, Element, Host, Prop, State, Watch, h } from "@stencil/core";
 
 import { parseDataXML, parseMetadataXML } from "@genexus/reporting-api/dist";
-import { GeneratorType, QueryViewerBase, QueryViewerOutputType, QueryViewerTrendPeriod } from "@genexus/reporting-api/dist/types/basic-types";
-import { QueryViewerServiceData, QueryViewerServiceMetaData } from "@genexus/reporting-api/dist/types/service-result";
+import {
+  GeneratorType,
+  QueryViewerBase,
+  QueryViewerOutputType,
+  QueryViewerTrendPeriod
+} from "@genexus/reporting-api/dist/types/basic-types";
+import {
+  QueryViewerServiceData,
+  QueryViewerServiceMetaData
+} from "@genexus/reporting-api/dist/types/service-result";
 import { Component as GxComponent } from "../../../common/interfaces";
 
 enum MissionOuputType {
@@ -17,7 +25,6 @@ type QueryResponseOutputType = QueryViewerOutputType | MissionOuputType;
   shadow: true
 })
 export class GxQueryRender implements GxComponent {
-
   @Element() element: HTMLGxQueryRenderElement;
 
   @State() loading = false;
@@ -56,29 +63,31 @@ export class GxQueryRender implements GxComponent {
   /**
    *
    */
-  @Prop() readonly noDataLabel = 'No Data';
+  @Prop() readonly noDataLabel = "No Data";
   /**
    *
    */
-  @Prop() readonly fetchingDataLabel = 'Fetching data';
+  @Prop() readonly fetchingDataLabel = "Fetching data";
 
-  @Watch('query')
+  @Watch("query")
   watchQuery(newValue: QueryViewerBase | null) {
     this.loading = !!newValue;
   }
 
-  @Watch('data')
+  @Watch("data")
   watchData(newValue: typeof this.data) {
-    this.serviceData = (typeof newValue === "string") ? parseDataXML(newValue): newValue;
+    this.serviceData =
+      typeof newValue === "string" ? parseDataXML(newValue) : newValue;
   }
 
-  @Watch('metadata')
+  @Watch("metadata")
   watchMetadata(newValue: typeof this.metadata) {
-    this.serviceMetadata = (typeof newValue === "string") ? parseMetadataXML(newValue): newValue;
+    this.serviceMetadata =
+      typeof newValue === "string" ? parseMetadataXML(newValue) : newValue;
   }
 
-  @Watch('serviceMetadata')
-  @Watch('serviceData')
+  @Watch("serviceMetadata")
+  @Watch("serviceData")
   completeServiceData() {
     if (!!this.serviceData && !!this.serviceMetadata) {
       this.loading = false;
@@ -91,7 +100,7 @@ export class GxQueryRender implements GxComponent {
    */
   private notImplementedRender() {
     const { OutputType, Name } = this.query;
-    return (<div>{`Graph ${OutputType} is not implemented (${Name})`}</div>);
+    return <div>{`Graph ${OutputType} is not implemented (${Name})`}</div>;
   }
 
   /**
@@ -99,54 +108,63 @@ export class GxQueryRender implements GxComponent {
    * @returns HTMLDivElement
    */
   private missingDataRender() {
-    return (<div class="message" part="message-nodata">{this.noDataLabel}</div>);
+    return (
+      <div class="message" part="message-nodata">
+        {this.noDataLabel}
+      </div>
+    );
   }
   /**
    * Render
    * @returns HTMLDivElement
    */
   private fetchingDataRender() {
-    return (<div class="message" part="message-fetching">{this.fetchingDataLabel}</div>);
+    return (
+      <div class="message" part="message-fetching">
+        {this.fetchingDataLabel}
+      </div>
+    );
   }
 
   /**
    * Render QueryViewer component
    * @returns HTMLGxQueryViewerElement
    */
-  private implementedRender = (query: QueryViewerBase) => (
-    !!this.serviceData && !!this.serviceMetadata
-    ?(
-    <gx-query-viewer
-      queryTitle={query.Title}
-      type={query.OutputType}
-      chartType={query.ChartType}
-      includeSparkline={query.IncludeSparkline}
-      includeTrend={query.IncludeTrend}
-      includeMaxMin={query.IncludeMaxAndMin}
-      trendPeriod={'SinceTheBeginning' as QueryViewerTrendPeriod}
-      showDataAs={query.ShowDataAs}
-      orientation={query.Orientation}
-      plotSeries={query.PlotSeries}
-      showDataLabelsIn={query.ShowDataLabelsIn}
-      xAxisIntersectionAtZero={query.XAxisIntersectionAtZero}
-      xAxisLabels={query.XAxisLabels}
-      xAxisTitle={query.XAxisTitle}
-      yAxisTitle={query.YAxisTitle}
-      serviceResponse={{
-        Data: this.serviceData,
-        MetaData: this.serviceMetadata,
-        Properties: this.query
-      }}
-    >
-    </gx-query-viewer>) :  this.fetchingDataRender()
-  );
-
+  private implementedRender = (query: QueryViewerBase) =>
+    !!this.serviceData && !!this.serviceMetadata ? (
+      <gx-query-viewer
+        queryTitle={query.Title}
+        type={query.OutputType}
+        chartType={query.ChartType}
+        includeSparkline={query.IncludeSparkline}
+        includeTrend={query.IncludeTrend}
+        includeMaxMin={query.IncludeMaxAndMin}
+        trendPeriod={"SinceTheBeginning" as QueryViewerTrendPeriod}
+        showDataAs={query.ShowDataAs}
+        orientation={query.Orientation}
+        plotSeries={query.PlotSeries}
+        showDataLabelsIn={query.ShowDataLabelsIn}
+        xAxisIntersectionAtZero={query.XAxisIntersectionAtZero}
+        xAxisLabels={query.XAxisLabels}
+        xAxisTitle={query.XAxisTitle}
+        yAxisTitle={query.YAxisTitle}
+        serviceResponse={{
+          Data: this.serviceData,
+          MetaData: this.serviceMetadata,
+          Properties: this.query
+        }}
+      ></gx-query-viewer>
+    ) : (
+      this.fetchingDataRender()
+    );
 
   private rendersDictionary: {
-    [key in QueryResponseOutputType]: (query: QueryViewerBase) => HTMLDivElement | HTMLGxQueryViewerElement;
+    [key in QueryResponseOutputType]: (
+      query: QueryViewerBase
+    ) => HTMLDivElement | HTMLGxQueryViewerElement;
   } = {
-    [QueryViewerOutputType.Card]: (query) => this.implementedRender(query),
-    [QueryViewerOutputType.Chart]: (query) => this.implementedRender(query),
+    [QueryViewerOutputType.Card]: query => this.implementedRender(query),
+    [QueryViewerOutputType.Chart]: query => this.implementedRender(query),
     [QueryViewerOutputType.Map]: () => this.notImplementedRender(),
     [QueryViewerOutputType.PivotTable]: () => this.notImplementedRender(),
     [QueryViewerOutputType.Table]: () => this.notImplementedRender(),
@@ -160,8 +178,14 @@ export class GxQueryRender implements GxComponent {
       <Host>
         <div class="wrapper" part="wrapper">
           <div>
-            {<slot name="spinner"><gx-loading presented={this.loading}></gx-loading></slot>}
-            {this.rendersDictionary[this.query?.OutputType || MissionOuputType.Missing](this.query)}
+            {
+              <slot name="spinner">
+                <gx-loading presented={this.loading}></gx-loading>
+              </slot>
+            }
+            {this.rendersDictionary[
+              this.query?.OutputType || MissionOuputType.Missing
+            ](this.query)}
           </div>
         </div>
       </Host>
