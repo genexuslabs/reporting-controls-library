@@ -100,7 +100,9 @@ export const config: Config = {
     // The card and its controller must be in the same bundle; otherwise
     // Stencil would make a bundle with the card and the chart, resulting in a
     // larger bundle size when only the card is used
-    { components: ["gx-query-viewer-card", "gx-query-viewer-card-controller"] }
+    { components: ["gx-query-viewer-card", "gx-query-viewer-card-controller"] },
+
+    { components: ["gx-query-viewer-pivot", "gx-query-viewer-pivot-render"] }
   ],
   plugins: [sass(), dotenvPlugin()]
 };
