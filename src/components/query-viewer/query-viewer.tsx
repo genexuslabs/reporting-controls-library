@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import {
   Component,
-  Element,
   EventEmitter,
   Event,
   Host,
@@ -66,6 +64,8 @@ import {
   QueryViewerTableDataSync
 } from "@genexus/reporting-api/dist/types/service-result";
 
+let autoId = 0;
+
 @Component({
   tag: "gx-query-viewer",
   styleUrl: "query-viewer.scss",
@@ -102,7 +102,7 @@ export class QueryViewer {
   private controller: HTMLGxQueryViewerControllerElement;
   private pivotRenderRef: HTMLGxQueryViewerPivotRenderElement;
 
-  @Element() element: HTMLGxQueryViewerElement;
+  private temporalId: string;
 
   @State() parameters: string;
   @State() elements: string;
@@ -814,7 +814,13 @@ export class QueryViewer {
   }
 
   componentWillLoad() {
-    this.controller = this.element.querySelector("gx-query-viewer-controller");
+    this.temporalId = `gx-query-viewer-${autoId++}`;
+  }
+
+  componentDidLoad() {
+    this.controller = document.querySelector(
+      `[id=${this.temporalId}] > gx-query-viewer-controller`
+    );
     // this.serviceResponse = {
     //   Data: [] as any,
     //   MetaData: [] as any,
@@ -831,7 +837,7 @@ export class QueryViewer {
 
   render() {
     return (
-      <Host>
+      <Host id={this.temporalId}>
         {this.rendersDictionary[this.type](
           this.serviceResponse,
           this.serviceResponsePivotTable
