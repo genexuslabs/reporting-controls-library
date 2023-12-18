@@ -28,10 +28,9 @@ export class QueryViewerTable {
   /**
    * Response Page Data
    */
-  @Prop({ mutable: true }) pageDataForTable: string;
+  @Prop() readonly pageDataForTable: string;
   @Watch("pageDataForTable")
   handlePageDataForTableChange(newValue: string) {
-    console.log("pageData", newValue);
     setPageDataForTable(this.qViewer.oat_element, newValue);
   }
 
@@ -41,7 +40,6 @@ export class QueryViewerTable {
   @Prop() readonly attributeValuesForTableXml: string;
   @Watch("attributeValuesForTableXml")
   handleAttributesValuesForTableChange(newValue: string) {
-    console.log("attributeValues", newValue);
     setAttributeForTable(this.qViewer.oat_element, newValue);
   }
 
@@ -57,8 +55,7 @@ export class QueryViewerTable {
   /**
    * pivotParameters
    */
-  @Prop()
-  readonly pivotParameters: QueryViewerPivotParameters;
+  @Prop() readonly pivotParameters: QueryViewerPivotParameters;
 
   /**
    * pivotCollection

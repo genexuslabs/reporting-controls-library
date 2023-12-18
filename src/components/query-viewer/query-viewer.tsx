@@ -34,7 +34,8 @@ import {
 import {
   dragAndDropPivotTableEvent,
   itemClickDataForPivotTable,
-  itemExpandCollapsePivotTableEvent
+  itemExpandCollapsePivotTableEvent,
+  onFilterChangedPivotTableEvent
   // onFilterChangedPivotTableEvent
 } from "./utils";
 import {
@@ -47,9 +48,9 @@ import {
   QueryViewerFilterChangedData,
   QueryViewerItemClickData,
   QueryViewerItemExpandAndCollapseData,
-  TableFilterChanged,
-  TableItemClick,
-  TablePageChange,
+  // TableFilterChanged,
+  // TableItemClick,
+  // TablePageChange,
   PivotTableNavigation
 } from "../../global/types";
 
@@ -379,40 +380,40 @@ export class QueryViewer implements GxComponent {
   @Event() dragAndDrop: EventEmitter<QueryViewerDragAndDropData>;
 
   /**
-   * Event fires when a user
+   * Event fired when a user collapses an item in the pivot table
    */
   @Event()
   itemCollapse: EventEmitter<QueryViewerItemExpandAndCollapseData>;
 
   /**
-   * Event fires when a user
+   * Event fired when a user expands an item in the pivot table
    */
   @Event()
   itemExpand: EventEmitter<QueryViewerItemExpandAndCollapseData>;
 
   /**
-   * Event fires when a user
+   * EEvent fired when a user changes pages in the pivot table
    */
   // ToDo: improve this type
   @Event() changePage: EventEmitter<any>;
 
   /**
-   * Event fires when a user
+   * Event fired when a user navigates to the first page in the pivot table
    */
   @Event() onFirstPage: EventEmitter<any>;
 
   /**
-   * Event fires when a user
+   * Event fired when a user navigates to the previous page in the pivot table
    */
   @Event() onPreviousPage: EventEmitter<any>;
 
   /**
-   * Event fires when a user
+   * Event fired when a user navigates to the next page in the pivot table
    */
   @Event() onNextPage: EventEmitter<any>;
 
   /**
-   * Event fires when a user
+   * Event fired when a user navigates to the last page in the pivot table
    */
   @Event() onLastPage: EventEmitter<any>;
   /**
@@ -498,7 +499,7 @@ export class QueryViewer implements GxComponent {
     this.pivottableDataSyncXml = event.detail;
   }
 
-  /**  Servicios de la Table  **/
+  /** Table Services **/
 
   @Listen("RequestPageDataForTable", { target: "document" })
   handleRequestPageDataForTable(
@@ -610,31 +611,24 @@ export class QueryViewer implements GxComponent {
   handlePivotTableOnFilterChangedEvent(
     event: CustomEvent<PivotTableFilterChanged>
   ) {
-    console.log(event.detail);
-    // const eventData = onFilterChangedPivotTableEvent(
-    //   (event as any).parameter.QueryviewerId,
-    //   (event as any).parameter.FilterChangedData
-    // );
-    // this.filterChanged.emit(eventData);
+    const eventData = onFilterChangedPivotTableEvent(
+      (event as any).parameter.QueryviewerId,
+      (event as any).parameter.FilterChangedData
+    );
+    this.filterChanged.emit(eventData);
   }
 
   /** User Events for Table*/
 
   // ToDo: implement this
-  @Listen("TableOnItemClickEvent")
-  handleTableOnItemClickEvent(event: CustomEvent<TableItemClick>) {
-    console.log(event.detail);
-  }
-  // ToDo: implement this
-  @Listen("TableOnPageChangeEvent")
-  handleTableOnDragundDropEvent(event: CustomEvent<TablePageChange>) {
-    console.log(event.detail);
-  }
-  // ToDo: implement this
-  @Listen("TableOnFilterChangedEvent")
-  handleTableOnFilterChangedEvent(event: CustomEvent<TableFilterChanged>) {
-    console.log(event.detail);
-  }
+  // @Listen("TableOnItemClickEvent")
+  // handleTableOnItemClickEvent(event: CustomEvent<TableItemClick>) {}
+  // // ToDo: implement this
+  // @Listen("TableOnPageChangeEvent")
+  // handleTableOnDragundDropEvent(event: CustomEvent<TablePageChange>) {}
+  // // ToDo: implement this
+  // @Listen("TableOnFilterChangedEvent")
+  // handleTableOnFilterChangedEvent(event: CustomEvent<TableFilterChanged>) {}
 
   /** GX User Events */
 
@@ -657,7 +651,7 @@ export class QueryViewer implements GxComponent {
         // ToDo: implement this method to the output map
         return null;
       default: // PivotTable and Table
-        const serverData = this.pivotRenderRef.getPivottableDataSyncXml;
+        const serverData = await this.pivotRenderRef.getPivottableDataSyncXml;
         return this.pivotRenderRef.getDataPivot(serverData);
     }
   }
@@ -691,12 +685,9 @@ export class QueryViewer implements GxComponent {
 
   /** AutoRefresh */
 
-  @Listen("RequestUpdateLayoutSameGroup")
-  handlePivotTableAutorefresh(event: CustomEvent<any>) {
-    if (this.controller) {
-      console.log(event.detail);
-    }
-  }
+  // ToDo: implement this
+  // @Listen("RequestUpdateLayoutSameGroup")
+  // handlePivotTableAutorefresh(event: CustomEvent<any>) {}
 
   /**
    * Set QueryViewer properties with values from the query obtained from the server (unless explicitly set in the web component)
@@ -842,7 +833,6 @@ export class QueryViewer implements GxComponent {
   }
 
   render() {
-    console.log(this.type);
     return (
       <Host>
         {this.rendersDictionary[this.type](

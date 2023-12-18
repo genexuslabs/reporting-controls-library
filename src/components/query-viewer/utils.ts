@@ -7,6 +7,7 @@ import {
   QueryViewerContextElement,
   QueryViewerDragAndDropData,
   QueryViewerEventFilters,
+  QueryViewerFilterChangedData,
   // QueryViewerFilterChangedData,
   QueryViewerItemClickData,
   QueryViewerItemExpandAndCollapseData
@@ -67,7 +68,7 @@ export function itemClickDataForPivotTable(
 
 function getComponentItems(
   serviceResponse: QueryViewerServiceResponsePivotTable
-) {
+): string[] {
   const componentItems: string[] = [];
   serviceResponse.MetaData.Axes.forEach(axis => {
     if (axis.IsComponent) {
@@ -210,9 +211,17 @@ export function dragAndDropPivotTableEvent(
 //   }
 // }
 
-// ToDo: implement this
-// export function onFilterChangedPivotTableEvent(
-//   _qViewerId: number,
-//   filterChangedData: string
-// ): QueryViewerFilterChangedData {
-// }
+// ToDo: complete this implementation
+export function onFilterChangedPivotTableEvent(
+  qViewerId: number,
+  filterChangedData: string
+): QueryViewerFilterChangedData {
+  if (qViewerId !== undefined) {
+    return;
+  }
+  const filterChanged: QueryViewerFilterChangedData = {
+    Name: "",
+    SelectedValues: { Item: filterChangedData }
+  };
+  return filterChanged;
+}

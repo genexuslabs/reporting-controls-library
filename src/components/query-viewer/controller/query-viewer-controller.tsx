@@ -287,7 +287,7 @@ export class QueryViewerController {
   }
 
   /**
-   * Table's Method
+   * Table's Method for Table Page Data
    */
   @Method()
   async getPageDataForTable(

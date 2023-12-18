@@ -18,42 +18,6 @@ import {
 } from "@genexus/reporting-api/dist/types/service-result";
 import { TooltipFormatterContextObject } from "highcharts";
 
-const STATE_DONE = 4;
-const STATUS_OK = 200;
-
-export function makeXMLRequest(
-  serviceURL: string,
-  postInfo: string,
-  callbackWhenReady: (xml: string) => void
-) {
-  const xmlHttp = new XMLHttpRequest();
-
-  // Callback function when ready
-  xmlHttp.onload = () => {
-    if (xmlHttp.readyState === STATE_DONE && xmlHttp.status === STATUS_OK) {
-      callbackWhenReady(xmlHttp.responseText);
-    }
-  };
-
-  xmlHttp.open("POST", serviceURL); // async
-  xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  xmlHttp.send(postInfo);
-}
-
-export function makeXMLRequestSync(serviceURL: string, postInfo: string) {
-  const xmlHttp = new XMLHttpRequest();
-
-  xmlHttp.open("POST", serviceURL); // sync
-  xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  xmlHttp.send(postInfo);
-
-  if (xmlHttp.readyState === STATE_DONE && xmlHttp.status === STATUS_OK) {
-    return xmlHttp.responseText;
-  } else {
-    return null;
-  }
-}
-
 export function parseNumericPicture(
   dataType: QueryViewerDataType,
   picture: string

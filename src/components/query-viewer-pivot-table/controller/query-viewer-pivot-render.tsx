@@ -288,7 +288,7 @@ export class QueryViewerPivotTableRender {
     const pivotParameters = this.getPivotTableParms();
     const pivotCollection = this.getPivotTableCollection();
     return (
-      <Host role="article">
+      <Host>
         {this.serviceResponse != null && (
           <gx-query-viewer-pivot
             pivotCollection={pivotCollection}

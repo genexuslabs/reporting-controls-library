@@ -105,7 +105,6 @@ export class QueryViewerPivotTableRender {
     if (!this.serviceResponse) {
       return undefined;
     }
-    console.log("Table", this.serviceResponse);
     return {
       RealType: QueryViewerOutputType.Table,
       ObjectName: this.serviceResponse.objectName,
@@ -162,7 +161,7 @@ export class QueryViewerPivotTableRender {
     const pivotParameters = this.getPivotTableParms();
     const pivotCollection = this.getPivotTableCollection();
     return (
-      <Host role="article">
+      <Host>
         {this.serviceResponse != null && (
           <gx-query-viewer-table
             pivotCollection={pivotCollection}
