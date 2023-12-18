@@ -158,19 +158,22 @@ export class QueryViewerPivotTableRender {
   }
 
   render() {
+    if (this.serviceResponse == null) {
+      return "";
+    }
+
     const pivotParameters = this.getPivotTableParms();
     const pivotCollection = this.getPivotTableCollection();
+
     return (
       <Host>
-        {this.serviceResponse != null && (
-          <gx-query-viewer-table
-            pivotCollection={pivotCollection}
-            pivotParameters={pivotParameters}
-            pageDataForTable={this.pageDataForTable}
-            attributeValuesForTableXml={this.attributeValuesForTableXml}
-            getTableDataSyncXml={this.getTableDataSyncXml}
-          ></gx-query-viewer-table>
-        )}
+        <gx-query-viewer-table
+          pivotCollection={pivotCollection}
+          pivotParameters={pivotParameters}
+          pageDataForTable={this.pageDataForTable}
+          attributeValuesForTableXml={this.attributeValuesForTableXml}
+          getTableDataSyncXml={this.getTableDataSyncXml}
+        ></gx-query-viewer-table>
       </Host>
     );
   }
