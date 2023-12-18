@@ -6,9 +6,10 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { QueryRequest } from "./components/gx-query/query-chat/query-chat";
-import { GeneratorType, GxQueryItem, QueryViewerBase, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels } from "@genexus/reporting-api/dist/types/basic-types";
-import { GxQueryItem as GxQueryItem1, QueryViewerChartType as QueryViewerChartType1, QueryViewerOrientation as QueryViewerOrientation1, QueryViewerPlotSeries as QueryViewerPlotSeries1, QueryViewerShowDataAs as QueryViewerShowDataAs1, QueryViewerSliderRange, QueryViewerTranslations as QueryViewerTranslations1, QueryViewerTrendPeriod as QueryViewerTrendPeriod1, QueryViewerXAxisLabels as QueryViewerXAxisLabels1, TrendIcon } from "./common/basic-types";
-import { QueryViewerServiceData, QueryViewerServiceMetaData, QueryViewerServiceResponse } from "@genexus/reporting-api/dist/types/service-result";
+import { GeneratorType, GxQueryItem, QueryViewerAutoResizeType, QueryViewerBase, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels } from "@genexus/reporting-api/dist/types/basic-types";
+import { GxQueryItem as GxQueryItem1, QueryViewerChartType as QueryViewerChartType1, QueryViewerOrientation as QueryViewerOrientation1, QueryViewerPivotCollection, QueryViewerPivotParameters, QueryViewerPlotSeries as QueryViewerPlotSeries1, QueryViewerShowDataAs as QueryViewerShowDataAs1, QueryViewerShowDataLabelsIn as QueryViewerShowDataLabelsIn1, QueryViewerSliderRange, QueryViewerTotal as QueryViewerTotal1, QueryViewerTranslations as QueryViewerTranslations1, QueryViewerTrendPeriod as QueryViewerTrendPeriod1, QueryViewerXAxisLabels as QueryViewerXAxisLabels1, TrendIcon } from "./common/basic-types";
+import { QueryViewerAttributesValuesForPivot, QueryViewerCalculatePivottableData, QueryViewerPageDataForPivot, QueryViewerPageDataForTable, QueryViewerPivotTableDataSync, QueryViewerServiceData, QueryViewerServiceMetaData, QueryViewerServiceResponse, QueryViewerServiceResponsePivotTable } from "@genexus/reporting-api/dist/types/service-result";
+import { QueryViewerDragAndDropData, QueryViewerFilterChangedData, QueryViewerItemClickData, QueryViewerItemExpandAndCollapseData } from "./global/types";
 import { Axis, ChartOptions, LegendOptions, PaneOptions, PlotOptions, SeriesLineOptions, SeriesOptionsType, SubtitleOptions, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
 import { QueryViewerParameterChangedEvent } from "./components/query-viewer-parameter/query-viewer-parameter";
 export namespace Components {
@@ -144,6 +145,14 @@ export namespace Components {
          */
         "allowSelection": boolean;
         /**
+          * Response Attribute Values for Table
+         */
+        "attributeValuesForPivotTableXml": string;
+        /**
+          * Response Attribute Values for Pivot Table
+         */
+        "attributeValuesForTableXml": string;
+        /**
           * Auto refresh group
          */
         "autoRefreshGroup": string;
@@ -154,7 +163,11 @@ export namespace Components {
         /**
           * If autoResize, in here select the type, Width, height, or both
          */
-        "autoResizeType": "Both" | "Vertical" | "Horizontal";
+        "autoResizeType": QueryViewerAutoResizeType;
+        /**
+          * Response Pivot Table Data Calculation
+         */
+        "calculatePivottableDataXml": string;
         /**
           * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
          */
@@ -200,6 +213,10 @@ export namespace Components {
          */
         "exportToXML": boolean;
         /**
+          * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
+         */
+        "getData": () => Promise<any>;
+        /**
           * Specifies whether to include the maximum and minimum values in the series.
          */
         "includeMaxMin": boolean;
@@ -232,6 +249,14 @@ export namespace Components {
          */
         "orientation": QueryViewerOrientation;
         /**
+          * Response Page Data
+         */
+        "pageDataForPivotTable": string;
+        /**
+          * Response Page Data
+         */
+        "pageDataForTable": string;
+        /**
           * If paging true, number of items for a single page
          */
         "pageSize": number;
@@ -239,6 +264,10 @@ export namespace Components {
           * If type == PivotTable or Table, if true there is paging, else everything in one table
          */
         "paging": boolean;
+        /**
+          * Response Pivot Table Data Sync
+         */
+        "pivottableDataSyncXml": string;
         /**
           * Timeline
          */
@@ -259,6 +288,10 @@ export namespace Components {
           * Specifies the metadata and data that the control will use to render.
          */
         "serviceResponse": QueryViewerServiceResponse;
+        /**
+          * Specifies the metadata that the control will use to render the pivotTable.
+         */
+        "serviceResponsePivotTable": QueryViewerServiceResponsePivotTable;
         /**
           * Specifies whether to show the actual values, the values as a percentage of the target values, or both.
          */
@@ -554,7 +587,27 @@ export namespace Components {
          */
         "environment": GeneratorType;
         /**
-          * Include spark line
+          * PivotTable's Method for Attributes Values
+         */
+        "getAttributeValues": (properties: QueryViewerAttributesValuesForPivot) => Promise<void>;
+        /**
+          * PivotTable's Method for Calculate PivotTable Data
+         */
+        "getCalculatePivottableData": (properties: QueryViewerCalculatePivottableData) => Promise<void>;
+        /**
+          * PivotTable's Method for PivotTable Page Data
+         */
+        "getPageDataForPivotTable": (properties: QueryViewerPageDataForPivot, paging: boolean, totalForColumns: QueryViewerTotal, totalForRows: QueryViewerTotal) => Promise<void>;
+        /**
+          * Table's Method for Table Page Data
+         */
+        "getPageDataForTable": (properties: QueryViewerPageDataForTable, paging: boolean, totalForColumns: QueryViewerTotal, totalForRows: QueryViewerTotal) => Promise<void>;
+        /**
+          * PivotTable's Method for PivotTable Data Sync Response
+         */
+        "getPivottableDataSync": (properties: QueryViewerPivotTableDataSync) => Promise<void>;
+        /**
+          * Include sparkline
          */
         "includeSparkline": boolean;
         /**
@@ -574,6 +627,10 @@ export namespace Components {
          */
         "orientation": QueryViewerOrientation;
         /**
+          * If type == PivotTable or Table, if true there is paging, else everything in one table
+         */
+        "paging": boolean;
+        /**
           * For timeline for remembering layout
          */
         "rememberLayout": boolean;
@@ -585,6 +642,18 @@ export namespace Components {
           * Use this property to pass a query obtained from GXquery, when useGxquery = true (ignored if objectName is specified, because this property has a greater precedence)
          */
         "serializedObject": string;
+        /**
+          * Ax to show data labels
+         */
+        "showDataLabelsIn": QueryViewerShowDataLabelsIn;
+        /**
+          * True if grand total is shown for all table columns
+         */
+        "totalForColumns": QueryViewerTotal;
+        /**
+          * True if grand total is shown for all table rows
+         */
+        "totalForRows": QueryViewerTotal;
         /**
           * @todo Add description and improve type
          */
@@ -773,6 +842,158 @@ export namespace Components {
          */
         "Value": string;
     }
+    interface GxQueryViewerPivot {
+        /**
+          * QueryViewerTranslations
+         */
+        "QueryViewerTranslations": { GXPL_QViewerSinceTheBeginningTrend: string; GXPL_QViewerLastDayTrend: string; GXPL_QViewerLastHourTrend: string; GXPL_QViewerJSAllOption: string; GXPL_QViewerJSAscending: string; GXPL_QViewerJSDescending: string; GXPL_QViewerJSSubtotals: string; GXPL_QViewerJSRestoreDefaultView: string; GXPL_QViewerJSPivotDimensionToColumn: string; GXPL_QViewerJSPivotDimensionToRow: string; GXPL_QViewerJSMoveToFilterBar: string; GXPL_QViewerJSAll: string; GXPL_QViewerJSNone: string; GXPL_QViewerJSReverse: string; GXPL_QViewerSearch: string; GXPL_QViewerInfoUser: string; GXPL_QViewerJSDropFiltersHere: string; GXPL_QViewerPopupTitle: string; GXPL_QViewerJSVisibleColumns: string; GXPL_QViewerContextMenuExportXml: string; GXPL_QViewerContextMenuExportHtml: string; GXPL_QViewerContextMenuExportPdf: string; GXPL_QViewerContextMenuExportXls2003: string; GXPL_QViewerContextMenuExportXlsx: string; GXPL_QViewerJSMeasures: string; GXPL_QViewerJSValue: string; GXPL_QViewerJSTotal: string; GXPL_QViewerJSTotalFor: string; GXPL_QViewerJSPerPage: string; GXPL_QViewerJSPage: string; GXPL_QViewerJSOf: string; GXPL_QViewerJSMoveColumnToLeft: string; GXPL_QViewerJSMoveColumnToRight: string; };
+        /**
+          * Response Attribute Values
+         */
+        "attributeValuesForPivotTableXml": string;
+        /**
+          * Response calculation PivotTable Data
+         */
+        "calculatePivottableDataXml": string;
+        /**
+          * data
+         */
+        "data": string;
+        /**
+          * Method to navigate to the first page.
+         */
+        "firstPage": () => Promise<any>;
+        /**
+          * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
+         */
+        "getDataXML": (serverData: any) => Promise<any>;
+        /**
+          * Returns an XML on a string variable containing the data which is being visualized at the moment (the difference with the GetData() method it's seen on the Pivot Table, data can be different because of filters application).
+         */
+        "getFilteredDataPivot": () => Promise<any>;
+        /**
+          * Response PivotTable Data Sync
+         */
+        "getPivottableDataSyncXml": string;
+        /**
+          * Method to navigate to the last page.
+         */
+        "lastPage": () => Promise<any>;
+        /**
+          * Method to navigate to the next page.
+         */
+        "nextPage": () => Promise<any>;
+        /**
+          * Response Page Data
+         */
+        "pageDataForPivotTable": string;
+        /**
+          * pivotCollection
+         */
+        "pivotCollection": QueryViewerPivotCollection;
+        /**
+          * pivotParameters
+         */
+        "pivotParameters": QueryViewerPivotParameters;
+        /**
+          * Method to navigate to the previous page.
+         */
+        "previousPage": () => Promise<any>;
+    }
+    interface GxQueryViewerPivotRender {
+        /**
+          * Allowing elements order to change
+         */
+        "allowElementsOrderChange": boolean;
+        /**
+          * Allow selection
+         */
+        "allowSelection": boolean;
+        /**
+          * Response Attribute Values
+         */
+        "attributeValuesForPivotTableXml": string;
+        /**
+          * Response Attribute Values
+         */
+        "calculatePivottableDataXml": string;
+        /**
+          * A CSS class to set as the `gx-query-viewer-pivot-controller` element class.
+         */
+        "cssClass": string;
+        /**
+          * Allowing or not Column sort
+         */
+        "disableColumnSort": boolean;
+        /**
+          * Method to navigate to the first page.
+         */
+        "firstPage": () => Promise<any>;
+        /**
+          * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
+         */
+        "getDataPivot": (serverData: any) => Promise<any>;
+        /**
+          * Returns an XML on a string variable containing the data which is being visualized at the moment (the difference with the GetData() method it's seen on the Pivot Table, data can be different because of filters application).
+         */
+        "getFilteredDataPivot": () => Promise<any>;
+        /**
+          * Response Pivot Table Data Sync
+         */
+        "getPivottableDataSyncXml": string;
+        /**
+          * Method to navigate to the last page.
+         */
+        "lastPage": () => Promise<any>;
+        /**
+          * Method to navigate to the next page.
+         */
+        "nextPage": () => Promise<any>;
+        /**
+          * Response Page Data
+         */
+        "pageDataForPivotTable": string;
+        /**
+          * Enables you to define the number of rows that will be shown when the Paging property is activated
+         */
+        "pageSize": number;
+        /**
+          * This attribute lets you determinate whether there will be paging buttons.
+         */
+        "paging": boolean;
+        /**
+          * This attribute lets you define a title for the pivot table.
+         */
+        "pivotTitle": string;
+        /**
+          * Method to navigate to the previous page.
+         */
+        "previousPage": () => Promise<any>;
+        /**
+          * For timeline for remembering layout
+         */
+        "rememberLayout": boolean;
+        /**
+          * Specifies the metadata and data that the control will use to render.
+         */
+        "serviceResponse": QueryViewerServiceResponsePivotTable;
+        /**
+          * It allows to indicate how you want to display the Data elements of the Query object.
+         */
+        "showDataLabelsIn": QueryViewerShowDataLabelsIn1;
+        /**
+          * Determines whether to show a total of all values in the pivot table columns.
+         */
+        "totalForColumns": QueryViewerTotal1;
+        /**
+          * Determines whether to show a total of all values in the pivot table rows.
+         */
+        "totalForRows": QueryViewerTotal1;
+        /**
+          * For translate the labels of the outputs
+         */
+        "translations": QueryViewerTranslations1;
+    }
     interface GxQueryViewerSlider {
         /**
           * This property determines the value of the end position slider.
@@ -786,6 +1007,98 @@ export namespace Components {
           * This attribute lets you define the steps for each slider.
          */
         "step": number;
+    }
+    interface GxQueryViewerTable {
+        /**
+          * QueryViewerTranslations
+         */
+        "QueryViewerTranslations": { GXPL_QViewerSinceTheBeginningTrend: string; GXPL_QViewerLastDayTrend: string; GXPL_QViewerLastHourTrend: string; GXPL_QViewerJSAllOption: string; GXPL_QViewerJSAscending: string; GXPL_QViewerJSDescending: string; GXPL_QViewerJSSubtotals: string; GXPL_QViewerJSRestoreDefaultView: string; GXPL_QViewerJSPivotDimensionToColumn: string; GXPL_QViewerJSPivotDimensionToRow: string; GXPL_QViewerJSMoveToFilterBar: string; GXPL_QViewerJSAll: string; GXPL_QViewerJSNone: string; GXPL_QViewerJSReverse: string; GXPL_QViewerSearch: string; GXPL_QViewerInfoUser: string; GXPL_QViewerJSDropFiltersHere: string; GXPL_QViewerPopupTitle: string; GXPL_QViewerJSVisibleColumns: string; GXPL_QViewerContextMenuExportXml: string; GXPL_QViewerContextMenuExportHtml: string; GXPL_QViewerContextMenuExportPdf: string; GXPL_QViewerContextMenuExportXls2003: string; GXPL_QViewerContextMenuExportXlsx: string; GXPL_QViewerJSMeasures: string; GXPL_QViewerJSValue: string; GXPL_QViewerJSTotal: string; GXPL_QViewerJSTotalFor: string; GXPL_QViewerJSPerPage: string; GXPL_QViewerJSPage: string; GXPL_QViewerJSOf: string; GXPL_QViewerJSMoveColumnToLeft: string; GXPL_QViewerJSMoveColumnToRight: string; };
+        /**
+          * Response Attribute Values
+         */
+        "attributeValuesForTableXml": string;
+        /**
+          * Response Table Data Sync
+         */
+        "getTableDataSyncXml": string;
+        /**
+          * Response Page Data
+         */
+        "pageDataForTable": string;
+        /**
+          * pivotCollection
+         */
+        "pivotCollection": QueryViewerPivotCollection;
+        /**
+          * pivotParameters
+         */
+        "pivotParameters": QueryViewerPivotParameters;
+    }
+    interface GxQueryViewerTableRender {
+        /**
+          * Allowing elements order to change
+         */
+        "allowElementsOrderChange": boolean;
+        /**
+          * Allow selection
+         */
+        "allowSelection": boolean;
+        /**
+          * Response Attribute Values for Pivot Table
+         */
+        "attributeValuesForTableXml": string;
+        /**
+          * A CSS class to set as the `gx-query-viewer-pivot-controller` element class.
+         */
+        "cssClass": string;
+        /**
+          * Allowing or not Column sort
+         */
+        "disableColumnSort": boolean;
+        /**
+          * Response Table Data Sync
+         */
+        "getTableDataSyncXml": string;
+        /**
+          * Response Page Data
+         */
+        "pageDataForTable": string;
+        /**
+          * Enables you to define the number of rows that will be shown when the Paging property is activated
+         */
+        "pageSize": number;
+        /**
+          * This attribute lets you determinate whether there will be paging buttons.
+         */
+        "paging": boolean;
+        /**
+          * For timeline for remembering layout
+         */
+        "rememberLayout": boolean;
+        /**
+          * Specifies the metadata and data that the control will use to render.
+         */
+        "serviceResponse": QueryViewerServiceResponsePivotTable;
+        /**
+          * It allows to indicate how you want to display the Data elements of the Query object.
+         */
+        "showDataLabelsIn": QueryViewerShowDataLabelsIn1;
+        /**
+          * This attribute lets you define a title for the table.
+         */
+        "tableTitle": string;
+        /**
+          * Determines whether to show a total of all values in the pivot table columns.
+         */
+        "totalForColumns": QueryViewerTotal1;
+        /**
+          * Determines whether to show a total of all values in the pivot table rows.
+         */
+        "totalForRows": QueryViewerTotal1;
+        /**
+          * For translate the labels of the outputs
+         */
+        "translations": QueryViewerTranslations1;
     }
     interface GxSidebar {
         /**
@@ -833,6 +1146,10 @@ export interface GxQueryMenuCustomEvent<T> extends CustomEvent<T> {
 export interface GxQueryMenuItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLGxQueryMenuItemElement;
+}
+export interface GxQueryViewerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLGxQueryViewerElement;
 }
 export interface GxQueryViewerCardCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -957,11 +1274,35 @@ declare global {
         prototype: HTMLGxQueryViewerParameterElement;
         new (): HTMLGxQueryViewerParameterElement;
     };
+    interface HTMLGxQueryViewerPivotElement extends Components.GxQueryViewerPivot, HTMLStencilElement {
+    }
+    var HTMLGxQueryViewerPivotElement: {
+        prototype: HTMLGxQueryViewerPivotElement;
+        new (): HTMLGxQueryViewerPivotElement;
+    };
+    interface HTMLGxQueryViewerPivotRenderElement extends Components.GxQueryViewerPivotRender, HTMLStencilElement {
+    }
+    var HTMLGxQueryViewerPivotRenderElement: {
+        prototype: HTMLGxQueryViewerPivotRenderElement;
+        new (): HTMLGxQueryViewerPivotRenderElement;
+    };
     interface HTMLGxQueryViewerSliderElement extends Components.GxQueryViewerSlider, HTMLStencilElement {
     }
     var HTMLGxQueryViewerSliderElement: {
         prototype: HTMLGxQueryViewerSliderElement;
         new (): HTMLGxQueryViewerSliderElement;
+    };
+    interface HTMLGxQueryViewerTableElement extends Components.GxQueryViewerTable, HTMLStencilElement {
+    }
+    var HTMLGxQueryViewerTableElement: {
+        prototype: HTMLGxQueryViewerTableElement;
+        new (): HTMLGxQueryViewerTableElement;
+    };
+    interface HTMLGxQueryViewerTableRenderElement extends Components.GxQueryViewerTableRender, HTMLStencilElement {
+    }
+    var HTMLGxQueryViewerTableRenderElement: {
+        prototype: HTMLGxQueryViewerTableRenderElement;
+        new (): HTMLGxQueryViewerTableRenderElement;
     };
     interface HTMLGxSidebarElement extends Components.GxSidebar, HTMLStencilElement {
     }
@@ -985,7 +1326,11 @@ declare global {
         "gx-query-viewer-element-format": HTMLGxQueryViewerElementFormatElement;
         "gx-query-viewer-format-style": HTMLGxQueryViewerFormatStyleElement;
         "gx-query-viewer-parameter": HTMLGxQueryViewerParameterElement;
+        "gx-query-viewer-pivot": HTMLGxQueryViewerPivotElement;
+        "gx-query-viewer-pivot-render": HTMLGxQueryViewerPivotRenderElement;
         "gx-query-viewer-slider": HTMLGxQueryViewerSliderElement;
+        "gx-query-viewer-table": HTMLGxQueryViewerTableElement;
+        "gx-query-viewer-table-render": HTMLGxQueryViewerTableRenderElement;
         "gx-sidebar": HTMLGxSidebarElement;
     }
 }
@@ -1144,6 +1489,14 @@ declare namespace LocalJSX {
          */
         "allowSelection"?: boolean;
         /**
+          * Response Attribute Values for Table
+         */
+        "attributeValuesForPivotTableXml"?: string;
+        /**
+          * Response Attribute Values for Pivot Table
+         */
+        "attributeValuesForTableXml"?: string;
+        /**
           * Auto refresh group
          */
         "autoRefreshGroup"?: string;
@@ -1154,7 +1507,11 @@ declare namespace LocalJSX {
         /**
           * If autoResize, in here select the type, Width, height, or both
          */
-        "autoResizeType"?: "Both" | "Vertical" | "Horizontal";
+        "autoResizeType"?: QueryViewerAutoResizeType;
+        /**
+          * Response Pivot Table Data Calculation
+         */
+        "calculatePivottableDataXml"?: string;
         /**
           * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
          */
@@ -1228,9 +1585,57 @@ declare namespace LocalJSX {
          */
         "objectType"?: string;
         /**
+          * EEvent fired when a user changes pages in the pivot table
+         */
+        "onChangePage"?: (event: GxQueryViewerCustomEvent<any>) => void;
+        /**
+          * Event fires when a user drops a "draggable" element into its target
+         */
+        "onDragAndDrop"?: (event: GxQueryViewerCustomEvent<QueryViewerDragAndDropData>) => void;
+        /**
+          * Event is triggered every time that values are removed from or added to the list of possible values for an attribute
+         */
+        "onFilterChanged"?: (event: GxQueryViewerCustomEvent<QueryViewerFilterChangedData>) => void;
+        /**
+          * Event fired when a user navigates to the first page in the pivot table
+         */
+        "onFirstPage"?: (event: GxQueryViewerCustomEvent<any>) => void;
+        /**
+          * Event fire when a user click an "actionable" element
+         */
+        "onItemClick"?: (event: GxQueryViewerCustomEvent<QueryViewerItemClickData>) => void;
+        /**
+          * Event fired when a user collapses an item in the pivot table
+         */
+        "onItemCollapse"?: (event: GxQueryViewerCustomEvent<QueryViewerItemExpandAndCollapseData>) => void;
+        /**
+          * Event fired when a user expands an item in the pivot table
+         */
+        "onItemExpand"?: (event: GxQueryViewerCustomEvent<QueryViewerItemExpandAndCollapseData>) => void;
+        /**
+          * Event fired when a user navigates to the last page in the pivot table
+         */
+        "onLastPage"?: (event: GxQueryViewerCustomEvent<any>) => void;
+        /**
+          * Event fired when a user navigates to the next page in the pivot table
+         */
+        "onNextPage"?: (event: GxQueryViewerCustomEvent<any>) => void;
+        /**
+          * Event fired when a user navigates to the previous page in the pivot table
+         */
+        "onPreviousPage"?: (event: GxQueryViewerCustomEvent<any>) => void;
+        /**
           * Orientation of the graph
          */
         "orientation"?: QueryViewerOrientation;
+        /**
+          * Response Page Data
+         */
+        "pageDataForPivotTable"?: string;
+        /**
+          * Response Page Data
+         */
+        "pageDataForTable"?: string;
         /**
           * If paging true, number of items for a single page
          */
@@ -1239,6 +1644,10 @@ declare namespace LocalJSX {
           * If type == PivotTable or Table, if true there is paging, else everything in one table
          */
         "paging"?: boolean;
+        /**
+          * Response Pivot Table Data Sync
+         */
+        "pivottableDataSyncXml"?: string;
         /**
           * Timeline
          */
@@ -1259,6 +1668,10 @@ declare namespace LocalJSX {
           * Specifies the metadata and data that the control will use to render.
          */
         "serviceResponse"?: QueryViewerServiceResponse;
+        /**
+          * Specifies the metadata that the control will use to render the pivotTable.
+         */
+        "serviceResponsePivotTable"?: QueryViewerServiceResponsePivotTable;
         /**
           * Specifies whether to show the actual values, the values as a percentage of the target values, or both.
          */
@@ -1542,7 +1955,7 @@ declare namespace LocalJSX {
          */
         "environment"?: GeneratorType;
         /**
-          * Include spark line
+          * Include sparkline
          */
         "includeSparkline"?: boolean;
         /**
@@ -1558,13 +1971,45 @@ declare namespace LocalJSX {
          */
         "objectName"?: string;
         /**
+          * Fired when new page data is ready to use in the PivotTable
+         */
+        "onAttributeValuesForPivotTable"?: (event: GxQueryViewerControllerCustomEvent<string>) => void;
+        /**
+          * Fired when new page data is ready to use in the PivotTable
+         */
+        "onCalculatePivottableData"?: (event: GxQueryViewerControllerCustomEvent<string>) => void;
+        /**
+          * ItemClickEvent, executes actions when this event is triggered after clicking on a pivot table element.
+         */
+        "onItemClickPivotTable"?: (event: GxQueryViewerControllerCustomEvent<string>) => void;
+        /**
+          * Fired when new page data is ready to use in the PivotTable
+         */
+        "onPageDataForPivotTable"?: (event: GxQueryViewerControllerCustomEvent<string>) => void;
+        /**
+          * Fired when new page data is ready to use in the PivotTable
+         */
+        "onPageDataForTable"?: (event: GxQueryViewerControllerCustomEvent<string>) => void;
+        /**
           * Fired when new metadata and data is fetched
          */
         "onQueryViewerServiceResponse"?: (event: GxQueryViewerControllerCustomEvent<QueryViewerServiceResponse>) => void;
         /**
+          * Fired when new metadata and data is fetched
+         */
+        "onQueryViewerServiceResponsePivotTable"?: (event: GxQueryViewerControllerCustomEvent<QueryViewerServiceResponsePivotTable>) => void;
+        /**
+          * Fired when data is ready to use in the PivotTable
+         */
+        "onSyncPivotTableData"?: (event: GxQueryViewerControllerCustomEvent<string>) => void;
+        /**
           * Specified the orientation when have more than one card
          */
         "orientation"?: QueryViewerOrientation;
+        /**
+          * If type == PivotTable or Table, if true there is paging, else everything in one table
+         */
+        "paging"?: boolean;
         /**
           * For timeline for remembering layout
          */
@@ -1577,6 +2022,18 @@ declare namespace LocalJSX {
           * Use this property to pass a query obtained from GXquery, when useGxquery = true (ignored if objectName is specified, because this property has a greater precedence)
          */
         "serializedObject"?: string;
+        /**
+          * Ax to show data labels
+         */
+        "showDataLabelsIn"?: QueryViewerShowDataLabelsIn;
+        /**
+          * True if grand total is shown for all table columns
+         */
+        "totalForColumns"?: QueryViewerTotal;
+        /**
+          * True if grand total is shown for all table rows
+         */
+        "totalForRows"?: QueryViewerTotal;
         /**
           * @todo Add description and improve type
          */
@@ -1781,6 +2238,110 @@ declare namespace LocalJSX {
          */
         "onParameterValueChanged"?: (event: GxQueryViewerParameterCustomEvent<QueryViewerParameterChangedEvent>) => void;
     }
+    interface GxQueryViewerPivot {
+        /**
+          * QueryViewerTranslations
+         */
+        "QueryViewerTranslations"?: { GXPL_QViewerSinceTheBeginningTrend: string; GXPL_QViewerLastDayTrend: string; GXPL_QViewerLastHourTrend: string; GXPL_QViewerJSAllOption: string; GXPL_QViewerJSAscending: string; GXPL_QViewerJSDescending: string; GXPL_QViewerJSSubtotals: string; GXPL_QViewerJSRestoreDefaultView: string; GXPL_QViewerJSPivotDimensionToColumn: string; GXPL_QViewerJSPivotDimensionToRow: string; GXPL_QViewerJSMoveToFilterBar: string; GXPL_QViewerJSAll: string; GXPL_QViewerJSNone: string; GXPL_QViewerJSReverse: string; GXPL_QViewerSearch: string; GXPL_QViewerInfoUser: string; GXPL_QViewerJSDropFiltersHere: string; GXPL_QViewerPopupTitle: string; GXPL_QViewerJSVisibleColumns: string; GXPL_QViewerContextMenuExportXml: string; GXPL_QViewerContextMenuExportHtml: string; GXPL_QViewerContextMenuExportPdf: string; GXPL_QViewerContextMenuExportXls2003: string; GXPL_QViewerContextMenuExportXlsx: string; GXPL_QViewerJSMeasures: string; GXPL_QViewerJSValue: string; GXPL_QViewerJSTotal: string; GXPL_QViewerJSTotalFor: string; GXPL_QViewerJSPerPage: string; GXPL_QViewerJSPage: string; GXPL_QViewerJSOf: string; GXPL_QViewerJSMoveColumnToLeft: string; GXPL_QViewerJSMoveColumnToRight: string; };
+        /**
+          * Response Attribute Values
+         */
+        "attributeValuesForPivotTableXml"?: string;
+        /**
+          * Response calculation PivotTable Data
+         */
+        "calculatePivottableDataXml"?: string;
+        /**
+          * data
+         */
+        "data"?: string;
+        /**
+          * Response PivotTable Data Sync
+         */
+        "getPivottableDataSyncXml"?: string;
+        /**
+          * Response Page Data
+         */
+        "pageDataForPivotTable"?: string;
+        /**
+          * pivotCollection
+         */
+        "pivotCollection"?: QueryViewerPivotCollection;
+        /**
+          * pivotParameters
+         */
+        "pivotParameters"?: QueryViewerPivotParameters;
+    }
+    interface GxQueryViewerPivotRender {
+        /**
+          * Allowing elements order to change
+         */
+        "allowElementsOrderChange"?: boolean;
+        /**
+          * Allow selection
+         */
+        "allowSelection"?: boolean;
+        /**
+          * Response Attribute Values
+         */
+        "attributeValuesForPivotTableXml"?: string;
+        /**
+          * Response Attribute Values
+         */
+        "calculatePivottableDataXml"?: string;
+        /**
+          * A CSS class to set as the `gx-query-viewer-pivot-controller` element class.
+         */
+        "cssClass"?: string;
+        /**
+          * Allowing or not Column sort
+         */
+        "disableColumnSort"?: boolean;
+        /**
+          * Response Pivot Table Data Sync
+         */
+        "getPivottableDataSyncXml"?: string;
+        /**
+          * Response Page Data
+         */
+        "pageDataForPivotTable"?: string;
+        /**
+          * Enables you to define the number of rows that will be shown when the Paging property is activated
+         */
+        "pageSize"?: number;
+        /**
+          * This attribute lets you determinate whether there will be paging buttons.
+         */
+        "paging"?: boolean;
+        /**
+          * This attribute lets you define a title for the pivot table.
+         */
+        "pivotTitle"?: string;
+        /**
+          * For timeline for remembering layout
+         */
+        "rememberLayout"?: boolean;
+        /**
+          * Specifies the metadata and data that the control will use to render.
+         */
+        "serviceResponse"?: QueryViewerServiceResponsePivotTable;
+        /**
+          * It allows to indicate how you want to display the Data elements of the Query object.
+         */
+        "showDataLabelsIn"?: QueryViewerShowDataLabelsIn1;
+        /**
+          * Determines whether to show a total of all values in the pivot table columns.
+         */
+        "totalForColumns"?: QueryViewerTotal1;
+        /**
+          * Determines whether to show a total of all values in the pivot table rows.
+         */
+        "totalForRows"?: QueryViewerTotal1;
+        /**
+          * For translate the labels of the outputs
+         */
+        "translations"?: QueryViewerTranslations1;
+    }
     interface GxQueryViewerSlider {
         /**
           * This property determines the value of the end position slider.
@@ -1798,6 +2359,98 @@ declare namespace LocalJSX {
           * This attribute lets you define the steps for each slider.
          */
         "step"?: number;
+    }
+    interface GxQueryViewerTable {
+        /**
+          * QueryViewerTranslations
+         */
+        "QueryViewerTranslations"?: { GXPL_QViewerSinceTheBeginningTrend: string; GXPL_QViewerLastDayTrend: string; GXPL_QViewerLastHourTrend: string; GXPL_QViewerJSAllOption: string; GXPL_QViewerJSAscending: string; GXPL_QViewerJSDescending: string; GXPL_QViewerJSSubtotals: string; GXPL_QViewerJSRestoreDefaultView: string; GXPL_QViewerJSPivotDimensionToColumn: string; GXPL_QViewerJSPivotDimensionToRow: string; GXPL_QViewerJSMoveToFilterBar: string; GXPL_QViewerJSAll: string; GXPL_QViewerJSNone: string; GXPL_QViewerJSReverse: string; GXPL_QViewerSearch: string; GXPL_QViewerInfoUser: string; GXPL_QViewerJSDropFiltersHere: string; GXPL_QViewerPopupTitle: string; GXPL_QViewerJSVisibleColumns: string; GXPL_QViewerContextMenuExportXml: string; GXPL_QViewerContextMenuExportHtml: string; GXPL_QViewerContextMenuExportPdf: string; GXPL_QViewerContextMenuExportXls2003: string; GXPL_QViewerContextMenuExportXlsx: string; GXPL_QViewerJSMeasures: string; GXPL_QViewerJSValue: string; GXPL_QViewerJSTotal: string; GXPL_QViewerJSTotalFor: string; GXPL_QViewerJSPerPage: string; GXPL_QViewerJSPage: string; GXPL_QViewerJSOf: string; GXPL_QViewerJSMoveColumnToLeft: string; GXPL_QViewerJSMoveColumnToRight: string; };
+        /**
+          * Response Attribute Values
+         */
+        "attributeValuesForTableXml"?: string;
+        /**
+          * Response Table Data Sync
+         */
+        "getTableDataSyncXml"?: string;
+        /**
+          * Response Page Data
+         */
+        "pageDataForTable"?: string;
+        /**
+          * pivotCollection
+         */
+        "pivotCollection"?: QueryViewerPivotCollection;
+        /**
+          * pivotParameters
+         */
+        "pivotParameters"?: QueryViewerPivotParameters;
+    }
+    interface GxQueryViewerTableRender {
+        /**
+          * Allowing elements order to change
+         */
+        "allowElementsOrderChange"?: boolean;
+        /**
+          * Allow selection
+         */
+        "allowSelection"?: boolean;
+        /**
+          * Response Attribute Values for Pivot Table
+         */
+        "attributeValuesForTableXml"?: string;
+        /**
+          * A CSS class to set as the `gx-query-viewer-pivot-controller` element class.
+         */
+        "cssClass"?: string;
+        /**
+          * Allowing or not Column sort
+         */
+        "disableColumnSort"?: boolean;
+        /**
+          * Response Table Data Sync
+         */
+        "getTableDataSyncXml"?: string;
+        /**
+          * Response Page Data
+         */
+        "pageDataForTable"?: string;
+        /**
+          * Enables you to define the number of rows that will be shown when the Paging property is activated
+         */
+        "pageSize"?: number;
+        /**
+          * This attribute lets you determinate whether there will be paging buttons.
+         */
+        "paging"?: boolean;
+        /**
+          * For timeline for remembering layout
+         */
+        "rememberLayout"?: boolean;
+        /**
+          * Specifies the metadata and data that the control will use to render.
+         */
+        "serviceResponse"?: QueryViewerServiceResponsePivotTable;
+        /**
+          * It allows to indicate how you want to display the Data elements of the Query object.
+         */
+        "showDataLabelsIn"?: QueryViewerShowDataLabelsIn1;
+        /**
+          * This attribute lets you define a title for the table.
+         */
+        "tableTitle"?: string;
+        /**
+          * Determines whether to show a total of all values in the pivot table columns.
+         */
+        "totalForColumns"?: QueryViewerTotal1;
+        /**
+          * Determines whether to show a total of all values in the pivot table rows.
+         */
+        "totalForRows"?: QueryViewerTotal1;
+        /**
+          * For translate the labels of the outputs
+         */
+        "translations"?: QueryViewerTranslations1;
     }
     interface GxSidebar {
         /**
@@ -1853,7 +2506,11 @@ declare namespace LocalJSX {
         "gx-query-viewer-element-format": GxQueryViewerElementFormat;
         "gx-query-viewer-format-style": GxQueryViewerFormatStyle;
         "gx-query-viewer-parameter": GxQueryViewerParameter;
+        "gx-query-viewer-pivot": GxQueryViewerPivot;
+        "gx-query-viewer-pivot-render": GxQueryViewerPivotRender;
         "gx-query-viewer-slider": GxQueryViewerSlider;
+        "gx-query-viewer-table": GxQueryViewerTable;
+        "gx-query-viewer-table-render": GxQueryViewerTableRender;
         "gx-sidebar": GxSidebar;
     }
 }
@@ -1876,7 +2533,11 @@ declare module "@stencil/core" {
             "gx-query-viewer-element-format": LocalJSX.GxQueryViewerElementFormat & JSXBase.HTMLAttributes<HTMLGxQueryViewerElementFormatElement>;
             "gx-query-viewer-format-style": LocalJSX.GxQueryViewerFormatStyle & JSXBase.HTMLAttributes<HTMLGxQueryViewerFormatStyleElement>;
             "gx-query-viewer-parameter": LocalJSX.GxQueryViewerParameter & JSXBase.HTMLAttributes<HTMLGxQueryViewerParameterElement>;
+            "gx-query-viewer-pivot": LocalJSX.GxQueryViewerPivot & JSXBase.HTMLAttributes<HTMLGxQueryViewerPivotElement>;
+            "gx-query-viewer-pivot-render": LocalJSX.GxQueryViewerPivotRender & JSXBase.HTMLAttributes<HTMLGxQueryViewerPivotRenderElement>;
             "gx-query-viewer-slider": LocalJSX.GxQueryViewerSlider & JSXBase.HTMLAttributes<HTMLGxQueryViewerSliderElement>;
+            "gx-query-viewer-table": LocalJSX.GxQueryViewerTable & JSXBase.HTMLAttributes<HTMLGxQueryViewerTableElement>;
+            "gx-query-viewer-table-render": LocalJSX.GxQueryViewerTableRender & JSXBase.HTMLAttributes<HTMLGxQueryViewerTableRenderElement>;
             "gx-sidebar": LocalJSX.GxSidebar & JSXBase.HTMLAttributes<HTMLGxSidebarElement>;
         }
     }
