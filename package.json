@@ -66,11 +66,12 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@genexus/reporting-api": "~0.4.0",
+    "@genexus/reporting-api": "~0.4.1",
     "@genexus/web-controls-library": "2.3.0",
     "date-fns": "^2.30.0",
     "highcharts": "^11.1.0",
-    "jspivottable": "^1.1.6",
+    "jspivottable": "1.1.6",
+    "jquery": "^3.7.1",
     "material-icons": "^1.13.1",
     "rollup-plugin-dotenv": "^0.5.0"
   }

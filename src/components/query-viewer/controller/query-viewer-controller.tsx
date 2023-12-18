@@ -271,8 +271,7 @@ export class QueryViewerController {
    * PivotTable's Method for PivotTable Data Sync Response
    */
   @Method()
-  // eslint-disable-next-line @stencil-community/async-methods
-  getPivottableDataSync(properties: QueryViewerPivotTableDataSync) {
+  async getPivottableDataSync(properties: QueryViewerPivotTableDataSync) {
     const qvInfo = this.getQueryViewerInformation(this.objectName);
     const servicesInfo = this.getServiceContext();
 

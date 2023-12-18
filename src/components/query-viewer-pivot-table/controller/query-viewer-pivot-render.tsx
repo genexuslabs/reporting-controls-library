@@ -285,23 +285,24 @@ export class QueryViewerPivotTableRender {
   }
 
   render() {
+    if (this.serviceResponse == null) {
+      return "";
+    }
+
     const pivotParameters = this.getPivotTableParms();
     const pivotCollection = this.getPivotTableCollection();
+
     return (
       <Host>
-        {this.serviceResponse != null && (
-          <gx-query-viewer-pivot
-            pivotCollection={pivotCollection}
-            pivotParameters={pivotParameters}
-            pageDataForPivotTable={this.pageDataForPivotTable}
-            attributeValuesForPivotTableXml={
-              this.attributeValuesForPivotTableXml
-            }
-            calculatePivottableDataXml={this.calculatePivottableDataXml}
-            getPivottableDataSyncXml={this.getPivottableDataSyncXml}
-            ref={el => (this.pivotRef = el)}
-          ></gx-query-viewer-pivot>
-        )}
+        <gx-query-viewer-pivot
+          pivotCollection={pivotCollection}
+          pivotParameters={pivotParameters}
+          pageDataForPivotTable={this.pageDataForPivotTable}
+          attributeValuesForPivotTableXml={this.attributeValuesForPivotTableXml}
+          calculatePivottableDataXml={this.calculatePivottableDataXml}
+          getPivottableDataSyncXml={this.getPivottableDataSyncXml}
+          ref={el => (this.pivotRef = el)}
+        ></gx-query-viewer-pivot>
       </Host>
     );
   }

@@ -213,12 +213,12 @@ export function dragAndDropPivotTableEvent(
 
 // ToDo: complete this implementation
 export function onFilterChangedPivotTableEvent(
-  qViewerId: number,
+  _qViewerId: number,
   filterChangedData: string
-): QueryViewerFilterChangedData {
-  if (qViewerId !== undefined) {
-    return;
-  }
+): QueryViewerFilterChangedData | undefined {
+  // if (qViewerId !== undefined) {
+  //   return;
+  // }
   const filterChanged: QueryViewerFilterChangedData = {
     Name: "",
     SelectedValues: { Item: filterChangedData }
