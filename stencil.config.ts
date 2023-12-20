@@ -91,7 +91,8 @@ export const config: Config = {
         "gx-table",
         "gx-textblock",
         "gx-video"
-      ]
+      ],
+      includeDefineCustomElements: true
     })
   ],
   bundles: [
