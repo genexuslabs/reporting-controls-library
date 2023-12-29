@@ -1,5 +1,5 @@
+import { GxQueryItem } from "@genexus/reporting-api/dist/types/basic-types";
 import type { Meta, StoryObj } from "@storybook/web-components";
-import { GxQueryItem } from "../../../common/basic-types";
 
 const meta: Meta<{ item: GxQueryItem }> = {
   component: "gx-query-menu-item"
@@ -12,11 +12,11 @@ const modified = new Date();
 export const Primary: Story = {
   args: {
     item: {
-      Id: "123",
-      Name: "Query item 1",
-      Description: "string",
-      Expression: "string",
-      Modified: modified,
+      id: "123",
+      name: "Query item 1",
+      description: "string",
+      expression: "string",
+      modified: modified,
       differenceInDays: 1
     } as GxQueryItem
   }

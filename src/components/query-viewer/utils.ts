@@ -70,14 +70,14 @@ function getComponentItems(
   serviceResponse: QueryViewerServiceResponsePivotTable
 ): string[] {
   const componentItems: string[] = [];
-  serviceResponse.MetaData.Axes.forEach(axis => {
-    if (axis.IsComponent) {
-      componentItems.push(axis.Name);
+  serviceResponse.MetaData.axes.forEach(axis => {
+    if (axis.isComponent) {
+      componentItems.push(axis.name);
     }
   });
-  serviceResponse.MetaData.Data.forEach(data => {
-    if (data.IsComponent) {
-      componentItems.push(data.Name);
+  serviceResponse.MetaData.data.forEach(data => {
+    if (data.isComponent) {
+      componentItems.push(data.name);
     }
   });
   return componentItems;

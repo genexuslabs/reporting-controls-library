@@ -10,9 +10,9 @@ import {
   Watch,
   h
 } from "@stencil/core";
-import { GxQueryItem } from "../../../common/basic-types";
 import { Component as GxComponent } from "../../../common/interfaces";
 import { KEY_CODES } from "../../../common/reserverd-names";
+import { GxQueryItem } from "@genexus/reporting-api/dist/types/basic-types";
 
 export type QueryMenuElement = {
   id: number;
@@ -54,15 +54,15 @@ export class QueryMenuItem implements GxComponent {
   /**
    * Trigger the action to delete the item
    */
-  @Event() deleteItem: EventEmitter<GxQueryItem>;
+  @Event() deleteItem: EventEmitter;
   /**
    * Trigger the action to delete the item
    */
-  @Event() renameItem: EventEmitter<GxQueryItem>;
+  @Event() renameItem: EventEmitter;
   /**
    * Trigger the action to select an item
    */
-  @Event() selectItem: EventEmitter<GxQueryItem>;
+  @Event() selectItem: EventEmitter;
 
   @Watch("isActive")
   focusItem(newValue: boolean) {
@@ -90,8 +90,8 @@ export class QueryMenuItem implements GxComponent {
   }
 
   componentWillLoad() {
-    this.backupInputValue = this.item.Name;
-    this.editControlId = `edit-control-${this.item.Id}`;
+    this.backupInputValue = this.item.name;
+    this.editControlId = `edit-control-${this.item.id}`;
   }
 
   componentDidRender() {
@@ -168,12 +168,12 @@ export class QueryMenuItem implements GxComponent {
       template = (
         <gx-edit
           ref={el => (this.inputRef = el) && el.click()}
-          value={this.item.Name}
+          value={this.item.name}
           tabIndex={0}
         ></gx-edit>
       );
     } else {
-      template = <span>{this.item.Name}</span>;
+      template = <span>{this.item.name}</span>;
     }
 
     return (

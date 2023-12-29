@@ -53,16 +53,16 @@ export const calculateDateDifference = (
 
 /**
  * Comparative date function
- * @param a object with a Modified attribute
- * @param b object with a Modified attribute
- * @returns Sort list by Modified attribute
+ * @param a object with a modified attribute
+ * @param b object with a modified attribute
+ * @returns Sort list by modified attribute
  */
 export const compareModifiedAttr = (
-  a: { Modified: Date },
-  b: { Modified: Date }
+  a: { modified: Date },
+  b: { modified: Date }
 ) => {
-  const atime = new Date(a.Modified).getTime();
-  const btime = new Date(b.Modified).getTime();
+  const atime = new Date(a.modified).getTime();
+  const btime = new Date(b.modified).getTime();
   if (atime < btime) {
     return 1;
   } else if (atime > btime) {

@@ -11,16 +11,16 @@
 | ---------- | ----------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- |
 | `editMode` | `edit-mode` | Toggle edit mode                             | `boolean`                                                                                                                                              | `false`     |
 | `isActive` | `is-active` | Id of item active                            | `boolean`                                                                                                                                              | `false`     |
-| `item`     | --          | This property specify the title of the item. | `Omit<QueryViewerBase, "Modified"> & { Id: string; Name: string; Description: string; Expression: string; Modified: Date; differenceInDays: number; }` | `undefined` |
+| `item`     | --          | This property specify the title of the item. | `Omit<QueryViewerBase, "modified"> & { id: string; name: string; description: string; modified: Date; expression: string; differenceInDays: number; }` | `undefined` |
 
 
 ## Events
 
-| Event        | Description                           | Type                                                                                                                                                                |
-| ------------ | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `deleteItem` | Trigger the action to delete the item | `CustomEvent<Omit<QueryViewerBase, "Modified"> & { Id: string; Name: string; Description: string; Expression: string; Modified: Date; differenceInDays: number; }>` |
-| `renameItem` | Trigger the action to delete the item | `CustomEvent<Omit<QueryViewerBase, "Modified"> & { Id: string; Name: string; Description: string; Expression: string; Modified: Date; differenceInDays: number; }>` |
-| `selectItem` | Trigger the action to select an item  | `CustomEvent<Omit<QueryViewerBase, "Modified"> & { Id: string; Name: string; Description: string; Expression: string; Modified: Date; differenceInDays: number; }>` |
+| Event        | Description                           | Type               |
+| ------------ | ------------------------------------- | ------------------ |
+| `deleteItem` | Trigger the action to delete the item | `CustomEvent<any>` |
+| `renameItem` | Trigger the action to delete the item | `CustomEvent<any>` |
+| `selectItem` | Trigger the action to select an item  | `CustomEvent<any>` |
 
 
 ## Methods

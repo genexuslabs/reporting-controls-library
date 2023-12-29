@@ -218,8 +218,8 @@ export class QueryViewerPivotTableRender {
       AutoRefreshGroup: "",
       debugServices: false,
       Metadata: {
-        Axes: this.serviceResponse.MetaData.Axes,
-        Data: this.serviceResponse.MetaData.Data
+        Axes: this.serviceResponse.MetaData.axes,
+        Data: this.serviceResponse.MetaData.data
       }
     };
 

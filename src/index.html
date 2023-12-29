@@ -12,68 +12,68 @@
     <script nomodule src="/build/reporting.js"></script>
     <script>
       const query = {
-        Id: "87ff9cc8-6196-4cfa-811a-4a154082274f",
-        Name: "AverageCountriesGDPPerCapita",
-        Description: "Average Countries GDPPer Capita",
-        Expression: "Query AverageCountriesGDPPerCapita [OutputType='Card']\r\n{\r\n\tAverage(CountryGDPPerCapita) [Name='Element3', Description='GDP per capita (average)', Picture='U$S Z,ZZZ,ZZ9.999']\r\n\t#parameters\r\n\t\tCountryName [Name='CountryName', BasedOn='(none)', IsCollection='True']\r\n\t#end\r\n\t#filters\r\n\t\tCountryName in &CountryName when &CountryName.Count > 0\r\n\t\tContinentName = \"South America\"\r\n\t\tnot CountryISO in (\"VE\", \"GY\", \"SR\")\r\n\t#end\r\n}",
-        Modified: "2023-10-24T21:31:05",
-        RemoveDuplicates: false,
-        MaxRows: "",
-        TextForNullValues: "",
-        OutputType: "Card",
-        Title: "",
-        ShowValues: true,
-        ShowDataAs: "Values",
-        Orientation: "Horizontal",
-        IncludeTrend: false,
-        IncludeSparkline: false,
-        IncludeMaxAndMin: false,
-        ChartType: "Column",
-        PlotSeries: "In the same chart",
-        XAxisLabels: "Horizontally",
-        XAxisIntersectionAtZero: false,
-        XAxisTitle: "",
-        YAxisTitle: "",
-        MapType: "Choropleth",
-        Region: "World",
-        Continent: "North America",
-        Country: "United States of America",
-        Paging: true,
-        PageSize: 20,
-        ShowDataLabelsIn: "Columns area",
-        TotalForRows: "Yes",
-        TotalForColumns: "Yes"
+        id: "87ff9cc8-6196-4cfa-811a-4a154082274f",
+        name: "AverageCountriesGDPPerCapita",
+        description: "Average Countries GDPPer Capita",
+        expression: "Query AverageCountriesGDPPerCapita [OutputType='Card']\r\n{\r\n\tAverage(CountryGDPPerCapita) [Name='Element3', Description='GDP per capita (average)', Picture='U$S Z,ZZZ,ZZ9.999']\r\n\t#parameters\r\n\t\tCountryName [Name='CountryName', BasedOn='(none)', IsCollection='True']\r\n\t#end\r\n\t#filters\r\n\t\tCountryName in &CountryName when &CountryName.Count > 0\r\n\t\tContinentName = \"South America\"\r\n\t\tnot CountryISO in (\"VE\", \"GY\", \"SR\")\r\n\t#end\r\n}",
+        modified: "2023-10-24T21:31:05",
+        removeDuplicates: false,
+        maxRows: "",
+        textForNullValues: "",
+        outputType: "Card",
+        title: "",
+        showValues: true,
+        showDataAs: "Values",
+        orientation: "Horizontal",
+        includeTrend: false,
+        includeSparkline: false,
+        includeMaxAndMin: false,
+        chartType: "Column",
+        plotSeries: "In the same chart",
+        xAxisLabels: "Horizontally",
+        xAxisIntersectionAtZero: false,
+        xAxisTitle: "",
+        yAxisTitle: "",
+        mapType: "Choropleth",
+        region: "World",
+        continent: "North America",
+        country: "United States of America",
+        paging: true,
+        pageSize: 20,
+        showDataLabelsIn: "Columns area",
+        totalForRows: "Yes",
+        totalForColumns: "Yes"
     };
     const Data = "<?xml version = \"1.0\" encoding = \"UTF-8\"?>\n\r\n<Recordset RecordCount=\"1\" PageCount=\"1\">\n\t<Page PageNumber=\"1\">\n\t\t<Record>\n\t\t\t<F1>14238.027777</F1>\n\t\t\t<F1_N>128142.235</F1_N>\n\t\t\t<F1_D>9</F1_D>\n\t\t</Record>\n\t</Page>\n</Recordset>\n";
     const Metadata = "<?xml version = \"1.0\" encoding = \"UTF-8\"?>\n\r\n<OLAPCube Version=\"2\" format=\"compact\" decimalSeparator=\".\" thousandsSeparator=\",\" dateFormat=\"MDY\" textForNullValues=\"\" forceDefaultView=\"yes\" ShowDataLabelsIn=\"\">\n\t<OLAPMeasure name=\"Element3\" displayName=\"GDP per capita (average)\" description=\"GDP per capita (average)\" dataField=\"F1\" visible=\"Yes\" aggregation=\"average\" align=\"right\" picture=\"U$S Z,ZZZ,ZZ9.999\" targetValue=\"0\" maximumValue=\"0\" dataType=\"real\" format=\"\">\n\t</OLAPMeasure>\n\t<OLAPMeasure name=\"F1_N\" displayName=\"F1_N\" description=\"F1_N\" dataField=\"F1_N\" visible=\"Never\" aggregation=\"sum\" align=\"right\" picture=\"\" targetValue=\"0\" maximumValue=\"0\" dataType=\"real\" format=\"\" raiseItemClick=\"false\" isComponent=\"true\">\n\t</OLAPMeasure>\n\t<OLAPMeasure name=\"F1_D\" displayName=\"F1_D\" description=\"F1_D\" dataField=\"F1_D\" visible=\"Never\" aggregation=\"count\" align=\"right\" picture=\"\" targetValue=\"0\" maximumValue=\"0\" dataType=\"integer\" format=\"\" raiseItemClick=\"false\" isComponent=\"true\">\n\t</OLAPMeasure>\n</OLAPCube>\n";
       const serializedObjectMock = [
         {
-          Id: "422fcc61-dfdf-4282-b14d-85c28636042e",
-          Name: "AmericanCountriesWithMoreCases",
-          Description: "American Countries With More Cases",
-          Expression: "",
-          Modified: "2023-10-05T21:18:07"
+          id: "422fcc61-dfdf-4282-b14d-85c28636042e",
+          name: "AmericanCountriesWithMoreCases",
+          description: "American Countries With More Cases",
+          expression: "",
+          modified: "2023-10-05T21:18:07"
         },
         {
-          Id: "87ff9cc8-6196-4cfa-811a-4a154082274f",
-          Name: "AverageCountriesGDPPerCapita",
-          Description: "Average Countries GDPPer Capita",
-          Expression: "",
-          Modified: "2022-10-31T20:12:21"
+          id: "87ff9cc8-6196-4cfa-811a-4a154082274f",
+          name: "AverageCountriesGDPPerCapita",
+          description: "Average Countries GDPPer Capita",
+          expression: "",
+          modified: "2022-10-31T20:12:21"
         },
         {
-          Id: "94892cdc-665e-4768-a9ea-a376d6905f20",
-          Name: "AverageCountryExtremePoverty",
-          Description: "Average Country Extreme Poverty",
-          Expression: "",
-          Modified: "2023-01-04T14:33:27"
+          id: "94892cdc-665e-4768-a9ea-a376d6905f20",
+          name: "AverageCountryExtremePoverty",
+          description: "Average Country Extreme Poverty",
+          expression: "",
+          modified: "2023-01-04T14:33:27"
         },
         {
-          Id: "4bf29a4a-b79b-45af-9277-7bc87704df79",
-          Name: "AverageLifeExpectancy",
-          Description: "Average Life Expectancy",
-          Expression: "",
-          Modified: "2023-05-04T18:09:55"
+          id: "4bf29a4a-b79b-45af-9277-7bc87704df79",
+          name: "AverageLifeExpectancy",
+          description: "Average Life Expectancy",
+          expression: "",
+          modified: "2023-05-04T18:09:55"
         }
       ];
       const serializedStringMock = JSON.stringify(serializedObjectMock);
@@ -134,7 +134,7 @@
         <!-- <button slot="new-chat" class="custom-btn">New chat</button> -->
         <gx-query-menu
           metadata-name="ReportingShowcase"
-          serialized-object='[{"Id":"422fcc61-dfdf-4282-b14d-85c28636042e","Name":"AmericanCountriesWithMoreCases","Description":"American Countries With More Cases","Expression":"","Modified":"2023-10-05T21:18:07"},{"Id":"87ff9cc8-6196-4cfa-811a-4a154082274f","Name":"AverageCountriesGDPPerCapita","Description":"Average Countries GDPPer Capita","Expression":"","Modified":"2022-10-31T20:12:21"},{"Id":"94892cdc-665e-4768-a9ea-a376d6905f20","Name":"AverageCountryExtremePoverty","Description":"Average Country Extreme Poverty","Expression":"","Modified":"2023-01-04T14:33:27"},{"Id":"4bf29a4a-b79b-45af-9277-7bc87704df79","Name":"AverageLifeExpectancy","Description":"Average Life Expectancy","Expression":"","Modified":"2023-05-04T18:09:55"}]'
+          serialized-object='[{"id":"422fcc61-dfdf-4282-b14d-85c28636042e","name":"AmericanCountriesWithMoreCases","description":"American Countries With More Cases","expression":"","modified":"2023-10-05T21:18:07"},{"id":"87ff9cc8-6196-4cfa-811a-4a154082274f","name":"AverageCountriesGDPPerCapita","description":"Average Countries GDPPer Capita","expression":"","modified":"2022-10-31T20:12:21"},{"id":"94892cdc-665e-4768-a9ea-a376d6905f20","name":"AverageCountryExtremePoverty","description":"Average Country Extreme Poverty","expression":"","modified":"2023-01-04T14:33:27"},{"id":"4bf29a4a-b79b-45af-9277-7bc87704df79","name":"AverageLifeExpectancy","description":"Average Life Expectancy","expression":"","modified":"2023-05-04T18:09:55"}]'
         ></gx-query-menu>
       </gx-sidebar>
 

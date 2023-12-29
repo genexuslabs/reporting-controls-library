@@ -22,9 +22,9 @@
 
 | Event           | Description    | Type                                                                                                                                                                |
 | --------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `gxQueryDelete` | Delete query   | `CustomEvent<Omit<QueryViewerBase, "Modified"> & { Id: string; Name: string; Description: string; Expression: string; Modified: Date; differenceInDays: number; }>` |
-| `gxQueryRename` | Rename query   | `CustomEvent<Omit<QueryViewerBase, "Modified"> & { Id: string; Name: string; Description: string; Expression: string; Modified: Date; differenceInDays: number; }>` |
-| `gxQuerySelect` | Select a query | `CustomEvent<Omit<QueryViewerBase, "Modified"> & { Id: string; Name: string; Description: string; Expression: string; Modified: Date; differenceInDays: number; }>` |
+| `gxQueryDelete` | Delete query   | `CustomEvent<Omit<QueryViewerBase, "modified"> & { id: string; name: string; description: string; modified: Date; expression: string; differenceInDays: number; }>` |
+| `gxQueryRename` | Rename query   | `CustomEvent<Omit<QueryViewerBase, "modified"> & { id: string; name: string; description: string; modified: Date; expression: string; differenceInDays: number; }>` |
+| `gxQuerySelect` | Select a query | `CustomEvent<Omit<QueryViewerBase, "modified"> & { id: string; name: string; description: string; modified: Date; expression: string; differenceInDays: number; }>` |
 
 
 ## Methods

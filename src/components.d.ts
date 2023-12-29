@@ -7,9 +7,9 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { QueryRequest } from "./components/gx-query/query-chat/query-chat";
 import { GeneratorType, GxQueryItem, QueryViewerAutoResizeType, QueryViewerBase, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels } from "@genexus/reporting-api/dist/types/basic-types";
-import { GxQueryItem as GxQueryItem1, QueryViewerChartType as QueryViewerChartType1, QueryViewerOrientation as QueryViewerOrientation1, QueryViewerPivotCollection, QueryViewerPivotParameters, QueryViewerPlotSeries as QueryViewerPlotSeries1, QueryViewerShowDataAs as QueryViewerShowDataAs1, QueryViewerShowDataLabelsIn as QueryViewerShowDataLabelsIn1, QueryViewerSliderRange, QueryViewerTotal as QueryViewerTotal1, QueryViewerTranslations as QueryViewerTranslations1, QueryViewerTrendPeriod as QueryViewerTrendPeriod1, QueryViewerXAxisLabels as QueryViewerXAxisLabels1, TrendIcon } from "./common/basic-types";
 import { QueryViewerAttributesValuesForPivot, QueryViewerCalculatePivottableData, QueryViewerPageDataForPivot, QueryViewerPageDataForTable, QueryViewerPivotTableDataSync, QueryViewerServiceData, QueryViewerServiceMetaData, QueryViewerServiceResponse, QueryViewerServiceResponsePivotTable } from "@genexus/reporting-api/dist/types/service-result";
 import { QueryViewerDragAndDropData, QueryViewerFilterChangedData, QueryViewerItemClickData, QueryViewerItemExpandAndCollapseData } from "./global/types";
+import { QueryViewerChartType as QueryViewerChartType1, QueryViewerOrientation as QueryViewerOrientation1, QueryViewerPivotCollection, QueryViewerPivotParameters, QueryViewerPlotSeries as QueryViewerPlotSeries1, QueryViewerShowDataAs as QueryViewerShowDataAs1, QueryViewerShowDataLabelsIn as QueryViewerShowDataLabelsIn1, QueryViewerSliderRange, QueryViewerTotal as QueryViewerTotal1, QueryViewerTranslations as QueryViewerTranslations1, QueryViewerTrendPeriod as QueryViewerTrendPeriod1, QueryViewerXAxisLabels as QueryViewerXAxisLabels1, TrendIcon } from "./common/basic-types";
 import { Axis, ChartOptions, LegendOptions, PaneOptions, PlotOptions, SeriesLineOptions, SeriesOptionsType, SubtitleOptions, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
 import { QueryViewerParameterChangedEvent } from "./components/query-viewer-parameter/query-viewer-parameter";
 export namespace Components {
@@ -100,7 +100,7 @@ export namespace Components {
         /**
           * This property specify the title of the item.
          */
-        "item": GxQueryItem1;
+        "item": GxQueryItem;
         "setFocus": () => Promise<void>;
     }
     interface GxQueryRender {
@@ -1433,19 +1433,19 @@ declare namespace LocalJSX {
         /**
           * This property specify the title of the item.
          */
-        "item"?: GxQueryItem1;
+        "item"?: GxQueryItem;
         /**
           * Trigger the action to delete the item
          */
-        "onDeleteItem"?: (event: GxQueryMenuItemCustomEvent<GxQueryItem1>) => void;
+        "onDeleteItem"?: (event: GxQueryMenuItemCustomEvent<any>) => void;
         /**
           * Trigger the action to delete the item
          */
-        "onRenameItem"?: (event: GxQueryMenuItemCustomEvent<GxQueryItem1>) => void;
+        "onRenameItem"?: (event: GxQueryMenuItemCustomEvent<any>) => void;
         /**
           * Trigger the action to select an item
          */
-        "onSelectItem"?: (event: GxQueryMenuItemCustomEvent<GxQueryItem1>) => void;
+        "onSelectItem"?: (event: GxQueryMenuItemCustomEvent<any>) => void;
     }
     interface GxQueryRender {
         /**
