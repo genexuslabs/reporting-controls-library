@@ -99,8 +99,8 @@ export class GxQueryRender implements GxComponent {
    * @returns HTMLDivElement
    */
   private notImplementedRender() {
-    const { OutputType, Name } = this.query;
-    return <div>{`Graph ${OutputType} is not implemented (${Name})`}</div>;
+    const { outputType, name } = this.query;
+    return <div>{`Graph ${outputType} is not implemented (${name})`}</div>;
   }
 
   /**
@@ -133,21 +133,21 @@ export class GxQueryRender implements GxComponent {
   private implementedRender = (query: QueryViewerBase) =>
     !!this.serviceData && !!this.serviceMetadata ? (
       <gx-query-viewer
-        queryTitle={query.Title}
-        type={query.OutputType}
-        chartType={query.ChartType}
-        includeSparkline={query.IncludeSparkline}
-        includeTrend={query.IncludeTrend}
-        includeMaxMin={query.IncludeMaxAndMin}
+        queryTitle={query.title}
+        type={query.outputType}
+        chartType={query.chartType}
+        includeSparkline={query.includeSparkline}
+        includeTrend={query.includeTrend}
+        includeMaxMin={query.includeMaxAndMin}
         trendPeriod={"SinceTheBeginning" as QueryViewerTrendPeriod}
-        showDataAs={query.ShowDataAs}
-        orientation={query.Orientation}
-        plotSeries={query.PlotSeries}
-        showDataLabelsIn={query.ShowDataLabelsIn}
-        xAxisIntersectionAtZero={query.XAxisIntersectionAtZero}
-        xAxisLabels={query.XAxisLabels}
-        xAxisTitle={query.XAxisTitle}
-        yAxisTitle={query.YAxisTitle}
+        showDataAs={query.showDataAs}
+        orientation={query.orientation}
+        plotSeries={query.plotSeries}
+        showDataLabelsIn={query.showDataLabelsIn}
+        xAxisIntersectionAtZero={query.xAxisIntersectionAtZero}
+        xAxisLabels={query.xAxisLabels}
+        xAxisTitle={query.xAxisTitle}
+        yAxisTitle={query.yAxisTitle}
         serviceResponse={{
           Data: this.serviceData,
           MetaData: this.serviceMetadata,
@@ -184,7 +184,7 @@ export class GxQueryRender implements GxComponent {
               </slot>
             }
             {this.rendersDictionary[
-              this.query?.OutputType || MissionOuputType.Missing
+              this.query?.outputType || MissionOuputType.Missing
             ](this.query)}
           </div>
         </div>

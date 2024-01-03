@@ -80,7 +80,7 @@ export class QueryChat implements GxComponent {
   checkQuerySelect(event: CustomEvent<QueryViewerBase>) {
     const lastQuery = this.queryItems.length - 1;
     const chatItemId = lastQuery > 0 ? this.queryItems[lastQuery].id : "";
-    if (chatItemId !== event.detail.Id) {
+    if (chatItemId !== event.detail.id) {
       this.resetChat(true);
     }
   }
@@ -131,7 +131,7 @@ export class QueryChat implements GxComponent {
       console.error(Errors);
     } else {
       this.queryItems = [...this.queryItems, ChatMessage];
-      if (Query?.Id) {
+      if (Query?.id) {
         this.gxAssistantResponse.emit(Query);
       }
     }

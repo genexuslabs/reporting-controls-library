@@ -228,7 +228,7 @@ export function analyzeSeries(
     qViewer.includeTrend &&
     qViewer.trendPeriod === QueryViewerTrendPeriod.SinceTheBeginning
       ? 0
-      : serviceData.Rows.length - 1; // Start = End so it doesn't calculate linear regression
+      : serviceData.rows.length - 1; // Start = End so it doesn't calculate linear regression
 
   if (
     qViewer.includeTrend &&
@@ -239,8 +239,8 @@ export function analyzeSeries(
       xDataType
     );
 
-    for (let i = serviceData.Rows.length - 2; i >= 0; i--) {
-      const currentDate = serviceData.Rows[i][xDataField];
+    for (let i = serviceData.rows.length - 2; i >= 0; i--) {
+      const currentDate = serviceData.rows[i][xDataField];
       if (currentDate < trendStartDate) {
         break;
       }
@@ -255,8 +255,8 @@ export function analyzeSeries(
     start,
     regressionStart,
     xDataField,
-    datum.DataField,
-    serviceData.Rows,
+    datum.dataField,
+    serviceData.rows,
     xDataType
   );
 }
@@ -305,7 +305,7 @@ export function valueOrPercentage(
   value: number,
   datum: QueryViewerServiceMetaDataData
 ) {
-  const percentage = (value * 100) / datum.TargetValue;
+  const percentage = (value * 100) / datum.targetValue;
 
   return showDataAsMapping[showDataAs]({
     value: value.toFixed(2),

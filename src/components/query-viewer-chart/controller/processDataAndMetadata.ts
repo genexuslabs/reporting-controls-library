@@ -43,7 +43,7 @@ export type ChartMetadataAndData = {
 function TotData(data: QueryViewerServiceMetaDataData[]) {
   let totData = 0;
   data.forEach(datum => {
-    if (datum.DataField !== "F0") {
+    if (datum.dataField !== "F0") {
       // Quantity
       totData++;
     }
@@ -56,13 +56,13 @@ export function XAxisDataType(
 ): QueryViewerDataType {
   let cantRowsOrColumns = 0;
   let dataType = QueryViewerDataType.Character;
-  Metadata.Axes.forEach(axis => {
+  Metadata.axes.forEach(axis => {
     if (
-      axis.Visible === QueryViewerVisible.Yes ||
-      axis.Visible === QueryViewerVisible.Always
+      axis.visible === QueryViewerVisible.Yes ||
+      axis.visible === QueryViewerVisible.Always
     ) {
       cantRowsOrColumns++;
-      dataType = axis.DataType;
+      dataType = axis.dataType;
     }
   });
   return cantRowsOrColumns === 1 ? dataType : QueryViewerDataType.Character; // Pues se concatenan los valores
@@ -70,9 +70,9 @@ export function XAxisDataType(
 
 const VisibleDatum = (totData: number, datum: QueryViewerServiceMetaDataData) =>
   totData === 1
-    ? datum.Visible === QueryViewerVisible.Yes ||
-      datum.Visible === QueryViewerVisible.Always
-    : datum.Visible !== QueryViewerVisible.Never;
+    ? datum.visible === QueryViewerVisible.Yes ||
+      datum.visible === QueryViewerVisible.Always
+    : datum.visible !== QueryViewerVisible.Never;
 
 function GetCategoriesAndSeriesDataFields(
   Metadata: QueryViewerServiceMetaData,
@@ -102,22 +102,22 @@ function GetCategoriesAndSeriesDataFields(
     },
     PlotBands: []
   };
-  Metadata.Axes.forEach(axis => {
+  Metadata.axes.forEach(axis => {
     if (
-      (axis.Visible === QueryViewerVisible.Yes ||
-        axis.Visible === QueryViewerVisible.Always) &&
+      (axis.visible === QueryViewerVisible.Yes ||
+        axis.visible === QueryViewerVisible.Always) &&
       (type !== QueryViewerOutputType.Map ||
-        axis.DataType === QueryViewerDataType.Character)
+        axis.dataType === QueryViewerDataType.Character)
     ) {
       // only character dimensions are valid for Maps
-      result.Categories.DataFields.push(axis.DataField);
+      result.Categories.DataFields.push(axis.dataField);
     }
   });
 
-  const totData = TotData(Metadata.Data);
-  Metadata.Data.forEach(datum => {
+  const totData = TotData(Metadata.data);
+  Metadata.data.forEach(datum => {
     if (VisibleDatum(totData, datum)) {
-      result.Series.DataFields.push(datum.DataField);
+      result.Series.DataFields.push(datum.dataField);
     }
   });
   return result;
@@ -193,11 +193,11 @@ function GetDataByDataFieldObj(
       Multicolored: boolean;
     };
   } = {};
-  const totData = TotData(Metadata.Data);
+  const totData = TotData(Metadata.data);
 
-  Metadata.Data.forEach(datum => {
+  Metadata.data.forEach(datum => {
     if (VisibleDatum(totData, datum)) {
-      dataByDataField[datum.DataField] = {
+      dataByDataField[datum.dataField] = {
         Datum: datum,
         Multicolored: IsMulticoloredSerie(
           type,
@@ -296,7 +296,7 @@ function GetCategoryLabel(
       //   axesByDataField[dataField].PictureProperties
       // );
     } else {
-      value = metadata.TextForNullValues;
+      value = metadata.textForNullValues;
       // valueWithPicture = metadata.TextForNullValues;
     }
 
@@ -355,7 +355,7 @@ function AddSeriesValues(
     point.Value = value;
     const datum = dataByDataField[dataField].Datum;
     // var multicoloredSerie = dataByDataField[dataField].Multicolored;
-    if (datum.Aggregation === QueryViewerAggregationType.Average) {
+    if (datum.aggregation === QueryViewerAggregationType.Average) {
       let value_N = row[dataField + "_N"];
       let value_D = row[dataField + "_D"];
       if (value_N === undefined && value_D === undefined) {
@@ -430,18 +430,18 @@ function IsFilteredRow(
   Metadata: QueryViewerServiceMetaData,
   row: QueryViewerServiceDataRow
 ) {
-  for (let i = 0; i < Metadata.Axes.length; i++) {
-    const axis = Metadata.Axes[i];
+  for (let i = 0; i < Metadata.axes.length; i++) {
+    const axis = Metadata.axes[i];
     if (
-      axis.Visible === QueryViewerVisible.Yes ||
-      axis.Visible === QueryViewerVisible.Always
+      axis.visible === QueryViewerVisible.Yes ||
+      axis.visible === QueryViewerVisible.Always
     ) {
-      const value = trimUtil(row[axis.DataField]);
+      const value = trimUtil(row[axis.dataField]);
       // Controlo contra la propiedad Filter
       if (
-        axis.Filter.Type === QueryViewerFilterType.HideAllValues ||
-        (axis.Filter.Type === QueryViewerFilterType.ShowSomeValues &&
-          axis.Filter.Values.indexOf(value) < 0)
+        axis.filter.type === QueryViewerFilterType.HideAllValues ||
+        (axis.filter.type === QueryViewerFilterType.ShowSomeValues &&
+          axis.filter.values.indexOf(value) < 0)
       ) {
         return true;
       }
@@ -631,16 +631,16 @@ export function processDataAndMetadata(
     const serie: QueryViewerChartSerie = {
       MinValue: null, // Minimum value for the serie from the dataset
       MaxValue: null, // Maximum value for the serie from the dataset
-      FieldName: datum.Name, // Nombre del field correspondiente a serie
-      Name: datum.Title,
-      Visible: datum.Visible,
-      DataType: datum.DataType,
-      Aggregation: datum.Aggregation,
+      FieldName: datum.name, // Nombre del field correspondiente a serie
+      Name: datum.title,
+      Visible: datum.visible,
+      DataType: datum.dataType,
+      Aggregation: datum.aggregation,
       DataFields: null,
       Color: "",
       Picture: null,
-      TargetValue: datum.TargetValue,
-      MaximumValue: datum.MaximumValue, // MaximumValue property value (not the maximum value for the serie from the dataset)
+      TargetValue: datum.targetValue,
+      MaximumValue: datum.maximumValue, // MaximumValue property value (not the maximum value for the serie from the dataset)
       PositiveValues: false,
       NegativeValues: false,
       NumberFormat: null,
@@ -648,7 +648,7 @@ export function processDataAndMetadata(
     };
 
     serie.Picture =
-      datum.Picture || serie.DataType === QueryViewerDataType.Integer
+      datum.picture || serie.DataType === QueryViewerDataType.Integer
         ? "ZZZZZZZZZZZZZZ9"
         : "ZZZZZZZZZZZZZZ9.99";
 
@@ -673,7 +673,7 @@ export function processDataAndMetadata(
 
   // Recorro valores y lleno categorías y series
   let valueIndex = 0;
-  serviceResponse.Data.Rows.forEach(row => {
+  serviceResponse.Data.rows.forEach(row => {
     if (!IsFilteredRow(serviceResponse.MetaData, row)) {
       AddCategoryValue(
         metadataAndData.Categories,

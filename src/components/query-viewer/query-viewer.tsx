@@ -694,33 +694,33 @@ export class QueryViewer {
       return;
     }
 
-    this.type ??= properties.OutputType;
-    this.queryTitle ??= properties.Title;
-    this.showValues ??= properties.ShowValues;
+    this.type ??= properties.outputType;
+    this.queryTitle ??= properties.title;
+    this.showValues ??= properties.showValues;
     if (this.type === QueryViewerOutputType.Card) {
-      this.showDataAs ??= properties.ShowDataAs;
-      this.orientation ??= properties.Orientation;
-      this.includeTrend ??= properties.IncludeTrend;
-      this.includeSparkline ??= properties.IncludeSparkline;
-      this.includeMaxMin ??= properties.IncludeMaxAndMin;
+      this.showDataAs ??= properties.showDataAs;
+      this.orientation ??= properties.orientation;
+      this.includeTrend ??= properties.includeTrend;
+      this.includeSparkline ??= properties.includeSparkline;
+      this.includeMaxMin ??= properties.includeMaxAndMin;
     } else if (this.type === QueryViewerOutputType.Chart) {
-      this.chartType ??= properties.ChartType;
-      this.plotSeries ??= properties.PlotSeries;
-      this.xAxisLabels ??= properties.XAxisLabels;
-      this.xAxisIntersectionAtZero ??= properties.XAxisIntersectionAtZero;
-      this.xAxisTitle ??= properties.XAxisTitle;
-      this.yAxisTitle ??= properties.YAxisTitle;
+      this.chartType ??= properties.chartType;
+      this.plotSeries ??= properties.plotSeries;
+      this.xAxisLabels ??= properties.xAxisLabels;
+      this.xAxisIntersectionAtZero ??= properties.xAxisIntersectionAtZero;
+      this.xAxisTitle ??= properties.xAxisTitle;
+      this.yAxisTitle ??= properties.yAxisTitle;
     } else if (this.type === QueryViewerOutputType.Map) {
-      this.mapType ??= properties.MapType;
-      this.region ??= properties.Region;
-      this.continent ??= properties.Continent;
-      this.country ??= properties.Country;
+      this.mapType ??= properties.mapType;
+      this.region ??= properties.region;
+      this.continent ??= properties.continent;
+      this.country ??= properties.country;
     } else {
-      this.paging ??= properties.Paging;
-      this.pageSize ??= properties.PageSize;
-      this.showDataLabelsIn ??= properties.ShowDataLabelsIn;
-      this.totalForRows ??= properties.TotalForRows;
-      this.totalForColumns ??= properties.TotalForColumns;
+      this.paging ??= properties.paging;
+      this.pageSize ??= properties.pageSize;
+      this.showDataLabelsIn ??= properties.showDataLabelsIn;
+      this.totalForRows ??= properties.totalForRows;
+      this.totalForColumns ??= properties.totalForColumns;
     }
   }
 

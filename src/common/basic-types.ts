@@ -605,94 +605,47 @@ export type QueryViewerPivotCollectionProperties = {
  */
 export type GxError = { Code: number; Message: string };
 
-export type GxQueryItem = Omit<QueryViewerBase, "Modified"> & {
-  Id: string;
-  Name: string;
-  Description: string;
-  Expression: string;
-  Modified: Date;
-  differenceInDays: number;
-};
-
-export type GxQueryListResponse = {
-  Queries: GxQueryItem[];
-  Errors: GxError[];
-};
-
 export type ChatMessage = {
   role: "user" | "assistant";
   content: string;
 };
 
-export type GxChatMessage = {
-  id: string;
-  content: string;
-  messageType: "user" | "assistant";
-  expression: string;
-  suggested?: string[];
-};
-
-export type GxChatMessageResponse = {
-  ChatMessage: GxChatMessage;
-  Errors: GxError[];
-  Query?: GxQueryItem;
-};
-
-export type GxCommonErrorResponse = {
-  Errors: GxError[];
-};
-
-export type GxGetQueryResponse = {
-  Query: GxQueryItem;
-  Errors: GxError[];
-};
-
-/**
- * This is the minimum information required to display a query from GXquery
- */
-export type GxQueryOptions = {
-  baseUrl: string;
-  metadataName: string;
-  queryName?: string;
-  query?: QueryViewerBase;
-};
-
 /**
  * Represents query in GXquery @Todo: extend the QueryViewer class with this interface
  */
-export interface QueryViewerBase {
-  Id: string;
-  Name: string;
-  Description: string;
-  Expression: string;
-  Modified: string;
-  RemoveDuplicates: boolean;
-  MaxRows: string;
-  TextForNullValues: string;
-  OutputType: QueryViewerOutputType;
-  Title: string;
-  ShowValues: boolean;
-  ShowDataAs: QueryViewerShowDataAs;
-  Orientation: QueryViewerOrientation;
-  IncludeTrend: boolean;
-  IncludeSparkline: boolean;
-  IncludeMaxAndMin: boolean;
-  ChartType: QueryViewerChartType;
-  PlotSeries: QueryViewerPlotSeries;
-  XAxisLabels: QueryViewerXAxisLabels;
-  XAxisIntersectionAtZero: boolean;
-  XAxisTitle: string;
-  YAxisTitle: string;
-  MapType: QueryViewerMapType;
-  Region: QueryViewerRegion;
-  Continent: QueryViewerContinent;
-  Country: QueryViewerCountry;
-  Paging: boolean;
-  PageSize: number;
-  ShowDataLabelsIn: QueryViewerShowDataLabelsIn;
-  TotalForRows: QueryViewerTotal;
-  TotalForColumns: QueryViewerTotal;
-}
+// export interface QueryViewerBase {
+//   Id: string;
+//   Name: string;
+//   Description: string;
+//   Expression: string;
+//   Modified: string;
+//   RemoveDuplicates: boolean;
+//   MaxRows: string;
+//   TextForNullValues: string;
+//   OutputType: QueryViewerOutputType;
+//   Title: string;
+//   ShowValues: boolean;
+//   ShowDataAs: QueryViewerShowDataAs;
+//   Orientation: QueryViewerOrientation;
+//   IncludeTrend: boolean;
+//   IncludeSparkline: boolean;
+//   IncludeMaxAndMin: boolean;
+//   ChartType: QueryViewerChartType;
+//   PlotSeries: QueryViewerPlotSeries;
+//   XAxisLabels: QueryViewerXAxisLabels;
+//   XAxisIntersectionAtZero: boolean;
+//   XAxisTitle: string;
+//   YAxisTitle: string;
+//   MapType: QueryViewerMapType;
+//   Region: QueryViewerRegion;
+//   Continent: QueryViewerContinent;
+//   Country: QueryViewerCountry;
+//   Paging: boolean;
+//   PageSize: number;
+//   ShowDataLabelsIn: QueryViewerShowDataLabelsIn;
+//   TotalForRows: QueryViewerTotal;
+//   TotalForColumns: QueryViewerTotal;
+// }
 
 export enum QueryViewerAxisType {
   Rows = "Rows",

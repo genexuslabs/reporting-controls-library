@@ -192,13 +192,13 @@ function aggregateDatum(
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
 
-    if (datum.IsFormula) {
+    if (datum.isFormula) {
       let j = 0;
-      let value = row[datum.DataField + "_1"];
+      let value = row[datum.dataField + "_1"];
 
       do {
         j++;
-        value = row[datum.DataField + "_" + j.toString()];
+        value = row[datum.dataField + "_" + j.toString()];
 
         if (value) {
           const floatValue = parseFloat(value);
@@ -214,14 +214,14 @@ function aggregateDatum(
       let yValue;
       let yQuantity;
 
-      if (datum.Aggregation === QueryViewerAggregationType.Count) {
+      if (datum.aggregation === QueryViewerAggregationType.Count) {
         yValue = 0; // Not used
-        yQuantity = parseFloat(row[datum.DataField]);
-      } else if (datum.Aggregation === QueryViewerAggregationType.Average) {
-        yValue = parseFloat(row[datum.DataField + "_N"]);
-        yQuantity = parseFloat(row[datum.DataField + "_D"]);
+        yQuantity = parseFloat(row[datum.dataField]);
+      } else if (datum.aggregation === QueryViewerAggregationType.Average) {
+        yValue = parseFloat(row[datum.dataField + "_N"]);
+        yQuantity = parseFloat(row[datum.dataField + "_D"]);
       } else {
-        yValue = parseFloat(row[datum.DataField]);
+        yValue = parseFloat(row[datum.dataField]);
         yQuantity = 1;
       }
       currentYValues.push(yValue);
@@ -229,10 +229,10 @@ function aggregateDatum(
     }
   }
 
-  return datum.IsFormula
-    ? evaluate(datum.Formula, datum.DataField + "_", variables.map(toString))
+  return datum.isFormula
+    ? evaluate(datum.formula, datum.dataField + "_", variables.map(toString))
     : aggregate(
-        datum.Aggregation,
+        datum.aggregation,
         currentYValues,
         currentYQuantities
       ).toString();
@@ -246,7 +246,7 @@ export function aggregateData(
 
   data.forEach(datum => {
     const aggValue = aggregateDatum(datum, rows);
-    newRow[datum.DataField] = aggValue;
+    newRow[datum.dataField] = aggValue;
   });
   return newRow;
 }
@@ -327,8 +327,8 @@ export function getAxisByDataField(
   dataField: string
 ): QueryViewerServiceMetaDataAxis[] {
   const axes: QueryViewerServiceMetaDataAxis[] = null;
-  Metadata.Axes.forEach(axis => {
-    if (axis.DataField === dataField) {
+  Metadata.axes.forEach(axis => {
+    if (axis.dataField === dataField) {
       axes.push(axis);
     }
   });

@@ -238,12 +238,12 @@ function XAxisTitle(
 
   const xAxisTitles: string[] = [];
   // Se concatenan los títulos
-  serviceResponseMetadata.Axes.forEach(axis => {
+  serviceResponseMetadata.axes.forEach(axis => {
     if (
-      axis.Visible === QueryViewerVisible.Yes ||
-      axis.Visible === QueryViewerVisible.Always
+      axis.visible === QueryViewerVisible.Yes ||
+      axis.visible === QueryViewerVisible.Always
     ) {
-      xAxisTitles.push(axis.Title);
+      xAxisTitles.push(axis.title);
       // ToDo: Add translation to axis Title
     }
   });
@@ -280,7 +280,7 @@ function getXAxisObject(
   ) {
     xAxis.title = {
       text: XAxisTitle(
-        serviceResponseMetadata.Data[0].Title,
+        serviceResponseMetadata.data[0].title,
         serviceResponseMetadata
       )
     };
@@ -436,9 +436,9 @@ function GetDatumByDataField(
   metadata: QueryViewerServiceMetaData,
   dataField: string
 ): QueryViewerServiceMetaDataData {
-  for (let i = 0; i < metadata.Data.length; i++) {
-    if (metadata.Data[i].DataField === dataField) {
-      return metadata.Data[i];
+  for (let i = 0; i < metadata.data.length; i++) {
+    if (metadata.data[i].dataField === dataField) {
+      return metadata.data[i];
     }
   }
   return null;
@@ -456,7 +456,7 @@ function YAxisTitle(
     return GetDatumByDataField(
       result,
       chartMetadataAndData.Series.DataFields[0]
-    ).Title;
+    ).title;
   }
   return yAxisTitle;
 }
@@ -1306,9 +1306,9 @@ function getTooltipObject(
   if (chartTypes.Timeline) {
     tooltip.borderRadius = 1;
     tooltip.shadow = true;
-    tooltip.shared = metadata.Data.length > 1;
+    tooltip.shared = metadata.data.length > 1;
     tooltip.formatter = function () {
-      if (metadata.Data.length === 1) {
+      if (metadata.data.length === 1) {
         return TooltipFormatter(this, chartTypes.Splitted, isRTL, chartTypes);
       } else {
         return DateTimeTooltipFormatter();

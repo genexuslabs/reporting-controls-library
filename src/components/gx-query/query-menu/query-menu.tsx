@@ -154,7 +154,7 @@ export class QueryMenu implements GxComponent {
   async gxAddQuery(item: GxQueryItem) {
     const items = [...this.queryItems];
     // Find if it exist in the query list
-    const index = items.findIndex(i => i.Id === item.Id);
+    const index = items.findIndex(i => i.id === item.id);
     if (index > 0) {
       delete items[index];
     }
@@ -191,14 +191,14 @@ export class QueryMenu implements GxComponent {
 
   private renameQueryCallback = (err: RenameQueryServiceResponse) => {
     if (err.Errors.length === 0) {
-      const { Id, Name } = this.itemToRename;
+      const { id, name } = this.itemToRename;
       const data = [...this.queryItems];
-      const index = data.findIndex(i => i.Id === Id);
+      const index = data.findIndex(i => i.id === id);
       const today = new Date();
       const item = {
         ...data[index],
-        Modified: today,
-        Name: Name,
+        modified: today,
+        name,
         differenceInDays: 0
       };
       data.splice(index, 1);
@@ -213,7 +213,7 @@ export class QueryMenu implements GxComponent {
   private deleteQueryCallback = (err: DeleteQueryServiceResponse) => {
     if (err.Errors.length === 0) {
       const index = this.queryItems.findIndex(
-        i => i.Id === this.itemToDelete.Id
+        i => i.id === this.itemToDelete.id
       );
       if (index > -1) {
         const items = [...this.queryItems];
@@ -251,7 +251,7 @@ export class QueryMenu implements GxComponent {
         "gx-query-menu-item[aria-selected='true']"
       );
     items.forEach(item => {
-      if (activeId !== item.item.Id && item.item.Id !== this.active) {
+      if (activeId !== item.item.id && item.item.id !== this.active) {
         item.setAttribute("aria-selected", "false");
         item.setAttribute("tabindex", "-1");
       }
@@ -263,7 +263,7 @@ export class QueryMenu implements GxComponent {
     const allMenuItems =
       this.element.shadowRoot.querySelectorAll("gx-query-menu-item");
     const index = Array.from(allMenuItems).findIndex(
-      ({ item }) => item.Id === queryMenuItem.item.Id
+      ({ item }) => item.id === queryMenuItem.item.id
     );
     let newIndex = index + order;
     if (order === 1 && newIndex === allMenuItems.length) {
@@ -304,13 +304,13 @@ export class QueryMenu implements GxComponent {
     const rangeOfDays = [...this.rangeOfDays];
 
     if (this.groupItemsByMonth) {
-      newItems.forEach(({ Modified }) => {
-        const firstDayOfMonth = endOfMonth(Modified);
+      newItems.forEach(({ modified }) => {
+        const firstDayOfMonth = endOfMonth(modified);
         const differenceDays = differenceInDays(this.today, firstDayOfMonth);
 
         const lastItemGroup = rangeOfDays.at(rangeOfDays.length - 1);
         if (lastItemGroup.days < differenceDays) {
-          const label = format(Modified, "yyyy MMMM");
+          const label = format(modified, "yyyy MMMM");
           rangeOfDays.push({ days: differenceDays, label });
         }
       });
@@ -343,8 +343,8 @@ export class QueryMenu implements GxComponent {
   };
 
   private selectItem = (item: GxQueryMenuItemCustomEvent<GxQueryItem>) => {
-    this.clearSelectedMenuItem(item.detail.Id);
-    this.active = item.detail.Id;
+    this.clearSelectedMenuItem(item.detail.id);
+    this.active = item.detail.id;
     this.gxQuerySelect.emit(item.detail);
   };
 
@@ -358,7 +358,7 @@ export class QueryMenu implements GxComponent {
           {items.map(item => (
             <gx-query-menu-item
               aria-selected="false"
-              isActive={this.active === item.Id}
+              isActive={this.active === item.id}
               onDeleteItem={this.deleteItem}
               onRenameItem={this.renameItem}
               onSelectItem={this.selectItem}

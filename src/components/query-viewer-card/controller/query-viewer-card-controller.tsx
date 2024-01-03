@@ -120,20 +120,20 @@ export class QueryViewerCard {
     xDataField: string;
     xDataType: QueryViewerDataType;
   } {
-    const axes = this.serviceResponse.MetaData.Axes;
+    const axes = this.serviceResponse.MetaData.axes;
 
     // Can't use forEach, because it displays an error "Not all code paths return a value."
     for (let i = 0; i < axes.length; i++) {
       const axis = axes[i];
 
       if (
-        axis.DataType === QueryViewerDataType.Date ||
-        axis.DataType === QueryViewerDataType.DateTime
+        axis.dataType === QueryViewerDataType.Date ||
+        axis.dataType === QueryViewerDataType.DateTime
       ) {
         return {
           aggregateRows: false,
-          xDataField: axis.DataField,
-          xDataType: axis.DataType
+          xDataField: axis.dataField,
+          xDataType: axis.dataType
         };
       }
     }
@@ -161,7 +161,7 @@ export class QueryViewerCard {
     }
 
     const cardsToRender: CardInformation[] = [];
-    const anyRows = response.Data.Rows.length > 0;
+    const anyRows = response.Data.rows.length > 0;
     const { aggregateRows, xDataField, xDataType } =
       this.checkIfThereIsAnyDate();
 
@@ -169,14 +169,14 @@ export class QueryViewerCard {
 
     if (anyRows) {
       lastRow = aggregateRows
-        ? aggregateData(response.MetaData.Data, response.Data.Rows)
-        : response.Data.Rows[response.Data.Rows.length - 1];
+        ? aggregateData(response.MetaData.data, response.Data.rows)
+        : response.Data.rows[response.Data.rows.length - 1];
     }
 
-    response.MetaData.Data.forEach(datum => {
+    response.MetaData.data.forEach(datum => {
       if (
-        datum.Visible === QueryViewerVisible.Yes ||
-        datum.Visible === QueryViewerVisible.Always
+        datum.visible === QueryViewerVisible.Yes ||
+        datum.visible === QueryViewerVisible.Always
       ) {
         cardsToRender.push(
           this.getCardInformation(
@@ -203,7 +203,7 @@ export class QueryViewerCard {
     lastRow: QueryViewerServiceDataRow
   ): CardInformation {
     const cardInformation: CardInformation = {
-      title: datum.Title,
+      title: datum.title,
       value: "",
       includeMinMax: false,
       includeSparkline: false,
@@ -225,7 +225,7 @@ export class QueryViewerCard {
 
     cardInformation["value"] = valueOrPercentage(
       this.showDataAs,
-      parseFloat(lastRow[datum.DataField]),
+      parseFloat(lastRow[datum.dataField]),
       datum
     );
 
