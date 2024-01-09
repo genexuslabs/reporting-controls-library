@@ -195,8 +195,8 @@ export class QueryViewerPivot {
         UseRecordsetCache: true,
         AllowSelection: false,
         SelectLine: true,
-        TotalForColumns: "Yes" as any,
-        TotalForRows: "Yes" as any,
+        TotalForColumns: this.pivotParameters.TotalForColumns,
+        TotalForRows: this.pivotParameters.TotalForRows,
         Title: this.pivotParameters.Title
       },
       oat_element: undefined
@@ -233,7 +233,6 @@ export class QueryViewerPivot {
   }
 
   render() {
-    console.log("bgdgeeeeeeeeeges");
     return (
       <div
         class="gx_usercontrol qv-pivottable QueryViewer-pivottable"
