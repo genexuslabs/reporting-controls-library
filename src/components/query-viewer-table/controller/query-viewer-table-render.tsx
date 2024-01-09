@@ -123,7 +123,7 @@ export class QueryViewerPivotTableRender {
       // ToDo: update this value
       ServerPaging: true,
       // ToDo: update this value
-      ServerPagingPivot: true,
+      ServerPagingPivot: this.paging,
       // ToDo: update this value
       ServerPagingCacheSize: 0,
       TotalForColumns: this.totalForColumns,

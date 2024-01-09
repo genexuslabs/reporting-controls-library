@@ -15,6 +15,7 @@ import {
   moveToLastPage
 } from "jspivottable";
 import {
+  QueryViewerOutputType,
   QueryViewerPivotCollection,
   QueryViewerPivotParameters,
   QueryViewerPivotTable
@@ -171,32 +172,32 @@ export class QueryViewerPivot {
     return moveToLastPage();
   }
 
-  componentDidLoad() {
+  componentDidRender() {
     this.qViewer = {
       xml: { metadata: this.pivotParameters.metadata },
       pivotParams: {
         page: PIVOT_PAGE,
         content: PIVOT_CONTENT,
         container: this.queryViewerContainer,
-        RealType: "PivotTable" as any,
-        ObjectName: "General.Query1",
+        RealType: QueryViewerOutputType.PivotTable,
+        ObjectName: this.pivotParameters.ObjectName,
         ControlName: "Queryviewer1",
-        PageSize: 20,
+        PageSize: this.pivotParameters.PageSize,
         metadata: this.pivotParameters.metadata,
         UcId: "QUERYVIEWER1_Queryviewer1",
         AutoResize: false,
         DisableColumnSort: false,
         RememberLayout: true,
-        ShowDataLabelsIn: "Columns" as any,
+        ShowDataLabelsIn: this.pivotParameters.ShowDataLabelsIn,
         ServerPaging: true,
-        ServerPagingPivot: true,
+        ServerPagingPivot: this.pivotParameters.ServerPagingPivot,
         ServerPagingCacheSize: 0,
         UseRecordsetCache: true,
         AllowSelection: false,
         SelectLine: true,
         TotalForColumns: "Yes" as any,
-        TotalForRows: undefined,
-        Title: ""
+        TotalForRows: "Yes" as any,
+        Title: this.pivotParameters.Title
       },
       oat_element: undefined
     };
@@ -232,6 +233,7 @@ export class QueryViewerPivot {
   }
 
   render() {
+    console.log("bgdgeeeeeeeeeges");
     return (
       <div
         class="gx_usercontrol qv-pivottable QueryViewer-pivottable"

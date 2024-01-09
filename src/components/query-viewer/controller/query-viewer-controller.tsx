@@ -10,8 +10,6 @@ import {
 import {
   ServicesContext,
   getMetadataAndData,
-  // getPagePivotTable,
-  // getPagePivotTable,
   getPivotTableMetadata,
   makeRequestForPivotTable,
   makeRequestForSyncServicesPivotTable,
@@ -48,7 +46,7 @@ import {
 export class QueryViewerController {
   private recordSetCacheActualKey: string;
   private recordSetCacheOldKey: string;
-
+  private shouldRequestData = false;
   /**
    * @todo Add description
    */
@@ -80,8 +78,8 @@ export class QueryViewerController {
   @Prop() readonly objectName: string;
 
   @Watch("objectName")
-  watchPropHandler(newValue: string) {
-    this.getPropertiesMetadataAndData(newValue);
+  handleObjectNameChange() {
+    this.shouldRequestData = true;
   }
 
   /**
@@ -103,6 +101,10 @@ export class QueryViewerController {
    * If type == PivotTable or Table, if true there is paging, else everything in one table
    */
   @Prop() readonly paging: boolean;
+  @Watch("paging")
+  handlePagingChange() {
+    this.shouldRequestData = true;
+  }
 
   /**
    * For timeline for remembering layout
@@ -155,6 +157,12 @@ export class QueryViewerController {
    */
   @Prop() readonly showDataLabelsIn: QueryViewerShowDataLabelsIn;
 
+  @Watch("showDataLabelsIn")
+  handleShowDataLabelsInChange() {
+    if (this.type === QueryViewerOutputType.PivotTable) {
+      this.shouldRequestData = true;
+    }
+  }
   /**
    * Fired when new metadata and data is fetched
    */
@@ -271,7 +279,8 @@ export class QueryViewerController {
    * PivotTable's Method for PivotTable Data Sync Response
    */
   @Method()
-  async getPivottableDataSync(properties: QueryViewerPivotTableDataSync) {
+  // eslint-disable-next-line @stencil-community/async-methods
+  getPivottableDataSync(properties: QueryViewerPivotTableDataSync) {
     const qvInfo = this.getQueryViewerInformation(this.objectName);
     const servicesInfo = this.getServiceContext();
 
@@ -350,7 +359,7 @@ export class QueryViewerController {
     return queryViewerObject;
   }
 
-  private getPropertiesMetadataAndData(objectName: string) {
+  private getPropertiesMetadataAndData() {
     // In some lifecycles this variable is undefined and a couple of ms after,
     // it's defined
     if (!this.baseUrl) {
@@ -367,7 +376,7 @@ export class QueryViewerController {
       return;
     }
 
-    const queryViewerObject = this.getQueryViewerInformation(objectName);
+    const queryViewerObject = this.getQueryViewerInformation(this.objectName);
 
     const servicesInfo = this.getServiceContext();
 
@@ -426,6 +435,13 @@ export class QueryViewerController {
   }
 
   connectedCallback() {
-    this.getPropertiesMetadataAndData(this.objectName);
+    this.getPropertiesMetadataAndData();
+  }
+
+  componentWillUpdate() {
+    if (this.shouldRequestData) {
+      this.getPropertiesMetadataAndData();
+      this.shouldRequestData = false;
+    }
   }
 }
