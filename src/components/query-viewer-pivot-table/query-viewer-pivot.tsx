@@ -12,7 +12,10 @@ import {
   moveToNextPage,
   moveToFirstPage,
   moveToPreviousPage,
-  moveToLastPage
+  moveToLastPage,
+  setAttributeForTable,
+  setPageDataForTable,
+  setDataSynForTable
 } from "jspivottable";
 import {
   QueryViewerOutputType,
@@ -68,6 +71,33 @@ export class QueryViewerPivot {
   }
 
   /**
+   * Response Page Data
+   */
+  @Prop() readonly pageDataForTable: string;
+  @Watch("pageDataForTable")
+  handlePageDataForTableChange(newValue: string) {
+    setPageDataForTable(this.qViewer.oat_element, newValue);
+  }
+
+  /**
+   * Response Attribute Values
+   */
+  @Prop() readonly attributeValuesForTableXml: string;
+  @Watch("attributeValuesForTableXml")
+  handleAttributesValuesForTableChange(newValue: string) {
+    setAttributeForTable(this.qViewer.oat_element, newValue);
+  }
+
+  /**
+   * Response Table Data Sync
+   */
+  @Prop() readonly getTableDataSyncXml: string;
+  @Watch("getTableDataSyncXml")
+  handleGetTableDataSyncChange(newValue: string) {
+    setDataSynForTable(this.qViewer.oat_element, newValue);
+  }
+
+  /**
    * pivotParameters
    */
   @Prop() readonly pivotParameters: QueryViewerPivotParameters;
@@ -81,6 +111,13 @@ export class QueryViewerPivot {
    * data
    */
   @Prop() readonly data: string;
+
+  /**
+   * Specifies whether the render output is PivotTable or Table
+   */
+  @Prop() readonly tableType:
+    | QueryViewerOutputType.PivotTable
+    | QueryViewerOutputType.Table;
 
   /**
    * QueryViewerTranslations

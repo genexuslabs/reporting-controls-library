@@ -91,7 +91,7 @@ export class QueryViewer {
     [QueryViewerOutputType.PivotTable]: (_, pivotResponse) =>
       this.pivotRender(pivotResponse),
     [QueryViewerOutputType.Table]: (_, pivotResponse) =>
-      this.tableRender(pivotResponse),
+      this.pivotRender(pivotResponse),
 
     // @todo Update this option to depend on the assigned object
     [QueryViewerOutputType.Default]: response =>
@@ -774,40 +774,24 @@ export class QueryViewer {
         totalForRows={this.totalForRows}
         totalForColumns={this.totalForColumns}
         translations={DUMMY_TRANSLATIONS}
+        tableType={
+          this.type === QueryViewerOutputType.PivotTable
+            ? QueryViewerOutputType.PivotTable
+            : QueryViewerOutputType.Table
+        }
         disableColumnSort={this.disableColumnSort}
         rememberLayout={this.rememberLayout}
         pageDataForPivotTable={this.pageDataForPivotTable}
         attributeValuesForPivotTableXml={this.attributeValuesForPivotTableXml}
         calculatePivottableDataXml={this.calculatePivottableDataXml}
         getPivottableDataSyncXml={this.pivottableDataSyncXml}
+        pageDataForTable={this.pageDataForTable}
+        attributeValuesForTableXml={this.attributeValuesForTableXml}
         ref={el => (this.pivotRenderRef = el)}
       ></gx-query-viewer-pivot-render>
     );
   }
 
-  private tableRender(
-    serviceResponsePivotTable: QueryViewerServiceResponsePivotTable
-  ) {
-    return (
-      <gx-query-viewer-table-render
-        allowElementsOrderChange={this.allowElementsOrderChange}
-        allowSelection={this.allowSelection}
-        cssClass={this.cssClass}
-        tableTitle={this.queryTitle}
-        paging={this.paging}
-        pageSize={this.pageSize}
-        showDataLabelsIn={this.showDataLabelsIn}
-        serviceResponse={serviceResponsePivotTable}
-        totalForRows={this.totalForRows}
-        totalForColumns={this.totalForColumns}
-        translations={DUMMY_TRANSLATIONS}
-        disableColumnSort={this.disableColumnSort}
-        rememberLayout={this.rememberLayout}
-        pageDataForTable={this.pageDataForTable}
-        attributeValuesForTableXml={this.attributeValuesForTableXml}
-      ></gx-query-viewer-table-render>
-    );
-  }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private notImplementedRender(_serviceResponse: QueryViewerServiceResponse) {
     return "";
@@ -821,18 +805,6 @@ export class QueryViewer {
     this.controller = document.querySelector(
       `[id=${this.temporalId}] > gx-query-viewer-controller`
     );
-    // this.serviceResponse = {
-    //   Data: [] as any,
-    //   MetaData: [] as any,
-    //   Properties: undefined
-    // };
-    // this.serviceResponsePivotTable = {
-    //   MetaData: undefined,
-    //   Properties: undefined,
-    //   metadataXML: undefined,
-    //   objectName: "",
-    //   useGxQuery: undefined
-    // };
   }
 
   render() {
