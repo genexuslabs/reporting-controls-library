@@ -26,8 +26,7 @@ import {
 } from "@genexus/reporting-api/dist/types/basic-types";
 import {
   QueryViewer,
-  QueryViewerCard,
-  QueryViewerPivotTable
+  QueryViewerCard
 } from "@genexus/reporting-api/dist/types/json";
 import {
   QueryViewerAttributesValuesForPivot,
@@ -255,11 +254,11 @@ export class QueryViewerController {
     const callbackWhenSuccess = (xml: string) => {
       this.pageDataForPivotTable.emit(xml);
     };
-    (qvInfo as QueryViewerPivotTable).Paging = paging;
-    (qvInfo as QueryViewerPivotTable).PageSize = this.pageSize;
-    (qvInfo as QueryViewerPivotTable).TotalForRows = totalForRows;
-    (qvInfo as QueryViewerPivotTable).TotalForColumns = totalForColumns;
-    (qvInfo as QueryViewerPivotTable).ShowDataLabelsIn = this.showDataLabelsIn;
+    qvInfo.Paging = paging;
+    qvInfo.PageSize = this.pageSize;
+    qvInfo.TotalForRows = totalForRows;
+    qvInfo.TotalForColumns = totalForColumns;
+    qvInfo.ShowDataLabelsIn = this.showDataLabelsIn;
 
     makeRequestForPivotTable(
       qvInfo,
@@ -316,8 +315,7 @@ export class QueryViewerController {
    * PivotTable's Method for PivotTable Data Sync Response
    */
   @Method()
-  // eslint-disable-next-line @stencil-community/async-methods
-  getPivottableDataSync(properties: QueryViewerPivotTableDataSync) {
+  async getPivottableDataSync(properties: QueryViewerPivotTableDataSync) {
     const qvInfo = this.getQueryViewerInformation(this.objectName);
     const servicesInfo = this.getServiceContext();
 
@@ -346,11 +344,11 @@ export class QueryViewerController {
     const callbackWhenSuccess = (xml: string) => {
       this.pageDataForTable.emit(xml);
     };
-    (qvInfo as QueryViewerPivotTable).Paging = paging;
-    (qvInfo as QueryViewerPivotTable).PageSize = this.pageSize;
-    (qvInfo as QueryViewerPivotTable).TotalForRows = totalForRows;
-    (qvInfo as QueryViewerPivotTable).TotalForColumns = totalForColumns;
-    (qvInfo as QueryViewerPivotTable).ShowDataLabelsIn = this.showDataLabelsIn;
+    qvInfo.Paging = paging;
+    qvInfo.PageSize = this.pageSize;
+    qvInfo.TotalForRows = totalForRows;
+    qvInfo.TotalForColumns = totalForColumns;
+    qvInfo.ShowDataLabelsIn = this.showDataLabelsIn;
 
     makeRequestForTable(
       qvInfo,
@@ -390,10 +388,9 @@ export class QueryViewerController {
       this.type === QueryViewerOutputType.PivotTable ||
       this.type === QueryViewerOutputType.Table
     ) {
-      (queryViewerObject as QueryViewerPivotTable).ShowDataLabelsIn =
-        this.showDataLabelsIn;
-      (queryViewerObject as QueryViewerPivotTable).Paging = this.paging;
-      (queryViewerObject as QueryViewerPivotTable).PageSize = this.pageSize;
+      queryViewerObject.ShowDataLabelsIn = this.showDataLabelsIn;
+      queryViewerObject.Paging = this.paging;
+      queryViewerObject.PageSize = this.pageSize;
     }
 
     return queryViewerObject;

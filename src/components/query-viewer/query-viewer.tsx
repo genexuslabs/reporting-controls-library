@@ -648,7 +648,7 @@ export class QueryViewer {
         // ToDo: implement this method to the output map
         return null;
       default: // PivotTable and Table
-        const serverData = await this.pivotRenderRef.getPivottableDataSyncXml;
+        const serverData = await this.pivotRenderRef.pivotTableDataSyncXml;
         return this.pivotRenderRef.getDataPivot(serverData);
     }
   }
@@ -784,7 +784,7 @@ export class QueryViewer {
         pageDataForPivotTable={this.pageDataForPivotTable}
         attributeValuesForPivotTableXml={this.attributeValuesForPivotTableXml}
         calculatePivottableDataXml={this.calculatePivottableDataXml}
-        getPivottableDataSyncXml={this.pivottableDataSyncXml}
+        pivotTableDataSyncXml={this.pivottableDataSyncXml}
         pageDataForTable={this.pageDataForTable}
         attributeValuesForTableXml={this.attributeValuesForTableXml}
         ref={el => (this.pivotRenderRef = el)}

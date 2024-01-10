@@ -51,7 +51,7 @@ export class QueryViewerPivotTableRender {
   /**
    * Response Pivot Table Data Sync
    */
-  @Prop() readonly getPivottableDataSyncXml: string;
+  @Prop() readonly pivotTableDataSyncXml: string;
 
   /**
    * A CSS class to set as the `gx-query-viewer-pivot-controller` element class.
@@ -128,7 +128,7 @@ export class QueryViewerPivotTableRender {
   /**
    * Response Table Data Sync
    */
-  @Prop() readonly getTableDataSyncXml: string;
+  @Prop() readonly tableDataSyncXml: string;
 
   /**
    * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
@@ -300,40 +300,39 @@ export class QueryViewerPivotTableRender {
   }
 
   render() {
+    if (this.serviceResponse == null) {
+      return "";
+    }
     const pivotParameters = this.getPivotTableParameters();
     const pivotCollection = this.getPivotTableCollection();
 
     if (this.tableType === QueryViewerOutputType.PivotTable) {
       return (
         <Host>
-          {this.serviceResponse != null && (
-            <gx-query-viewer-pivot
-              pivotCollection={pivotCollection}
-              pivotParameters={pivotParameters}
-              pageDataForPivotTable={this.pageDataForPivotTable}
-              attributeValuesForPivotTableXml={
-                this.attributeValuesForPivotTableXml
-              }
-              calculatePivottableDataXml={this.calculatePivottableDataXml}
-              getPivottableDataSyncXml={this.getPivottableDataSyncXml}
-              ref={el => (this.pivotRef = el)}
-            ></gx-query-viewer-pivot>
-          )}
+          <gx-query-viewer-pivot
+            pivotCollection={pivotCollection}
+            pivotParameters={pivotParameters}
+            pageDataForPivotTable={this.pageDataForPivotTable}
+            attributeValuesForPivotTableXml={
+              this.attributeValuesForPivotTableXml
+            }
+            calculatePivottableDataXml={this.calculatePivottableDataXml}
+            pivotTableDataSyncXml={this.pivotTableDataSyncXml}
+            ref={el => (this.pivotRef = el)}
+          ></gx-query-viewer-pivot>
         </Host>
       );
     }
     return (
       <Host>
-        {this.serviceResponse != null && (
-          <gx-query-viewer-pivot
-            pivotCollection={pivotCollection}
-            pivotParameters={pivotParameters}
-            pageDataForTable={this.pageDataForTable}
-            attributeValuesForTableXml={this.attributeValuesForTableXml}
-            getTableDataSyncXml={this.getTableDataSyncXml}
-            ref={el => (this.pivotRef = el)}
-          ></gx-query-viewer-pivot>
-        )}
+        <gx-query-viewer-pivot
+          pivotCollection={pivotCollection}
+          pivotParameters={pivotParameters}
+          pageDataForTable={this.pageDataForTable}
+          attributeValuesForTableXml={this.attributeValuesForTableXml}
+          tableDataSyncXml={this.tableDataSyncXml}
+          ref={el => (this.pivotRef = el)}
+        ></gx-query-viewer-pivot>
       </Host>
     );
   }

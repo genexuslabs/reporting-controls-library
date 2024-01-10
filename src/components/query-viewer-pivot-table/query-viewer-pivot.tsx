@@ -64,9 +64,9 @@ export class QueryViewerPivot {
   /**
    * Response PivotTable Data Sync
    */
-  @Prop() readonly getPivottableDataSyncXml: string;
-  @Watch("getPivottableDataSyncXml")
-  handleGetPivottableDataSyncChange(newValue: string) {
+  @Prop() readonly pivotTableDataSyncXml: string;
+  @Watch("pivotTableDataSyncXml")
+  handlePivottableDataSyncChange(newValue: string) {
     setDataSynForPivotTable(this.qViewer.oat_element, newValue);
   }
 
@@ -91,9 +91,9 @@ export class QueryViewerPivot {
   /**
    * Response Table Data Sync
    */
-  @Prop() readonly getTableDataSyncXml: string;
-  @Watch("getTableDataSyncXml")
-  handleGetTableDataSyncChange(newValue: string) {
+  @Prop() readonly tableDataSyncXml: string;
+  @Watch("tableDataSyncXml")
+  handleTableDataSyncChange(newValue: string) {
     setDataSynForTable(this.qViewer.oat_element, newValue);
   }
 
@@ -173,7 +173,7 @@ export class QueryViewerPivot {
   async getFilteredDataPivot() {
     return getFilteredDataXML(
       this.qViewer.oat_element,
-      this.getPivottableDataSyncXml
+      this.pivotTableDataSyncXml
     );
   }
 
