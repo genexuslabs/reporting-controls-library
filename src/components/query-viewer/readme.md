@@ -100,7 +100,6 @@ Type: `Promise<any>`
 - [gx-query-viewer-card-controller](../query-viewer-card/controller)
 - [gx-query-viewer-chart-controller](../query-viewer-chart/controller)
 - [gx-query-viewer-pivot-render](../query-viewer-pivot-table/controller)
-- [gx-query-viewer-table-render](../query-viewer-table/controller)
 
 ### Graph
 ```mermaid
@@ -108,7 +107,6 @@ graph TD;
   gx-query-viewer --> gx-query-viewer-card-controller
   gx-query-viewer --> gx-query-viewer-chart-controller
   gx-query-viewer --> gx-query-viewer-pivot-render
-  gx-query-viewer --> gx-query-viewer-table-render
   gx-query-viewer-card-controller --> gx-query-viewer-card
   gx-query-viewer-card --> gx-query-viewer-chart
   gx-query-viewer-chart-controller --> gx-query-viewer-chart
@@ -120,7 +118,6 @@ graph TD;
   gx-query-viewer-chart-controller --> gx-radio-group
   gx-query-viewer-chart-controller --> gx-radio-option
   gx-query-viewer-pivot-render --> gx-query-viewer-pivot
-  gx-query-viewer-table-render --> gx-query-viewer-table
   gx-query-render --> gx-query-viewer
   style gx-query-viewer fill:#f9f,stroke:#333,stroke-width:4px
 ```

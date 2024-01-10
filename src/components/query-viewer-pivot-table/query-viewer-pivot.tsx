@@ -12,9 +12,13 @@ import {
   moveToNextPage,
   moveToFirstPage,
   moveToPreviousPage,
-  moveToLastPage
+  moveToLastPage,
+  setAttributeForTable,
+  setPageDataForTable,
+  setDataSynForTable
 } from "jspivottable";
 import {
+  QueryViewerOutputType,
   QueryViewerPivotCollection,
   QueryViewerPivotParameters,
   QueryViewerPivotTable
@@ -60,10 +64,37 @@ export class QueryViewerPivot {
   /**
    * Response PivotTable Data Sync
    */
-  @Prop() readonly getPivottableDataSyncXml: string;
-  @Watch("getPivottableDataSyncXml")
-  handleGetPivottableDataSyncChange(newValue: string) {
+  @Prop() readonly pivotTableDataSyncXml: string;
+  @Watch("pivotTableDataSyncXml")
+  handlePivottableDataSyncChange(newValue: string) {
     setDataSynForPivotTable(this.qViewer.oat_element, newValue);
+  }
+
+  /**
+   * Response Page Data
+   */
+  @Prop() readonly pageDataForTable: string;
+  @Watch("pageDataForTable")
+  handlePageDataForTableChange(newValue: string) {
+    setPageDataForTable(this.qViewer.oat_element, newValue);
+  }
+
+  /**
+   * Response Attribute Values
+   */
+  @Prop() readonly attributeValuesForTableXml: string;
+  @Watch("attributeValuesForTableXml")
+  handleAttributesValuesForTableChange(newValue: string) {
+    setAttributeForTable(this.qViewer.oat_element, newValue);
+  }
+
+  /**
+   * Response Table Data Sync
+   */
+  @Prop() readonly tableDataSyncXml: string;
+  @Watch("tableDataSyncXml")
+  handleTableDataSyncChange(newValue: string) {
+    setDataSynForTable(this.qViewer.oat_element, newValue);
   }
 
   /**
@@ -80,6 +111,13 @@ export class QueryViewerPivot {
    * data
    */
   @Prop() readonly data: string;
+
+  /**
+   * Specifies whether the render output is PivotTable or Table
+   */
+  @Prop() readonly tableType:
+    | QueryViewerOutputType.PivotTable
+    | QueryViewerOutputType.Table;
 
   /**
    * QueryViewerTranslations
@@ -135,7 +173,7 @@ export class QueryViewerPivot {
   async getFilteredDataPivot() {
     return getFilteredDataXML(
       this.qViewer.oat_element,
-      this.getPivottableDataSyncXml
+      this.pivotTableDataSyncXml
     );
   }
 
@@ -171,32 +209,32 @@ export class QueryViewerPivot {
     return moveToLastPage();
   }
 
-  componentDidLoad() {
+  componentDidRender() {
     this.qViewer = {
       xml: { metadata: this.pivotParameters.metadata },
       pivotParams: {
         page: PIVOT_PAGE,
         content: PIVOT_CONTENT,
         container: this.queryViewerContainer,
-        RealType: "PivotTable" as any,
-        ObjectName: "General.Query1",
+        RealType: QueryViewerOutputType.PivotTable,
+        ObjectName: this.pivotParameters.ObjectName,
         ControlName: "Queryviewer1",
-        PageSize: 20,
+        PageSize: this.pivotParameters.PageSize,
         metadata: this.pivotParameters.metadata,
         UcId: "QUERYVIEWER1_Queryviewer1",
         AutoResize: false,
         DisableColumnSort: false,
         RememberLayout: true,
-        ShowDataLabelsIn: "Columns" as any,
+        ShowDataLabelsIn: this.pivotParameters.ShowDataLabelsIn,
         ServerPaging: true,
-        ServerPagingPivot: true,
+        ServerPagingPivot: this.pivotParameters.ServerPagingPivot,
         ServerPagingCacheSize: 0,
         UseRecordsetCache: true,
         AllowSelection: false,
         SelectLine: true,
-        TotalForColumns: "Yes" as any,
-        TotalForRows: undefined,
-        Title: ""
+        TotalForColumns: this.pivotParameters.TotalForColumns,
+        TotalForRows: this.pivotParameters.TotalForRows,
+        Title: this.pivotParameters.Title
       },
       oat_element: undefined
     };

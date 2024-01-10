@@ -10,8 +10,6 @@ import {
 import {
   ServicesContext,
   getMetadataAndData,
-  // getPagePivotTable,
-  // getPagePivotTable,
   getPivotTableMetadata,
   makeRequestForPivotTable,
   makeRequestForSyncServicesPivotTable,
@@ -48,7 +46,7 @@ import {
 export class QueryViewerController {
   private recordSetCacheActualKey: string;
   private recordSetCacheOldKey: string;
-
+  private shouldRequestData = false;
   /**
    * @todo Add description
    */
@@ -80,8 +78,8 @@ export class QueryViewerController {
   @Prop() readonly objectName: string;
 
   @Watch("objectName")
-  watchPropHandler(newValue: string) {
-    this.getPropertiesMetadataAndData(newValue);
+  handleObjectNameChange() {
+    this.shouldRequestData = true;
   }
 
   /**
@@ -103,6 +101,23 @@ export class QueryViewerController {
    * If type == PivotTable or Table, if true there is paging, else everything in one table
    */
   @Prop() readonly paging: boolean;
+  @Watch("paging")
+  handlePagingChange() {
+    if (this.type === QueryViewerOutputType.PivotTable) {
+      this.shouldRequestData = true;
+    }
+  }
+
+  /**
+   * If paging true, number of items for a single page
+   */
+  @Prop() readonly pageSize: number;
+  @Watch("pageSize")
+  handlePageSizeChange() {
+    if (this.type === QueryViewerOutputType.PivotTable) {
+      this.shouldRequestData = this.paging;
+    }
+  }
 
   /**
    * For timeline for remembering layout
@@ -113,16 +128,38 @@ export class QueryViewerController {
    * @todo Add description
    */
   @Prop() readonly returnSampleData: boolean = false;
+  /**
+   * Title of the QueryViewer
+   */
+  @Prop() readonly queryTitle: string;
+  @Watch("queryTitle")
+  handleQueryTitleChange() {
+    if (this.type === QueryViewerOutputType.PivotTable) {
+      this.shouldRequestData = true;
+    }
+  }
 
   /**
    * True if grand total is shown for all table rows
    */
   @Prop() readonly totalForRows: QueryViewerTotal;
+  @Watch("totalForRows")
+  handleTotalForRowsChange() {
+    if (this.type === QueryViewerOutputType.PivotTable) {
+      this.shouldRequestData = true;
+    }
+  }
 
   /**
    * True if grand total is shown for all table columns
    */
   @Prop() readonly totalForColumns: QueryViewerTotal;
+  @Watch("totalForColumns")
+  handleTotalForColumnsChange() {
+    if (this.type === QueryViewerOutputType.PivotTable) {
+      this.shouldRequestData = true;
+    }
+  }
 
   /**
    * @todo Add description and improve type
@@ -155,10 +192,17 @@ export class QueryViewerController {
    */
   @Prop() readonly showDataLabelsIn: QueryViewerShowDataLabelsIn;
 
+  @Watch("showDataLabelsIn")
+  handleShowDataLabelsInChange() {
+    if (this.type === QueryViewerOutputType.PivotTable) {
+      this.shouldRequestData = true;
+    }
+  }
   /**
    * Fired when new metadata and data is fetched
    */
   @Event() queryViewerServiceResponse: EventEmitter<QueryViewerServiceResponse>;
+
   /**
    * Fired when new metadata and data is fetched
    */
@@ -210,8 +254,8 @@ export class QueryViewerController {
     const callbackWhenSuccess = (xml: string) => {
       this.pageDataForPivotTable.emit(xml);
     };
-
     qvInfo.Paging = paging;
+    qvInfo.PageSize = this.pageSize;
     qvInfo.TotalForRows = totalForRows;
     qvInfo.TotalForColumns = totalForColumns;
     qvInfo.ShowDataLabelsIn = this.showDataLabelsIn;
@@ -300,8 +344,8 @@ export class QueryViewerController {
     const callbackWhenSuccess = (xml: string) => {
       this.pageDataForTable.emit(xml);
     };
-
     qvInfo.Paging = paging;
+    qvInfo.PageSize = this.pageSize;
     qvInfo.TotalForRows = totalForRows;
     qvInfo.TotalForColumns = totalForColumns;
     qvInfo.ShowDataLabelsIn = this.showDataLabelsIn;
@@ -345,12 +389,14 @@ export class QueryViewerController {
       this.type === QueryViewerOutputType.Table
     ) {
       queryViewerObject.ShowDataLabelsIn = this.showDataLabelsIn;
+      queryViewerObject.Paging = this.paging;
+      queryViewerObject.PageSize = this.pageSize;
     }
 
     return queryViewerObject;
   }
 
-  private getPropertiesMetadataAndData(objectName: string) {
+  private getPropertiesMetadataAndData() {
     // In some lifecycles this variable is undefined and a couple of ms after,
     // it's defined
     if (!this.baseUrl) {
@@ -367,7 +413,7 @@ export class QueryViewerController {
       return;
     }
 
-    const queryViewerObject = this.getQueryViewerInformation(objectName);
+    const queryViewerObject = this.getQueryViewerInformation(this.objectName);
 
     const servicesInfo = this.getServiceContext();
 
@@ -380,6 +426,9 @@ export class QueryViewerController {
     ) => {
       this.recordSetCacheActualKey = actualKey;
       this.recordSetCacheOldKey = oldKey;
+
+      queryViewerObject.PageSize = this.pageSize;
+      queryViewerObject.Paging = this.paging;
 
       // Emit service response
       this.queryViewerServiceResponsePivotTable.emit({
@@ -426,6 +475,13 @@ export class QueryViewerController {
   }
 
   connectedCallback() {
-    this.getPropertiesMetadataAndData(this.objectName);
+    this.getPropertiesMetadataAndData();
+  }
+
+  componentWillUpdate() {
+    if (this.shouldRequestData) {
+      this.getPropertiesMetadataAndData();
+      this.shouldRequestData = false;
+    }
   }
 }

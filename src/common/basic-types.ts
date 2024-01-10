@@ -559,8 +559,11 @@ export type QueryViewerPivotParameters = {
   TotalForRows: QueryViewerTotal;
   UcId: string;
   UseRecordsetCache: boolean;
-  data?: string;
   metadata: string;
+};
+
+export type QueryViewerTableParameters = QueryViewerPivotParameters & {
+  data: string;
 };
 
 export type QueryViewerPivotParametersUI = QueryViewerPivotParameters & {
