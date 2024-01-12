@@ -24,8 +24,8 @@ import {
   QueryViewerPivotTable
 } from "../../common/basic-types";
 
-const PIVOT_PAGE = "QUERYVIEWER1_Queryviewer1_GeneralQuery1_pivot_page";
-const PIVOT_CONTENT = "QUERYVIEWER1_Queryviewer1_GeneralQuery1_pivot_content";
+const PIVOT_PAGE = (ucId: string) => `${ucId}_GeneralQuery1_pivot_page`;
+const PIVOT_CONTENT = (ucId: string) => `${ucId}_GeneralQuery1_pivot_content`;
 @Component({
   tag: "gx-query-viewer-pivot",
   styleUrl: "query-viewer-pivot.scss",
@@ -75,7 +75,10 @@ export class QueryViewerPivot {
    */
   @Prop() readonly pageDataForTable: string;
   @Watch("pageDataForTable")
-  handlePageDataForTableChange(newValue: string) {
+  handlePageDataForTableChange(newValue: string, oldValue: string) {
+    if (!oldValue) {
+      return;
+    }
     setPageDataForTable(this.qViewer.oat_element, newValue);
   }
 
@@ -211,17 +214,19 @@ export class QueryViewerPivot {
 
   componentDidRender() {
     this.qViewer = {
-      xml: { metadata: this.pivotParameters.metadata },
+      xml: {
+        metadata: this.pivotParameters.metadata
+      },
       pivotParams: {
-        page: PIVOT_PAGE,
-        content: PIVOT_CONTENT,
+        page: PIVOT_PAGE(this.pivotParameters.UcId),
+        content: PIVOT_CONTENT(this.pivotParameters.UcId),
         container: this.queryViewerContainer,
-        RealType: QueryViewerOutputType.PivotTable,
+        RealType: this.tableType,
         ObjectName: this.pivotParameters.ObjectName,
         ControlName: "Queryviewer1",
-        PageSize: this.pivotParameters.PageSize,
         metadata: this.pivotParameters.metadata,
-        UcId: "QUERYVIEWER1_Queryviewer1",
+        PageSize: this.pivotParameters.PageSize,
+        UcId: this.pivotParameters.UcId,
         AutoResize: false,
         DisableColumnSort: false,
         RememberLayout: true,
@@ -234,7 +239,11 @@ export class QueryViewerPivot {
         SelectLine: true,
         TotalForColumns: this.pivotParameters.TotalForColumns,
         TotalForRows: this.pivotParameters.TotalForRows,
-        Title: this.pivotParameters.Title
+        Title: this.pivotParameters.Title,
+        data:
+          this.tableType === QueryViewerOutputType.Table
+            ? this.pageDataForTable
+            : undefined
       },
       oat_element: undefined
     };
@@ -268,7 +277,6 @@ export class QueryViewerPivot {
       });
     }
   }
-
   render() {
     return (
       <div
@@ -276,8 +284,14 @@ export class QueryViewerPivot {
         id="QUERYVIEWER1Container"
         ref={el => (this.queryViewerContainer = el)}
       >
-        <div id={PIVOT_PAGE} class="pivot_filter_div"></div>
-        <div id={PIVOT_CONTENT} class="conteiner_table_div"></div>
+        <div
+          id={PIVOT_PAGE(this.pivotParameters.UcId)}
+          class="pivot_filter_div"
+        ></div>
+        <div
+          id={PIVOT_CONTENT(this.pivotParameters.UcId)}
+          class="conteiner_table_div"
+        ></div>
       </div>
     );
   }

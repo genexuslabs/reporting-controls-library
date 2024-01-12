@@ -566,7 +566,10 @@ export type QueryViewerTableParameters = QueryViewerPivotParameters & {
   data: string;
 };
 
-export type QueryViewerPivotParametersUI = QueryViewerPivotParameters & {
+export type QueryViewerPivotParametersUI = (
+  | QueryViewerPivotParameters
+  | QueryViewerTableParameters
+) & {
   page: string;
   content: string;
   container: HTMLElement;

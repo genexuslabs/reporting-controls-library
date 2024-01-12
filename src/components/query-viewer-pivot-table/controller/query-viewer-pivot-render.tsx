@@ -2,6 +2,7 @@ import { Component, h, Prop, Host, Element, Method } from "@stencil/core";
 
 import { QueryViewerServiceResponsePivotTable } from "@genexus/reporting-api/dist/types/service-result";
 import {
+  QueryViewerAxisOrderType,
   QueryViewerOutputType,
   QueryViewerPivotCollection,
   QueryViewerPivotParameters,
@@ -10,7 +11,7 @@ import {
   QueryViewerTotal,
   QueryViewerTranslations
 } from "../../../common/basic-types";
-
+import { OAT } from "jspivottable";
 let autoId = 0;
 @Component({
   tag: "gx-query-viewer-pivot-render",
@@ -20,6 +21,7 @@ export class QueryViewerPivotTableRender {
   private controllerId: string;
   private ucId: string;
   private pivotRef: HTMLGxQueryViewerPivotElement;
+  private mustWaitInitialPageDataForTable = false;
 
   @Element() element: HTMLGxQueryViewerPivotRenderElement;
 
@@ -184,6 +186,14 @@ export class QueryViewerPivotTableRender {
     if (!this.serviceResponse) {
       return undefined;
     }
+
+    if (this.pageDataForTable && this.mustWaitInitialPageDataForTable) {
+      this.mustWaitInitialPageDataForTable = false;
+    } else if (this.tableType === QueryViewerOutputType.Table) {
+      this.checkDataPaging();
+      return undefined;
+    }
+
     if (this.tableType === QueryViewerOutputType.PivotTable) {
       const pivotParameters: QueryViewerPivotParameters = {
         RealType: QueryViewerOutputType.PivotTable,
@@ -213,7 +223,7 @@ export class QueryViewerPivotTableRender {
       return pivotParameters;
     }
     const tableParameters: QueryViewerTableParameters = {
-      RealType: QueryViewerOutputType.PivotTable,
+      RealType: QueryViewerOutputType.Table,
       ObjectName: this.serviceResponse.objectName,
       ControlName: this.controllerId,
       PageSize: this.paging === true ? this.pageSize : undefined,
@@ -263,21 +273,55 @@ export class QueryViewerPivotTableRender {
     //  qViewer.pivotParams.ServerPagingCacheSize = 0;
   }
 
+  private checkDataPaging() {
+    if (this.paging && this.tableType === QueryViewerOutputType.Table) {
+      // Tabla con paginado en el server
+      const previousStateSave = OAT.getStateWhenServingPaging
+        ? OAT.getStateWhenServingPaging(
+            this.ucId + "_" + this.serviceResponse.objectName,
+            this.serviceResponse.objectName
+          )
+        : false;
+
+      if (!previousStateSave || !this.rememberLayout) {
+        this.mustWaitInitialPageDataForTable = true;
+        this.requestInitialPageDataForTable();
+      }
+    } else if (!this.paging) {
+      // Paginado en el cliente
+      // qv.services.GetDataIfNeeded(qViewer, function (resText, qViewer) {
+      //   // Servicio GetData
+      //   if (resText != qViewer.xml.data) {
+      //     qViewer.xml.data = resText;
+      //   }
+      //   const d3 = new Date();
+      //   const t3 = d3.getTime();
+      //   if (!qv.util.anyError(resText)) {
+      //     renderPivotTable(qViewer);
+      //   } else {
+      //     // Error en el servicio GetData
+      //     errMsg = qv.util.getErrorFromText(resText);
+      //     qv.util.renderError(qViewer, errMsg);
+      //   }
+      // });
+    }
+  }
+
   private getPivotTableCollection(): QueryViewerPivotCollection {
     const qv: QueryViewerPivotCollection = {
       collection: {},
       fadeTimeouts: {}
     };
 
-    qv.collection["QUERYVIEWER1_Queryviewer1"] = {
+    qv.collection[this.ucId] = {
       AutoRefreshGroup: "",
       debugServices: false,
+      ControlName: "Queryviewer1",
       Metadata: {
         Axes: this.serviceResponse.MetaData.axes,
         Data: this.serviceResponse.MetaData.data
       }
     };
-
     return qv;
   }
 
@@ -293,6 +337,40 @@ export class QueryViewerPivotTableRender {
   //   qViewer.realShow();
   // }
 
+  private getDataFieldAndOrder() {
+    for (let i = 0; i < this.serviceResponse.MetaData.axes.length; i++) {
+      const axis = this.serviceResponse.MetaData.axes[i];
+      if (
+        axis.order.type === QueryViewerAxisOrderType.Ascending ||
+        axis.order.type === QueryViewerAxisOrderType.Descending
+      ) {
+        return { dataFieldOrder: axis.dataField, orderType: axis.order.type };
+      }
+    }
+    return { dataFieldOrder: "", orderType: "" };
+  }
+
+  private requestInitialPageDataForTable() {
+    const dataFieldAndOrder = this.getDataFieldAndOrder();
+
+    const pageDataTableParameters = {
+      PageNumber: 1,
+      PageSize: this.pageSize,
+      RecalculateCantPages: true,
+      DataFieldOrder: dataFieldAndOrder.dataFieldOrder,
+      OrderType: dataFieldAndOrder.orderType,
+      Filters: [],
+      LayoutChange: false,
+      // ToDo: get the proper QueryViewerId
+      QueryviewerId: ""
+    };
+    const requestPageDataEvent = new CustomEvent("RequestPageDataForTable", {
+      bubbles: true
+    });
+    (requestPageDataEvent as any).parameter = pageDataTableParameters;
+    this.element.dispatchEvent(requestPageDataEvent);
+  }
+
   componentWillLoad() {
     this.ucId = `gx_query_viewer_user_controller_${autoId}`;
     this.controllerId = `gx-query-viewer-pivot-controller-${autoId}`;
@@ -306,6 +384,10 @@ export class QueryViewerPivotTableRender {
     const pivotParameters = this.getPivotTableParameters();
     const pivotCollection = this.getPivotTableCollection();
 
+    if (this.mustWaitInitialPageDataForTable) {
+      return "";
+    }
+
     if (this.tableType === QueryViewerOutputType.PivotTable) {
       return (
         <Host>
@@ -318,6 +400,7 @@ export class QueryViewerPivotTableRender {
             }
             calculatePivottableDataXml={this.calculatePivottableDataXml}
             pivotTableDataSyncXml={this.pivotTableDataSyncXml}
+            tableType={this.tableType}
             ref={el => (this.pivotRef = el)}
           ></gx-query-viewer-pivot>
         </Host>
@@ -331,6 +414,7 @@ export class QueryViewerPivotTableRender {
           pageDataForTable={this.pageDataForTable}
           attributeValuesForTableXml={this.attributeValuesForTableXml}
           tableDataSyncXml={this.tableDataSyncXml}
+          tableType={this.tableType}
           ref={el => (this.pivotRef = el)}
         ></gx-query-viewer-pivot>
       </Host>
