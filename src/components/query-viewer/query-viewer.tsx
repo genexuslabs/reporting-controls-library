@@ -438,6 +438,7 @@ export class QueryViewer {
   handleRequestPageDataForPivotTable(
     event: CustomEvent<QueryViewerPageDataForPivot>
   ) {
+    this.setControllerRef();
     if (this.controller) {
       event.stopPropagation();
       this.controller.getPageDataForPivotTable(
@@ -453,6 +454,7 @@ export class QueryViewer {
   handleAttributeValuesForPivotTable(
     event: CustomEvent<QueryViewerAttributesValuesForPivot>
   ) {
+    this.setControllerRef();
     if (this.controller) {
       this.controller.getAttributeValues(event.detail);
     }
@@ -462,6 +464,7 @@ export class QueryViewer {
   handleRequestCalculatePivottableData(
     event: CustomEvent<QueryViewerCalculatePivottableData>
   ) {
+    this.setControllerRef();
     if (this.controller) {
       this.controller.getCalculatePivottableData(event.detail);
     }
@@ -471,6 +474,7 @@ export class QueryViewer {
   handleRequestRequestDataSynForPivotTable(
     event: CustomEvent<QueryViewerPivotTableDataSync>
   ) {
+    this.setControllerRef();
     if (this.controller) {
       this.controller.getPivottableDataSync(event.detail);
     }
@@ -502,6 +506,7 @@ export class QueryViewer {
   handleRequestPageDataForTable(
     event: CustomEvent<QueryViewerPageDataForTable>
   ) {
+    this.setControllerRef();
     if (this.controller) {
       event.stopPropagation();
       this.controller.getPageDataForTable(
@@ -522,6 +527,7 @@ export class QueryViewer {
   handleAttributeForTable(
     event: CustomEvent<QueryViewerAttributesValuesForTable>
   ) {
+    this.setControllerRef();
     if (this.controller) {
       this.controller.getAttributeValues(event.detail);
     }
@@ -536,6 +542,7 @@ export class QueryViewer {
   handleRequestRequestDataSynForTable(
     event: CustomEvent<QueryViewerTableDataSync>
   ) {
+    this.setControllerRef();
     if (this.controller) {
       this.controller.getPivottableDataSync(event.detail);
     }
@@ -634,6 +641,7 @@ export class QueryViewer {
    */
   @Method()
   async getData() {
+    this.setControllerRef();
     if (!this.controller) {
       return;
     }
@@ -797,14 +805,18 @@ export class QueryViewer {
     return "";
   }
 
+  private setControllerRef() {
+    this.controller = document.querySelector(
+      `[id=${this.temporalId}] > gx-query-viewer-controller`
+    );
+  }
+
   componentWillLoad() {
     this.temporalId = `gx-query-viewer-${autoId++}`;
   }
 
   componentDidLoad() {
-    this.controller = document.querySelector(
-      `[id=${this.temporalId}] > gx-query-viewer-controller`
-    );
+    this.setControllerRef();
   }
 
   render() {
