@@ -49,7 +49,10 @@ import {
   // TableFilterChanged,
   // TableItemClick,
   // TablePageChange,
-  PivotTableNavigation
+  PivotTableNavigation,
+  TableItemClick,
+  TablePageChange,
+  TableFilterChanged
 } from "../../global/types";
 
 import {
@@ -450,13 +453,13 @@ export class QueryViewer {
     }
   }
 
-  @Listen("RequestAttributeValuesForPivotTable")
+  @Listen("RequestAttributeValuesForPivotTable", { target: "document" })
   handleAttributeValuesForPivotTable(
     event: CustomEvent<QueryViewerAttributesValuesForPivot>
   ) {
     this.setControllerRef();
     if (this.controller) {
-      this.controller.getAttributeValues(event.detail);
+      this.controller.getAttributeValues((event as any).parameter);
     }
   }
 
@@ -523,13 +526,13 @@ export class QueryViewer {
     this.pageDataForTable = event.detail;
   }
 
-  @Listen("RequestAttributeForTable")
+  @Listen("RequestAttributeForTable", { target: "document" })
   handleAttributeForTable(
     event: CustomEvent<QueryViewerAttributesValuesForTable>
   ) {
     this.setControllerRef();
     if (this.controller) {
-      this.controller.getAttributeValues(event.detail);
+      this.controller.getAttributeValues((event as any).parameter);
     }
   }
 
@@ -624,15 +627,47 @@ export class QueryViewer {
 
   /** User Events for Table*/
 
-  // ToDo: implement this
-  // @Listen("TableOnItemClickEvent")
-  // handleTableOnItemClickEvent(event: CustomEvent<TableItemClick>) {}
-  // // ToDo: implement this
-  // @Listen("TableOnPageChangeEvent")
-  // handleTableOnDragundDropEvent(event: CustomEvent<TablePageChange>) {}
-  // // ToDo: implement this
-  // @Listen("TableOnFilterChangedEvent")
-  // handleTableOnFilterChangedEvent(event: CustomEvent<TableFilterChanged>) {}
+  @Listen("TableOnItemClickEvent")
+  handleTableOnItemClickEvent(event: CustomEvent<TableItemClick>) {
+    const eventData = itemClickDataForPivotTable(
+      (event as any).parameter.QueryviewerId,
+      (event as any).parameter.Data
+    );
+    this.itemClick.emit(eventData);
+  }
+
+  @Listen("TableOnPageChangeEvent")
+  handleTableOnDragundDropEvent(event: CustomEvent<TablePageChange>) {
+    let eventData;
+
+    switch ((event as any).parameter.Navigation) {
+      case PivotTableNavigation.OnFirstPage:
+        eventData = this.pivotRenderRef.firstPage();
+        this.firstPage.emit(eventData);
+        break;
+      case PivotTableNavigation.OnLastPage:
+        eventData = this.pivotRenderRef.lastPage();
+        this.lastPage.emit(eventData);
+        break;
+      case PivotTableNavigation.OnNextPage:
+        eventData = this.pivotRenderRef.nextPage();
+        this.nextPage.emit(eventData);
+        break;
+      case PivotTableNavigation.OnPreviousPage:
+        eventData = this.pivotRenderRef.previousPage();
+        this.previousPage.emit(eventData);
+        break;
+    }
+  }
+
+  @Listen("TableOnFilterChangedEvent")
+  handleTableOnFilterChangedEvent(event: CustomEvent<TableFilterChanged>) {
+    const eventData = onFilterChangedPivotTableEvent(
+      (event as any).parameter.QueryviewerId,
+      (event as any).parameter.FilterChangedData
+    );
+    this.filterChanged.emit(eventData);
+  }
 
   /** GX User Events */
 
@@ -661,35 +696,31 @@ export class QueryViewer {
     }
   }
 
-  // ToDo: complete this implementation
   /**
    * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
    */
-  // @Method()
-  // async getFilteredData() {
-  //   if (!this.controller) {
-  //     return;
-  //   }
-  //   switch (this.RealType) {
-  //     case QueryViewerOutputType.Card:
-  //       // ToDo: implement this method to the output card
-  //       return null;
-  //     case QueryViewerOutputType.Chart:
-  //       // ToDo: implement this method to the output chart
-  //       return null;
-  //     case QueryViewerOutputType.Map:
-  //       // ToDo: implement this method to the output map
-  //       return null;
-  //     default: // PivotTable and Table
-  //       // ToDo: complete this implementation
-  //       // const serverData = this.pivotRenderRef.getPivottableDataSyncXml;
-  //       // return this.pivotRenderRef.getFilteredDataPivot(serverData);
-  //       return null;
-  //   }
-  // }
+  @Method()
+  async getFilteredData() {
+    if (!this.controller) {
+      return;
+    }
+    switch (this.type) {
+      case QueryViewerOutputType.Card:
+        // ToDo: implement this method to the output card
+        return null;
+      case QueryViewerOutputType.Chart:
+        // ToDo: implement this method to the output chart
+        return null;
+      case QueryViewerOutputType.Map:
+        // ToDo: implement this method to the output map
+        return null;
+      default: // PivotTable and Table
+        const serverData = await this.pivotRenderRef.pivotTableDataSyncXml;
+        return this.pivotRenderRef.getFilteredDataPivot(serverData);
+    }
+  }
 
   /** AutoRefresh */
-
   // ToDo: implement this
   // @Listen("RequestUpdateLayoutSameGroup")
   // handlePivotTableAutorefresh(event: CustomEvent<any>) {}
