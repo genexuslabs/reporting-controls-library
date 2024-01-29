@@ -11,7 +11,7 @@ import {
   QueryViewerServiceData,
   QueryViewerServiceMetaData
 } from "@genexus/reporting-api/dist/types/service-result";
-import { Component as GxComponent } from "../../../common/interfaces";
+import { Component as GxComponent } from "@common/interfaces";
 
 enum MissionOuputType {
   Missing = "missing"

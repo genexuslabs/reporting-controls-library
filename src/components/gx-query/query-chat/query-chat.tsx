@@ -20,8 +20,8 @@ import {
   GxQueryOptions,
   QueryViewerBase
 } from "@genexus/reporting-api/dist/types/basic-types";
-import { Component as GxComponent } from "../../../common/interfaces";
-import { KEY_CODES } from "../../../common/reserverd-names";
+import { Component as GxComponent } from "@common/interfaces";
+import { KEY_CODES } from "@common/reserverd-names";
 
 
 export type QueryRequest = {

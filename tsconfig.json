@@ -15,7 +15,10 @@
     "module": "esnext",
     "target": "es2017",
     "jsx": "react",
-    "jsxFactory": "h"
+    "jsxFactory": "h",
+    "paths": {
+      "@common/*": ["./src/common/*"]
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules"]
