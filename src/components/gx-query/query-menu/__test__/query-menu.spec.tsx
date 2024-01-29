@@ -1,9 +1,9 @@
 // query-menu.spec.tsx
 
 import { newSpecPage } from "@stencil/core/testing";
-import * as servicesManager from "@genexus/reporting-api/dist";
+import * as servicesManager from "@services";
 import { QueryMenu } from "../query-menu";
-import { GxQueryItem, GxQueryOptions } from "@genexus/reporting-api/dist/types/basic-types";
+import { GxQueryItem, GxQueryOptions } from "@common/basic-types";
 
 describe("QueryMenu", () => {
   const mockData = [

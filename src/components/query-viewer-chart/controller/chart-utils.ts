@@ -1,4 +1,4 @@
-import { QueryViewerServiceMetaData } from "@genexus/reporting-api/dist/types/service-result";
+import { QueryViewerServiceMetaData } from "@services/types/service-result";
 import {
   QueryViewerChartType,
   QueryViewerOutputType,

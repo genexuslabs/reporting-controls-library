@@ -1,4 +1,4 @@
-import { QueryViewerServiceResponsePivotTable } from "@genexus/reporting-api/dist/types/service-result";
+import { QueryViewerServiceResponsePivotTable } from "@services/types/service-result";
 import {
   QueryViewerAxisType,
   QueryViewerElementType
@@ -15,7 +15,7 @@ import {
 import {
   selectXPathNode,
   xmlToDocument
-} from "@genexus/reporting-api/dist/xml-parser/utils/dom";
+} from "@services/xml-parser/utils/dom";
 
 export function itemClickDataForPivotTable(
   qViewer: any,

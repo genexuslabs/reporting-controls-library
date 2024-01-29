@@ -6,8 +6,8 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { QueryRequest } from "./components/gx-query/query-chat/query-chat";
-import { GeneratorType, GxQueryItem, QueryViewerAutoResizeType, QueryViewerBase, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels } from "@genexus/reporting-api/dist/types/basic-types";
-import { QueryViewerAttributesValuesForPivot, QueryViewerCalculatePivottableData, QueryViewerPageDataForPivot, QueryViewerPageDataForTable, QueryViewerPivotTableDataSync, QueryViewerServiceData, QueryViewerServiceMetaData, QueryViewerServiceResponse, QueryViewerServiceResponsePivotTable } from "@genexus/reporting-api/dist/types/service-result";
+import { GeneratorType, GxQueryItem, QueryViewerAutoResizeType, QueryViewerBase, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels } from "@common/basic-types";
+import { QueryViewerAttributesValuesForPivot, QueryViewerCalculatePivottableData, QueryViewerPageDataForPivot, QueryViewerPageDataForTable, QueryViewerPivotTableDataSync, QueryViewerServiceData, QueryViewerServiceMetaData, QueryViewerServiceResponse, QueryViewerServiceResponsePivotTable } from "@services/types/service-result";
 import { QueryViewerDragAndDropData, QueryViewerFilterChangedData, QueryViewerItemClickData, QueryViewerItemExpandAndCollapseData } from "./global/types";
 import { QueryViewerChartType as QueryViewerChartType1, QueryViewerOrientation as QueryViewerOrientation1, QueryViewerOutputType as QueryViewerOutputType1, QueryViewerPivotCollection, QueryViewerPivotParameters, QueryViewerPlotSeries as QueryViewerPlotSeries1, QueryViewerShowDataAs as QueryViewerShowDataAs1, QueryViewerShowDataLabelsIn as QueryViewerShowDataLabelsIn1, QueryViewerSliderRange, QueryViewerTotal as QueryViewerTotal1, QueryViewerTranslations as QueryViewerTranslations1, QueryViewerTrendPeriod as QueryViewerTrendPeriod1, QueryViewerXAxisLabels as QueryViewerXAxisLabels1, TrendIcon } from "./common/basic-types";
 import { Axis, ChartOptions, LegendOptions, PaneOptions, PlotOptions, SeriesLineOptions, SeriesOptionsType, SubtitleOptions, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
@@ -37,6 +37,14 @@ export namespace Components {
     }
     interface GxQueryChat {
         /**
+          * Authentication API Key
+         */
+        "apiKey": string;
+        /**
+          * Base URL of the server
+         */
+        "baseUrl": string;
+        /**
           * Clean chat
          */
         "gxCleanChat": () => Promise<void>;
@@ -52,12 +60,24 @@ export namespace Components {
           * Text that appears in the input control when it has no value set
          */
         "placeholder": string;
+        /**
+          * Authentication Saia Token
+         */
+        "saiaToken": string;
+        /**
+          * Optional Saia user ID
+         */
+        "saiaUserId": string;
     }
     interface GxQueryMenu {
         /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
          */
         "accessibleName": "Query list";
+        /**
+          * Authentication API Key
+         */
+        "apiKey": string;
         /**
           * Base URL of the server
          */
@@ -79,6 +99,14 @@ export namespace Components {
           * Dates to group queries
          */
         "rangeOfDays": { days: number; label: string }[];
+        /**
+          * Authentication Saia Token
+         */
+        "saiaToken": string;
+        /**
+          * Optional Saia user ID
+         */
+        "saiaUserId": string;
         /**
           * Use this property to pass a query obtained from GXquery. This disabled the call to GxQuery API:    Id: string;    Name: string;    Description: string;    Expression: string;    Modified: string;
          */
@@ -571,6 +599,10 @@ export namespace Components {
          */
         "allowElementsOrderChange": boolean;
         /**
+          * Authentication API Key
+         */
+        "apiKey": string;
+        /**
           * Determines the application namespace where the program is generated and compiled.
          */
         "applicationNamespace": string;
@@ -646,6 +678,14 @@ export namespace Components {
           * @todo Add description
          */
         "returnSampleData": boolean;
+        /**
+          * Authentication Saia Token
+         */
+        "saiaToken": string;
+        /**
+          * Optional Saia user ID
+         */
+        "saiaUserId": string;
         /**
           * Use this property to pass a query obtained from GXquery, when useGxquery = true (ignored if objectName is specified, because this property has a greater precedence)
          */
@@ -1295,6 +1335,14 @@ declare namespace LocalJSX {
     }
     interface GxQueryChat {
         /**
+          * Authentication API Key
+         */
+        "apiKey"?: string;
+        /**
+          * Base URL of the server
+         */
+        "baseUrl"?: string;
+        /**
           * Specify the size of the icon messages. ex 50px
          */
         "messageIconSize"?: string;
@@ -1314,12 +1362,24 @@ declare namespace LocalJSX {
           * Text that appears in the input control when it has no value set
          */
         "placeholder"?: string;
+        /**
+          * Authentication Saia Token
+         */
+        "saiaToken"?: string;
+        /**
+          * Optional Saia user ID
+         */
+        "saiaUserId"?: string;
     }
     interface GxQueryMenu {
         /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
          */
         "accessibleName"?: "Query list";
+        /**
+          * Authentication API Key
+         */
+        "apiKey"?: string;
         /**
           * Base URL of the server
          */
@@ -1348,6 +1408,14 @@ declare namespace LocalJSX {
           * Dates to group queries
          */
         "rangeOfDays"?: { days: number; label: string }[];
+        /**
+          * Authentication Saia Token
+         */
+        "saiaToken"?: string;
+        /**
+          * Optional Saia user ID
+         */
+        "saiaUserId"?: string;
         /**
           * Use this property to pass a query obtained from GXquery. This disabled the call to GxQuery API:    Id: string;    Name: string;    Description: string;    Expression: string;    Modified: string;
          */
@@ -1875,6 +1943,10 @@ declare namespace LocalJSX {
          */
         "allowElementsOrderChange"?: boolean;
         /**
+          * Authentication API Key
+         */
+        "apiKey"?: string;
+        /**
           * Determines the application namespace where the program is generated and compiled.
          */
         "applicationNamespace"?: string;
@@ -1962,6 +2034,14 @@ declare namespace LocalJSX {
           * @todo Add description
          */
         "returnSampleData"?: boolean;
+        /**
+          * Authentication Saia Token
+         */
+        "saiaToken"?: string;
+        /**
+          * Optional Saia user ID
+         */
+        "saiaUserId"?: string;
         /**
           * Use this property to pass a query obtained from GXquery, when useGxquery = true (ignored if objectName is specified, because this property has a greater precedence)
          */

@@ -7,7 +7,7 @@ import {
   QueryViewerPivotTableDataSync,
   QueryViewerServiceMetaDataAxis,
   QueryViewerServiceMetaDataData
-} from "@genexus/reporting-api/dist/types/service-result";
+} from "@services/types/service-result";
 
 export type GeneratorType = "net" | "java";
 
@@ -611,47 +611,42 @@ export type QueryViewerPivotCollectionProperties = {
  */
 export type GxError = { Code: number; Message: string };
 
-export type ChatMessage = {
-  role: "user" | "assistant";
-  content: string;
-};
-
 /**
  * Represents query in GXquery @Todo: extend the QueryViewer class with this interface
  */
-// export interface QueryViewerBase {
-//   Id: string;
-//   Name: string;
-//   Description: string;
-//   Expression: string;
-//   Modified: string;
-//   RemoveDuplicates: boolean;
-//   MaxRows: string;
-//   TextForNullValues: string;
-//   OutputType: QueryViewerOutputType;
-//   Title: string;
-//   ShowValues: boolean;
-//   ShowDataAs: QueryViewerShowDataAs;
-//   Orientation: QueryViewerOrientation;
-//   IncludeTrend: boolean;
-//   IncludeSparkline: boolean;
-//   IncludeMaxAndMin: boolean;
-//   ChartType: QueryViewerChartType;
-//   PlotSeries: QueryViewerPlotSeries;
-//   XAxisLabels: QueryViewerXAxisLabels;
-//   XAxisIntersectionAtZero: boolean;
-//   XAxisTitle: string;
-//   YAxisTitle: string;
-//   MapType: QueryViewerMapType;
-//   Region: QueryViewerRegion;
-//   Continent: QueryViewerContinent;
-//   Country: QueryViewerCountry;
-//   Paging: boolean;
-//   PageSize: number;
-//   ShowDataLabelsIn: QueryViewerShowDataLabelsIn;
-//   TotalForRows: QueryViewerTotal;
-//   TotalForColumns: QueryViewerTotal;
-// }
+export interface QueryViewerBase {
+  id: string;
+  name: string;
+  description: string;
+  expression: string;
+  modified: string;
+  removeDuplicates: boolean;
+  maxRows: string;
+  textForNullValues: string;
+  outputType: QueryViewerOutputType;
+  title: string;
+  showValues: boolean;
+  showDataAs: QueryViewerShowDataAs;
+  orientation: QueryViewerOrientation;
+  includeTrend: boolean;
+  includeSparkline: boolean;
+  includeMaxAndMin: boolean;
+  chartType: QueryViewerChartType;
+  plotSeries: QueryViewerPlotSeries;
+  xAxisLabels: QueryViewerXAxisLabels;
+  xAxisIntersectionAtZero: boolean;
+  xAxisTitle: string;
+  yAxisTitle: string;
+  mapType: QueryViewerMapType;
+  region: QueryViewerRegion;
+  continent: QueryViewerContinent;
+  country: QueryViewerCountry;
+  paging: boolean;
+  pageSize: number;
+  showDataLabelsIn: QueryViewerShowDataLabelsIn;
+  totalForRows: QueryViewerTotal;
+  totalForColumns: QueryViewerTotal;
+}
 
 export enum QueryViewerAxisType {
   Rows = "Rows",
@@ -664,3 +659,63 @@ export enum QueryViewerElementType {
   Axis = "Axis",
   Datum = "Datum"
 }
+
+
+/**
+ * Represent error in GXquery
+ */
+// export type GxError = { Code: number; Message: string };
+
+export type GxQueryItem = Omit<QueryViewerBase, "modified"> & {
+  id: string;
+  name: string;
+  description: string;
+  modified: Date;
+  expression: string;
+  differenceInDays: number;
+};
+
+export type GxQueryListResponse = {
+  Queries: GxQueryItem[];
+  Errors: GxError[];
+};
+
+export type ChatMessage = {
+  role: "user" | "assistant";
+  content: string;
+};
+
+export type GxChatMessage = {
+  id: string;
+  content: string;
+  messageType: "user" | "assistant";
+  expression: string;
+};
+
+export type GxChatMessageResponse = {
+  ChatMessage: GxChatMessage;
+  Errors: GxError[];
+  Query?: QueryViewerBase;
+};
+
+export type GxCommonErrorResponse = {
+  Errors: GxError[];
+};
+
+export type GxGetQueryResponse = {
+  Query: QueryViewerBase;
+  Errors: GxError[];
+};
+
+/**
+ * This is the minimum information required to display a query from GXquery
+ */
+export type GxQueryOptions = {
+  baseUrl: string;
+  metadataName: string;
+  apiKey: string;
+  saiaToken: string;
+  saiaUserId?: string;
+  generator?: GeneratorType;
+  query?: QueryViewerBase;
+};

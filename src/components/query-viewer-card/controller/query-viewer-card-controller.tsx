@@ -4,7 +4,7 @@ import {
   QueryViewerServiceDataRow,
   QueryViewerServiceMetaDataData,
   QueryViewerServiceResponse
-} from "@genexus/reporting-api/dist/types/service-result";
+} from "@services/types/service-result";
 import {
   QueryViewerDataType,
   QueryViewerOrientation,

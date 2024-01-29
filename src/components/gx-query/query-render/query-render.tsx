@@ -1,16 +1,17 @@
 import { Component, Element, Host, Prop, State, Watch, h } from "@stencil/core";
 
-import { parseDataXML, parseMetadataXML } from "@genexus/reporting-api/dist";
+import { parseDataXML } from "@services/xml-parser/data-parser";
+import { parseMetadataXML } from "@services/xml-parser/metadata-parser";
 import {
   GeneratorType,
   QueryViewerBase,
   QueryViewerOutputType,
   QueryViewerTrendPeriod
-} from "@genexus/reporting-api/dist/types/basic-types";
+} from "@common/basic-types";
 import {
   QueryViewerServiceData,
   QueryViewerServiceMetaData
-} from "@genexus/reporting-api/dist/types/service-result";
+} from "@services/types/service-result";
 import { Component as GxComponent } from "@common/interfaces";
 
 enum MissionOuputType {
@@ -35,11 +36,11 @@ export class GxQueryRender implements GxComponent {
    * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true.
    * In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
    */
-  @Prop() readonly metadataName = process.env.METADATA_NAME;
+  @Prop() readonly metadataName = process.env.GENEXUS_METADATA_NAME;
   /**
    * Base URL of the server
    */
-  @Prop() readonly baseUrl = process.env.BASE_URL;
+  @Prop() readonly baseUrl = process.env.GENEXUS_QUERY_URL;
   /**
    * Environment of the project: java or net
    */

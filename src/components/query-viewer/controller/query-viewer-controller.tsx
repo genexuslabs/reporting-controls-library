@@ -14,7 +14,7 @@ import {
   makeRequestForPivotTable,
   makeRequestForSyncServicesPivotTable,
   makeRequestForTable
-} from "@genexus/reporting-api/dist";
+} from "@services/services-manager";
 import {
   GeneratorType,
   QueryViewerBase,
@@ -23,11 +23,11 @@ import {
   QueryViewerOutputType,
   QueryViewerShowDataLabelsIn,
   QueryViewerTotal
-} from "@genexus/reporting-api/dist/types/basic-types";
+} from "@common/basic-types";
 import {
   QueryViewer,
   QueryViewerCard
-} from "@genexus/reporting-api/dist/types/json";
+} from "@services/types/json";
 import {
   QueryViewerAttributesValuesForPivot,
   QueryViewerCalculatePivottableData,
@@ -37,7 +37,7 @@ import {
   QueryViewerServiceMetaData,
   QueryViewerServiceResponse,
   QueryViewerServiceResponsePivotTable
-} from "@genexus/reporting-api/dist/types/service-result";
+} from "@services/types/service-result";
 
 @Component({
   tag: "gx-query-viewer-controller",
@@ -60,7 +60,19 @@ export class QueryViewerController {
   /**
    * Base URL of the server
    */
-  @Prop() readonly baseUrl: string;
+  @Prop() readonly baseUrl = process.env.GENEXUS_QUERY_URL;
+  /**
+   * Authentication API Key
+   */
+  @Prop() readonly apiKey = process.env.GENEXUS_API_KEY;
+  /**
+   * Authentication Saia Token
+   */
+  @Prop() readonly saiaToken = process.env.GENEXUS_SAIA_TOKEN;
+  /**
+   * Optional Saia user ID
+   */
+  @Prop() readonly saiaUserId = process.env.GENEXUS_SAIA_USER_ID;
 
   /**
    * When `type == Chart`, specifies the chart type: Bar, Pie, Timeline, etc...
@@ -469,6 +481,9 @@ export class QueryViewerController {
       baseUrl: this.baseUrl,
       generator: this.environment,
       metadataName: this.metadataName,
+      apiKey: this.apiKey,
+      saiaToken: this.saiaToken,
+      saiaUserId: this.saiaUserId,
       objectName: this.objectName,
       serializedObject: this.serializedObject
     };

@@ -13,16 +13,19 @@ import {
 } from "@stencil/core";
 
 import {
-  DeleteQueryServiceResponse, RenameQueryServiceResponse,
+  DeleteQueryServiceResponse,
+  RenameQueryServiceResponse
+} from "@services/gxquery-connector";
+import {
   asyncDeleteQuery,
   asyncGetListQuery,
   asyncRenameQuery
-} from "@genexus/reporting-api/dist";
+} from "@services/services-manager";
 import {
   GxQueryItem,
   GxQueryListResponse,
   GxQueryOptions
-} from "@genexus/reporting-api/dist/types/basic-types";
+} from "@common/basic-types";
 import { differenceInDays, endOfMonth, format } from "date-fns";
 import { Component as GxComponent } from "@common/interfaces";
 import { KEY_CODES } from "@common/reserverd-names";
@@ -86,11 +89,23 @@ export class QueryMenu implements GxComponent {
    * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true.
    * In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
    */
-  @Prop() readonly metadataName = process.env.METADATA_NAME;
+  @Prop() readonly metadataName = process.env.GENEXUS_METADATA_NAME;
   /**
    * Base URL of the server
    */
-  @Prop() readonly baseUrl = process.env.BASE_URL;
+  @Prop() readonly baseUrl = process.env.GENEXUS_QUERY_URL;
+  /**
+   * Authentication API Key
+   */
+  @Prop() readonly apiKey = process.env.GENEXUS_API_KEY;
+  /**
+   * Authentication Saia Token
+   */
+  @Prop() readonly saiaToken = process.env.GENEXUS_SAIA_TOKEN;
+  /**
+   * Optional Saia user ID
+   */
+  @Prop() readonly saiaUserId = process.env.GENEXUS_SAIA_USER_ID;
   /**
    * Use this property to pass a query obtained from GXquery.
    * This disabled the call to GxQuery API:
@@ -230,7 +245,10 @@ export class QueryMenu implements GxComponent {
   private queryOptions(): GxQueryOptions {
     return {
       baseUrl: this.baseUrl,
-      metadataName: this.metadataName
+      metadataName: this.metadataName,
+      apiKey: this.apiKey,
+      saiaToken: this.saiaToken,
+      saiaUserId: this.saiaUserId
     };
   }
 
