@@ -1,4 +1,4 @@
-import { QueryViewerChartType } from "@common/basic-types";
+import { QueryViewerChartType } from "../../common/basic-types";
 import { QueryViewerChart } from "../types/json";
 
 export class ChartTypes {

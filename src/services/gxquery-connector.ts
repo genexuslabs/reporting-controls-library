@@ -4,7 +4,7 @@ import {
   GxQueryOptions,
   QueryViewerBase,
   ServiceType
-} from "@common/basic-types";
+} from "../common/basic-types";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 

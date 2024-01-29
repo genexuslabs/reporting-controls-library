@@ -1,35 +1,35 @@
 // query-menu.e2e.ts
 
 import { E2EPage, newE2EPage } from "@stencil/core/testing";
-import * as servicesManager from "@services";
-import { GxQueryItem, GxQueryOptions } from "@common/basic-types";
+import * as servicesManager from "../../../../services";
+import { GxQueryItem, GxQueryOptions } from "../../../../common/basic-types";
 
 describe("QueryMenu", () => {
   let page: E2EPage;
 
   const mockData = [
     {
-      Description: "Yesterday",
-      Expression: "Query EuropaCases []",
-      Id: "b88-2t2",
-      Modified: new Date("2023-08-14T03:00:00.000Z"),
-      Name: "EuropaCases",
+      description: "Yesterday",
+      expression: "Query EuropaCases []",
+      id: "b88-2t2",
+      modified: new Date("2023-08-14T03:00:00.000Z"),
+      name: "EuropaCases",
       differenceInDays: 1
     },
     {
-      Description: "Today",
-      Expression: "Query AmericanTotalCases []",
-      Id: "a66-9e2",
-      Modified: new Date("2023-08-15T03:00:00.000Z"),
-      Name: "AmericanTotalCases",
+      description: "Today",
+      expression: "Query AmericanTotalCases []",
+      id: "a66-9e2",
+      modified: new Date("2023-08-15T03:00:00.000Z"),
+      name: "AmericanTotalCases",
       differenceInDays: 0
     },
     {
-      Description: "July 2021",
-      Expression: "Query WorldTotalCases []",
-      Id: "14c-6fe",
-      Modified: new Date("2021-07-22T03:00:00.000Z"),
-      Name: "WorldTotalCases",
+      description: "July 2021",
+      expression: "Query WorldTotalCases []",
+      id: "14c-6fe",
+      modified: new Date("2021-07-22T03:00:00.000Z"),
+      name: "WorldTotalCases",
       differenceInDays: 767
     }
   ] as GxQueryItem[];

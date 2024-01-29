@@ -2,7 +2,7 @@ import {
   // QueryViewerServiceDataRow,
   // QueryViewerServiceMetaDataData,
   QueryViewerServiceResponse
-} from "@services/types/service-result";
+} from "../../../services/types/service-result";
 import { Component, Element, Host, Prop, State, h } from "@stencil/core";
 import {
   QueryViewerChartType,

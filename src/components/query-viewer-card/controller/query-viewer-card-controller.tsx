@@ -4,7 +4,7 @@ import {
   QueryViewerServiceDataRow,
   QueryViewerServiceMetaDataData,
   QueryViewerServiceResponse
-} from "@services/types/service-result";
+} from "../../../services/types/service-result";
 import {
   QueryViewerDataType,
   QueryViewerOrientation,

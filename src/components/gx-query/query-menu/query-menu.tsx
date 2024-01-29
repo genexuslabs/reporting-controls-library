@@ -15,20 +15,20 @@ import {
 import {
   DeleteQueryServiceResponse,
   RenameQueryServiceResponse
-} from "@services/gxquery-connector";
+} from "../../../services/gxquery-connector";
 import {
   asyncDeleteQuery,
   asyncGetListQuery,
   asyncRenameQuery
-} from "@services/services-manager";
+} from "../../../services/services-manager";
 import {
   GxQueryItem,
   GxQueryListResponse,
   GxQueryOptions
-} from "@common/basic-types";
+} from "../../../common/basic-types";
 import { differenceInDays, endOfMonth, format } from "date-fns";
-import { Component as GxComponent } from "@common/interfaces";
-import { KEY_CODES } from "@common/reserverd-names";
+import { Component as GxComponent } from "../../../common/interfaces";
+import { KEY_CODES } from "../../../common/reserverd-names";
 import { GxQueryMenuItemCustomEvent } from "../../../components";
 import { compareModifiedAttr } from "../../../utils/date";
 

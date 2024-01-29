@@ -28,7 +28,7 @@ import {
   QueryViewerTranslations,
   QueryViewerTrendPeriod,
   QueryViewerXAxisLabels
-} from "@common/basic-types";
+} from "../../common/basic-types";
 import {
   dragAndDropPivotTableEvent,
   itemClickDataForPivotTable,
@@ -62,7 +62,7 @@ import {
   QueryViewerCalculatePivottableData,
   QueryViewerPivotTableDataSync,
   QueryViewerTableDataSync
-} from "@services/types/service-result";
+} from "../../services/types/service-result";
 
 let autoId = 0;
 

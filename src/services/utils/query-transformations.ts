@@ -1,5 +1,5 @@
 import { differenceInDays } from "date-fns";
-import { ChatMessage, GxChatMessage, GxQueryItem, QueryViewerBase, QueryViewerOutputType } from "@common/basic-types";
+import { ChatMessage, GxChatMessage, GxQueryItem, QueryViewerBase, QueryViewerOutputType } from "../../common/basic-types";
 import { QueryViewer, QueryViewerCard } from "../types/json";
 
 type QueryViewerOptions = {

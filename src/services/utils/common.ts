@@ -1,4 +1,4 @@
-import { QueryViewerOutputType } from "@common/basic-types";
+import { QueryViewerOutputType } from "../../common/basic-types";
 import { QueryViewer, QueryViewerCard, QueryViewerChart } from "../types/json";
 import { ChartTypes } from "./chart";
 

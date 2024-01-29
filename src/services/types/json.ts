@@ -4,7 +4,7 @@ import {
   QueryViewerOutputType,
   QueryViewerShowDataLabelsIn,
   QueryViewerTotal
-} from "@common/basic-types";
+} from "../../common/basic-types";
 
 export type QueryViewerSDTWithValues = {
   Type: string;

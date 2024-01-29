@@ -42,6 +42,6 @@ export {
   QueryViewerServiceMetaDataData
 } from "./types/service-result";
 
-export { QueryViewerDataType } from "@common/basic-types";
+export { QueryViewerDataType } from "../common/basic-types";
 
 export { selectXPathNode } from "./xml-parser/utils/dom";

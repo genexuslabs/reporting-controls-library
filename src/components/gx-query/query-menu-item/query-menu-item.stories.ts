@@ -1,4 +1,4 @@
-import { GxQueryItem } from "@common/basic-types";
+import { GxQueryItem } from "../../../common/basic-types";
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 const meta: Meta<{ item: GxQueryItem }> = {

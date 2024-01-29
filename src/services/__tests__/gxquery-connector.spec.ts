@@ -3,7 +3,7 @@ import { GXqueryConnector as OriginalGXqueryConnector,
     GET_QUERY_BY_NAME_SERVICE_PATH,
     GET_LIST_QUERY_SERVICE_PATH,
     NEW_QUERY_SERVICE_PATH } from "../gxquery-connector";
-import { ChatMessage, QueryViewerBase } from "@common/basic-types";
+import { ChatMessage, QueryViewerBase } from "../../common/basic-types";
 
 describe('GXqueryConnector', () => {
   test("Component should be exist", () => {

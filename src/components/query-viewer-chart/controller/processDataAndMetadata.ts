@@ -3,8 +3,8 @@ import {
   QueryViewerServiceMetaData,
   QueryViewerServiceMetaDataData,
   QueryViewerServiceResponse
-} from "@services/types/service-result";
-import { trimUtil } from "@services/xml-parser/utils/general";
+} from "../../../services/types/service-result";
+import { trimUtil } from "../../../services/xml-parser/utils/general";
 import {
   //   DateTimePicture,
   QueryViewerAggregationType,

@@ -13,15 +13,15 @@ import {
   h
 } from "@stencil/core";
 
-import { asyncNewChatMessage } from "@services/services-manager";
+import { asyncNewChatMessage } from "../../../services/services-manager";
 import {
   GxChatMessage,
   GxChatMessageResponse,
   GxQueryOptions,
   QueryViewerBase
-} from "@common/basic-types";
-import { Component as GxComponent } from "@common/interfaces";
-import { KEY_CODES } from "@common/reserverd-names";
+} from "../../../common/basic-types";
+import { Component as GxComponent } from "../../../common/interfaces";
+import { KEY_CODES } from "../../../common/reserverd-names";
 
 
 export type QueryRequest = {

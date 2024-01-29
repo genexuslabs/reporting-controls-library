@@ -10,9 +10,9 @@ import {
   Watch,
   h
 } from "@stencil/core";
-import { Component as GxComponent } from "@common/interfaces";
-import { KEY_CODES } from "@common/reserverd-names";
-import { GxQueryItem } from "@common/basic-types";
+import { Component as GxComponent } from "../../../common/interfaces";
+import { KEY_CODES } from "../../../common/reserverd-names";
+import { GxQueryItem } from "../../../common/basic-types";
 
 export type QueryMenuElement = {
   id: number;

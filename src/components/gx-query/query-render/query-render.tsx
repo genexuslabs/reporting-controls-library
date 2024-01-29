@@ -1,18 +1,18 @@
 import { Component, Element, Host, Prop, State, Watch, h } from "@stencil/core";
 
-import { parseDataXML } from "@services/xml-parser/data-parser";
-import { parseMetadataXML } from "@services/xml-parser/metadata-parser";
+import { parseDataXML } from "../../../services/xml-parser/data-parser";
+import { parseMetadataXML } from "../../../services/xml-parser/metadata-parser";
 import {
   GeneratorType,
   QueryViewerBase,
   QueryViewerOutputType,
   QueryViewerTrendPeriod
-} from "@common/basic-types";
+} from "../../../common/basic-types";
 import {
   QueryViewerServiceData,
   QueryViewerServiceMetaData
-} from "@services/types/service-result";
-import { Component as GxComponent } from "@common/interfaces";
+} from "../../../services/types/service-result";
+import { Component as GxComponent } from "../../../common/interfaces";
 
 enum MissionOuputType {
   Missing = "missing"

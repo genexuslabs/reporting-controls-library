@@ -2,7 +2,7 @@ import {
   QueryViewerAxisOrderType,
   QueryViewerExpandCollapseType,
   QueryViewerFilterType
-} from "@common/basic-types";
+} from "../../common/basic-types";
 import { QueryViewerConditionOperator } from "../types/constants";
 import {
   QueryViewer,

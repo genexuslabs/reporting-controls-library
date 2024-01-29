@@ -31,7 +31,7 @@ import {
   AsyncServiceTypeForPivotTable,
   AsyncServiceTypeForTable,
   SyncServiceTypeForPivotTable
-} from "@common/basic-types";
+} from "../common/basic-types";
 import { QueryViewer } from "./types/json";
 import {
   QueryViewerServiceData,

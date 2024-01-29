@@ -7,7 +7,7 @@ import {
   QueryViewerPivotTableDataSync,
   QueryViewerServiceMetaDataAxis,
   QueryViewerServiceMetaDataData
-} from "@services/types/service-result";
+} from "../services/types/service-result";
 
 export type GeneratorType = "net" | "java";
 

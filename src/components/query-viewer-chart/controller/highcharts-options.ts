@@ -1,8 +1,8 @@
 import {
   QueryViewerServiceMetaData,
   QueryViewerServiceMetaDataData
-} from "@services/types/service-result";
-import { trimUtil } from "@services/xml-parser/utils/general";
+} from "../../../services/types/service-result";
+import { trimUtil } from "../../../services/xml-parser/utils/general";
 import { getDay, getHours, getMinutes, getMonth, getYear } from "date-fns";
 import {
   AlignValue,

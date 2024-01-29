@@ -1,6 +1,21 @@
 import { parseDataXML, parseMetadataXML } from "@genexus/reporting-api";
-import { DUMMY_TRANSLATIONS, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerTotal, QueryViewerTrendPeriod, QueryViewerXAxisLabels } from "@common/basic-types";
-import { QueryViewerServiceResponse } from "@services/types/service-result";
+import {
+  DUMMY_TRANSLATIONS,
+  QueryViewerChartType,
+  QueryViewerContinent,
+  QueryViewerCountry,
+  QueryViewerMapType,
+  QueryViewerOrientation,
+  QueryViewerOutputType,
+  QueryViewerPlotSeries,
+  QueryViewerRegion,
+  QueryViewerShowDataAs,
+  QueryViewerShowDataLabelsIn,
+  QueryViewerTotal,
+  QueryViewerTrendPeriod,
+  QueryViewerXAxisLabels
+} from "../../common/basic-types";
+import { QueryViewerServiceResponse } from "../../services/types/service-result";
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 const serviceCardMock = JSON.stringify({

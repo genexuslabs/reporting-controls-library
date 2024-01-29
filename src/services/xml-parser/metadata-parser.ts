@@ -7,7 +7,7 @@ import {
   QueryViewerFilterType,
   QueryViewerSubtotals,
   QueryViewerVisible
-} from "@common/basic-types";
+} from "../../common/basic-types";
 import {
   QueryViewerAxisConditionalStyle,
   QueryViewerAxisValueStyle

@@ -14,7 +14,7 @@ import {
   makeRequestForPivotTable,
   makeRequestForSyncServicesPivotTable,
   makeRequestForTable
-} from "@services/services-manager";
+} from "../../../services/services-manager";
 import {
   GeneratorType,
   QueryViewerBase,
@@ -23,11 +23,11 @@ import {
   QueryViewerOutputType,
   QueryViewerShowDataLabelsIn,
   QueryViewerTotal
-} from "@common/basic-types";
+} from "../../../common/basic-types";
 import {
   QueryViewer,
   QueryViewerCard
-} from "@services/types/json";
+} from "../../../services/types/json";
 import {
   QueryViewerAttributesValuesForPivot,
   QueryViewerCalculatePivottableData,
@@ -37,7 +37,7 @@ import {
   QueryViewerServiceMetaData,
   QueryViewerServiceResponse,
   QueryViewerServiceResponsePivotTable
-} from "@services/types/service-result";
+} from "../../../services/types/service-result";
 
 @Component({
   tag: "gx-query-viewer-controller",

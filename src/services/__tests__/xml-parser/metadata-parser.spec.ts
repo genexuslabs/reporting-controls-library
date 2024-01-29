@@ -1,4 +1,4 @@
-import { QueryViewerAggregationType, QueryViewerDataType, QueryViewerVisible } from "@common/basic-types";
+import { QueryViewerAggregationType, QueryViewerDataType, QueryViewerVisible } from "../../../common/basic-types";
 import { QueryViewerServiceMetaData } from "../../types/service-result";
 
 import { parseMetadataXML } from "../../xml-parser/metadata-parser";

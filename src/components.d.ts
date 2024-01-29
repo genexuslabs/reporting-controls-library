@@ -6,10 +6,9 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { QueryRequest } from "./components/gx-query/query-chat/query-chat";
-import { GeneratorType, GxQueryItem, QueryViewerAutoResizeType, QueryViewerBase, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels } from "@common/basic-types";
-import { QueryViewerAttributesValuesForPivot, QueryViewerCalculatePivottableData, QueryViewerPageDataForPivot, QueryViewerPageDataForTable, QueryViewerPivotTableDataSync, QueryViewerServiceData, QueryViewerServiceMetaData, QueryViewerServiceResponse, QueryViewerServiceResponsePivotTable } from "@services/types/service-result";
+import { GeneratorType, GxQueryItem, QueryViewerAutoResizeType, QueryViewerBase, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPivotCollection, QueryViewerPivotParameters, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerSliderRange, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels, TrendIcon } from "./common/basic-types";
+import { QueryViewerAttributesValuesForPivot, QueryViewerCalculatePivottableData, QueryViewerPageDataForPivot, QueryViewerPageDataForTable, QueryViewerPivotTableDataSync, QueryViewerServiceData, QueryViewerServiceMetaData, QueryViewerServiceResponse, QueryViewerServiceResponsePivotTable } from "./services/types/service-result";
 import { QueryViewerDragAndDropData, QueryViewerFilterChangedData, QueryViewerItemClickData, QueryViewerItemExpandAndCollapseData } from "./global/types";
-import { QueryViewerChartType as QueryViewerChartType1, QueryViewerOrientation as QueryViewerOrientation1, QueryViewerOutputType as QueryViewerOutputType1, QueryViewerPivotCollection, QueryViewerPivotParameters, QueryViewerPlotSeries as QueryViewerPlotSeries1, QueryViewerShowDataAs as QueryViewerShowDataAs1, QueryViewerShowDataLabelsIn as QueryViewerShowDataLabelsIn1, QueryViewerSliderRange, QueryViewerTotal as QueryViewerTotal1, QueryViewerTranslations as QueryViewerTranslations1, QueryViewerTrendPeriod as QueryViewerTrendPeriod1, QueryViewerXAxisLabels as QueryViewerXAxisLabels1, TrendIcon } from "./common/basic-types";
 import { Axis, ChartOptions, LegendOptions, PaneOptions, PlotOptions, SeriesLineOptions, SeriesOptionsType, SubtitleOptions, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
 import { QueryViewerParameterChangedEvent } from "./components/query-viewer-parameter/query-viewer-parameter";
 export namespace Components {
@@ -405,7 +404,7 @@ export namespace Components {
         /**
           * For translate the labels of the outputs
          */
-        "translations": QueryViewerTranslations1;
+        "translations": QueryViewerTranslations;
         /**
           * Specifies the icon used for the trend.
          */
@@ -413,7 +412,7 @@ export namespace Components {
         /**
           * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
-        "trendPeriod": QueryViewerTrendPeriod1;
+        "trendPeriod": QueryViewerTrendPeriod;
         /**
           * Specifies the value to show in the card.
          */
@@ -439,7 +438,7 @@ export namespace Components {
         /**
           * Specifies whether to arrange the attributes horizontally or vertically when than one data attribute is present.
          */
-        "orientation": QueryViewerOrientation1;
+        "orientation": QueryViewerOrientation;
         /**
           * Specifies the metadata and data that the control will use to render.
          */
@@ -447,15 +446,15 @@ export namespace Components {
         /**
           * Specifies whether to show the actual values, the values as a percentage of the target values, or both.
          */
-        "showDataAs": QueryViewerShowDataAs1;
+        "showDataAs": QueryViewerShowDataAs;
         /**
           * For translate the labels of the outputs
          */
-        "translations": QueryViewerTranslations1;
+        "translations": QueryViewerTranslations;
         /**
           * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
-        "trendPeriod": QueryViewerTrendPeriod1;
+        "trendPeriod": QueryViewerTrendPeriod;
     }
     interface GxQueryViewerChart {
         /**
@@ -473,7 +472,7 @@ export namespace Components {
         /**
           * Option of the chartType used to visualize and represent data.
          */
-        "chartType": QueryViewerChartType1;
+        "chartType": QueryViewerChartType;
         /**
           * get the current extremes for the axis.
          */
@@ -493,7 +492,7 @@ export namespace Components {
         /**
           * Specifies if the chart series are plotted together in the same chart or alone in separate charts.
          */
-        "plotSeries": QueryViewerPlotSeries1;
+        "plotSeries": QueryViewerPlotSeries;
         /**
           * Options of the X axis (usually this is the horizontal axis).
          */
@@ -517,7 +516,7 @@ export namespace Components {
         /**
           * For translate the labels of the outputs
          */
-        "translations": QueryViewerTranslations1;
+        "translations": QueryViewerTranslations;
         /**
           * Specifies whether the X axis intersects the Y axis at zero or the intersection point is automatically calculated.
          */
@@ -525,7 +524,7 @@ export namespace Components {
         /**
           * Specifies if the labels in the X axis of a chart are shown horizontally or vertically.
          */
-        "xAxisLabels": QueryViewerXAxisLabels1;
+        "xAxisLabels": QueryViewerXAxisLabels;
         /**
           * X axis title, if specified.
          */
@@ -555,7 +554,7 @@ export namespace Components {
         /**
           * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
          */
-        "chartType": QueryViewerChartType1;
+        "chartType": QueryViewerChartType;
         /**
           * A CSS class to set as the `gx-query-viewer-chart-controller` element class.
          */
@@ -563,7 +562,7 @@ export namespace Components {
         /**
           * Timeline
          */
-        "plotSeries": QueryViewerPlotSeries1;
+        "plotSeries": QueryViewerPlotSeries;
         /**
           * Title of the QueryViewer
          */
@@ -579,7 +578,7 @@ export namespace Components {
         /**
           * For translate the labels of the outputs
          */
-        "translations": QueryViewerTranslations1;
+        "translations": QueryViewerTranslations;
         /**
           * if true the x Axes intersect at zero
          */
@@ -587,7 +586,7 @@ export namespace Components {
         /**
           * Labels for XAxis
          */
-        "xAxisLabels": QueryViewerXAxisLabels1;
+        "xAxisLabels": QueryViewerXAxisLabels;
         /**
           * Y Axis title
          */
@@ -962,8 +961,8 @@ export namespace Components {
         /**
           * Specifies whether the render output is PivotTable or Table
          */
-        "tableType": | QueryViewerOutputType1.PivotTable
-    | QueryViewerOutputType1.Table;
+        "tableType": | QueryViewerOutputType.PivotTable
+    | QueryViewerOutputType.Table;
     }
     interface GxQueryViewerPivotRender {
         /**
@@ -1053,7 +1052,7 @@ export namespace Components {
         /**
           * It allows to indicate how you want to display the Data elements of the Query object.
          */
-        "showDataLabelsIn": QueryViewerShowDataLabelsIn1;
+        "showDataLabelsIn": QueryViewerShowDataLabelsIn;
         /**
           * Response Table Data Sync
          */
@@ -1061,20 +1060,20 @@ export namespace Components {
         /**
           * Specifies whether the render output is PivotTable or Table
          */
-        "tableType": | QueryViewerOutputType1.PivotTable
-    | QueryViewerOutputType1.Table;
+        "tableType": | QueryViewerOutputType.PivotTable
+    | QueryViewerOutputType.Table;
         /**
           * Determines whether to show a total of all values in the pivot table columns.
          */
-        "totalForColumns": QueryViewerTotal1;
+        "totalForColumns": QueryViewerTotal;
         /**
           * Determines whether to show a total of all values in the pivot table rows.
          */
-        "totalForRows": QueryViewerTotal1;
+        "totalForRows": QueryViewerTotal;
         /**
           * For translate the labels of the outputs
          */
-        "translations": QueryViewerTranslations1;
+        "translations": QueryViewerTranslations;
     }
     interface GxQueryViewerSlider {
         /**
@@ -1765,7 +1764,7 @@ declare namespace LocalJSX {
         /**
           * For translate the labels of the outputs
          */
-        "translations"?: QueryViewerTranslations1;
+        "translations"?: QueryViewerTranslations;
         /**
           * Specifies the icon used for the trend.
          */
@@ -1773,7 +1772,7 @@ declare namespace LocalJSX {
         /**
           * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
-        "trendPeriod"?: QueryViewerTrendPeriod1;
+        "trendPeriod"?: QueryViewerTrendPeriod;
         /**
           * Specifies the value to show in the card.
          */
@@ -1799,7 +1798,7 @@ declare namespace LocalJSX {
         /**
           * Specifies whether to arrange the attributes horizontally or vertically when than one data attribute is present.
          */
-        "orientation"?: QueryViewerOrientation1;
+        "orientation"?: QueryViewerOrientation;
         /**
           * Specifies the metadata and data that the control will use to render.
          */
@@ -1807,15 +1806,15 @@ declare namespace LocalJSX {
         /**
           * Specifies whether to show the actual values, the values as a percentage of the target values, or both.
          */
-        "showDataAs"?: QueryViewerShowDataAs1;
+        "showDataAs"?: QueryViewerShowDataAs;
         /**
           * For translate the labels of the outputs
          */
-        "translations"?: QueryViewerTranslations1;
+        "translations"?: QueryViewerTranslations;
         /**
           * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
-        "trendPeriod"?: QueryViewerTrendPeriod1;
+        "trendPeriod"?: QueryViewerTrendPeriod;
     }
     interface GxQueryViewerChart {
         /**
@@ -1829,7 +1828,7 @@ declare namespace LocalJSX {
         /**
           * Option of the chartType used to visualize and represent data.
          */
-        "chartType"?: QueryViewerChartType1;
+        "chartType"?: QueryViewerChartType;
         /**
           * Options of the tooltip, the tooltip appears when hovering over a point in a series.
          */
@@ -1845,7 +1844,7 @@ declare namespace LocalJSX {
         /**
           * Specifies if the chart series are plotted together in the same chart or alone in separate charts.
          */
-        "plotSeries"?: QueryViewerPlotSeries1;
+        "plotSeries"?: QueryViewerPlotSeries;
         /**
           * Options of the X axis (usually this is the horizontal axis).
          */
@@ -1865,7 +1864,7 @@ declare namespace LocalJSX {
         /**
           * For translate the labels of the outputs
          */
-        "translations"?: QueryViewerTranslations1;
+        "translations"?: QueryViewerTranslations;
         /**
           * Specifies whether the X axis intersects the Y axis at zero or the intersection point is automatically calculated.
          */
@@ -1873,7 +1872,7 @@ declare namespace LocalJSX {
         /**
           * Specifies if the labels in the X axis of a chart are shown horizontally or vertically.
          */
-        "xAxisLabels"?: QueryViewerXAxisLabels1;
+        "xAxisLabels"?: QueryViewerXAxisLabels;
         /**
           * X axis title, if specified.
          */
@@ -1899,7 +1898,7 @@ declare namespace LocalJSX {
         /**
           * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
          */
-        "chartType"?: QueryViewerChartType1;
+        "chartType"?: QueryViewerChartType;
         /**
           * A CSS class to set as the `gx-query-viewer-chart-controller` element class.
          */
@@ -1907,7 +1906,7 @@ declare namespace LocalJSX {
         /**
           * Timeline
          */
-        "plotSeries"?: QueryViewerPlotSeries1;
+        "plotSeries"?: QueryViewerPlotSeries;
         /**
           * Title of the QueryViewer
          */
@@ -1923,7 +1922,7 @@ declare namespace LocalJSX {
         /**
           * For translate the labels of the outputs
          */
-        "translations"?: QueryViewerTranslations1;
+        "translations"?: QueryViewerTranslations;
         /**
           * if true the x Axes intersect at zero
          */
@@ -1931,7 +1930,7 @@ declare namespace LocalJSX {
         /**
           * Labels for XAxis
          */
-        "xAxisLabels"?: QueryViewerXAxisLabels1;
+        "xAxisLabels"?: QueryViewerXAxisLabels;
         /**
           * Y Axis title
          */
@@ -2310,8 +2309,8 @@ declare namespace LocalJSX {
         /**
           * Specifies whether the render output is PivotTable or Table
          */
-        "tableType"?: | QueryViewerOutputType1.PivotTable
-    | QueryViewerOutputType1.Table;
+        "tableType"?: | QueryViewerOutputType.PivotTable
+    | QueryViewerOutputType.Table;
     }
     interface GxQueryViewerPivotRender {
         /**
@@ -2377,7 +2376,7 @@ declare namespace LocalJSX {
         /**
           * It allows to indicate how you want to display the Data elements of the Query object.
          */
-        "showDataLabelsIn"?: QueryViewerShowDataLabelsIn1;
+        "showDataLabelsIn"?: QueryViewerShowDataLabelsIn;
         /**
           * Response Table Data Sync
          */
@@ -2385,20 +2384,20 @@ declare namespace LocalJSX {
         /**
           * Specifies whether the render output is PivotTable or Table
          */
-        "tableType"?: | QueryViewerOutputType1.PivotTable
-    | QueryViewerOutputType1.Table;
+        "tableType"?: | QueryViewerOutputType.PivotTable
+    | QueryViewerOutputType.Table;
         /**
           * Determines whether to show a total of all values in the pivot table columns.
          */
-        "totalForColumns"?: QueryViewerTotal1;
+        "totalForColumns"?: QueryViewerTotal;
         /**
           * Determines whether to show a total of all values in the pivot table rows.
          */
-        "totalForRows"?: QueryViewerTotal1;
+        "totalForRows"?: QueryViewerTotal;
         /**
           * For translate the labels of the outputs
          */
-        "translations"?: QueryViewerTranslations1;
+        "translations"?: QueryViewerTranslations;
     }
     interface GxQueryViewerSlider {
         /**
