@@ -637,24 +637,24 @@ export class QueryViewer {
   }
 
   @Listen("TableOnPageChangeEvent")
-  handleTableOnDragundDropEvent(event: CustomEvent<TablePageChange>) {
+  async handleTableOnDragundDropEvent(event: CustomEvent<TablePageChange>) {
     let eventData;
 
     switch ((event as any).parameter.Navigation) {
       case PivotTableNavigation.OnFirstPage:
-        eventData = this.pivotRenderRef.firstPage();
+        eventData = await this.pivotRenderRef.firstPage();
         this.firstPage.emit(eventData);
         break;
       case PivotTableNavigation.OnLastPage:
-        eventData = this.pivotRenderRef.lastPage();
+        eventData = await this.pivotRenderRef.lastPage();
         this.lastPage.emit(eventData);
         break;
       case PivotTableNavigation.OnNextPage:
-        eventData = this.pivotRenderRef.nextPage();
+        eventData = await this.pivotRenderRef.nextPage();
         this.nextPage.emit(eventData);
         break;
       case PivotTableNavigation.OnPreviousPage:
-        eventData = this.pivotRenderRef.previousPage();
+        eventData = await this.pivotRenderRef.previousPage();
         this.previousPage.emit(eventData);
         break;
     }
