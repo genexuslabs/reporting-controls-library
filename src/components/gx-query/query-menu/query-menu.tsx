@@ -90,7 +90,19 @@ export class QueryMenu implements GxComponent {
   /**
    * Base URL of the server
    */
-  @Prop() readonly baseUrl = process.env.BASE_URL;
+  @Prop() readonly baseUrl = process.env.GENEXUS_QUERY_URL;
+  /**
+   * Authentication API Key
+   */
+  @Prop() readonly apiKey = process.env.GENEXUS_API_KEY;
+  /**
+   * Authentication Saia Token
+   */
+  @Prop() readonly saiaToken = process.env.GENEXUS_SAIA_TOKEN;
+  /**
+   * Optional Saia user ID
+   */
+  @Prop() readonly saiaUserId = process.env.GENEXUS_SAIA_USER_ID;
   /**
    * Use this property to pass a query obtained from GXquery.
    * This disabled the call to GxQuery API:
@@ -230,7 +242,10 @@ export class QueryMenu implements GxComponent {
   private queryOptions(): GxQueryOptions {
     return {
       baseUrl: this.baseUrl,
-      metadataName: this.metadataName
+      metadataName: this.metadataName,
+      apiKey: this.apiKey,
+      saiaToken: this.saiaToken,
+      saiaUserId: this.saiaUserId
     };
   }
 

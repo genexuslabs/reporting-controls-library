@@ -60,7 +60,19 @@ export class QueryViewerController {
   /**
    * Base URL of the server
    */
-  @Prop() readonly baseUrl: string;
+  @Prop() readonly baseUrl = process.env.GENEXUS_QUERY_URL;
+  /**
+   * Authentication API Key
+   */
+  @Prop() readonly apiKey = process.env.GENEXUS_API_KEY;
+  /**
+   * Authentication Saia Token
+   */
+  @Prop() readonly saiaToken = process.env.GENEXUS_SAIA_TOKEN;
+  /**
+   * Optional Saia user ID
+   */
+  @Prop() readonly saiaUserId = process.env.GENEXUS_SAIA_USER_ID;
 
   /**
    * When `type == Chart`, specifies the chart type: Bar, Pie, Timeline, etc...
@@ -70,7 +82,7 @@ export class QueryViewerController {
   /**
    * Environment of the project: java or net
    */
-  @Prop() readonly environment: GeneratorType;
+  @Prop() readonly environment: GeneratorType = process.env.GENEXUS_DEFAULT_GENERATOR as GeneratorType;
 
   /**
    * Name of the Query or Data provider assigned
@@ -467,6 +479,9 @@ export class QueryViewerController {
       oldKey: this.recordSetCacheOldKey,
       useGXquery: this.useGxquery,
       baseUrl: this.baseUrl,
+      apiKey: this.apiKey,
+      saiaToken: this.saiaToken,
+      saiaUserId: this.saiaUserId,
       generator: this.environment,
       metadataName: this.metadataName,
       objectName: this.objectName,

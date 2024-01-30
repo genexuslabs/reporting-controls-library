@@ -59,6 +59,22 @@ export class QueryChat implements GxComponent {
    * In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
    */
   @Prop() readonly metadataName = "";
+  /**
+   * Base URL of the server
+   */
+  @Prop() readonly baseUrl = process.env.GENEXUS_QUERY_URL;
+  /**
+   * Authentication API Key
+   */
+  @Prop() readonly apiKey = process.env.GENEXUS_API_KEY;
+  /**
+   * Authentication Saia Token
+   */
+  @Prop() readonly saiaToken = process.env.GENEXUS_SAIA_TOKEN;
+  /**
+   * Optional Saia user ID
+   */
+  @Prop() readonly saiaUserId = process.env.GENEXUS_SAIA_USER_ID;
 
   /**
    * Fired each time the user make a question
@@ -116,8 +132,11 @@ export class QueryChat implements GxComponent {
    */
   private queryOptions(): GxQueryOptions {
     return {
-      baseUrl: process.env.BASE_URL,
-      metadataName: this.metadataName
+      baseUrl: this.baseUrl,
+      metadataName: this.metadataName,
+      apiKey: this.apiKey,
+      saiaToken: this.saiaToken,
+      saiaUserId: this.saiaUserId
     };
   }
 
