@@ -66,7 +66,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@genexus/reporting-api": "~1.2.0",
+    "@genexus/reporting-api": "~1.1.1",
     "@genexus/web-controls-library": "2.3.0",
     "date-fns": "^2.30.0",
     "highcharts": "^11.1.0",
