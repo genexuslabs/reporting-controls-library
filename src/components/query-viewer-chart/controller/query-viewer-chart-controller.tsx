@@ -12,7 +12,7 @@ import {
   QueryViewerSliderRange,
   QueryViewerTranslations,
   QueryViewerXAxisLabels
-} from "../../../common/basic-types";
+} from "@genexus/reporting-api/dist/types/basic-types";
 import { getAllHighchartOptions, getChartGroup } from "./chart-utils";
 import {
   ChartMetadataAndData,

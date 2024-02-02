@@ -2,7 +2,7 @@ import { QueryViewerServiceResponsePivotTable } from "@genexus/reporting-api/dis
 import {
   QueryViewerAxisType,
   QueryViewerElementType
-} from "../../common/basic-types";
+} from "@genexus/reporting-api/dist/types/basic-types";
 import {
   QueryViewerContextElement,
   QueryViewerDragAndDropData,

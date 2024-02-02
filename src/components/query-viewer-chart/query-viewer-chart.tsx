@@ -27,7 +27,7 @@ import {
   QueryViewerChartType,
   QueryViewerPlotSeries,
   QueryViewerXAxisLabels
-} from "../../common/basic-types";
+} from "@genexus/reporting-api/dist/types/basic-types";
 
 @Component({
   tag: "gx-query-viewer-chart",

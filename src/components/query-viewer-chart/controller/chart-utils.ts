@@ -3,7 +3,7 @@ import {
   QueryViewerChartType,
   QueryViewerOutputType,
   QueryViewerXAxisLabels
-} from "../../../common/basic-types";
+} from "@genexus/reporting-api/dist/types/basic-types";
 import { ChartTypes } from "./chart-types";
 import { getHighchartOptions } from "./highcharts-options";
 import { ChartMetadataAndData } from "./processDataAndMetadata";

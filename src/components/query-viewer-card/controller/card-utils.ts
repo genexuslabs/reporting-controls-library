@@ -9,7 +9,7 @@ import {
   QueryViewerDataType,
   QueryViewerShowDataAs,
   QueryViewerTrendPeriod
-} from "../../../common/basic-types";
+} from "@genexus/reporting-api/dist/types/basic-types";
 import { fromDateToString, fromStringToDateISO } from "../../../utils/date";
 
 export type RegressionSeries = {

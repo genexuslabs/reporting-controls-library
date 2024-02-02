@@ -10,7 +10,7 @@ import {
   QueryViewerTableParameters,
   QueryViewerTotal,
   QueryViewerTranslations
-} from "../../../common/basic-types";
+} from "@genexus/reporting-api/dist/types/basic-types";
 import { OAT } from "jspivottable";
 let autoId = 0;
 @Component({

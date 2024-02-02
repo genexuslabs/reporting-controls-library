@@ -37,7 +37,7 @@ import {
   QueryViewerOutputType,
   QueryViewerVisible,
   QueryViewerXAxisLabels
-} from "../../../common/basic-types";
+} from "@genexus/reporting-api/dist/types/basic-types";
 import { fromDateToString, fromStringToDateISO } from "../../../utils/date";
 import {
   SelectionAllowed,

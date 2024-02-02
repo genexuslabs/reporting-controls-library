@@ -19,7 +19,7 @@ import {
   QueryViewerPlotSeries,
   QueryViewerTranslations,
   QueryViewerVisible
-} from "../../../common/basic-types";
+} from "@genexus/reporting-api/dist/types/basic-types";
 import {
   IsMulticoloredSerie,
   NormalizeTargetAndMaximumValues,

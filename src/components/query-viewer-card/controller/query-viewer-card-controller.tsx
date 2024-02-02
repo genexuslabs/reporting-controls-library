@@ -13,7 +13,7 @@ import {
   QueryViewerTrendPeriod,
   QueryViewerVisible,
   TrendIcon
-} from "../../../common/basic-types";
+} from "@genexus/reporting-api/dist/types/basic-types";
 import { aggregateData } from "../../../utils/general";
 import { analyzeSeries, valueOrPercentage } from "./card-utils";
 

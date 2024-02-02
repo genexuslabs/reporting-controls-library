@@ -32,7 +32,7 @@
     "generate": "stencil generate",
     "validate": "npm run test && npm run build && npm run scss-bundle",
     "validate.ci": "npm run build -- --max-workers 1 --debug && npm run scss-bundle",
-    "storybook": "stencil build && storybook dev -p 6006",
+    "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
   "devDependencies": {

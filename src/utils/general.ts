@@ -6,7 +6,7 @@ import {
   // QueryViewerConditionOperator,
   QueryViewerDataType,
   QueryViewerOutputType
-} from "../common/basic-types";
+} from "@genexus/reporting-api/dist/types/basic-types";
 import { ChartTypes } from "../components/query-viewer-chart/controller/chart-types";
 import { ChartMetadataAndData } from "../components/query-viewer-chart/controller/processDataAndMetadata";
 // import { QueryViewerAxisConditionalStyle } from "@genexus/reporting-api/dist/types/json";
