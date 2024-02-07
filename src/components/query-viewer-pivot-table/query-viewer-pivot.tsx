@@ -142,8 +142,8 @@ export class QueryViewerPivot {
     GXPL_QViewerJSReverse: "Revert",
     GXPL_QViewerSearch: "Search",
     GXPL_QViewerInfoUser: "User Info",
-    GXPL_QViewerJSDropFiltersHere: "Drop her filters",
-    GXPL_QViewerPopupTitle: "Title p",
+    GXPL_QViewerJSDropFiltersHere: "Drop filters here",
+    GXPL_QViewerPopupTitle: "Options",
     GXPL_QViewerJSVisibleColumns: "Visible columns",
     GXPL_QViewerContextMenuExportXml: "Export to XML",
     GXPL_QViewerContextMenuExportHtml: "To Html",
@@ -152,9 +152,9 @@ export class QueryViewerPivot {
     GXPL_QViewerContextMenuExportXlsx: "To Xlsx",
     GXPL_QViewerJSMeasures: "Measures",
     GXPL_QViewerJSValue: "Value",
-    GXPL_QViewerJSTotal: "Grand Total",
+    GXPL_QViewerJSTotal: "Total",
     GXPL_QViewerJSTotalFor: "Total for",
-    GXPL_QViewerJSPerPage: "Roes:",
+    GXPL_QViewerJSPerPage: "Rows:",
     GXPL_QViewerJSPage: "Pags:",
     GXPL_QViewerJSOf: "of",
     GXPL_QViewerJSMoveColumnToLeft: "to left",
@@ -165,7 +165,7 @@ export class QueryViewerPivot {
    * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
    */
   @Method()
-  async getDataXML(serverData: any) {
+  async getDataXML(serverData: string) {
     return getDataXML(this.qViewer.oat_element, serverData);
   }
 
@@ -173,11 +173,8 @@ export class QueryViewerPivot {
    * Returns an XML on a string variable containing the data which is being visualized at the moment (the difference with the GetData() method it's seen on the Pivot Table, data can be different because of filters application).
    */
   @Method()
-  async getFilteredDataPivot() {
-    return getFilteredDataXML(
-      this.qViewer.oat_element,
-      this.pivotTableDataSyncXml
-    );
+  async getFilteredDataPivot(serverData: string) {
+    return getFilteredDataXML(this.qViewer.oat_element, serverData);
   }
 
   /**

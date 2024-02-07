@@ -136,7 +136,7 @@ export class QueryViewerPivotTableRender {
    * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
    */
   @Method()
-  async getDataPivot(serverData: any) {
+  async getDataPivot(serverData: string) {
     return this.pivotRef.getDataXML(serverData);
   }
 
@@ -144,8 +144,8 @@ export class QueryViewerPivotTableRender {
    * Returns an XML on a string variable containing the data which is being visualized at the moment (the difference with the GetData() method it's seen on the Pivot Table, data can be different because of filters application).
    */
   @Method()
-  async getFilteredDataPivot() {
-    return this.pivotRef.getFilteredDataPivot();
+  async getFilteredDataPivot(serverData: string) {
+    return this.pivotRef.getFilteredDataPivot(serverData);
   }
 
   /**
