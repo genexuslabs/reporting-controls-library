@@ -111,7 +111,7 @@ export class QueryViewerController {
   /**
    * If paging true, number of items for a single page
    */
-  @Prop() readonly pageSize: number;
+  @Prop({ mutable: true }) pageSize: number;
   @Watch("pageSize")
   handlePageSizeChange() {
     if (this.type === QueryViewerOutputType.PivotTable) {
@@ -255,7 +255,7 @@ export class QueryViewerController {
       this.pageDataForPivotTable.emit(xml);
     };
     qvInfo.Paging = paging;
-    qvInfo.PageSize = this.pageSize;
+    this.pageSize = qvInfo.PageSize;
     qvInfo.TotalForRows = totalForRows;
     qvInfo.TotalForColumns = totalForColumns;
     qvInfo.ShowDataLabelsIn = this.showDataLabelsIn;
@@ -406,9 +406,9 @@ export class QueryViewerController {
     // WA to avoid requests to unimplemented outputs
     if (
       this.type !== QueryViewerOutputType.Card &&
-      this.type !== QueryViewerOutputType.Chart
-      //this.type !== QueryViewerOutputType.PivotTable &&
-      //this.type !== QueryViewerOutputType.Table
+      this.type !== QueryViewerOutputType.Chart &&
+      this.type !== QueryViewerOutputType.PivotTable &&
+      this.type !== QueryViewerOutputType.Table
     ) {
       return;
     }
@@ -470,7 +470,9 @@ export class QueryViewerController {
       generator: this.environment,
       metadataName: this.metadataName,
       objectName: this.objectName,
-      serializedObject: this.serializedObject
+      serializedObject: this.serializedObject,
+      apiKey: undefined,
+      saiaToken: undefined
     };
   }
 

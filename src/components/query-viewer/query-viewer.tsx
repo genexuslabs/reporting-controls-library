@@ -441,8 +441,11 @@ export class QueryViewer {
     this.setControllerRef();
     if (this.controller) {
       event.stopPropagation();
+      const pageData: QueryViewerPageDataForPivot = (event as any).parameter;
+      this.pageSize = pageData.PageSize;
+
       this.controller.getPageDataForPivotTable(
-        (event as any).parameter,
+        pageData,
         this.paging,
         this.totalForColumns,
         this.totalForRows
