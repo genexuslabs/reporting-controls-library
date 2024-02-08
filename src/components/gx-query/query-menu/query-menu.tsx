@@ -17,12 +17,12 @@ import {
   asyncDeleteQuery,
   asyncGetListQuery,
   asyncRenameQuery
-} from "@genexus/reporting-api/dist";
+} from "@genexus/reporting-api";
 import {
   GxQueryItem,
   GxQueryListResponse,
   GxQueryOptions
-} from "@genexus/reporting-api/dist/types/basic-types";
+} from "@genexus/reporting-api";
 import { differenceInDays, endOfMonth, format } from "date-fns";
 import { Component as GxComponent } from "../../../common/interfaces";
 import { KEY_CODES } from "../../../common/reserverd-names";

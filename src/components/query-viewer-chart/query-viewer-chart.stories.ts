@@ -12,8 +12,8 @@ import {
   QueryViewerCountry,
   QueryViewerShowDataLabelsIn,
   QueryViewerTotal,
-} from "@genexus/reporting-api/dist/types/basic-types";
-import { QueryViewerServiceResponse } from "@genexus/reporting-api/dist/types/service-result";
+} from "@genexus/reporting-api";
+import { QueryViewerServiceResponse } from "@genexus/reporting-api";
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 

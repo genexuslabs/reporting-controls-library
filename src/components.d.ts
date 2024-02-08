@@ -6,8 +6,7 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { QueryRequest } from "./components/gx-query/query-chat/query-chat";
-import { GeneratorType, GxQueryItem, QueryViewerAutoResizeType, QueryViewerBase, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPivotCollection, QueryViewerPivotParameters, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerSliderRange, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels, TrendIcon } from "@genexus/reporting-api/dist/types/basic-types";
-import { QueryViewerAttributesValuesForPivot, QueryViewerCalculatePivottableData, QueryViewerPageDataForPivot, QueryViewerPageDataForTable, QueryViewerPivotTableDataSync, QueryViewerServiceData, QueryViewerServiceMetaData, QueryViewerServiceResponse, QueryViewerServiceResponsePivotTable } from "@genexus/reporting-api/dist/types/service-result";
+import { GeneratorType, GxQueryItem, QueryViewerAttributesValuesForPivot, QueryViewerAutoResizeType, QueryViewerBase, QueryViewerCalculatePivottableData, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPageDataForPivot, QueryViewerPageDataForTable, QueryViewerPivotCollection, QueryViewerPivotParameters, QueryViewerPivotTableDataSync, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerServiceData, QueryViewerServiceMetaData, QueryViewerServiceResponse, QueryViewerServiceResponsePivotTable, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerSliderRange, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels, TrendIcon } from "@genexus/reporting-api";
 import { QueryViewerDragAndDropData, QueryViewerFilterChangedData, QueryViewerItemClickData, QueryViewerItemExpandAndCollapseData } from "./global/types";
 import { Axis, ChartOptions, LegendOptions, PaneOptions, PlotOptions, SeriesLineOptions, SeriesOptionsType, SubtitleOptions, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
 import { QueryViewerParameterChangedEvent } from "./components/query-viewer-parameter/query-viewer-parameter";
@@ -243,6 +242,10 @@ export namespace Components {
           * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
          */
         "getData": () => Promise<any>;
+        /**
+          * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
+         */
+        "getFilteredData": () => Promise<any>;
         /**
           * Specifies whether to include the maximum and minimum values in the series.
          */
@@ -917,11 +920,11 @@ export namespace Components {
         /**
           * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
          */
-        "getDataXML": (serverData: any) => Promise<any>;
+        "getDataXML": (serverData: string) => Promise<any>;
         /**
           * Returns an XML on a string variable containing the data which is being visualized at the moment (the difference with the GetData() method it's seen on the Pivot Table, data can be different because of filters application).
          */
-        "getFilteredDataPivot": () => Promise<any>;
+        "getFilteredDataPivot": (serverData: string) => Promise<any>;
         /**
           * Method to navigate to the last page.
          */
@@ -1000,11 +1003,11 @@ export namespace Components {
         /**
           * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
          */
-        "getDataPivot": (serverData: any) => Promise<any>;
+        "getDataPivot": (serverData: string) => Promise<any>;
         /**
           * Returns an XML on a string variable containing the data which is being visualized at the moment (the difference with the GetData() method it's seen on the Pivot Table, data can be different because of filters application).
          */
-        "getFilteredDataPivot": () => Promise<any>;
+        "getFilteredDataPivot": (serverData: string) => Promise<any>;
         /**
           * Method to navigate to the last page.
          */

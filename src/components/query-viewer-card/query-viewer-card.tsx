@@ -14,7 +14,7 @@ import {
   QueryViewerTranslationsLabels,
   QueryViewerTrendPeriod,
   TrendIcon
-} from "@genexus/reporting-api/dist/types/basic-types";
+} from "@genexus/reporting-api";
 
 let autoQueryViewerCardId = 0;
 

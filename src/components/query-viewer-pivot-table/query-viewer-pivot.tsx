@@ -22,7 +22,7 @@ import {
   QueryViewerPivotCollection,
   QueryViewerPivotParameters,
   QueryViewerPivotTable
-} from "@genexus/reporting-api/dist/types/basic-types";
+} from "@genexus/reporting-api";
 
 const PIVOT_PAGE = (ucId: string) => `${ucId}_GeneralQuery1_pivot_page`;
 const PIVOT_CONTENT = (ucId: string) => `${ucId}_GeneralQuery1_pivot_content`;

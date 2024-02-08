@@ -1,16 +1,16 @@
 import { Component, Element, Host, Prop, State, Watch, h } from "@stencil/core";
 
-import { parseDataXML, parseMetadataXML } from "@genexus/reporting-api/dist";
+import { parseDataXML, parseMetadataXML } from "@genexus/reporting-api";
 import {
   GeneratorType,
   QueryViewerBase,
   QueryViewerOutputType,
   QueryViewerTrendPeriod
-} from "@genexus/reporting-api/dist/types/basic-types";
+} from "@genexus/reporting-api";
 import {
   QueryViewerServiceData,
   QueryViewerServiceMetaData
-} from "@genexus/reporting-api/dist/types/service-result";
+} from "@genexus/reporting-api";
 import { Component as GxComponent } from "../../../common/interfaces";
 
 enum MissionOuputType {

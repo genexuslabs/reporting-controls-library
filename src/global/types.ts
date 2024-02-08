@@ -1,7 +1,7 @@
 import {
   QueryViewerAxisType,
   QueryViewerElementType
-} from "@genexus/reporting-api/dist/types/basic-types";
+} from "@genexus/reporting-api";
 
 export type QueryViewerContextElement = {
   Name: string;

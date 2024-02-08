@@ -2,7 +2,7 @@ import {
   // QueryViewerServiceDataRow,
   // QueryViewerServiceMetaDataData,
   QueryViewerServiceResponse
-} from "@genexus/reporting-api/dist/types/service-result";
+} from "@genexus/reporting-api";
 import { Component, Element, Host, Prop, State, h } from "@stencil/core";
 import {
   QueryViewerChartType,
@@ -12,7 +12,7 @@ import {
   QueryViewerSliderRange,
   QueryViewerTranslations,
   QueryViewerXAxisLabels
-} from "@genexus/reporting-api/dist/types/basic-types";
+} from "@genexus/reporting-api";
 import { getAllHighchartOptions, getChartGroup } from "./chart-utils";
 import {
   ChartMetadataAndData,

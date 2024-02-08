@@ -12,7 +12,7 @@ import {
 } from "@stencil/core";
 import { Component as GxComponent } from "../../../common/interfaces";
 import { KEY_CODES } from "../../../common/reserverd-names";
-import { GxQueryItem } from "@genexus/reporting-api/dist/types/basic-types";
+import { GxQueryItem } from "@genexus/reporting-api";
 
 export type QueryMenuElement = {
   id: number;

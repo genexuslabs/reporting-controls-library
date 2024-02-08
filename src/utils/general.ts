@@ -6,7 +6,7 @@ import {
   // QueryViewerConditionOperator,
   QueryViewerDataType,
   QueryViewerOutputType
-} from "@genexus/reporting-api/dist/types/basic-types";
+} from "@genexus/reporting-api";
 import { ChartTypes } from "../components/query-viewer-chart/controller/chart-types";
 import { ChartMetadataAndData } from "../components/query-viewer-chart/controller/processDataAndMetadata";
 // import { QueryViewerAxisConditionalStyle } from "@genexus/reporting-api/dist/types/json";
@@ -15,7 +15,7 @@ import {
   QueryViewerServiceMetaData,
   QueryViewerServiceMetaDataAxis,
   QueryViewerServiceMetaDataData
-} from "@genexus/reporting-api/dist/types/service-result";
+} from "@genexus/reporting-api";
 import { TooltipFormatterContextObject } from "highcharts";
 
 export function parseNumericPicture(

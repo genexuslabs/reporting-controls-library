@@ -14,7 +14,7 @@ import {
   makeRequestForPivotTable,
   makeRequestForSyncServicesPivotTable,
   makeRequestForTable
-} from "@genexus/reporting-api/dist";
+} from "@genexus/reporting-api";
 import {
   GeneratorType,
   QueryViewerBase,
@@ -23,11 +23,11 @@ import {
   QueryViewerOutputType,
   QueryViewerShowDataLabelsIn,
   QueryViewerTotal
-} from "@genexus/reporting-api/dist/types/basic-types";
+} from "@genexus/reporting-api";
 import {
   QueryViewer,
   QueryViewerCard
-} from "@genexus/reporting-api/dist/types/json";
+} from "@genexus/reporting-api";
 import {
   QueryViewerAttributesValuesForPivot,
   QueryViewerCalculatePivottableData,
@@ -37,7 +37,7 @@ import {
   QueryViewerServiceMetaData,
   QueryViewerServiceResponse,
   QueryViewerServiceResponsePivotTable
-} from "@genexus/reporting-api/dist/types/service-result";
+} from "@genexus/reporting-api";
 
 @Component({
   tag: "gx-query-viewer-controller",
@@ -418,9 +418,9 @@ export class QueryViewerController {
     // WA to avoid requests to unimplemented outputs
     if (
       this.type !== QueryViewerOutputType.Card &&
-      this.type !== QueryViewerOutputType.Chart
-      //this.type !== QueryViewerOutputType.PivotTable &&
-      //this.type !== QueryViewerOutputType.Table
+      this.type !== QueryViewerOutputType.Chart &&
+      this.type !== QueryViewerOutputType.PivotTable &&
+      this.type !== QueryViewerOutputType.Table
     ) {
       return;
     }

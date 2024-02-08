@@ -1,9 +1,9 @@
-import { QueryViewerServiceMetaData } from "@genexus/reporting-api/dist/types/service-result";
+import { QueryViewerServiceMetaData } from "@genexus/reporting-api";
 import {
   QueryViewerChartType,
   QueryViewerOutputType,
   QueryViewerXAxisLabels
-} from "@genexus/reporting-api/dist/types/basic-types";
+} from "@genexus/reporting-api";
 import { ChartTypes } from "./chart-types";
 import { getHighchartOptions } from "./highcharts-options";
 import { ChartMetadataAndData } from "./processDataAndMetadata";

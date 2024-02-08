@@ -13,13 +13,13 @@ import {
   h
 } from "@stencil/core";
 
-import { asyncNewChatMessage } from "@genexus/reporting-api/dist";
 import {
+  asyncNewChatMessage,
+  QueryViewerBase,
   GxChatMessage,
   GxChatMessageResponse,
-  GxQueryOptions,
-  QueryViewerBase
-} from "@genexus/reporting-api/dist/types/basic-types";
+  GxQueryOptions
+} from "@genexus/reporting-api";
 import { Component as GxComponent } from "../../../common/interfaces";
 import { KEY_CODES } from "../../../common/reserverd-names";
 
