@@ -23,7 +23,6 @@ import {
 import { Component as GxComponent } from "../../../common/interfaces";
 import { KEY_CODES } from "../../../common/reserverd-names";
 
-
 export type QueryRequest = {
   message: string;
 };
@@ -117,7 +116,9 @@ export class QueryChat implements GxComponent {
   private queryOptions(): GxQueryOptions {
     return {
       baseUrl: process.env.BASE_URL,
-      metadataName: this.metadataName
+      metadataName: this.metadataName,
+      apiKey: undefined,
+      saiaToken: undefined
     };
   }
 
@@ -200,13 +201,15 @@ export class QueryChat implements GxComponent {
   };
 
   private renderLoading = () => {
-    if (!this.waitingResponse) return null;
+    if (!this.waitingResponse) {
+      return null;
+    }
     return (
       <li>
         <gx-loading presented={this.waitingResponse}></gx-loading>
       </li>
     );
-  }
+  };
 
   render() {
     return (
@@ -271,7 +274,11 @@ export class QueryChat implements GxComponent {
                 {this.hasTriggerButton ? (
                   <slot name="trigger-content" />
                 ) : (
-                  <gx-icon aria-hidden="true" slot="trigger-content" type="sent">
+                  <gx-icon
+                    aria-hidden="true"
+                    slot="trigger-content"
+                    type="sent"
+                  >
                     Send question
                   </gx-icon>
                 )}
