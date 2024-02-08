@@ -88,6 +88,16 @@ Type: `Promise<any>`
 
 
 
+### `getFilteredData() => Promise<any>`
+
+Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
+
+#### Returns
+
+Type: `Promise<any>`
+
+
+
 
 ## Dependencies
 

@@ -1078,29 +1078,29 @@
           }
         };
 
-        // const queryViewers = document.querySelectorAll("gx-query-viewer");
+        const queryViewers = document.querySelectorAll("gx-query-viewer");
 
 
-        //   // Card
-        //   queryViewers[0].serviceResponse = serviceResponseCardMock;
+          // Card
+          queryViewers[0].serviceResponse = serviceResponseCardMock;
 
-        //   // Chart
-        //   queryViewers[1].serviceResponse = serviceResponseChartMock;
-        //   queryViewers[2].serviceResponse = serviceResponseChartMock;
-        //   queryViewers[3].serviceResponse = serviceResponseChartMock;
+          // Chart
+          queryViewers[1].serviceResponse = serviceResponseChartMock;
+          queryViewers[2].serviceResponse = serviceResponseChartMock;
+          queryViewers[3].serviceResponse = serviceResponseChartMock;
 
-        //   document
-        //     .querySelector("gx-query-viewer-slider")
-        //     .addEventListener("change", event => {
-        //       console.log("Slider new value:", event.detail);
-        //     });
+          document
+            .querySelector("gx-query-viewer-slider")
+            .addEventListener("change", event => {
+              console.log("Slider new value:", event.detail);
+            });
       });
     </script>
   </head>
   <body>
 
     <div class="container">
-      <!-- <div>
+      <div>
         <gx-query-viewer
           type="Card"
           include-sparkline
@@ -1161,51 +1161,6 @@
             ></gx-query-viewer>
           </gx-query-viewer-slider>
         </div>
-      </div>
-
-      <div>
-        <gx-query-viewer type="Chart">
-          <gx-query-viewer-controller
-            use-gxquery="true"
-            metadata-name="ReportingShowcase"
-            base-url="https://gxquery.beta.saia.ai/GXquery/API/v1/"
-            api-key="x8Kd36rbi5Nf94E4wcB1Uxqvcd5jvz88K7AU6Grv8SjKfttZ8QoGCadjBP90Dk7wJ8jWPqQ4QsdlRdrtjiIgO0Xy59xhyfKDYfScxAPZDor3N7vlFV6J0a9AOb7kN8uS"
-            saia-token="0zb5xTEjjL4iJ4LjBRADizEgoqJxSS?m8p1=DmIdw0T0ExujLwJKw4pjivffDyZG!UZOfU88DHGD6txMx88L4y?A671Y12JTRUe/Qr/s8iNh!0DicXrGYcf7Qgw4mW-HDnF17MGxQx9mYVwT=bpc6eQI7tCRA3Kk1ENuuM=faZSkFb28Q3Lvbbq6Q0Kei1INxHveKwAYAEUr7!W49BxWMErv/FJvkx!7!0POrRXVbjhbffgw3xAFR3EeF!sOOkKD"
-            serialized-object='{ "id": "8cca6f2c-65e5-4830-aebe-803362c13b3f", "title": "Chart - with controller", "chartType":"Column", "showValues":"true" }'
-            type="Chart"
-          >
-          </gx-query-viewer-controller>
-        </gx-query-viewer>
-      </div>
-
-      <div>
-        <gx-query-viewer type="PivotTable">
-          <gx-query-viewer-controller
-            use-gxquery="true"
-            metadata-name="ReportingShowcase"
-            base-url="https://gxquery.beta.saia.ai/GXquery/API/v1/"
-            api-key="x8Kd36rbi5Nf94E4wcB1Uxqvcd5jvz88K7AU6Grv8SjKfttZ8QoGCadjBP90Dk7wJ8jWPqQ4QsdlRdrtjiIgO0Xy59xhyfKDYfScxAPZDor3N7vlFV6J0a9AOb7kN8uS"
-            saia-token="0zb5xTEjjL4iJ4LjBRADizEgoqJxSS?m8p1=DmIdw0T0ExujLwJKw4pjivffDyZG!UZOfU88DHGD6txMx88L4y?A671Y12JTRUe/Qr/s8iNh!0DicXrGYcf7Qgw4mW-HDnF17MGxQx9mYVwT=bpc6eQI7tCRA3Kk1ENuuM=faZSkFb28Q3Lvbbq6Q0Kei1INxHveKwAYAEUr7!W49BxWMErv/FJvkx!7!0POrRXVbjhbffgw3xAFR3EeF!sOOkKD"
-            serialized-object='{ "id": "dba10d59-8059-4caa-a534-d0798842a7c6", "title": "Pivot", "chartType":"Column", "showValues":"true" }'
-            type="PivotTable"
-          >
-          </gx-query-viewer-controller>
-        </gx-query-viewer>
-      </div> -->
-
-      <div>
-        <gx-query-viewer type="PivotTable">
-          <gx-query-viewer-controller
-            use-gxquery="true"
-            metadata-name="ReportingShowcase"
-            base-url="https://gxquery.beta.saia.ai/GXquery/API/v1/"
-            api-key="x8Kd36rbi5Nf94E4wcB1Uxqvcd5jvz88K7AU6Grv8SjKfttZ8QoGCadjBP90Dk7wJ8jWPqQ4QsdlRdrtjiIgO0Xy59xhyfKDYfScxAPZDor3N7vlFV6J0a9AOb7kN8uS"
-            saia-token="0zb5xTEjjL4iJ4LjBRADizEgoqJxSS?m8p1=DmIdw0T0ExujLwJKw4pjivffDyZG!UZOfU88DHGD6txMx88L4y?A671Y12JTRUe/Qr/s8iNh!0DicXrGYcf7Qgw4mW-HDnF17MGxQx9mYVwT=bpc6eQI7tCRA3Kk1ENuuM=faZSkFb28Q3Lvbbq6Q0Kei1INxHveKwAYAEUr7!W49BxWMErv/FJvkx!7!0POrRXVbjhbffgw3xAFR3EeF!sOOkKD"
-            object-name='UruguayHarvardIndex'
-            type="PivotTable"
-          >
-          </gx-query-viewer-controller>
-        </gx-query-viewer>
       </div>
 
     </div>
