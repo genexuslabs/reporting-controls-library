@@ -13,7 +13,8 @@ import {
 } from "@stencil/core";
 
 import {
-  DeleteQueryServiceResponse, RenameQueryServiceResponse,
+  DeleteQueryServiceResponse,
+  RenameQueryServiceResponse,
   asyncDeleteQuery,
   asyncGetListQuery,
   asyncRenameQuery
@@ -336,6 +337,7 @@ export class QueryMenu implements GxComponent {
   }
 
   private deleteItem = (item: GxQueryMenuItemCustomEvent<GxQueryItem>) => {
+    // eslint-disable-next-line no-alert
     if (confirm("Delete query?")) {
       this.loading = true;
       const options = this.queryOptions();
