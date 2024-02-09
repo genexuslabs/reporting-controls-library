@@ -35,11 +35,11 @@ export namespace Components {
     }
     interface GxQueryChat {
         /**
-          * Authentication API Key
+          * This is GxQuery authentication key. It will required when property useGxQuery = true
          */
         "apiKey": string;
         /**
-          * Base URL of the server
+          * This is the GxQuery base URL. It will required when property useGxQuery = true
          */
         "baseUrl": string;
         /**
@@ -59,11 +59,11 @@ export namespace Components {
          */
         "placeholder": string;
         /**
-          * Authentication Saia Token
+          * This is GxQuery Saia Token. It will required when property useGxQuery = true
          */
         "saiaToken": string;
         /**
-          * Optional Saia user ID
+          * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
          */
         "saiaUserId": string;
     }
@@ -73,11 +73,11 @@ export namespace Components {
          */
         "accessibleName": "Query list";
         /**
-          * Authentication API Key
+          * This is GxQuery authentication key. It will required when property useGxQuery = true
          */
         "apiKey": string;
         /**
-          * Base URL of the server
+          * This is the GxQuery base URL. It will required when property useGxQuery = true
          */
         "baseUrl": string;
         /**
@@ -92,17 +92,17 @@ export namespace Components {
         /**
           * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
          */
-        "metadataName": string;
+        "metadataName": "";
         /**
           * Dates to group queries
          */
         "rangeOfDays": { days: number; label: string }[];
         /**
-          * Authentication Saia Token
+          * This is GxQuery Saia Token. It will required when property useGxQuery = true
          */
         "saiaToken": string;
         /**
-          * Optional Saia user ID
+          * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
          */
         "saiaUserId": string;
         /**
@@ -131,7 +131,11 @@ export namespace Components {
     }
     interface GxQueryRender {
         /**
-          * Base URL of the server
+          * This is GxQuery authentication key. It will required when property useGxQuery = true
+         */
+        "apiKey": string;
+        /**
+          * This is the GxQuery base URL. It will required when property useGxQuery = true
          */
         "baseUrl": string;
         /**
@@ -150,12 +154,20 @@ export namespace Components {
         /**
           * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
          */
-        "metadataName": string;
+        "metadataName": "";
         "noDataLabel": "No Data";
         /**
           * Provide the Query properties
          */
         "query": QueryViewerBase;
+        /**
+          * This is GxQuery Saia Token. It will required when property useGxQuery = true
+         */
+        "saiaToken": string;
+        /**
+          * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
+         */
+        "saiaUserId": string;
         /**
           * True to tell the controller to connect use GXquery as a queries repository
          */
@@ -601,7 +613,7 @@ export namespace Components {
          */
         "allowElementsOrderChange": boolean;
         /**
-          * Authentication API Key
+          * This is GxQuery authentication key. It will required when property useGxQuery = true
          */
         "apiKey": string;
         /**
@@ -609,7 +621,7 @@ export namespace Components {
          */
         "applicationNamespace": string;
         /**
-          * Base URL of the server
+          * This is the GxQuery base URL. It will required when property useGxQuery = true
          */
         "baseUrl": string;
         /**
@@ -681,11 +693,11 @@ export namespace Components {
          */
         "returnSampleData": boolean;
         /**
-          * Authentication Saia Token
+          * This is GxQuery Saia Token. It will required when property useGxQuery = true
          */
         "saiaToken": string;
         /**
-          * Optional Saia user ID
+          * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
          */
         "saiaUserId": string;
         /**
@@ -1337,11 +1349,11 @@ declare namespace LocalJSX {
     }
     interface GxQueryChat {
         /**
-          * Authentication API Key
+          * This is GxQuery authentication key. It will required when property useGxQuery = true
          */
         "apiKey"?: string;
         /**
-          * Base URL of the server
+          * This is the GxQuery base URL. It will required when property useGxQuery = true
          */
         "baseUrl"?: string;
         /**
@@ -1365,11 +1377,11 @@ declare namespace LocalJSX {
          */
         "placeholder"?: string;
         /**
-          * Authentication Saia Token
+          * This is GxQuery Saia Token. It will required when property useGxQuery = true
          */
         "saiaToken"?: string;
         /**
-          * Optional Saia user ID
+          * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
          */
         "saiaUserId"?: string;
     }
@@ -1379,11 +1391,11 @@ declare namespace LocalJSX {
          */
         "accessibleName"?: "Query list";
         /**
-          * Authentication API Key
+          * This is GxQuery authentication key. It will required when property useGxQuery = true
          */
         "apiKey"?: string;
         /**
-          * Base URL of the server
+          * This is the GxQuery base URL. It will required when property useGxQuery = true
          */
         "baseUrl"?: string;
         /**
@@ -1393,7 +1405,7 @@ declare namespace LocalJSX {
         /**
           * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
          */
-        "metadataName"?: string;
+        "metadataName"?: "";
         /**
           * Delete query
          */
@@ -1411,11 +1423,11 @@ declare namespace LocalJSX {
          */
         "rangeOfDays"?: { days: number; label: string }[];
         /**
-          * Authentication Saia Token
+          * This is GxQuery Saia Token. It will required when property useGxQuery = true
          */
         "saiaToken"?: string;
         /**
-          * Optional Saia user ID
+          * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
          */
         "saiaUserId"?: string;
         /**
@@ -1455,7 +1467,11 @@ declare namespace LocalJSX {
     }
     interface GxQueryRender {
         /**
-          * Base URL of the server
+          * This is GxQuery authentication key. It will required when property useGxQuery = true
+         */
+        "apiKey"?: string;
+        /**
+          * This is the GxQuery base URL. It will required when property useGxQuery = true
          */
         "baseUrl"?: string;
         /**
@@ -1474,12 +1490,20 @@ declare namespace LocalJSX {
         /**
           * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
          */
-        "metadataName"?: string;
+        "metadataName"?: "";
         "noDataLabel"?: "No Data";
         /**
           * Provide the Query properties
          */
         "query"?: QueryViewerBase;
+        /**
+          * This is GxQuery Saia Token. It will required when property useGxQuery = true
+         */
+        "saiaToken"?: string;
+        /**
+          * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
+         */
+        "saiaUserId"?: string;
         /**
           * True to tell the controller to connect use GXquery as a queries repository
          */
@@ -1945,7 +1969,7 @@ declare namespace LocalJSX {
          */
         "allowElementsOrderChange"?: boolean;
         /**
-          * Authentication API Key
+          * This is GxQuery authentication key. It will required when property useGxQuery = true
          */
         "apiKey"?: string;
         /**
@@ -1953,7 +1977,7 @@ declare namespace LocalJSX {
          */
         "applicationNamespace"?: string;
         /**
-          * Base URL of the server
+          * This is the GxQuery base URL. It will required when property useGxQuery = true
          */
         "baseUrl"?: string;
         /**
@@ -2037,11 +2061,11 @@ declare namespace LocalJSX {
          */
         "returnSampleData"?: boolean;
         /**
-          * Authentication Saia Token
+          * This is GxQuery Saia Token. It will required when property useGxQuery = true
          */
         "saiaToken"?: string;
         /**
-          * Optional Saia user ID
+          * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
          */
         "saiaUserId"?: string;
         /**

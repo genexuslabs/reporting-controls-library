@@ -230,7 +230,8 @@ const serviceMock: QueryViewerServiceResponse = {
     "showDataLabelsIn": QueryViewerShowDataLabelsIn.Columns,
     "totalForRows": QueryViewerTotal.Yes,
     "totalForColumns": QueryViewerTotal.Yes,
-  }
+  },
+  XML: null
 };
 
 

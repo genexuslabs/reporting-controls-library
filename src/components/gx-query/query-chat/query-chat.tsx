@@ -59,21 +59,21 @@ export class QueryChat implements GxComponent {
    */
   @Prop() readonly metadataName = "";
   /**
-   * Base URL of the server
+   * This is the GxQuery base URL. It will required when property useGxQuery = true
    */
-  @Prop() readonly baseUrl = process.env.GENEXUS_QUERY_URL;
+  @Prop() readonly baseUrl: string = "";
   /**
-   * Authentication API Key
+   * This is GxQuery authentication key. It will required when property useGxQuery = true
    */
-  @Prop() readonly apiKey = process.env.GENEXUS_API_KEY;
+  @Prop() readonly apiKey: string = "";
   /**
-   * Authentication Saia Token
+   * This is GxQuery Saia Token. It will required when property useGxQuery = true
    */
-  @Prop() readonly saiaToken = process.env.GENEXUS_SAIA_TOKEN;
+  @Prop() readonly saiaToken: string = "";
   /**
-   * Optional Saia user ID
+   * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
    */
-  @Prop() readonly saiaUserId = process.env.GENEXUS_SAIA_USER_ID;
+  @Prop() readonly saiaUserId: string = "";
 
   /**
    * Fired each time the user make a question

@@ -56,24 +56,6 @@ export class QueryViewerController {
    * Determines the application namespace where the program is generated and compiled.
    */
   @Prop() readonly applicationNamespace: string;
-
-  /**
-   * Base URL of the server
-   */
-  @Prop() readonly baseUrl = process.env.GENEXUS_QUERY_URL;
-  /**
-   * Authentication API Key
-   */
-  @Prop() readonly apiKey = process.env.GENEXUS_API_KEY;
-  /**
-   * Authentication Saia Token
-   */
-  @Prop() readonly saiaToken = process.env.GENEXUS_SAIA_TOKEN;
-  /**
-   * Optional Saia user ID
-   */
-  @Prop() readonly saiaUserId = process.env.GENEXUS_SAIA_USER_ID;
-
   /**
    * When `type == Chart`, specifies the chart type: Bar, Pie, Timeline, etc...
    */
@@ -82,7 +64,7 @@ export class QueryViewerController {
   /**
    * Environment of the project: java or net
    */
-  @Prop() readonly environment: GeneratorType = process.env.GENEXUS_DEFAULT_GENERATOR as GeneratorType;
+  @Prop() readonly environment: GeneratorType = "net";
 
   /**
    * Name of the Query or Data provider assigned
@@ -193,6 +175,26 @@ export class QueryViewerController {
    * In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
    */
   @Prop() readonly metadataName: string;
+
+  /**
+   * This is the GxQuery base URL. It will required when property useGxQuery = true
+   */
+  @Prop() readonly baseUrl: string = "";
+
+  /**
+   * This is GxQuery authentication key. It will required when property useGxQuery = true
+   */
+  @Prop() readonly apiKey: string = "";
+
+  /**
+   * This is GxQuery Saia Token. It will required when property useGxQuery = true
+   */
+  @Prop() readonly saiaToken: string = "";
+
+  /**
+   * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
+   */
+  @Prop() readonly saiaUserId: string = "";
 
   /**
    * Use this property to pass a query obtained from GXquery, when useGxquery = true (ignored if objectName is specified, because this property has a greater precedence)
@@ -461,12 +463,13 @@ export class QueryViewerController {
       getMetadataAndData(
         queryViewerObject,
         servicesInfo,
-        (metadata, data, queryViewerBaseProperties) => {
+        (metadata, data, xml, queryViewerBaseProperties) => {
           // Emit service response
           this.queryViewerServiceResponse.emit({
             MetaData: metadata,
             Data: data,
-            Properties: queryViewerBaseProperties
+            Properties: queryViewerBaseProperties,
+            XML: xml
           });
         }
       );
@@ -485,9 +488,7 @@ export class QueryViewerController {
       generator: this.environment,
       metadataName: this.metadataName,
       objectName: this.objectName,
-      serializedObject: this.serializedObject,
-      apiKey: undefined,
-      saiaToken: undefined
+      serializedObject: this.serializedObject
     };
   }
 

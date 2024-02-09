@@ -35,11 +35,23 @@ export class GxQueryRender implements GxComponent {
    * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true.
    * In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
    */
-  @Prop() readonly metadataName = process.env.METADATA_NAME;
+  @Prop() readonly metadataName = "";
   /**
-   * Base URL of the server
+   * This is the GxQuery base URL. It will required when property useGxQuery = true
    */
-  @Prop() readonly baseUrl = process.env.BASE_URL;
+  @Prop() readonly baseUrl: string = "";
+  /**
+   * This is GxQuery authentication key. It will required when property useGxQuery = true
+   */
+  @Prop() readonly apiKey: string = "";
+  /**
+   * This is GxQuery Saia Token. It will required when property useGxQuery = true
+   */
+  @Prop() readonly saiaToken: string = "";
+  /**
+   * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
+   */
+  @Prop() readonly saiaUserId: string = "";
   /**
    * Environment of the project: java or net
    */
@@ -151,7 +163,8 @@ export class GxQueryRender implements GxComponent {
         serviceResponse={{
           Data: this.serviceData,
           MetaData: this.serviceMetadata,
-          Properties: this.query
+          Properties: this.query,
+          XML: null
         }}
       ></gx-query-viewer>
     ) : (
