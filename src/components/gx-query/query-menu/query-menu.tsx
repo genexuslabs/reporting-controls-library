@@ -89,7 +89,7 @@ export class QueryMenu implements GxComponent {
    */
   @Prop() readonly metadataName = "";
   /**
-   * This is the GxQuery base URL. It will required when property useGxQuery = true
+   * API base URL
    */
   @Prop() readonly baseUrl: string = "";
   /**
