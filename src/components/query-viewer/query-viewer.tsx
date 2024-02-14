@@ -28,7 +28,7 @@ import {
   QueryViewerTranslations,
   QueryViewerTrendPeriod,
   QueryViewerXAxisLabels
-} from "@genexus/reporting-api/dist/types/basic-types";
+} from "@genexus/reporting-api";
 import {
   dragAndDropPivotTableEvent,
   itemClickDataForPivotTable,
@@ -65,7 +65,7 @@ import {
   QueryViewerCalculatePivottableData,
   QueryViewerPivotTableDataSync,
   QueryViewerTableDataSync
-} from "@genexus/reporting-api/dist/types/service-result";
+} from "@genexus/reporting-api";
 
 let autoId = 0;
 

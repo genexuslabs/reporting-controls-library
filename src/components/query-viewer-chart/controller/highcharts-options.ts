@@ -1,8 +1,8 @@
 import {
   QueryViewerServiceMetaData,
   QueryViewerServiceMetaDataData
-} from "@genexus/reporting-api/dist/types/service-result";
-import { trimUtil } from "@genexus/reporting-api/dist/xml-parser/utils/general";
+} from "@genexus/reporting-api";
+import { trimUtil } from "@genexus/reporting-api";
 import { getDay, getHours, getMinutes, getMonth, getYear } from "date-fns";
 import {
   AlignValue,
@@ -37,7 +37,7 @@ import {
   QueryViewerOutputType,
   QueryViewerVisible,
   QueryViewerXAxisLabels
-} from "../../../common/basic-types";
+} from "@genexus/reporting-api";
 import { fromDateToString, fromStringToDateISO } from "../../../utils/date";
 import {
   SelectionAllowed,

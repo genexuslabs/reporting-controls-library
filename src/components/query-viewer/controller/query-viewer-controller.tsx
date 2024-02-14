@@ -14,7 +14,7 @@ import {
   makeRequestForPivotTable,
   makeRequestForSyncServicesPivotTable,
   makeRequestForTable
-} from "@genexus/reporting-api/dist";
+} from "@genexus/reporting-api";
 import {
   GeneratorType,
   QueryViewerBase,
@@ -23,11 +23,11 @@ import {
   QueryViewerOutputType,
   QueryViewerShowDataLabelsIn,
   QueryViewerTotal
-} from "@genexus/reporting-api/dist/types/basic-types";
+} from "@genexus/reporting-api";
 import {
   QueryViewer,
   QueryViewerCard
-} from "@genexus/reporting-api/dist/types/json";
+} from "@genexus/reporting-api";
 import {
   QueryViewerAttributesValuesForPivot,
   QueryViewerCalculatePivottableData,
@@ -37,7 +37,7 @@ import {
   QueryViewerServiceMetaData,
   QueryViewerServiceResponse,
   QueryViewerServiceResponsePivotTable
-} from "@genexus/reporting-api/dist/types/service-result";
+} from "@genexus/reporting-api";
 
 @Component({
   tag: "gx-query-viewer-controller",
@@ -56,12 +56,6 @@ export class QueryViewerController {
    * Determines the application namespace where the program is generated and compiled.
    */
   @Prop() readonly applicationNamespace: string;
-
-  /**
-   * Base URL of the server
-   */
-  @Prop() readonly baseUrl: string;
-
   /**
    * When `type == Chart`, specifies the chart type: Bar, Pie, Timeline, etc...
    */
@@ -70,7 +64,7 @@ export class QueryViewerController {
   /**
    * Environment of the project: java or net
    */
-  @Prop() readonly environment: GeneratorType;
+  @Prop() readonly environment: GeneratorType = "net";
 
   /**
    * Name of the Query or Data provider assigned
@@ -181,6 +175,26 @@ export class QueryViewerController {
    * In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
    */
   @Prop() readonly metadataName: string;
+
+  /**
+   * API base URL
+   */
+  @Prop() readonly baseUrl: string = "";
+
+  /**
+   * This is GxQuery authentication key. It will required when property useGxQuery = true
+   */
+  @Prop() readonly apiKey: string = "";
+
+  /**
+   * This is GxQuery Saia Token. It will required when property useGxQuery = true
+   */
+  @Prop() readonly saiaToken: string = "";
+
+  /**
+   * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
+   */
+  @Prop() readonly saiaUserId: string = "";
 
   /**
    * Use this property to pass a query obtained from GXquery, when useGxquery = true (ignored if objectName is specified, because this property has a greater precedence)
@@ -406,9 +420,9 @@ export class QueryViewerController {
     // WA to avoid requests to unimplemented outputs
     if (
       this.type !== QueryViewerOutputType.Card &&
-      this.type !== QueryViewerOutputType.Chart
-      //this.type !== QueryViewerOutputType.PivotTable &&
-      //this.type !== QueryViewerOutputType.Table
+      this.type !== QueryViewerOutputType.Chart &&
+      this.type !== QueryViewerOutputType.PivotTable &&
+      this.type !== QueryViewerOutputType.Table
     ) {
       return;
     }
@@ -449,12 +463,13 @@ export class QueryViewerController {
       getMetadataAndData(
         queryViewerObject,
         servicesInfo,
-        (metadata, data, queryViewerBaseProperties) => {
+        (metadata, data, xml, queryViewerBaseProperties) => {
           // Emit service response
           this.queryViewerServiceResponse.emit({
             MetaData: metadata,
             Data: data,
-            Properties: queryViewerBaseProperties
+            Properties: queryViewerBaseProperties,
+            XML: xml
           });
         }
       );
@@ -467,12 +482,13 @@ export class QueryViewerController {
       oldKey: this.recordSetCacheOldKey,
       useGXquery: this.useGxquery,
       baseUrl: this.baseUrl,
+      apiKey: this.apiKey,
+      saiaToken: this.saiaToken,
+      saiaUserId: this.saiaUserId,
       generator: this.environment,
       metadataName: this.metadataName,
       objectName: this.objectName,
-      serializedObject: this.serializedObject,
-      apiKey: undefined,
-      saiaToken: undefined
+      serializedObject: this.serializedObject
     };
   }
 

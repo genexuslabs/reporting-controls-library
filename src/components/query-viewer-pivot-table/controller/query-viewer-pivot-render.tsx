@@ -1,6 +1,6 @@
 import { Component, h, Prop, Host, Element, Method } from "@stencil/core";
 
-import { QueryViewerServiceResponsePivotTable } from "@genexus/reporting-api/dist/types/service-result";
+import { QueryViewerServiceResponsePivotTable } from "@genexus/reporting-api";
 import {
   QueryViewerAxisOrderType,
   QueryViewerOutputType,
@@ -10,7 +10,7 @@ import {
   QueryViewerTableParameters,
   QueryViewerTotal,
   QueryViewerTranslations
-} from "../../../common/basic-types";
+} from "@genexus/reporting-api";
 import { OAT } from "jspivottable";
 let autoId = 0;
 @Component({

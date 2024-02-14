@@ -13,9 +13,21 @@
 
     <style>
       body {
-        display: flex;
-        min-height: 100vh;
         margin: 0;
+        padding: 0;
+      }
+      .container {
+        display: inline-grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 500px;
+        gap: 1em;
+      }
+      .container > div {
+        border: 1px solid gray;
+        padding: 1em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
     </style>
 
@@ -1068,104 +1080,89 @@
 
         const queryViewers = document.querySelectorAll("gx-query-viewer");
 
-        // Card
-        queryViewers[0].serviceResponse = serviceResponseCardMock;
 
-        // Chart
-        queryViewers[1].serviceResponse = serviceResponseChartMock;
-        queryViewers[2].serviceResponse = serviceResponseChartMock;
-        queryViewers[3].serviceResponse = serviceResponseChartMock;
+          // Card
+          queryViewers[0].serviceResponse = serviceResponseCardMock;
 
-        document
-          .querySelector("gx-query-viewer-slider")
-          .addEventListener("change", event => {
-            console.log("Slider new value:", event.detail);
-          });
+          // Chart
+          queryViewers[1].serviceResponse = serviceResponseChartMock;
+          queryViewers[2].serviceResponse = serviceResponseChartMock;
+          queryViewers[3].serviceResponse = serviceResponseChartMock;
+
+          document
+            .querySelector("gx-query-viewer-slider")
+            .addEventListener("change", event => {
+              console.log("Slider new value:", event.detail);
+            });
       });
     </script>
   </head>
   <body>
-    <gx-query-viewer
-      type="Card"
-      include-sparkline
-      include-trend
-      include-max-min
-      trend-period="SinceTheBeginning"
-      show-data-as="Values"
-      orientation="Vertical"
-    ></gx-query-viewer>
 
-    <div
-      style="
-        display: grid;
-        grid-template-columns: 0.5fr 0.5fr;
-        grid-template-rows: min-content min-content;
-      "
-    >
-      <gx-query-viewer
-        type="Chart"
-        chart-type="Column"
-        allow-selection="false"
-        plot-series="InTheSameChart"
-        show-data-labels-in="Columns"
-        query-title="Single data chart"
-        x-axis-intersection-at-zero="false"
-        x-axis-labels=""
-        x-axis-title=""
-        y-axis-title=""
-      ></gx-query-viewer>
-
-      <gx-query-viewer
-        type="Chart"
-        chart-type="Column3D"
-        allow-selection="false"
-        plot-series="InTheSameChart"
-        show-data-labels-in="Columns"
-        query-title="Single data chart"
-        x-axis-intersection-at-zero="false"
-        x-axis-labels=""
-        x-axis-title=""
-        y-axis-title=""
-      ></gx-query-viewer>
-
-      <div style="height: 200px; margin: 40px; display: flex; width: 100%">
-        <gx-query-viewer-slider start-slider-value="50" end-slider-value="80">
-          <gx-query-viewer
-            slot="content"
-            type="Chart"
-            chart-type="Line"
-            allow-selection="false"
-            plot-series="InTheSameChart"
-            show-data-labels-in="Columns"
-            query-title="Single data chart"
-            x-axis-intersection-at-zero="false"
-            x-axis-labels=""
-            x-axis-title=""
-            y-axis-title=""
-          ></gx-query-viewer>
-        </gx-query-viewer-slider>
+    <div class="container">
+      <div>
+        <gx-query-viewer
+          type="Card"
+          include-sparkline
+          include-trend
+          include-max-min
+          trend-period="SinceTheBeginning"
+          show-data-as="Values"
+          orientation="Vertical"
+          query-title="1-Card"
+        ></gx-query-viewer>
       </div>
-      <gx-query-viewer type="Chart">
-        <gx-query-viewer-controller
-          use-gxquery="true"
-          metadata-name="ReportingShowcase"
-          base-url="http://gma.artech.local/GXqueryAIDemo"
-          object-name="CityPopulationForCountry"
-          type="Chart"
-        >
-        </gx-query-viewer-controller>
-      </gx-query-viewer>
 
-      <gx-query-viewer type="Chart">
-        <gx-query-viewer-controller
-          use-gxquery="true"
-          metadata-name="ReportingShowcase"
-          base-url="http://gma.artech.local/GXqueryAIDemo"
-          serialized-object='{ "id": "8cca6f2c-65e5-4830-aebe-803362c13b3f", "title": "TITULO", "chartType":"Column", "showValues":"true" }'
+      <div>
+        <gx-query-viewer
           type="Chart"
-        >
-        </gx-query-viewer-controller>
-      </gx-query-viewer>
+          chart-type="Column"
+          allow-selection="false"
+          plot-series="InTheSameChart"
+          show-data-labels-in="Columns"
+          query-title="2 - Single data chart"
+          x-axis-intersection-at-zero="false"
+          x-axis-labels=""
+          x-axis-title=""
+          y-axis-title=""
+        ></gx-query-viewer>
+      </div>
+
+      <div>
+        <gx-query-viewer
+          type="Chart"
+          chart-type="Column3D"
+          allow-selection="false"
+          plot-series="InTheSameChart"
+          show-data-labels-in="Columns"
+          query-title="3 - Single data chart - Column 3D"
+          x-axis-intersection-at-zero="false"
+          x-axis-labels=""
+          x-axis-title=""
+          y-axis-title=""
+        ></gx-query-viewer>
+      </div>
+
+      <div>
+        <div style="height: 200px; margin: 40px; display: flex; width: 100%">
+          <gx-query-viewer-slider start-slider-value="50" end-slider-value="80">
+            <gx-query-viewer
+              slot="content"
+              type="Chart"
+              chart-type="Line"
+              allow-selection="false"
+              plot-series="InTheSameChart"
+              show-data-labels-in="Columns"
+              query-title="4 - Single data chart - with slider"
+              x-axis-intersection-at-zero="false"
+              x-axis-labels=""
+              x-axis-title=""
+              y-axis-title=""
+            ></gx-query-viewer>
+          </gx-query-viewer-slider>
+        </div>
+      </div>
+
     </div>
   </body>
 </html>

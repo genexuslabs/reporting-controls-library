@@ -7,7 +7,7 @@ import {
   Prop,
   h
 } from "@stencil/core";
-import { QueryViewerSliderRange } from "../../common/basic-types";
+import { QueryViewerSliderRange } from "@genexus/reporting-api";
 
 const DEFAULT_MIN_VALUE = 0;
 const DEFAULT_MAX_VALUE = 100;

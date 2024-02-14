@@ -13,13 +13,13 @@ import {
   h
 } from "@stencil/core";
 
-import { asyncNewChatMessage } from "@genexus/reporting-api/dist";
 import {
+  asyncNewChatMessage,
+  QueryViewerBase,
   GxChatMessage,
   GxChatMessageResponse,
-  GxQueryOptions,
-  QueryViewerBase
-} from "@genexus/reporting-api/dist/types/basic-types";
+  GxQueryOptions
+} from "@genexus/reporting-api";
 import { Component as GxComponent } from "../../../common/interfaces";
 import { KEY_CODES } from "../../../common/reserverd-names";
 
@@ -58,6 +58,22 @@ export class QueryChat implements GxComponent {
    * In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
    */
   @Prop() readonly metadataName = "";
+  /**
+   * API base URL
+   */
+  @Prop() readonly baseUrl: string = "";
+  /**
+   * This is GxQuery authentication key. It will required when property useGxQuery = true
+   */
+  @Prop() readonly apiKey: string = "";
+  /**
+   * This is GxQuery Saia Token. It will required when property useGxQuery = true
+   */
+  @Prop() readonly saiaToken: string = "";
+  /**
+   * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
+   */
+  @Prop() readonly saiaUserId: string = "";
 
   /**
    * Fired each time the user make a question
@@ -115,10 +131,11 @@ export class QueryChat implements GxComponent {
    */
   private queryOptions(): GxQueryOptions {
     return {
-      baseUrl: process.env.BASE_URL,
+      baseUrl: this.baseUrl,
       metadataName: this.metadataName,
-      apiKey: undefined,
-      saiaToken: undefined
+      apiKey: this.apiKey,
+      saiaToken: this.saiaToken,
+      saiaUserId: this.saiaUserId
     };
   }
 

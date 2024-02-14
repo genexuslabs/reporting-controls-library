@@ -44,7 +44,7 @@ Type: `Promise<any>`
 
 
 
-### `getDataPivot(serverData: any) => Promise<any>`
+### `getDataPivot(serverData: string) => Promise<any>`
 
 Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
 
@@ -54,7 +54,7 @@ Type: `Promise<any>`
 
 
 
-### `getFilteredDataPivot() => Promise<any>`
+### `getFilteredDataPivot(serverData: string) => Promise<any>`
 
 Returns an XML on a string variable containing the data which is being visualized at the moment (the difference with the GetData() method it's seen on the Pivot Table, data can be different because of filters application).
 

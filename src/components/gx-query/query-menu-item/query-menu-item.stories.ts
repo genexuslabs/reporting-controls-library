@@ -1,4 +1,4 @@
-import { GxQueryItem } from "@genexus/reporting-api/dist/types/basic-types";
+import { GxQueryItem } from "@genexus/reporting-api";
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 const meta: Meta<{ item: GxQueryItem }> = {

@@ -6,10 +6,8 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { QueryRequest } from "./components/gx-query/query-chat/query-chat";
-import { GeneratorType, GxQueryItem, QueryViewerAutoResizeType, QueryViewerBase, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels } from "@genexus/reporting-api/dist/types/basic-types";
-import { QueryViewerAttributesValuesForPivot, QueryViewerCalculatePivottableData, QueryViewerPageDataForPivot, QueryViewerPageDataForTable, QueryViewerPivotTableDataSync, QueryViewerServiceData, QueryViewerServiceMetaData, QueryViewerServiceResponse, QueryViewerServiceResponsePivotTable } from "@genexus/reporting-api/dist/types/service-result";
+import { GeneratorType, GxQueryItem, QueryViewerAttributesValuesForPivot, QueryViewerAutoResizeType, QueryViewerBase, QueryViewerCalculatePivottableData, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPageDataForPivot, QueryViewerPageDataForTable, QueryViewerPivotCollection, QueryViewerPivotParameters, QueryViewerPivotTableDataSync, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerServiceData, QueryViewerServiceMetaData, QueryViewerServiceResponse, QueryViewerServiceResponsePivotTable, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerSliderRange, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels, TrendIcon } from "@genexus/reporting-api";
 import { QueryViewerDragAndDropData, QueryViewerFilterChangedData, QueryViewerItemClickData, QueryViewerItemExpandAndCollapseData } from "./global/types";
-import { QueryViewerChartType as QueryViewerChartType1, QueryViewerOrientation as QueryViewerOrientation1, QueryViewerOutputType as QueryViewerOutputType1, QueryViewerPivotCollection, QueryViewerPivotParameters, QueryViewerPlotSeries as QueryViewerPlotSeries1, QueryViewerShowDataAs as QueryViewerShowDataAs1, QueryViewerShowDataLabelsIn as QueryViewerShowDataLabelsIn1, QueryViewerSliderRange, QueryViewerTotal as QueryViewerTotal1, QueryViewerTranslations as QueryViewerTranslations1, QueryViewerTrendPeriod as QueryViewerTrendPeriod1, QueryViewerXAxisLabels as QueryViewerXAxisLabels1, TrendIcon } from "./common/basic-types";
 import { Axis, ChartOptions, LegendOptions, PaneOptions, PlotOptions, SeriesLineOptions, SeriesOptionsType, SubtitleOptions, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
 import { QueryViewerParameterChangedEvent } from "./components/query-viewer-parameter/query-viewer-parameter";
 export namespace Components {
@@ -37,6 +35,14 @@ export namespace Components {
     }
     interface GxQueryChat {
         /**
+          * This is GxQuery authentication key. It will required when property useGxQuery = true
+         */
+        "apiKey": string;
+        /**
+          * This is the GxQuery base URL. It will required when property useGxQuery = true
+         */
+        "baseUrl": string;
+        /**
           * Clean chat
          */
         "gxCleanChat": () => Promise<void>;
@@ -52,6 +58,14 @@ export namespace Components {
           * Text that appears in the input control when it has no value set
          */
         "placeholder": string;
+        /**
+          * This is GxQuery Saia Token. It will required when property useGxQuery = true
+         */
+        "saiaToken": string;
+        /**
+          * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
+         */
+        "saiaUserId": string;
     }
     interface GxQueryMenu {
         /**
@@ -59,7 +73,11 @@ export namespace Components {
          */
         "accessibleName": "Query list";
         /**
-          * Base URL of the server
+          * This is GxQuery authentication key. It will required when property useGxQuery = true
+         */
+        "apiKey": string;
+        /**
+          * This is the GxQuery base URL. It will required when property useGxQuery = true
          */
         "baseUrl": string;
         /**
@@ -74,11 +92,19 @@ export namespace Components {
         /**
           * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
          */
-        "metadataName": string;
+        "metadataName": "";
         /**
           * Dates to group queries
          */
         "rangeOfDays": { days: number; label: string }[];
+        /**
+          * This is GxQuery Saia Token. It will required when property useGxQuery = true
+         */
+        "saiaToken": string;
+        /**
+          * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
+         */
+        "saiaUserId": string;
         /**
           * Use this property to pass a query obtained from GXquery. This disabled the call to GxQuery API:    Id: string;    Name: string;    Description: string;    Expression: string;    Modified: string;
          */
@@ -105,7 +131,11 @@ export namespace Components {
     }
     interface GxQueryRender {
         /**
-          * Base URL of the server
+          * This is GxQuery authentication key. It will required when property useGxQuery = true
+         */
+        "apiKey": string;
+        /**
+          * This is the GxQuery base URL. It will required when property useGxQuery = true
          */
         "baseUrl": string;
         /**
@@ -124,12 +154,20 @@ export namespace Components {
         /**
           * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
          */
-        "metadataName": string;
+        "metadataName": "";
         "noDataLabel": "No Data";
         /**
           * Provide the Query properties
          */
         "query": QueryViewerBase;
+        /**
+          * This is GxQuery Saia Token. It will required when property useGxQuery = true
+         */
+        "saiaToken": string;
+        /**
+          * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
+         */
+        "saiaUserId": string;
         /**
           * True to tell the controller to connect use GXquery as a queries repository
          */
@@ -216,6 +254,10 @@ export namespace Components {
           * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
          */
         "getData": () => Promise<any>;
+        /**
+          * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
+         */
+        "getFilteredData": () => Promise<any>;
         /**
           * Specifies whether to include the maximum and minimum values in the series.
          */
@@ -377,7 +419,7 @@ export namespace Components {
         /**
           * For translate the labels of the outputs
          */
-        "translations": QueryViewerTranslations1;
+        "translations": QueryViewerTranslations;
         /**
           * Specifies the icon used for the trend.
          */
@@ -385,7 +427,7 @@ export namespace Components {
         /**
           * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
-        "trendPeriod": QueryViewerTrendPeriod1;
+        "trendPeriod": QueryViewerTrendPeriod;
         /**
           * Specifies the value to show in the card.
          */
@@ -411,7 +453,7 @@ export namespace Components {
         /**
           * Specifies whether to arrange the attributes horizontally or vertically when than one data attribute is present.
          */
-        "orientation": QueryViewerOrientation1;
+        "orientation": QueryViewerOrientation;
         /**
           * Specifies the metadata and data that the control will use to render.
          */
@@ -419,15 +461,15 @@ export namespace Components {
         /**
           * Specifies whether to show the actual values, the values as a percentage of the target values, or both.
          */
-        "showDataAs": QueryViewerShowDataAs1;
+        "showDataAs": QueryViewerShowDataAs;
         /**
           * For translate the labels of the outputs
          */
-        "translations": QueryViewerTranslations1;
+        "translations": QueryViewerTranslations;
         /**
           * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
-        "trendPeriod": QueryViewerTrendPeriod1;
+        "trendPeriod": QueryViewerTrendPeriod;
     }
     interface GxQueryViewerChart {
         /**
@@ -445,7 +487,7 @@ export namespace Components {
         /**
           * Option of the chartType used to visualize and represent data.
          */
-        "chartType": QueryViewerChartType1;
+        "chartType": QueryViewerChartType;
         /**
           * get the current extremes for the axis.
          */
@@ -465,7 +507,7 @@ export namespace Components {
         /**
           * Specifies if the chart series are plotted together in the same chart or alone in separate charts.
          */
-        "plotSeries": QueryViewerPlotSeries1;
+        "plotSeries": QueryViewerPlotSeries;
         /**
           * Options of the X axis (usually this is the horizontal axis).
          */
@@ -489,7 +531,7 @@ export namespace Components {
         /**
           * For translate the labels of the outputs
          */
-        "translations": QueryViewerTranslations1;
+        "translations": QueryViewerTranslations;
         /**
           * Specifies whether the X axis intersects the Y axis at zero or the intersection point is automatically calculated.
          */
@@ -497,7 +539,7 @@ export namespace Components {
         /**
           * Specifies if the labels in the X axis of a chart are shown horizontally or vertically.
          */
-        "xAxisLabels": QueryViewerXAxisLabels1;
+        "xAxisLabels": QueryViewerXAxisLabels;
         /**
           * X axis title, if specified.
          */
@@ -527,7 +569,7 @@ export namespace Components {
         /**
           * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
          */
-        "chartType": QueryViewerChartType1;
+        "chartType": QueryViewerChartType;
         /**
           * A CSS class to set as the `gx-query-viewer-chart-controller` element class.
          */
@@ -535,7 +577,7 @@ export namespace Components {
         /**
           * Timeline
          */
-        "plotSeries": QueryViewerPlotSeries1;
+        "plotSeries": QueryViewerPlotSeries;
         /**
           * Title of the QueryViewer
          */
@@ -551,7 +593,7 @@ export namespace Components {
         /**
           * For translate the labels of the outputs
          */
-        "translations": QueryViewerTranslations1;
+        "translations": QueryViewerTranslations;
         /**
           * if true the x Axes intersect at zero
          */
@@ -559,7 +601,7 @@ export namespace Components {
         /**
           * Labels for XAxis
          */
-        "xAxisLabels": QueryViewerXAxisLabels1;
+        "xAxisLabels": QueryViewerXAxisLabels;
         /**
           * Y Axis title
          */
@@ -571,11 +613,15 @@ export namespace Components {
          */
         "allowElementsOrderChange": boolean;
         /**
+          * This is GxQuery authentication key. It will required when property useGxQuery = true
+         */
+        "apiKey": string;
+        /**
           * Determines the application namespace where the program is generated and compiled.
          */
         "applicationNamespace": string;
         /**
-          * Base URL of the server
+          * This is the GxQuery base URL. It will required when property useGxQuery = true
          */
         "baseUrl": string;
         /**
@@ -646,6 +692,14 @@ export namespace Components {
           * @todo Add description
          */
         "returnSampleData": boolean;
+        /**
+          * This is GxQuery Saia Token. It will required when property useGxQuery = true
+         */
+        "saiaToken": string;
+        /**
+          * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
+         */
+        "saiaUserId": string;
         /**
           * Use this property to pass a query obtained from GXquery, when useGxquery = true (ignored if objectName is specified, because this property has a greater precedence)
          */
@@ -878,11 +932,11 @@ export namespace Components {
         /**
           * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
          */
-        "getDataXML": (serverData: any) => Promise<any>;
+        "getDataXML": (serverData: string) => Promise<any>;
         /**
           * Returns an XML on a string variable containing the data which is being visualized at the moment (the difference with the GetData() method it's seen on the Pivot Table, data can be different because of filters application).
          */
-        "getFilteredDataPivot": () => Promise<any>;
+        "getFilteredDataPivot": (serverData: string) => Promise<any>;
         /**
           * Method to navigate to the last page.
          */
@@ -922,8 +976,8 @@ export namespace Components {
         /**
           * Specifies whether the render output is PivotTable or Table
          */
-        "tableType": | QueryViewerOutputType1.PivotTable
-    | QueryViewerOutputType1.Table;
+        "tableType": | QueryViewerOutputType.PivotTable
+    | QueryViewerOutputType.Table;
     }
     interface GxQueryViewerPivotRender {
         /**
@@ -961,11 +1015,11 @@ export namespace Components {
         /**
           * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
          */
-        "getDataPivot": (serverData: any) => Promise<any>;
+        "getDataPivot": (serverData: string) => Promise<any>;
         /**
           * Returns an XML on a string variable containing the data which is being visualized at the moment (the difference with the GetData() method it's seen on the Pivot Table, data can be different because of filters application).
          */
-        "getFilteredDataPivot": () => Promise<any>;
+        "getFilteredDataPivot": (serverData: string) => Promise<any>;
         /**
           * Method to navigate to the last page.
          */
@@ -1013,7 +1067,7 @@ export namespace Components {
         /**
           * It allows to indicate how you want to display the Data elements of the Query object.
          */
-        "showDataLabelsIn": QueryViewerShowDataLabelsIn1;
+        "showDataLabelsIn": QueryViewerShowDataLabelsIn;
         /**
           * Response Table Data Sync
          */
@@ -1021,20 +1075,20 @@ export namespace Components {
         /**
           * Specifies whether the render output is PivotTable or Table
          */
-        "tableType": | QueryViewerOutputType1.PivotTable
-    | QueryViewerOutputType1.Table;
+        "tableType": | QueryViewerOutputType.PivotTable
+    | QueryViewerOutputType.Table;
         /**
           * Determines whether to show a total of all values in the pivot table columns.
          */
-        "totalForColumns": QueryViewerTotal1;
+        "totalForColumns": QueryViewerTotal;
         /**
           * Determines whether to show a total of all values in the pivot table rows.
          */
-        "totalForRows": QueryViewerTotal1;
+        "totalForRows": QueryViewerTotal;
         /**
           * For translate the labels of the outputs
          */
-        "translations": QueryViewerTranslations1;
+        "translations": QueryViewerTranslations;
     }
     interface GxQueryViewerSlider {
         /**
@@ -1295,6 +1349,14 @@ declare namespace LocalJSX {
     }
     interface GxQueryChat {
         /**
+          * This is GxQuery authentication key. It will required when property useGxQuery = true
+         */
+        "apiKey"?: string;
+        /**
+          * This is the GxQuery base URL. It will required when property useGxQuery = true
+         */
+        "baseUrl"?: string;
+        /**
           * Specify the size of the icon messages. ex 50px
          */
         "messageIconSize"?: string;
@@ -1314,6 +1376,14 @@ declare namespace LocalJSX {
           * Text that appears in the input control when it has no value set
          */
         "placeholder"?: string;
+        /**
+          * This is GxQuery Saia Token. It will required when property useGxQuery = true
+         */
+        "saiaToken"?: string;
+        /**
+          * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
+         */
+        "saiaUserId"?: string;
     }
     interface GxQueryMenu {
         /**
@@ -1321,7 +1391,11 @@ declare namespace LocalJSX {
          */
         "accessibleName"?: "Query list";
         /**
-          * Base URL of the server
+          * This is GxQuery authentication key. It will required when property useGxQuery = true
+         */
+        "apiKey"?: string;
+        /**
+          * This is the GxQuery base URL. It will required when property useGxQuery = true
          */
         "baseUrl"?: string;
         /**
@@ -1331,7 +1405,7 @@ declare namespace LocalJSX {
         /**
           * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
          */
-        "metadataName"?: string;
+        "metadataName"?: "";
         /**
           * Delete query
          */
@@ -1348,6 +1422,14 @@ declare namespace LocalJSX {
           * Dates to group queries
          */
         "rangeOfDays"?: { days: number; label: string }[];
+        /**
+          * This is GxQuery Saia Token. It will required when property useGxQuery = true
+         */
+        "saiaToken"?: string;
+        /**
+          * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
+         */
+        "saiaUserId"?: string;
         /**
           * Use this property to pass a query obtained from GXquery. This disabled the call to GxQuery API:    Id: string;    Name: string;    Description: string;    Expression: string;    Modified: string;
          */
@@ -1385,7 +1467,11 @@ declare namespace LocalJSX {
     }
     interface GxQueryRender {
         /**
-          * Base URL of the server
+          * This is GxQuery authentication key. It will required when property useGxQuery = true
+         */
+        "apiKey"?: string;
+        /**
+          * This is the GxQuery base URL. It will required when property useGxQuery = true
          */
         "baseUrl"?: string;
         /**
@@ -1404,12 +1490,20 @@ declare namespace LocalJSX {
         /**
           * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
          */
-        "metadataName"?: string;
+        "metadataName"?: "";
         "noDataLabel"?: "No Data";
         /**
           * Provide the Query properties
          */
         "query"?: QueryViewerBase;
+        /**
+          * This is GxQuery Saia Token. It will required when property useGxQuery = true
+         */
+        "saiaToken"?: string;
+        /**
+          * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
+         */
+        "saiaUserId"?: string;
         /**
           * True to tell the controller to connect use GXquery as a queries repository
          */
@@ -1697,7 +1791,7 @@ declare namespace LocalJSX {
         /**
           * For translate the labels of the outputs
          */
-        "translations"?: QueryViewerTranslations1;
+        "translations"?: QueryViewerTranslations;
         /**
           * Specifies the icon used for the trend.
          */
@@ -1705,7 +1799,7 @@ declare namespace LocalJSX {
         /**
           * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
-        "trendPeriod"?: QueryViewerTrendPeriod1;
+        "trendPeriod"?: QueryViewerTrendPeriod;
         /**
           * Specifies the value to show in the card.
          */
@@ -1731,7 +1825,7 @@ declare namespace LocalJSX {
         /**
           * Specifies whether to arrange the attributes horizontally or vertically when than one data attribute is present.
          */
-        "orientation"?: QueryViewerOrientation1;
+        "orientation"?: QueryViewerOrientation;
         /**
           * Specifies the metadata and data that the control will use to render.
          */
@@ -1739,15 +1833,15 @@ declare namespace LocalJSX {
         /**
           * Specifies whether to show the actual values, the values as a percentage of the target values, or both.
          */
-        "showDataAs"?: QueryViewerShowDataAs1;
+        "showDataAs"?: QueryViewerShowDataAs;
         /**
           * For translate the labels of the outputs
          */
-        "translations"?: QueryViewerTranslations1;
+        "translations"?: QueryViewerTranslations;
         /**
           * If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.
          */
-        "trendPeriod"?: QueryViewerTrendPeriod1;
+        "trendPeriod"?: QueryViewerTrendPeriod;
     }
     interface GxQueryViewerChart {
         /**
@@ -1761,7 +1855,7 @@ declare namespace LocalJSX {
         /**
           * Option of the chartType used to visualize and represent data.
          */
-        "chartType"?: QueryViewerChartType1;
+        "chartType"?: QueryViewerChartType;
         /**
           * Options of the tooltip, the tooltip appears when hovering over a point in a series.
          */
@@ -1777,7 +1871,7 @@ declare namespace LocalJSX {
         /**
           * Specifies if the chart series are plotted together in the same chart or alone in separate charts.
          */
-        "plotSeries"?: QueryViewerPlotSeries1;
+        "plotSeries"?: QueryViewerPlotSeries;
         /**
           * Options of the X axis (usually this is the horizontal axis).
          */
@@ -1797,7 +1891,7 @@ declare namespace LocalJSX {
         /**
           * For translate the labels of the outputs
          */
-        "translations"?: QueryViewerTranslations1;
+        "translations"?: QueryViewerTranslations;
         /**
           * Specifies whether the X axis intersects the Y axis at zero or the intersection point is automatically calculated.
          */
@@ -1805,7 +1899,7 @@ declare namespace LocalJSX {
         /**
           * Specifies if the labels in the X axis of a chart are shown horizontally or vertically.
          */
-        "xAxisLabels"?: QueryViewerXAxisLabels1;
+        "xAxisLabels"?: QueryViewerXAxisLabels;
         /**
           * X axis title, if specified.
          */
@@ -1831,7 +1925,7 @@ declare namespace LocalJSX {
         /**
           * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
          */
-        "chartType"?: QueryViewerChartType1;
+        "chartType"?: QueryViewerChartType;
         /**
           * A CSS class to set as the `gx-query-viewer-chart-controller` element class.
          */
@@ -1839,7 +1933,7 @@ declare namespace LocalJSX {
         /**
           * Timeline
          */
-        "plotSeries"?: QueryViewerPlotSeries1;
+        "plotSeries"?: QueryViewerPlotSeries;
         /**
           * Title of the QueryViewer
          */
@@ -1855,7 +1949,7 @@ declare namespace LocalJSX {
         /**
           * For translate the labels of the outputs
          */
-        "translations"?: QueryViewerTranslations1;
+        "translations"?: QueryViewerTranslations;
         /**
           * if true the x Axes intersect at zero
          */
@@ -1863,7 +1957,7 @@ declare namespace LocalJSX {
         /**
           * Labels for XAxis
          */
-        "xAxisLabels"?: QueryViewerXAxisLabels1;
+        "xAxisLabels"?: QueryViewerXAxisLabels;
         /**
           * Y Axis title
          */
@@ -1875,11 +1969,15 @@ declare namespace LocalJSX {
          */
         "allowElementsOrderChange"?: boolean;
         /**
+          * This is GxQuery authentication key. It will required when property useGxQuery = true
+         */
+        "apiKey"?: string;
+        /**
           * Determines the application namespace where the program is generated and compiled.
          */
         "applicationNamespace"?: string;
         /**
-          * Base URL of the server
+          * This is the GxQuery base URL. It will required when property useGxQuery = true
          */
         "baseUrl"?: string;
         /**
@@ -1962,6 +2060,14 @@ declare namespace LocalJSX {
           * @todo Add description
          */
         "returnSampleData"?: boolean;
+        /**
+          * This is GxQuery Saia Token. It will required when property useGxQuery = true
+         */
+        "saiaToken"?: string;
+        /**
+          * This is GxQuery Saia User ID (optional). It will use when property useGxQuery = true
+         */
+        "saiaUserId"?: string;
         /**
           * Use this property to pass a query obtained from GXquery, when useGxquery = true (ignored if objectName is specified, because this property has a greater precedence)
          */
@@ -2230,8 +2336,8 @@ declare namespace LocalJSX {
         /**
           * Specifies whether the render output is PivotTable or Table
          */
-        "tableType"?: | QueryViewerOutputType1.PivotTable
-    | QueryViewerOutputType1.Table;
+        "tableType"?: | QueryViewerOutputType.PivotTable
+    | QueryViewerOutputType.Table;
     }
     interface GxQueryViewerPivotRender {
         /**
@@ -2297,7 +2403,7 @@ declare namespace LocalJSX {
         /**
           * It allows to indicate how you want to display the Data elements of the Query object.
          */
-        "showDataLabelsIn"?: QueryViewerShowDataLabelsIn1;
+        "showDataLabelsIn"?: QueryViewerShowDataLabelsIn;
         /**
           * Response Table Data Sync
          */
@@ -2305,20 +2411,20 @@ declare namespace LocalJSX {
         /**
           * Specifies whether the render output is PivotTable or Table
          */
-        "tableType"?: | QueryViewerOutputType1.PivotTable
-    | QueryViewerOutputType1.Table;
+        "tableType"?: | QueryViewerOutputType.PivotTable
+    | QueryViewerOutputType.Table;
         /**
           * Determines whether to show a total of all values in the pivot table columns.
          */
-        "totalForColumns"?: QueryViewerTotal1;
+        "totalForColumns"?: QueryViewerTotal;
         /**
           * Determines whether to show a total of all values in the pivot table rows.
          */
-        "totalForRows"?: QueryViewerTotal1;
+        "totalForRows"?: QueryViewerTotal;
         /**
           * For translate the labels of the outputs
          */
-        "translations"?: QueryViewerTranslations1;
+        "translations"?: QueryViewerTranslations;
     }
     interface GxQueryViewerSlider {
         /**

@@ -4,7 +4,7 @@ import {
   QueryViewerServiceDataRow,
   QueryViewerServiceMetaDataData,
   QueryViewerServiceResponse
-} from "@genexus/reporting-api/dist/types/service-result";
+} from "@genexus/reporting-api";
 import {
   QueryViewerDataType,
   QueryViewerOrientation,
@@ -13,7 +13,7 @@ import {
   QueryViewerTrendPeriod,
   QueryViewerVisible,
   TrendIcon
-} from "../../../common/basic-types";
+} from "@genexus/reporting-api";
 import { aggregateData } from "../../../utils/general";
 import { analyzeSeries, valueOrPercentage } from "./card-utils";
 

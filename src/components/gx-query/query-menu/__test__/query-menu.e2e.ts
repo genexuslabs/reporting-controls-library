@@ -1,8 +1,8 @@
 // query-menu.e2e.ts
 
 import { E2EPage, newE2EPage } from "@stencil/core/testing";
-import * as servicesManager from "@genexus/reporting-api/dist";
-import { GxQueryItem, GxQueryOptions } from "@genexus/reporting-api/dist/types/basic-types";
+import * as servicesManager from "@genexus/reporting-api";
+import { GxQueryItem, GxQueryOptions } from "@genexus/reporting-api";
 
 describe("QueryMenu", () => {
   let page: E2EPage;

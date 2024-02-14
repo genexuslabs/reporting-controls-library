@@ -1,7 +1,7 @@
 import {
   QueryViewerChartType,
   QueryViewerPlotSeries
-} from "../../../common/basic-types";
+} from "@genexus/reporting-api";
 
 export type IsChartTypes =
   | "Timeline"

@@ -4,12 +4,12 @@ import {
   QueryViewerServiceData,
   QueryViewerServiceDataRow,
   QueryViewerServiceMetaDataData
-} from "@genexus/reporting-api/dist/types/service-result";
+} from "@genexus/reporting-api";
 import {
   QueryViewerDataType,
   QueryViewerShowDataAs,
   QueryViewerTrendPeriod
-} from "../../../common/basic-types";
+} from "@genexus/reporting-api";
 import { fromDateToString, fromStringToDateISO } from "../../../utils/date";
 
 export type RegressionSeries = {

@@ -12,8 +12,8 @@ import {
   QueryViewerCountry,
   QueryViewerShowDataLabelsIn,
   QueryViewerTotal,
-} from "@genexus/reporting-api/dist/types/basic-types";
-import { QueryViewerServiceResponse } from "@genexus/reporting-api/dist/types/service-result";
+} from "@genexus/reporting-api";
+import { QueryViewerServiceResponse } from "@genexus/reporting-api";
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 
@@ -52,7 +52,8 @@ const serviceMock: QueryViewerServiceResponse = {
     "showDataLabelsIn": QueryViewerShowDataLabelsIn.Columns,
     "totalForRows": QueryViewerTotal.Yes,
     "totalForColumns": QueryViewerTotal.Yes,
-  }
+  },
+  XML: null
 };
 
 const meta: Meta<HTMLGxQueryViewerElement> = {
