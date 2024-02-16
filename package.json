@@ -57,6 +57,7 @@
     "eslint-plugin-storybook": "^0.6.14",
     "jest": "^27.4.5",
     "jest-cli": "^27.4.5",
+    "lit": "^3.1.2",
     "prettier": "~2.7.0",
     "puppeteer": "^19.4.1",
     "rollup-plugin-dotenv": "^0.5.0",
@@ -66,12 +67,12 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@genexus/reporting-api": "~2.2.0",
+    "@genexus/reporting-api": "workspace:*",
     "@genexus/web-controls-library": "2.3.0",
     "date-fns": "^2.30.0",
     "highcharts": "^11.1.0",
-    "jspivottable": "1.1.8",
     "jquery": "^3.7.1",
+    "jspivottable": "1.1.8",
     "material-icons": "^1.13.1",
     "rollup-plugin-dotenv": "^0.5.0"
   }

@@ -39,7 +39,7 @@ export namespace Components {
          */
         "apiKey": string;
         /**
-          * This is the GxQuery base URL. It will required when property useGxQuery = true
+          * API base URL
          */
         "baseUrl": string;
         /**
@@ -77,7 +77,7 @@ export namespace Components {
          */
         "apiKey": string;
         /**
-          * This is the GxQuery base URL. It will required when property useGxQuery = true
+          * API base URL
          */
         "baseUrl": string;
         /**
@@ -135,7 +135,7 @@ export namespace Components {
          */
         "apiKey": string;
         /**
-          * This is the GxQuery base URL. It will required when property useGxQuery = true
+          * API base URL
          */
         "baseUrl": string;
         /**
@@ -621,7 +621,7 @@ export namespace Components {
          */
         "applicationNamespace": string;
         /**
-          * This is the GxQuery base URL. It will required when property useGxQuery = true
+          * API base URL
          */
         "baseUrl": string;
         /**
@@ -1353,7 +1353,7 @@ declare namespace LocalJSX {
          */
         "apiKey"?: string;
         /**
-          * This is the GxQuery base URL. It will required when property useGxQuery = true
+          * API base URL
          */
         "baseUrl"?: string;
         /**
@@ -1395,7 +1395,7 @@ declare namespace LocalJSX {
          */
         "apiKey"?: string;
         /**
-          * This is the GxQuery base URL. It will required when property useGxQuery = true
+          * API base URL
          */
         "baseUrl"?: string;
         /**
@@ -1471,7 +1471,7 @@ declare namespace LocalJSX {
          */
         "apiKey"?: string;
         /**
-          * This is the GxQuery base URL. It will required when property useGxQuery = true
+          * API base URL
          */
         "baseUrl"?: string;
         /**
@@ -1977,7 +1977,7 @@ declare namespace LocalJSX {
          */
         "applicationNamespace"?: string;
         /**
-          * This is the GxQuery base URL. It will required when property useGxQuery = true
+          * API base URL
          */
         "baseUrl"?: string;
         /**
