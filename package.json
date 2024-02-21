@@ -32,7 +32,7 @@
     "generate": "stencil generate",
     "validate": "npm run test && npm run build && npm run scss-bundle",
     "validate.ci": "npm run build -- --max-workers 1 --debug && npm run scss-bundle",
-    "storybook": "storybook dev -p 6006",
+    "storybook": "npm run build && storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
   "devDependencies": {
@@ -67,7 +67,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@genexus/reporting-api": "~2.2.0",
+    "@genexus/reporting-api": "~2.3.1",
     "@genexus/web-controls-library": "2.3.0",
     "date-fns": "^2.30.0",
     "highcharts": "^11.1.0",
