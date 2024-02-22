@@ -1,4 +1,4 @@
-import { html } from 'lit';
+import { html } from 'lit-html';
 import type { Meta, StoryObj } from "@storybook/web-components";
 import { QueryViewerChartType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerTotal } from "@genexus/reporting-api";
 
