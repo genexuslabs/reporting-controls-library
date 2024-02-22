@@ -491,7 +491,7 @@ export class QueryViewer {
     this.pageDataForPivotTable = event.detail;
   }
 
-  @Listen("attributesValuesForPivotTable")
+  @Listen("attributeValuesForPivotTable")
   handleAttributesValuesPivot(event: CustomEvent<string>) {
     this.attributeValuesForPivotTableXml = event.detail;
   }
