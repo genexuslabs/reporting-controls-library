@@ -32,7 +32,7 @@
     "generate": "stencil generate",
     "validate": "npm run test && npm run build && npm run scss-bundle",
     "validate.ci": "npm run build -- --max-workers 1 --debug && npm run scss-bundle",
-    "storybook": "storybook dev -p 6006",
+    "storybook": "npm run build && storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
   "devDependencies": {
@@ -57,6 +57,7 @@
     "eslint-plugin-storybook": "^0.6.14",
     "jest": "^27.4.5",
     "jest-cli": "^27.4.5",
+    "lit-html": "^3.1.2",
     "prettier": "~2.7.0",
     "puppeteer": "^19.4.1",
     "rollup-plugin-dotenv": "^0.5.0",
@@ -66,12 +67,12 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@genexus/reporting-api": "~2.2.0",
+    "@genexus/reporting-api": "~2.3.1",
     "@genexus/web-controls-library": "2.3.0",
     "date-fns": "^2.30.0",
     "highcharts": "^11.1.0",
-    "jspivottable": "1.1.8",
     "jquery": "^3.7.1",
+    "jspivottable": "1.1.8",
     "material-icons": "^1.13.1",
     "rollup-plugin-dotenv": "^0.5.0"
   }

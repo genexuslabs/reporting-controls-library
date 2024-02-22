@@ -47,6 +47,7 @@ export class QueryViewerController {
   private recordSetCacheActualKey: string;
   private recordSetCacheOldKey: string;
   private shouldRequestData = false;
+  private queryViewerId: string = null;
   /**
    * @todo Add description
    */
@@ -440,10 +441,10 @@ export class QueryViewerController {
     ) => {
       this.recordSetCacheActualKey = actualKey;
       this.recordSetCacheOldKey = oldKey;
+      this.queryViewerId = queryViewerBaseProperties?.id;
 
       queryViewerObject.PageSize = this.pageSize;
       queryViewerObject.Paging = this.paging;
-
       // Emit service response
       this.queryViewerServiceResponsePivotTable.emit({
         MetaData: metadata,
@@ -488,7 +489,8 @@ export class QueryViewerController {
       generator: this.environment,
       metadataName: this.metadataName,
       objectName: this.objectName,
-      serializedObject: this.serializedObject
+      serializedObject: this.serializedObject,
+      queryViewerId: this.queryViewerId
     };
   }
 
