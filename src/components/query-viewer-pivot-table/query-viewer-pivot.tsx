@@ -21,7 +21,9 @@ import {
   QueryViewerOutputType,
   QueryViewerPivotCollection,
   QueryViewerPivotParameters,
-  QueryViewerPivotTable
+  QueryViewerPivotTable,
+  QueryViewerShowDataLabelsIn,
+  QueryViewerTotal
 } from "@genexus/reporting-api";
 
 const PIVOT_PAGE = (ucId: string) => `${ucId}_GeneralQuery1_pivot_page`;
@@ -33,14 +35,19 @@ const PIVOT_CONTENT = (ucId: string) => `${ucId}_GeneralQuery1_pivot_content`;
 })
 export class QueryViewerPivot {
   private queryViewerContainer: HTMLDivElement;
-  private qViewer: QueryViewerPivotTable = undefined;
+  private queryViewerConfiguration: QueryViewerPivotTable = undefined;
+  private shouldReRenderPivot = false;
+
   /**
    * Response Attribute Values
    */
   @Prop() readonly attributeValuesForPivotTableXml: string;
   @Watch("attributeValuesForPivotTableXml")
   handleAttributesValuesForPivotTableChange(newValue: string) {
-    setAttributeValuesForPivotTable(this.qViewer.oat_element, newValue);
+    setAttributeValuesForPivotTable(
+      this.queryViewerConfiguration.oat_element,
+      newValue
+    );
   }
 
   /**
@@ -48,8 +55,11 @@ export class QueryViewerPivot {
    */
   @Prop() readonly pageDataForPivotTable: string;
   @Watch("pageDataForPivotTable")
-  handlePageDataForPivotTableChange(newValue: string) {
-    setPageDataForPivotTable(this.qViewer.oat_element, newValue);
+  handlePageDataForPivotTableChange(newPageData: string) {
+    setPageDataForPivotTable(
+      this.queryViewerConfiguration.oat_element,
+      newPageData
+    );
   }
 
   /**
@@ -58,7 +68,10 @@ export class QueryViewerPivot {
   @Prop() readonly calculatePivottableDataXml: string;
   @Watch("calculatePivottableDataXml")
   handleCalculatePivottableDataChange(newValue: string) {
-    setPivottableDataCalculation(this.qViewer.oat_element, newValue);
+    setPivottableDataCalculation(
+      this.queryViewerConfiguration.oat_element,
+      newValue
+    );
   }
 
   /**
@@ -67,7 +80,10 @@ export class QueryViewerPivot {
   @Prop() readonly pivotTableDataSyncXml: string;
   @Watch("pivotTableDataSyncXml")
   handlePivottableDataSyncChange(newValue: string) {
-    setDataSynForPivotTable(this.qViewer.oat_element, newValue);
+    setDataSynForPivotTable(
+      this.queryViewerConfiguration.oat_element,
+      newValue
+    );
   }
 
   /**
@@ -79,7 +95,7 @@ export class QueryViewerPivot {
     if (!oldValue) {
       return;
     }
-    setPageDataForTable(this.qViewer.oat_element, newValue);
+    setPageDataForTable(this.queryViewerConfiguration.oat_element, newValue);
   }
 
   /**
@@ -88,7 +104,7 @@ export class QueryViewerPivot {
   @Prop() readonly attributeValuesForTableXml: string;
   @Watch("attributeValuesForTableXml")
   handleAttributesValuesForTableChange(newValue: string) {
-    setAttributeForTable(this.qViewer.oat_element, newValue);
+    setAttributeForTable(this.queryViewerConfiguration.oat_element, newValue);
   }
 
   /**
@@ -97,7 +113,16 @@ export class QueryViewerPivot {
   @Prop() readonly tableDataSyncXml: string;
   @Watch("tableDataSyncXml")
   handleTableDataSyncChange(newValue: string) {
-    setDataSynForTable(this.qViewer.oat_element, newValue);
+    setDataSynForTable(this.queryViewerConfiguration.oat_element, newValue);
+  }
+
+  /**
+   * if true will shrink the table
+   */
+  @Prop() readonly autoResize: boolean;
+  @Watch("autoResize")
+  autoResizeChange() {
+    this.shouldReRenderPivot = true;
   }
 
   /**
@@ -111,16 +136,96 @@ export class QueryViewerPivot {
   @Prop() readonly pivotCollection: QueryViewerPivotCollection;
 
   /**
-   * data
-   */
-  @Prop() readonly data: string;
-
-  /**
    * Specifies whether the render output is PivotTable or Table
    */
   @Prop() readonly tableType:
     | QueryViewerOutputType.PivotTable
     | QueryViewerOutputType.Table;
+  @Watch("tableType")
+  tableTypeChange() {
+    this.shouldReRenderPivot = true;
+  }
+
+  /**
+   * Determines whether to show a total of all values in the pivot table columns.
+   */
+  @Prop() readonly totalForColumns: QueryViewerTotal;
+  @Watch("totalForColumns")
+  totalForColumnsChange() {
+    this.shouldReRenderPivot = true;
+  }
+
+  /**
+   * Determines whether to show a total of all values in the pivot table rows.
+   */
+  @Prop() readonly totalForRows: QueryViewerTotal;
+  @Watch("totalForRows")
+  totalForRowsChange() {
+    this.shouldReRenderPivot = true;
+  }
+
+  /**
+   * This attribute lets you define a title for the pivot table.
+   */
+  @Prop() readonly pivotTitle: string;
+  @Watch("pivotTitle")
+  queryTitleChange() {
+    this.shouldReRenderPivot = true;
+  }
+
+  /**
+   * It allows to indicate how you want to display the Data elements of the Query object.
+   */
+  @Prop() readonly showDataLabelsIn: QueryViewerShowDataLabelsIn;
+  @Watch("showDataLabelsIn")
+  showDataLabelsInChange() {
+    this.shouldReRenderPivot = true;
+  }
+
+  /**
+   * This attribute lets you determinate whether there will be paging buttons.
+   */
+  @Prop() readonly paging: boolean;
+  @Watch("paging")
+  pagingInChange() {
+    this.shouldReRenderPivot = true;
+  }
+
+  /**
+   * Enables you to define the number of rows that will be shown when the Paging property is activated
+   */
+  @Prop() readonly pageSize: number;
+  @Watch("pageSize")
+  pageSizeInChange() {
+    this.shouldReRenderPivot = true;
+  }
+
+  /**
+   * For timeline for remembering layout
+   */
+  @Prop() readonly rememberLayout: boolean;
+  @Watch("rememberLayout")
+  rememberLayoutChange() {
+    this.shouldReRenderPivot = true;
+  }
+
+  /**
+   * Name of the Query or Data provider assigned
+   */
+  @Prop() readonly objectName: string;
+  @Watch("objectName")
+  objectNameChange() {
+    this.shouldReRenderPivot = true;
+  }
+
+  /**
+   * metadata
+   */
+  @Prop() readonly metadata: string;
+  @Watch("metadata")
+  metadataChange() {
+    this.shouldReRenderPivot = true;
+  }
 
   /**
    * QueryViewerTranslations
@@ -166,7 +271,7 @@ export class QueryViewerPivot {
    */
   @Method()
   async getDataXML(serverData: string) {
-    return getDataXML(this.qViewer.oat_element, serverData);
+    return getDataXML(this.queryViewerConfiguration.oat_element, serverData);
   }
 
   /**
@@ -174,7 +279,10 @@ export class QueryViewerPivot {
    */
   @Method()
   async getFilteredDataPivot(serverData: string) {
-    return getFilteredDataXML(this.qViewer.oat_element, serverData);
+    return getFilteredDataXML(
+      this.queryViewerConfiguration.oat_element,
+      serverData
+    );
   }
 
   /**
@@ -209,8 +317,8 @@ export class QueryViewerPivot {
     return moveToLastPage();
   }
 
-  componentDidRender() {
-    this.qViewer = {
+  private renderPivot() {
+    this.queryViewerConfiguration = {
       xml: {
         metadata: this.pivotParameters.metadata
       },
@@ -219,24 +327,24 @@ export class QueryViewerPivot {
         content: PIVOT_CONTENT(this.pivotParameters.UcId),
         container: this.queryViewerContainer,
         RealType: this.tableType,
-        ObjectName: this.pivotParameters.ObjectName,
+        ObjectName: this.objectName,
         ControlName: "Queryviewer1",
-        metadata: this.pivotParameters.metadata,
-        PageSize: this.pivotParameters.PageSize,
+        metadata: this.metadata,
+        PageSize: this.pageSize,
         UcId: this.pivotParameters.UcId,
-        AutoResize: false,
+        AutoResize: this.autoResize,
         DisableColumnSort: false,
-        RememberLayout: true,
-        ShowDataLabelsIn: this.pivotParameters.ShowDataLabelsIn,
+        RememberLayout: this.rememberLayout,
+        ShowDataLabelsIn: this.showDataLabelsIn,
         ServerPaging: true,
-        ServerPagingPivot: this.pivotParameters.ServerPagingPivot,
+        ServerPagingPivot: this.paging,
         ServerPagingCacheSize: 0,
         UseRecordsetCache: true,
         AllowSelection: false,
         SelectLine: true,
-        TotalForColumns: this.pivotParameters.TotalForColumns,
-        TotalForRows: this.pivotParameters.TotalForRows,
-        Title: this.pivotParameters.Title,
+        TotalForColumns: this.totalForColumns,
+        TotalForRows: this.totalForRows,
+        Title: this.pivotTitle,
         data:
           this.tableType === QueryViewerOutputType.Table
             ? this.pageDataForTable
@@ -244,36 +352,28 @@ export class QueryViewerPivot {
       },
       oat_element: undefined
     };
-    // this.qViewer = {
-    //   xml: { metadata: this.pivotParameters.metadata },
-    //   pivotParams: {
-    //     page: PIVOT_PAGE,
-    //     content: PIVOT_CONTENT,
-    //     container: this.queryViewerContainer,
-    //     ...this.pivotParameters
-    //   },
-    //   oat_element: undefined
-    // };
 
-    // eslint-disable-next-line eqeqeq
-    if (OAT.Loader != undefined) {
+    if (OAT.Loader) {
       renderJSPivot(
-        this.qViewer.pivotParams,
+        this.queryViewerConfiguration.pivotParams,
         this.pivotCollection.collection,
         this.QueryViewerTranslations,
-        this.qViewer
+        this.queryViewerConfiguration
       );
-    } else {
-      OAT.Loader.addListener(function () {
-        renderJSPivot(
-          this.qViewer.pivotParams,
-          this.pivotCollection.collection,
-          this.QueryViewerTranslations,
-          this.qViewer
-        );
-      });
     }
   }
+
+  componentDidLoad() {
+    this.renderPivot();
+  }
+
+  componentDidRender() {
+    if (this.shouldReRenderPivot) {
+      this.shouldReRenderPivot = false;
+      this.renderPivot();
+    }
+  }
+
   render() {
     return (
       <div
