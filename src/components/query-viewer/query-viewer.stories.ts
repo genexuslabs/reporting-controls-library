@@ -1,4 +1,4 @@
-import { html } from 'lit';
+import { html } from 'lit-html';
 import type { Meta, StoryObj } from "@storybook/web-components";
 import { QueryViewerChartType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerTotal } from "@genexus/reporting-api";
 
@@ -91,7 +91,7 @@ const meta: Meta<HTMLGxQueryViewerControllerElement> = {
     chartType: QueryViewerChartType.Column,
     includeSparkline: false,
     includeTrend: false,
-    metadataName: "ReportingShowcase",
+    metadataName: import.meta.env.STORYBOOK_METADATA_NAME,
     orientation: QueryViewerOrientation.Vertical,
     pageSize: 1,
     paging: true,
@@ -111,7 +111,7 @@ export const Chart: Story = {
   name: "Chart with serializationObject",
   args: {
     useGxquery: true,
-    metadataName: "ReportingShowcase",
+    metadataName: import.meta.env.STORYBOOK_METADATA_NAME,
     serializedObject: '{ "id": "8cca6f2c-65e5-4830-aebe-803362c13b3f", "title": "Chart - with controller", "chartType":"Column", "showValues":"true" }',
     type: QueryViewerOutputType.Chart
   }
@@ -120,7 +120,7 @@ export const Chart2: Story = {
   name: "Chart with objectName",
   args: {
     useGxquery: true,
-    metadataName: "ReportingShowcase",
+    metadataName: import.meta.env.STORYBOOK_METADATA_NAME,
     objectName: 'UruguayHarvardIndex',
     type: QueryViewerOutputType.Chart
   },
@@ -131,7 +131,7 @@ export const PivotTable: Story = {
   name: "Pivot Table",
   args: {
     useGxquery: true,
-    metadataName: "ReportingShowcase",
+    metadataName: import.meta.env.STORYBOOK_METADATA_NAME,
     objectName: 'UruguayHarvardIndex',
     type: QueryViewerOutputType.PivotTable
   },
