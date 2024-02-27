@@ -430,6 +430,16 @@ export class QueryViewerPivotTableRender {
           attributeValuesForTableXml={this.attributeValuesForTableXml}
           tableDataSyncXml={this.tableDataSyncXml}
           tableType={this.tableType}
+          autoResize={this.autoResize}
+          totalForColumns={this.totalForColumns}
+          totalForRows={this.totalForRows}
+          pivotTitle={this.pivotTitle}
+          showDataLabelsIn={this.showDataLabelsIn}
+          paging={this.paging}
+          pageSize={this.pageSize}
+          rememberLayout={this.rememberLayout}
+          objectName={this.serviceResponse.objectName}
+          metadata={this.serviceResponse.metadataXML}
           ref={el => (this.pivotRef = el)}
         ></gx-query-viewer-pivot>
       </Host>

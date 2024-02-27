@@ -918,13 +918,13 @@ export namespace Components {
          */
         "attributeValuesForTableXml": string;
         /**
+          * if true will shrink the table
+         */
+        "autoResize": boolean;
+        /**
           * Response calculation PivotTable Data
          */
         "calculatePivottableDataXml": string;
-        /**
-          * data
-         */
-        "data": string;
         /**
           * Method to navigate to the first page.
          */
@@ -942,9 +942,17 @@ export namespace Components {
          */
         "lastPage": () => Promise<any>;
         /**
+          * metadata
+         */
+        "metadata": string;
+        /**
           * Method to navigate to the next page.
          */
         "nextPage": () => Promise<any>;
+        /**
+          * Name of the Query or Data provider assigned
+         */
+        "objectName": string;
         /**
           * Response Page Data
          */
@@ -953,6 +961,14 @@ export namespace Components {
           * Response Page Data
          */
         "pageDataForTable": string;
+        /**
+          * Enables you to define the number of rows that will be shown when the Paging property is activated
+         */
+        "pageSize": number;
+        /**
+          * This attribute lets you determinate whether there will be paging buttons.
+         */
+        "paging": boolean;
         /**
           * pivotCollection
          */
@@ -966,9 +982,21 @@ export namespace Components {
          */
         "pivotTableDataSyncXml": string;
         /**
+          * This attribute lets you define a title for the pivot table.
+         */
+        "pivotTitle": string;
+        /**
           * Method to navigate to the previous page.
          */
         "previousPage": () => Promise<any>;
+        /**
+          * For timeline for remembering layout
+         */
+        "rememberLayout": boolean;
+        /**
+          * It allows to indicate how you want to display the Data elements of the Query object.
+         */
+        "showDataLabelsIn": QueryViewerShowDataLabelsIn;
         /**
           * Response Table Data Sync
          */
@@ -978,6 +1006,14 @@ export namespace Components {
          */
         "tableType": | QueryViewerOutputType.PivotTable
     | QueryViewerOutputType.Table;
+        /**
+          * Determines whether to show a total of all values in the pivot table columns.
+         */
+        "totalForColumns": QueryViewerTotal;
+        /**
+          * Determines whether to show a total of all values in the pivot table rows.
+         */
+        "totalForRows": QueryViewerTotal;
     }
     interface GxQueryViewerPivotRender {
         /**
@@ -996,6 +1032,10 @@ export namespace Components {
           * Response Attribute Values for Table
          */
         "attributeValuesForTableXml": string;
+        /**
+          * if true will shrink the table
+         */
+        "autoResize": boolean;
         /**
           * Response Attribute Values
          */
@@ -2302,13 +2342,21 @@ declare namespace LocalJSX {
          */
         "attributeValuesForTableXml"?: string;
         /**
+          * if true will shrink the table
+         */
+        "autoResize"?: boolean;
+        /**
           * Response calculation PivotTable Data
          */
         "calculatePivottableDataXml"?: string;
         /**
-          * data
+          * metadata
          */
-        "data"?: string;
+        "metadata"?: string;
+        /**
+          * Name of the Query or Data provider assigned
+         */
+        "objectName"?: string;
         /**
           * Response Page Data
          */
@@ -2317,6 +2365,14 @@ declare namespace LocalJSX {
           * Response Page Data
          */
         "pageDataForTable"?: string;
+        /**
+          * Enables you to define the number of rows that will be shown when the Paging property is activated
+         */
+        "pageSize"?: number;
+        /**
+          * This attribute lets you determinate whether there will be paging buttons.
+         */
+        "paging"?: boolean;
         /**
           * pivotCollection
          */
@@ -2330,6 +2386,18 @@ declare namespace LocalJSX {
          */
         "pivotTableDataSyncXml"?: string;
         /**
+          * This attribute lets you define a title for the pivot table.
+         */
+        "pivotTitle"?: string;
+        /**
+          * For timeline for remembering layout
+         */
+        "rememberLayout"?: boolean;
+        /**
+          * It allows to indicate how you want to display the Data elements of the Query object.
+         */
+        "showDataLabelsIn"?: QueryViewerShowDataLabelsIn;
+        /**
           * Response Table Data Sync
          */
         "tableDataSyncXml"?: string;
@@ -2338,6 +2406,14 @@ declare namespace LocalJSX {
          */
         "tableType"?: | QueryViewerOutputType.PivotTable
     | QueryViewerOutputType.Table;
+        /**
+          * Determines whether to show a total of all values in the pivot table columns.
+         */
+        "totalForColumns"?: QueryViewerTotal;
+        /**
+          * Determines whether to show a total of all values in the pivot table rows.
+         */
+        "totalForRows"?: QueryViewerTotal;
     }
     interface GxQueryViewerPivotRender {
         /**
@@ -2356,6 +2432,10 @@ declare namespace LocalJSX {
           * Response Attribute Values for Table
          */
         "attributeValuesForTableXml"?: string;
+        /**
+          * if true will shrink the table
+         */
+        "autoResize"?: boolean;
         /**
           * Response Attribute Values
          */
