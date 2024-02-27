@@ -46,6 +46,11 @@ export class QueryViewerPivotTableRender {
   @Prop() readonly allowSelection: boolean;
 
   /**
+   * if true will shrink the table
+   */
+  @Prop() readonly autoResize: boolean;
+
+  /**
    * Response Attribute Values
    */
   @Prop() readonly calculatePivottableDataXml: string;
@@ -398,9 +403,19 @@ export class QueryViewerPivotTableRender {
             attributeValuesForPivotTableXml={
               this.attributeValuesForPivotTableXml
             }
+            autoResize={this.autoResize}
             calculatePivottableDataXml={this.calculatePivottableDataXml}
             pivotTableDataSyncXml={this.pivotTableDataSyncXml}
             tableType={this.tableType}
+            totalForColumns={this.totalForColumns}
+            totalForRows={this.totalForRows}
+            pivotTitle={this.pivotTitle}
+            showDataLabelsIn={this.showDataLabelsIn}
+            paging={this.paging}
+            pageSize={this.pageSize}
+            rememberLayout={this.rememberLayout}
+            objectName={this.serviceResponse.objectName}
+            metadata={this.serviceResponse.metadataXML}
             ref={el => (this.pivotRef = el)}
           ></gx-query-viewer-pivot>
         </Host>

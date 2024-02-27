@@ -807,6 +807,7 @@ export class QueryViewer {
       <gx-query-viewer-pivot-render
         allowElementsOrderChange={this.allowElementsOrderChange}
         allowSelection={this.allowSelection}
+        autoResize={this.autoResize}
         cssClass={this.cssClass}
         pivotTitle={this.queryTitle}
         paging={this.paging}
