@@ -138,6 +138,11 @@ export class QueryViewerPivotTableRender {
   @Prop() readonly tableDataSyncXml: string;
 
   /**
+   * Message to display when component is waiting the data
+   */
+  @Prop() readonly waitingData: string = 'waiting page data...';
+
+  /**
    * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
    */
   @Method()
@@ -390,7 +395,11 @@ export class QueryViewerPivotTableRender {
     const pivotCollection = this.getPivotTableCollection();
 
     if (this.mustWaitInitialPageDataForTable) {
-      return "";
+      return (
+        <Host>
+          <span part="waiting-page-data">{this.waitingData}</span>
+        </Host>
+      );
     }
 
     if (this.tableType === QueryViewerOutputType.PivotTable) {

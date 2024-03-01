@@ -107,6 +107,7 @@ export class QueryViewer {
 
   private temporalId: string;
 
+  @State() missingParameters: string[];
   @State() parameters: string;
   @State() elements: string;
 
@@ -723,6 +724,27 @@ export class QueryViewer {
     }
   }
 
+  /**
+   * Validate required parameters before to render pivot
+   * @param parameters QueryViewerServiceResponsePivotTable
+   * @returns boolean
+   */
+  private validatePivotParameters(parameters: QueryViewerServiceResponsePivotTable): boolean {
+    if (!parameters) {
+      return false;
+    }
+    const { MetaData, objectName, Properties } = parameters;
+    this.missingParameters = [
+      ...(MetaData && 'axes' in MetaData && MetaData.axes.length > 0 ? [] : ['metaDataAxes']),
+      ...(MetaData && 'data' in MetaData && MetaData.data.length > 0 ? [] : ['metaDataData']),
+      ...(Properties && Properties.id ? [] : ['propertiesId']),
+      ...(objectName ? [] : ['objectName']),
+      ...(this.pageSize ? [] : ['pageSize']),
+      ...(this.showDataLabelsIn ? [] : ['showDataLabelsIn']),
+    ];
+    return this.missingParameters.length === 0;
+  }
+
   /** AutoRefresh */
   // ToDo: implement this
   // @Listen("RequestUpdateLayoutSameGroup")
@@ -803,6 +825,9 @@ export class QueryViewer {
   private pivotRender(
     serviceResponsePivotTable: QueryViewerServiceResponsePivotTable
   ) {
+    if (!this.validatePivotParameters(serviceResponsePivotTable)) {
+      return <span>{`Error: missing parameters (${this.missingParameters.join(', ')})`}</span>;
+    }
     return (
       <gx-query-viewer-pivot-render
         allowElementsOrderChange={this.allowElementsOrderChange}

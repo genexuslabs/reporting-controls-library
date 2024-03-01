@@ -1129,6 +1129,10 @@ export namespace Components {
           * For translate the labels of the outputs
          */
         "translations": QueryViewerTranslations;
+        /**
+          * Message to display when component is waiting the data
+         */
+        "waitingData": string;
     }
     interface GxQueryViewerSlider {
         /**
@@ -2505,6 +2509,10 @@ declare namespace LocalJSX {
           * For translate the labels of the outputs
          */
         "translations"?: QueryViewerTranslations;
+        /**
+          * Message to display when component is waiting the data
+         */
+        "waitingData"?: string;
     }
     interface GxQueryViewerSlider {
         /**
