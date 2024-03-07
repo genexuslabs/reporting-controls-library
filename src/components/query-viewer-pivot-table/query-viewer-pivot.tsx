@@ -238,9 +238,9 @@ export class QueryViewerPivot {
     GXPL_QViewerJSAscending: "Ascending",
     GXPL_QViewerJSDescending: "Descendiente",
     GXPL_QViewerJSSubtotals: "Subtotal",
-    GXPL_QViewerJSRestoreDefaultView: "Restore",
-    GXPL_QViewerJSPivotDimensionToColumn: "To COlumns",
-    GXPL_QViewerJSPivotDimensionToRow: "To Dimensions",
+    GXPL_QViewerJSRestoreDefaultView: "Restore default view",
+    GXPL_QViewerJSPivotDimensionToColumn: "Move to columns",
+    GXPL_QViewerJSPivotDimensionToRow: "Move to rows",
     GXPL_QViewerJSMoveToFilterBar: "To Filters",
     GXPL_QViewerJSAll: "ALL",
     GXPL_QViewerJSNone: "NONE",
@@ -328,7 +328,7 @@ export class QueryViewerPivot {
         container: this.queryViewerContainer,
         RealType: this.tableType,
         ObjectName: this.objectName,
-        ControlName: "Queryviewer1",
+        ControlName: this.pivotParameters.ControlName,
         metadata: this.metadata,
         PageSize: this.pageSize,
         UcId: this.pivotParameters.UcId,
@@ -352,7 +352,6 @@ export class QueryViewerPivot {
       },
       oat_element: undefined
     };
-
     if (OAT.Loader) {
       renderJSPivot(
         this.queryViewerConfiguration.pivotParams,
@@ -377,8 +376,8 @@ export class QueryViewerPivot {
   render() {
     return (
       <div
-        class="gx_usercontrol qv-pivottable QueryViewer-pivottable"
-        id="QUERYVIEWER1Container"
+        class="gx-query-viewer-pivot-container"
+        id="gx_query_viewer_pivot_container"
         ref={el => (this.queryViewerContainer = el)}
       >
         <div
