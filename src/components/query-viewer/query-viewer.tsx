@@ -151,14 +151,15 @@ export class QueryViewer {
   @Prop({ mutable: true }) calculatePivottableDataXml: string;
 
   /**
-   * Response Pivot Table Data Sync
-   */
-  @Prop({ mutable: true }) pivottableDataSyncXml: string;
-
-  /**
    * If type == Chart, this is the chart type: Bar, Pie, Timeline, etc...
    */
   @Prop({ mutable: true }) chartType: QueryViewerChartType;
+
+  /**
+   * Specifies the name of the control used in the pivot and Table outputs
+   * types
+   */
+  @Prop() readonly controlName!: string;
 
   /**
    * A CSS class to set as the `gx-query-viewer` element class.
@@ -244,6 +245,11 @@ export class QueryViewer {
    * If type == PivotTable or Table, if true there is paging, else everything in one table
    */
   @Prop({ mutable: true }) paging: boolean;
+
+  /**
+   * Response Pivot Table Data Sync
+   */
+  @Prop({ mutable: true }) pivottableDataSyncXml: string;
 
   /**
    * Timeline
@@ -808,6 +814,7 @@ export class QueryViewer {
         allowElementsOrderChange={this.allowElementsOrderChange}
         allowSelection={this.allowSelection}
         autoResize={this.autoResize}
+        controlName={this.controlName}
         cssClass={this.cssClass}
         pivotTitle={this.queryTitle}
         paging={this.paging}

@@ -139,6 +139,10 @@ export namespace Components {
          */
         "baseUrl": string;
         /**
+          * Specifies the name of the control used in the pivot and Table outputs types
+         */
+        "controlName": string;
+        /**
           * Data for query viewer
          */
         "data": QueryViewerServiceData | string;
@@ -214,6 +218,10 @@ export namespace Components {
           * If type == Map and region = Continent, this is the continent to display in the map
          */
         "continent": QueryViewerContinent;
+        /**
+          * Specifies the name of the control used in the pivot and Table outputs types
+         */
+        "controlName": string;
         /**
           * If type == Map and region = Country, this is the country to display in the map
          */
@@ -1041,6 +1049,10 @@ export namespace Components {
          */
         "calculatePivottableDataXml": string;
         /**
+          * Specifies the name of the control used in the pivot and Table outputs types
+         */
+        "controlName": string;
+        /**
           * A CSS class to set as the `gx-query-viewer-pivot-controller` element class.
          */
         "cssClass": string;
@@ -1515,6 +1527,10 @@ declare namespace LocalJSX {
          */
         "baseUrl"?: string;
         /**
+          * Specifies the name of the control used in the pivot and Table outputs types
+         */
+        "controlName": string;
+        /**
           * Data for query viewer
          */
         "data"?: QueryViewerServiceData | string;
@@ -1590,6 +1606,10 @@ declare namespace LocalJSX {
           * If type == Map and region = Continent, this is the continent to display in the map
          */
         "continent"?: QueryViewerContinent;
+        /**
+          * Specifies the name of the control used in the pivot and Table outputs types
+         */
+        "controlName": string;
         /**
           * If type == Map and region = Country, this is the country to display in the map
          */
@@ -2440,6 +2460,10 @@ declare namespace LocalJSX {
           * Response Attribute Values
          */
         "calculatePivottableDataXml"?: string;
+        /**
+          * Specifies the name of the control used in the pivot and Table outputs types
+         */
+        "controlName": string;
         /**
           * A CSS class to set as the `gx-query-viewer-pivot-controller` element class.
          */

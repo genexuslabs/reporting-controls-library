@@ -1,4 +1,12 @@
-import { Component, h, Prop, Host, Element, Method } from "@stencil/core";
+import {
+  Component,
+  h,
+  Prop,
+  Host,
+  Element,
+  Method,
+  Watch
+} from "@stencil/core";
 
 import { QueryViewerServiceResponsePivotTable } from "@genexus/reporting-api";
 import {
@@ -12,16 +20,14 @@ import {
   QueryViewerTranslations
 } from "@genexus/reporting-api";
 import { OAT } from "jspivottable";
-let autoId = 0;
+
 @Component({
   tag: "gx-query-viewer-pivot-render",
   styleUrl: "query-viewer-pivot-render.scss"
 })
 export class QueryViewerPivotTableRender {
-  private controllerId: string;
-  private ucId: string;
   private pivotRef: HTMLGxQueryViewerPivotElement;
-  private mustWaitInitialPageDataForTable = false;
+  private mustWaitInitialPageDataForTable = true;
 
   @Element() element: HTMLGxQueryViewerPivotRenderElement;
 
@@ -54,6 +60,12 @@ export class QueryViewerPivotTableRender {
    * Response Attribute Values
    */
   @Prop() readonly calculatePivottableDataXml: string;
+
+  /**
+   * Specifies the name of the control used in the pivot and Table outputs
+   * types
+   */
+  @Prop() readonly controlName!: string;
 
   /**
    * Response Pivot Table Data Sync
@@ -105,6 +117,13 @@ export class QueryViewerPivotTableRender {
    */
   @Prop() readonly serviceResponse: QueryViewerServiceResponsePivotTable;
 
+  @Watch("serviceResponse")
+  serviceResponseChanged(newValue: QueryViewerServiceResponsePivotTable) {
+    if (newValue) {
+      this.mustWaitInitialPageDataForTable = true;
+    }
+  }
+
   /**
    * Specifies whether the render output is PivotTable or Table
    */
@@ -131,6 +150,10 @@ export class QueryViewerPivotTableRender {
    * Response Page Data
    */
   @Prop() readonly pageDataForTable: string;
+  @Watch("pageDataForTable")
+  pageDataForTableChange() {
+    this.mustWaitInitialPageDataForTable = false;
+  }
 
   /**
    * Response Table Data Sync
@@ -192,21 +215,14 @@ export class QueryViewerPivotTableRender {
       return undefined;
     }
 
-    if (this.pageDataForTable && this.mustWaitInitialPageDataForTable) {
-      this.mustWaitInitialPageDataForTable = false;
-    } else if (this.tableType === QueryViewerOutputType.Table) {
-      this.checkDataPaging();
-      return undefined;
-    }
-
     if (this.tableType === QueryViewerOutputType.PivotTable) {
       const pivotParameters: QueryViewerPivotParameters = {
         RealType: QueryViewerOutputType.PivotTable,
         ObjectName: this.serviceResponse.objectName,
-        ControlName: this.controllerId,
+        ControlName: this.controlName,
         PageSize: this.paging === true ? this.pageSize : undefined,
         metadata: this.serviceResponse.metadataXML,
-        UcId: this.ucId,
+        UcId: this.controlName,
         // ToDo: check if this property make sense with the AutoGrow implementation in the SD programming model
         AutoResize: true,
         DisableColumnSort: this.disableColumnSort,
@@ -230,10 +246,10 @@ export class QueryViewerPivotTableRender {
     const tableParameters: QueryViewerTableParameters = {
       RealType: QueryViewerOutputType.Table,
       ObjectName: this.serviceResponse.objectName,
-      ControlName: this.controllerId,
+      ControlName: this.controlName,
       PageSize: this.paging === true ? this.pageSize : undefined,
       metadata: this.serviceResponse.metadataXML,
-      UcId: this.ucId,
+      UcId: this.controlName,
       // ToDo: check if this property make sense with the AutoGrow implementation in the SD programming model
       AutoResize: true,
       DisableColumnSort: this.disableColumnSort,
@@ -283,16 +299,16 @@ export class QueryViewerPivotTableRender {
       // Tabla con paginado en el server
       const previousStateSave = OAT.getStateWhenServingPaging
         ? OAT.getStateWhenServingPaging(
-            this.ucId + "_" + this.serviceResponse.objectName,
+            this.controlName,
             this.serviceResponse.objectName
           )
         : false;
 
       if (!previousStateSave || !this.rememberLayout) {
-        this.mustWaitInitialPageDataForTable = true;
         this.requestInitialPageDataForTable();
       }
     } else if (!this.paging) {
+      this.mustWaitInitialPageDataForTable = false;
       // Paginado en el cliente
       // qv.services.GetDataIfNeeded(qViewer, function (resText, qViewer) {
       //   // Servicio GetData
@@ -309,6 +325,8 @@ export class QueryViewerPivotTableRender {
       //     qv.util.renderError(qViewer, errMsg);
       //   }
       // });
+    } else {
+      this.mustWaitInitialPageDataForTable = false;
     }
   }
 
@@ -318,10 +336,10 @@ export class QueryViewerPivotTableRender {
       fadeTimeouts: {}
     };
 
-    qv.collection[this.ucId] = {
+    qv.collection[this.controlName] = {
       AutoRefreshGroup: "",
       debugServices: false,
-      ControlName: "Queryviewer1",
+      ControlName: this.controlName,
       Metadata: {
         Axes: this.serviceResponse.MetaData.axes,
         Data: this.serviceResponse.MetaData.data
@@ -376,22 +394,19 @@ export class QueryViewerPivotTableRender {
     this.element.dispatchEvent(requestPageDataEvent);
   }
 
-  componentWillLoad() {
-    this.ucId = `gx_query_viewer_user_controller_${autoId}`;
-    this.controllerId = `gx-query-viewer-pivot-controller-${autoId}`;
-    autoId++;
+  componentWillRender() {
+    if (this.serviceResponse && this.mustWaitInitialPageDataForTable) {
+      this.checkDataPaging();
+    }
   }
 
   render() {
-    if (this.serviceResponse == null) {
+    if (this.serviceResponse == null || this.mustWaitInitialPageDataForTable) {
       return "";
     }
+
     const pivotParameters = this.getPivotTableParameters();
     const pivotCollection = this.getPivotTableCollection();
-
-    if (this.mustWaitInitialPageDataForTable) {
-      return "";
-    }
 
     if (this.tableType === QueryViewerOutputType.PivotTable) {
       return (
