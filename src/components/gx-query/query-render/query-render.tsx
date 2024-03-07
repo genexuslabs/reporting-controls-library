@@ -44,6 +44,13 @@ export class GxQueryRender implements GxComponent {
    * This is GxQuery authentication key. It will required when property useGxQuery = true
    */
   @Prop() readonly apiKey: string = "";
+
+  /**
+   * Specifies the name of the control used in the pivot and Table outputs
+   * types
+   */
+  @Prop() readonly controlName!: string;
+
   /**
    * This is GxQuery Saia Token. It will required when property useGxQuery = true
    */
@@ -148,6 +155,7 @@ export class GxQueryRender implements GxComponent {
         queryTitle={query.title}
         type={query.outputType}
         chartType={query.chartType}
+        controlName={this.controlName}
         includeSparkline={query.includeSparkline}
         includeTrend={query.includeTrend}
         includeMaxMin={query.includeMaxAndMin}
