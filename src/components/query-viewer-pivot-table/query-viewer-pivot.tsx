@@ -336,7 +336,7 @@ export class QueryViewerPivot {
         DisableColumnSort: false,
         RememberLayout: this.rememberLayout,
         ShowDataLabelsIn: this.showDataLabelsIn,
-        ServerPaging: true,
+        ServerPaging: this.paging,
         ServerPagingPivot: this.paging,
         ServerPagingCacheSize: 0,
         UseRecordsetCache: true,
