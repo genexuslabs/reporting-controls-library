@@ -451,7 +451,7 @@ export class QueryViewer {
     if (this.controller) {
       event.stopPropagation();
       const pageData: QueryViewerPageDataForPivot = (event as any).parameter;
-      this.pageSize = pageData.PageSize;
+      this.pageSize = this.paging ? pageData.PageSize : undefined;
 
       this.controller.getPageDataForPivotTable(
         pageData,
@@ -741,7 +741,6 @@ export class QueryViewer {
     if (!properties) {
       return;
     }
-
     this.type ??= properties.outputType;
     this.queryTitle ??= properties.title;
     this.showValues ??= properties.showValues;
@@ -765,7 +764,7 @@ export class QueryViewer {
       this.country ??= properties.country;
     } else {
       this.paging ??= properties.paging;
-      this.pageSize ??= properties.pageSize;
+      this.pageSize ??= properties.paging ? properties.pageSize : undefined;
       this.showDataLabelsIn ??= properties.showDataLabelsIn;
       this.totalForRows ??= properties.totalForRows;
       this.totalForColumns ??= properties.totalForColumns;

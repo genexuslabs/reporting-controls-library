@@ -24,10 +24,7 @@ import {
   QueryViewerShowDataLabelsIn,
   QueryViewerTotal
 } from "@genexus/reporting-api";
-import {
-  QueryViewer,
-  QueryViewerCard
-} from "@genexus/reporting-api";
+import { QueryViewer, QueryViewerCard } from "@genexus/reporting-api";
 import {
   QueryViewerAttributesValuesForPivot,
   QueryViewerCalculatePivottableData,
@@ -270,7 +267,7 @@ export class QueryViewerController {
       this.pageDataForPivotTable.emit(xml);
     };
     qvInfo.Paging = paging;
-    this.pageSize = qvInfo.PageSize;
+    this.pageSize = qvInfo.Paging ? qvInfo.PageSize : undefined;
     qvInfo.TotalForRows = totalForRows;
     qvInfo.TotalForColumns = totalForColumns;
     qvInfo.ShowDataLabelsIn = this.showDataLabelsIn;
@@ -360,7 +357,7 @@ export class QueryViewerController {
       this.pageDataForTable.emit(xml);
     };
     qvInfo.Paging = paging;
-    qvInfo.PageSize = this.pageSize;
+    qvInfo.PageSize = qvInfo.Paging ? this.pageSize : undefined;
     qvInfo.TotalForRows = totalForRows;
     qvInfo.TotalForColumns = totalForColumns;
     qvInfo.ShowDataLabelsIn = this.showDataLabelsIn;
@@ -405,7 +402,9 @@ export class QueryViewerController {
     ) {
       queryViewerObject.ShowDataLabelsIn = this.showDataLabelsIn;
       queryViewerObject.Paging = this.paging;
-      queryViewerObject.PageSize = this.pageSize;
+      queryViewerObject.PageSize = queryViewerObject.Paging
+        ? this.pageSize
+        : undefined;
     }
 
     return queryViewerObject;
@@ -443,8 +442,10 @@ export class QueryViewerController {
       this.recordSetCacheOldKey = oldKey;
       this.queryViewerId = queryViewerBaseProperties?.id;
 
-      queryViewerObject.PageSize = this.pageSize;
       queryViewerObject.Paging = this.paging;
+      queryViewerObject.PageSize = queryViewerObject.Paging
+        ? this.pageSize
+        : undefined;
       // Emit service response
       this.queryViewerServiceResponsePivotTable.emit({
         MetaData: metadata,
