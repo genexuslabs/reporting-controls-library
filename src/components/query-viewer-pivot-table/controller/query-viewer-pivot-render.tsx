@@ -231,10 +231,8 @@ export class QueryViewerPivotTableRender {
         UseRecordsetCache: !this.serviceResponse.useGxQuery,
         AllowSelection: this.allowSelection,
         SelectLine: true,
-        // ToDo: update this value
         ServerPaging: true,
-        // ToDo: update this value
-        ServerPagingPivot: this.paging,
+        ServerPagingPivot: true,
         // ToDo: update this value
         ServerPagingCacheSize: 0,
         TotalForColumns: this.totalForColumns,
@@ -258,10 +256,8 @@ export class QueryViewerPivotTableRender {
       UseRecordsetCache: !this.serviceResponse.useGxQuery,
       AllowSelection: this.allowSelection,
       SelectLine: true,
-      // ToDo: update this value
       ServerPaging: true,
-      // ToDo: update this value
-      ServerPagingPivot: this.paging,
+      ServerPagingPivot: true,
       // ToDo: update this value
       ServerPagingCacheSize: 0,
       TotalForColumns: this.totalForColumns,
@@ -375,7 +371,6 @@ export class QueryViewerPivotTableRender {
 
   private requestInitialPageDataForTable() {
     const dataFieldAndOrder = this.getDataFieldAndOrder();
-
     const pageDataTableParameters = {
       PageNumber: 1,
       PageSize: this.pageSize,
