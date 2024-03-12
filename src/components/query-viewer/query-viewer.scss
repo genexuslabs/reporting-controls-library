@@ -9,7 +9,7 @@ gx-query-viewer {
   font-style: normal;
   font-weight: 400;
   src: local("Material Icons"), local("MaterialIcons-Outlined"),
-    url("assets/MaterialIcons-Outlined.woff2") format("woff2");
+  url("assets/MaterialIcons-Outlined.woff2") format("woff2");
 }
 
 gx-query-viewer-card::part(trend) {
