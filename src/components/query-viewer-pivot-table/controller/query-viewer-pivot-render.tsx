@@ -220,7 +220,7 @@ export class QueryViewerPivotTableRender {
         RealType: QueryViewerOutputType.PivotTable,
         ObjectName: this.serviceResponse.objectName,
         ControlName: this.controlName,
-        PageSize: this.paging === true ? this.pageSize : undefined,
+        PageSize: this.pageSize,
         metadata: this.serviceResponse.metadataXML,
         UcId: this.controlName,
         // ToDo: check if this property make sense with the AutoGrow implementation in the SD programming model
@@ -245,7 +245,7 @@ export class QueryViewerPivotTableRender {
       RealType: QueryViewerOutputType.Table,
       ObjectName: this.serviceResponse.objectName,
       ControlName: this.controlName,
-      PageSize: this.paging === true ? this.pageSize : undefined,
+      PageSize: this.pageSize,
       metadata: this.serviceResponse.metadataXML,
       UcId: this.controlName,
       // ToDo: check if this property make sense with the AutoGrow implementation in the SD programming model

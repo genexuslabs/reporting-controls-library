@@ -267,7 +267,7 @@ export class QueryViewerController {
       this.pageDataForPivotTable.emit(xml);
     };
     qvInfo.Paging = paging;
-    this.pageSize = qvInfo.Paging ? qvInfo.PageSize : undefined;
+    this.pageSize = qvInfo.PageSize;
     qvInfo.TotalForRows = totalForRows;
     qvInfo.TotalForColumns = totalForColumns;
     qvInfo.ShowDataLabelsIn = this.showDataLabelsIn;
@@ -357,7 +357,7 @@ export class QueryViewerController {
       this.pageDataForTable.emit(xml);
     };
     qvInfo.Paging = paging;
-    qvInfo.PageSize = qvInfo.Paging ? this.pageSize : undefined;
+    this.pageSize = qvInfo.PageSize;
     qvInfo.TotalForRows = totalForRows;
     qvInfo.TotalForColumns = totalForColumns;
     qvInfo.ShowDataLabelsIn = this.showDataLabelsIn;
