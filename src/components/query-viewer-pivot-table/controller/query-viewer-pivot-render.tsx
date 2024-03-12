@@ -303,24 +303,6 @@ export class QueryViewerPivotTableRender {
       if (!previousStateSave || !this.rememberLayout) {
         this.requestInitialPageDataForTable();
       }
-    } else if (!this.paging) {
-      this.mustWaitInitialPageDataForTable = false;
-      // Paginado en el cliente
-      // qv.services.GetDataIfNeeded(qViewer, function (resText, qViewer) {
-      //   // Servicio GetData
-      //   if (resText != qViewer.xml.data) {
-      //     qViewer.xml.data = resText;
-      //   }
-      //   const d3 = new Date();
-      //   const t3 = d3.getTime();
-      //   if (!qv.util.anyError(resText)) {
-      //     renderPivotTable(qViewer);
-      //   } else {
-      //     // Error en el servicio GetData
-      //     errMsg = qv.util.getErrorFromText(resText);
-      //     qv.util.renderError(qViewer, errMsg);
-      //   }
-      // });
     } else {
       this.mustWaitInitialPageDataForTable = false;
     }
