@@ -72,7 +72,7 @@ Type: `Promise<void>`
 
 
 
-### `getPageDataForPivotTable(properties: QueryViewerPageDataForPivot, paging: boolean, totalForColumns: QueryViewerTotal, totalForRows: QueryViewerTotal) => Promise<void>`
+### `getPageDataForPivotTable(properties: QueryViewerPageDataForPivot) => Promise<void>`
 
 PivotTable's Method for PivotTable Page Data
 
@@ -82,7 +82,7 @@ Type: `Promise<void>`
 
 
 
-### `getPageDataForTable(properties: QueryViewerPageDataForTable, paging: boolean, totalForColumns: QueryViewerTotal, totalForRows: QueryViewerTotal) => Promise<void>`
+### `getPageDataForTable(properties: QueryViewerPageDataForTable) => Promise<void>`
 
 Table's Method for Table Page Data
 
