@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Component, h, Method, Prop, Watch } from "@stencil/core";
+import { Component, h, Method, Prop, Watch, Listen } from "@stencil/core";
 import {
   renderJSPivot,
   OAT,
@@ -37,6 +37,7 @@ export class QueryViewerPivot {
   private queryViewerContainer: HTMLDivElement;
   private queryViewerConfiguration: QueryViewerPivotTable = undefined;
   private shouldReRenderPivot = false;
+  private pageSizeChangeWasCommittedByTheUser = false;
 
   /**
    * Response Attribute Values
@@ -197,6 +198,10 @@ export class QueryViewerPivot {
   @Prop() readonly pageSize: number;
   @Watch("pageSize")
   pageSizeInChange() {
+    if (this.pageSizeChangeWasCommittedByTheUser) {
+      this.pageSizeChangeWasCommittedByTheUser = false;
+      return;
+    }
     this.shouldReRenderPivot = true;
   }
 
@@ -265,6 +270,12 @@ export class QueryViewerPivot {
     GXPL_QViewerJSMoveColumnToLeft: "to left",
     GXPL_QViewerJSMoveColumnToRight: "to right"
   };
+
+  @Listen("RequestPageDataForPivotTable", { target: "document" })
+  @Listen("RequestPageDataForTable", { target: "document" })
+  handleRequestPageDataForTable() {
+    this.pageSizeChangeWasCommittedByTheUser = true;
+  }
 
   /**
    * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
@@ -377,7 +388,7 @@ export class QueryViewerPivot {
     return (
       <div
         class="gx-query-viewer-pivot-container"
-        id="gx_query_viewer_pivot_container"
+        id={this.pivotParameters.UcId}
         ref={el => (this.queryViewerContainer = el)}
       >
         <div

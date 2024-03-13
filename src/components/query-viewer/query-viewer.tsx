@@ -451,14 +451,10 @@ export class QueryViewer {
     if (this.controller) {
       event.stopPropagation();
       const pageData: QueryViewerPageDataForPivot = (event as any).parameter;
+
       this.pageSize = pageData.PageSize;
       pageData.PageSize = this.paging ? pageData.PageSize : undefined;
-      this.controller.getPageDataForPivotTable(
-        pageData,
-        this.paging,
-        this.totalForColumns,
-        this.totalForRows
-      );
+      this.controller.getPageDataForPivotTable(pageData);
     }
   }
 
@@ -524,12 +520,7 @@ export class QueryViewer {
       const pageData: QueryViewerPageDataForTable = (event as any).parameter;
       this.pageSize = pageData.PageSize;
       pageData.PageSize = this.paging ? pageData.PageSize : undefined;
-      this.controller.getPageDataForTable(
-        pageData,
-        this.paging,
-        this.totalForColumns,
-        this.totalForRows
-      );
+      this.controller.getPageDataForTable(pageData);
     }
   }
 

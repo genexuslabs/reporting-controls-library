@@ -43,8 +43,13 @@ import {
 export class QueryViewerController {
   private recordSetCacheActualKey: string;
   private recordSetCacheOldKey: string;
-  private shouldRequestData = false;
+  private shouldRequestRecordSetCacheAndMetadata = false;
   private queryViewerId: string = null;
+  private pageSizeChangeWasCommittedByTheUser = false;
+  private callbackWhenPageDataForPivotTableSuccess = (xml: string) => {
+    this.pageDataForPivotTable.emit(xml);
+  };
+
   /**
    * @todo Add description
    */
@@ -71,7 +76,7 @@ export class QueryViewerController {
 
   @Watch("objectName")
   handleObjectNameChange() {
-    this.shouldRequestData = true;
+    this.shouldRequestRecordSetCacheAndMetadata = true;
   }
 
   /**
@@ -99,7 +104,7 @@ export class QueryViewerController {
       this.type === QueryViewerOutputType.PivotTable ||
       this.type === QueryViewerOutputType.Table
     ) {
-      this.shouldRequestData = true;
+      this.shouldRequestRecordSetCacheAndMetadata = true;
     }
   }
 
@@ -113,7 +118,10 @@ export class QueryViewerController {
       this.type === QueryViewerOutputType.PivotTable ||
       this.type === QueryViewerOutputType.Table
     ) {
-      this.shouldRequestData = true;
+      if (this.pageSizeChangeWasCommittedByTheUser) {
+        this.pageSizeChangeWasCommittedByTheUser = false;
+        return;
+      }
     }
   }
 
@@ -132,12 +140,7 @@ export class QueryViewerController {
   @Prop() readonly queryTitle: string;
   @Watch("queryTitle")
   handleQueryTitleChange() {
-    if (
-      this.type === QueryViewerOutputType.PivotTable ||
-      this.type === QueryViewerOutputType.Table
-    ) {
-      this.shouldRequestData = true;
-    }
+    this.shouldRequestRecordSetCacheAndMetadata = true;
   }
 
   /**
@@ -147,7 +150,7 @@ export class QueryViewerController {
   @Watch("totalForRows")
   handleTotalForRowsChange() {
     if (this.type === QueryViewerOutputType.PivotTable) {
-      this.shouldRequestData = true;
+      this.shouldRequestRecordSetCacheAndMetadata = true;
     }
   }
 
@@ -158,7 +161,7 @@ export class QueryViewerController {
   @Watch("totalForColumns")
   handleTotalForColumnsChange() {
     if (this.type === QueryViewerOutputType.PivotTable) {
-      this.shouldRequestData = true;
+      this.shouldRequestRecordSetCacheAndMetadata = true;
     }
   }
 
@@ -216,7 +219,7 @@ export class QueryViewerController {
   @Watch("showDataLabelsIn")
   handleShowDataLabelsInChange() {
     if (this.type === QueryViewerOutputType.PivotTable) {
-      this.shouldRequestData = true;
+      this.shouldRequestRecordSetCacheAndMetadata = true;
     }
   }
   /**
@@ -264,30 +267,13 @@ export class QueryViewerController {
    * PivotTable's Method for PivotTable Page Data
    */
   @Method()
-  async getPageDataForPivotTable(
-    properties: QueryViewerPageDataForPivot,
-    paging: boolean,
-    totalForColumns: QueryViewerTotal,
-    totalForRows: QueryViewerTotal
-  ) {
-    const qvInfo = this.getQueryViewerInformation(this.objectName);
-    const servicesInfo = this.getServiceContext();
-    const callbackWhenSuccess = (xml: string) => {
-      this.pageDataForPivotTable.emit(xml);
-    };
-    qvInfo.Paging = paging;
-    this.pageSize = qvInfo.PageSize;
-    qvInfo.TotalForRows = totalForRows;
-    qvInfo.TotalForColumns = totalForColumns;
-    qvInfo.ShowDataLabelsIn = this.showDataLabelsIn;
+  async getPageDataForPivotTable(properties: QueryViewerPageDataForPivot) {
+    this.pageSizeChangeWasCommittedByTheUser =
+      this.pageSize !== properties.PageSize;
 
-    makeRequestForPivotTable(
-      qvInfo,
-      { pageData: properties },
-      servicesInfo,
-      "pivotTablePageData",
-      callbackWhenSuccess
-    );
+    this.pageSize = properties.PageSize;
+
+    this.requestPageDataForPivotTable(properties);
   }
 
   /**
@@ -354,21 +340,44 @@ export class QueryViewerController {
    * Table's Method for Table Page Data
    */
   @Method()
-  async getPageDataForTable(
-    properties: QueryViewerPageDataForTable,
-    paging: boolean,
-    totalForColumns: QueryViewerTotal,
-    totalForRows: QueryViewerTotal
+  async getPageDataForTable(properties: QueryViewerPageDataForTable) {
+    this.pageSizeChangeWasCommittedByTheUser =
+      this.pageSize !== properties.PageSize;
+
+    this.pageSize = properties.PageSize;
+
+    this.requestPageDataForTable(properties);
+  }
+
+  private requestPageDataForPivotTable(
+    properties: QueryViewerPageDataForPivot
   ) {
     const qvInfo = this.getQueryViewerInformation(this.objectName);
+
+    qvInfo.PageSize = properties.PageSize;
+    qvInfo.TotalForRows = this.totalForRows;
+    qvInfo.TotalForColumns = this.totalForColumns;
+    qvInfo.ShowDataLabelsIn = this.showDataLabelsIn;
+
+    const servicesInfo = this.getServiceContext();
+
+    makeRequestForPivotTable(
+      qvInfo,
+      { pageData: properties },
+      servicesInfo,
+      "pivotTablePageData",
+      this.callbackWhenPageDataForPivotTableSuccess
+    );
+  }
+
+  private requestPageDataForTable(properties: QueryViewerPageDataForTable) {
+    const qvInfo = this.getQueryViewerInformation(this.objectName);
+
     const servicesInfo = this.getServiceContext();
     const callbackWhenSuccess = (xml: string) => {
       this.pageDataForTable.emit(xml);
     };
-    qvInfo.Paging = paging;
-    this.pageSize = qvInfo.PageSize;
-    qvInfo.TotalForRows = totalForRows;
-    qvInfo.TotalForColumns = totalForColumns;
+
     qvInfo.ShowDataLabelsIn = this.showDataLabelsIn;
 
     makeRequestForTable(
@@ -509,9 +518,9 @@ export class QueryViewerController {
   }
 
   componentWillUpdate() {
-    if (this.shouldRequestData) {
+    if (this.shouldRequestRecordSetCacheAndMetadata) {
       this.getPropertiesMetadataAndData();
-      this.shouldRequestData = false;
+      this.shouldRequestRecordSetCacheAndMetadata = false;
     }
   }
 }
