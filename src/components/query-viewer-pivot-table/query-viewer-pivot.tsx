@@ -336,7 +336,7 @@ export class QueryViewerPivot {
         DisableColumnSort: false,
         RememberLayout: this.rememberLayout,
         ShowDataLabelsIn: this.showDataLabelsIn,
-        ServerPaging: true,
+        ServerPaging: true, // PivotTable and Table outputs always have ServerPaging enabled, because client-side paging is no longer supported. If in GeneXus Paging = false, we should send the PageSize property with undefined so that the PivotTable and the Table know that pagination is not configured.
         ServerPagingPivot: true,
         ServerPagingCacheSize: 0,
         UseRecordsetCache: true,
