@@ -95,7 +95,10 @@ export class QueryViewerController {
   @Prop() readonly paging: boolean;
   @Watch("paging")
   handlePagingChange() {
-    if (this.type === QueryViewerOutputType.PivotTable) {
+    if (
+      this.type === QueryViewerOutputType.PivotTable ||
+      this.type === QueryViewerOutputType.Table
+    ) {
       this.shouldRequestData = true;
     }
   }
@@ -106,8 +109,11 @@ export class QueryViewerController {
   @Prop({ mutable: true }) pageSize: number;
   @Watch("pageSize")
   handlePageSizeChange() {
-    if (this.type === QueryViewerOutputType.PivotTable) {
-      this.shouldRequestData = this.paging;
+    if (
+      this.type === QueryViewerOutputType.PivotTable ||
+      this.type === QueryViewerOutputType.Table
+    ) {
+      this.shouldRequestData = true;
     }
   }
 
@@ -126,7 +132,10 @@ export class QueryViewerController {
   @Prop() readonly queryTitle: string;
   @Watch("queryTitle")
   handleQueryTitleChange() {
-    if (this.type === QueryViewerOutputType.PivotTable) {
+    if (
+      this.type === QueryViewerOutputType.PivotTable ||
+      this.type === QueryViewerOutputType.Table
+    ) {
       this.shouldRequestData = true;
     }
   }
