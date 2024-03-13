@@ -45,7 +45,6 @@ export class QueryViewerController {
   private recordSetCacheOldKey: string;
   private shouldRequestRecordSetCacheAndMetadata = false;
   private queryViewerId: string = null;
-  private pageSizeChangeWasCommittedByTheUser = false;
   private callbackWhenPageDataForPivotTableSuccess = (xml: string) => {
     this.pageDataForPivotTable.emit(xml);
   };
@@ -103,18 +102,6 @@ export class QueryViewerController {
    * If paging true, number of items for a single page
    */
   @Prop({ mutable: true }) pageSize: number;
-  @Watch("pageSize")
-  handlePageSizeChange() {
-    if (
-      this.type === QueryViewerOutputType.PivotTable ||
-      this.type === QueryViewerOutputType.Table
-    ) {
-      if (this.pageSizeChangeWasCommittedByTheUser) {
-        this.pageSizeChangeWasCommittedByTheUser = false;
-        return;
-      }
-    }
-  }
 
   /**
    * For timeline for remembering layout
@@ -259,9 +246,6 @@ export class QueryViewerController {
    */
   @Method()
   async getPageDataForPivotTable(pageData: QueryViewerPageDataForPivot) {
-    this.pageSizeChangeWasCommittedByTheUser =
-      this.pageSize !== pageData.PageSize;
-
     if (Number.isInteger(pageData.PageSize)) {
       this.pageSize = pageData.PageSize;
     }
@@ -334,9 +318,6 @@ export class QueryViewerController {
    */
   @Method()
   async getPageDataForTable(pageData: QueryViewerPageDataForTable) {
-    this.pageSizeChangeWasCommittedByTheUser =
-      this.pageSize !== pageData.PageSize;
-
     if (Number.isInteger(pageData.PageSize)) {
       this.pageSize = pageData.PageSize;
     }
