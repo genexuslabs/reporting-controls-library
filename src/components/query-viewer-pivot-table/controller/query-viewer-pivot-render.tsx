@@ -231,7 +231,10 @@ export class QueryViewerPivotTableRender {
         UseRecordsetCache: !this.serviceResponse.useGxQuery,
         AllowSelection: this.allowSelection,
         SelectLine: true,
-        ServerPaging: true, // PivotTable and Table outputs always have ServerPaging enabled, because client-side paging is no longer supported. If in GeneXus Paging = false, we should send the PageSize property with undefined so that the PivotTable and the Table know that pagination is not configured.
+        // PivotTable and Table outputs always have ServerPaging enabled, because client-side paging is no
+        // longer supported. If in GeneXus Paging = false, we should send the PageSize property with undefined
+        // so that the PivotTable and the Table know that pagination is not configured.
+        ServerPaging: true,
         ServerPagingPivot: true,
         // ToDo: update this value
         ServerPagingCacheSize: 0,
@@ -245,7 +248,7 @@ export class QueryViewerPivotTableRender {
       RealType: QueryViewerOutputType.Table,
       ObjectName: this.serviceResponse.objectName,
       ControlName: this.controlName,
-      PageSize: this.pageSize,
+      PageSize: this.paging ? this.pageSize : undefined,
       metadata: this.serviceResponse.metadataXML,
       UcId: this.controlName,
       // ToDo: check if this property make sense with the AutoGrow implementation in the SD programming model
@@ -256,6 +259,9 @@ export class QueryViewerPivotTableRender {
       UseRecordsetCache: !this.serviceResponse.useGxQuery,
       AllowSelection: this.allowSelection,
       SelectLine: true,
+      // PivotTable and Table outputs always have ServerPaging enabled, because client-side paging is no
+      // longer supported. If in GeneXus Paging = false, we should send the PageSize property with undefined
+      // so that the PivotTable and the Table know that pagination is not configured.
       ServerPaging: true,
       ServerPagingPivot: true,
       // ToDo: update this value
@@ -355,7 +361,7 @@ export class QueryViewerPivotTableRender {
     const dataFieldAndOrder = this.getDataFieldAndOrder();
     const pageDataTableParameters = {
       PageNumber: 1,
-      PageSize: this.pageSize,
+      PageSize: this.paging ? this.pageSize : undefined,
       RecalculateCantPages: true,
       DataFieldOrder: dataFieldAndOrder.dataFieldOrder,
       OrderType: dataFieldAndOrder.orderType,
