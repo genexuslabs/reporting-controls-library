@@ -651,11 +651,11 @@ export namespace Components {
         /**
           * PivotTable's Method for PivotTable Page Data
          */
-        "getPageDataForPivotTable": (properties: QueryViewerPageDataForPivot) => Promise<void>;
+        "getPageDataForPivotTable": (pageData: QueryViewerPageDataForPivot) => Promise<void>;
         /**
           * Table's Method for Table Page Data
          */
-        "getPageDataForTable": (properties: QueryViewerPageDataForTable) => Promise<void>;
+        "getPageDataForTable": (pageData: QueryViewerPageDataForTable) => Promise<void>;
         /**
           * PivotTable's Method for PivotTable Data Sync Response
          */
