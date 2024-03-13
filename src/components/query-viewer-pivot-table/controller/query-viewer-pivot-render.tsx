@@ -231,7 +231,7 @@ export class QueryViewerPivotTableRender {
         UseRecordsetCache: !this.serviceResponse.useGxQuery,
         AllowSelection: this.allowSelection,
         SelectLine: true,
-        ServerPaging: true,
+        ServerPaging: true, // PivotTable and Table outputs always have ServerPaging enabled, because client-side paging is no longer supported. If in GeneXus Paging = false, we should send the PageSize property with undefined so that the PivotTable and the Table know that pagination is not configured.
         ServerPagingPivot: true,
         // ToDo: update this value
         ServerPagingCacheSize: 0,
