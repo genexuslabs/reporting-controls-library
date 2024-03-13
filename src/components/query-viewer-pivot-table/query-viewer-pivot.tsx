@@ -23,7 +23,9 @@ import {
   QueryViewerPivotParameters,
   QueryViewerPivotTable,
   QueryViewerShowDataLabelsIn,
-  QueryViewerTotal
+  QueryViewerTotal,
+  QueryViewerPageDataForTable,
+  QueryViewerPageDataForPivot
 } from "@genexus/reporting-api";
 
 const PIVOT_PAGE = (ucId: string) => `${ucId}_GeneralQuery1_pivot_page`;
@@ -271,10 +273,16 @@ export class QueryViewerPivot {
     GXPL_QViewerJSMoveColumnToRight: "to right"
   };
 
-  @Listen("RequestPageDataForPivotTable", { target: "document" })
-  @Listen("RequestPageDataForTable", { target: "document" })
-  handleRequestPageDataForTable() {
-    this.pageSizeChangeWasCommittedByTheUser = true;
+  @Listen("RequestPageDataForPivotTable", {
+    target: "document",
+    capture: true
+  })
+  @Listen("RequestPageDataForTable", { target: "document", capture: true })
+  handleRequestPageDataForTable(event) {
+    const pageData: QueryViewerPageDataForTable | QueryViewerPageDataForPivot =
+      (event as any).parameter;
+    this.pageSizeChangeWasCommittedByTheUser =
+      this.pageSize !== pageData.PageSize;
   }
 
   /**

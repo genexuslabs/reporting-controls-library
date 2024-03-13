@@ -98,15 +98,6 @@ export class QueryViewerController {
    * If type == PivotTable or Table, if true there is paging, else everything in one table
    */
   @Prop() readonly paging: boolean;
-  @Watch("paging")
-  handlePagingChange() {
-    if (
-      this.type === QueryViewerOutputType.PivotTable ||
-      this.type === QueryViewerOutputType.Table
-    ) {
-      this.shouldRequestRecordSetCacheAndMetadata = true;
-    }
-  }
 
   /**
    * If paging true, number of items for a single page
@@ -267,13 +258,15 @@ export class QueryViewerController {
    * PivotTable's Method for PivotTable Page Data
    */
   @Method()
-  async getPageDataForPivotTable(properties: QueryViewerPageDataForPivot) {
+  async getPageDataForPivotTable(pageData: QueryViewerPageDataForPivot) {
     this.pageSizeChangeWasCommittedByTheUser =
-      this.pageSize !== properties.PageSize;
+      this.pageSize !== pageData.PageSize;
 
-    this.pageSize = properties.PageSize;
+    if (Number.isInteger(pageData.PageSize)) {
+      this.pageSize = pageData.PageSize;
+    }
 
-    this.requestPageDataForPivotTable(properties);
+    this.requestPageDataForPivotTable(pageData);
   }
 
   /**
@@ -340,13 +333,14 @@ export class QueryViewerController {
    * Table's Method for Table Page Data
    */
   @Method()
-  async getPageDataForTable(properties: QueryViewerPageDataForTable) {
+  async getPageDataForTable(pageData: QueryViewerPageDataForTable) {
     this.pageSizeChangeWasCommittedByTheUser =
-      this.pageSize !== properties.PageSize;
+      this.pageSize !== pageData.PageSize;
 
-    this.pageSize = properties.PageSize;
-
-    this.requestPageDataForTable(properties);
+    if (Number.isInteger(pageData.PageSize)) {
+      this.pageSize = pageData.PageSize;
+    }
+    this.requestPageDataForTable(pageData);
   }
 
   private requestPageDataForPivotTable(
