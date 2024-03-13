@@ -367,8 +367,7 @@ export class QueryViewerPivotTableRender {
       OrderType: dataFieldAndOrder.orderType,
       Filters: [],
       LayoutChange: false,
-      // ToDo: get the proper QueryViewerId
-      QueryviewerId: ""
+      QueryviewerId: this.controlName
     };
     const requestPageDataEvent = new CustomEvent("RequestPageDataForTable", {
       bubbles: true
