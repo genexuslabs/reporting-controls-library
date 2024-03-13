@@ -220,7 +220,7 @@ export class QueryViewerPivotTableRender {
         RealType: QueryViewerOutputType.PivotTable,
         ObjectName: this.serviceResponse.objectName,
         ControlName: this.controlName,
-        PageSize: this.paging === true ? this.pageSize : undefined,
+        PageSize: this.pageSize,
         metadata: this.serviceResponse.metadataXML,
         UcId: this.controlName,
         // ToDo: check if this property make sense with the AutoGrow implementation in the SD programming model
@@ -231,10 +231,11 @@ export class QueryViewerPivotTableRender {
         UseRecordsetCache: !this.serviceResponse.useGxQuery,
         AllowSelection: this.allowSelection,
         SelectLine: true,
-        // ToDo: update this value
+        // PivotTable and Table outputs always have ServerPaging enabled, because client-side paging is no
+        // longer supported. If in GeneXus Paging = false, we should send the PageSize property with undefined
+        // so that the PivotTable and the Table know that pagination is not configured.
         ServerPaging: true,
-        // ToDo: update this value
-        ServerPagingPivot: this.paging,
+        ServerPagingPivot: true,
         // ToDo: update this value
         ServerPagingCacheSize: 0,
         TotalForColumns: this.totalForColumns,
@@ -247,7 +248,7 @@ export class QueryViewerPivotTableRender {
       RealType: QueryViewerOutputType.Table,
       ObjectName: this.serviceResponse.objectName,
       ControlName: this.controlName,
-      PageSize: this.paging === true ? this.pageSize : undefined,
+      PageSize: this.paging ? this.pageSize : undefined,
       metadata: this.serviceResponse.metadataXML,
       UcId: this.controlName,
       // ToDo: check if this property make sense with the AutoGrow implementation in the SD programming model
@@ -258,10 +259,11 @@ export class QueryViewerPivotTableRender {
       UseRecordsetCache: !this.serviceResponse.useGxQuery,
       AllowSelection: this.allowSelection,
       SelectLine: true,
-      // ToDo: update this value
+      // PivotTable and Table outputs always have ServerPaging enabled, because client-side paging is no
+      // longer supported. If in GeneXus Paging = false, we should send the PageSize property with undefined
+      // so that the PivotTable and the Table know that pagination is not configured.
       ServerPaging: true,
-      // ToDo: update this value
-      ServerPagingPivot: this.paging,
+      ServerPagingPivot: true,
       // ToDo: update this value
       ServerPagingCacheSize: 0,
       TotalForColumns: this.totalForColumns,
@@ -307,24 +309,6 @@ export class QueryViewerPivotTableRender {
       if (!previousStateSave || !this.rememberLayout) {
         this.requestInitialPageDataForTable();
       }
-    } else if (!this.paging) {
-      this.mustWaitInitialPageDataForTable = false;
-      // Paginado en el cliente
-      // qv.services.GetDataIfNeeded(qViewer, function (resText, qViewer) {
-      //   // Servicio GetData
-      //   if (resText != qViewer.xml.data) {
-      //     qViewer.xml.data = resText;
-      //   }
-      //   const d3 = new Date();
-      //   const t3 = d3.getTime();
-      //   if (!qv.util.anyError(resText)) {
-      //     renderPivotTable(qViewer);
-      //   } else {
-      //     // Error en el servicio GetData
-      //     errMsg = qv.util.getErrorFromText(resText);
-      //     qv.util.renderError(qViewer, errMsg);
-      //   }
-      // });
     } else {
       this.mustWaitInitialPageDataForTable = false;
     }
@@ -375,17 +359,15 @@ export class QueryViewerPivotTableRender {
 
   private requestInitialPageDataForTable() {
     const dataFieldAndOrder = this.getDataFieldAndOrder();
-
     const pageDataTableParameters = {
       PageNumber: 1,
-      PageSize: this.pageSize,
+      PageSize: this.paging ? this.pageSize : undefined,
       RecalculateCantPages: true,
       DataFieldOrder: dataFieldAndOrder.dataFieldOrder,
       OrderType: dataFieldAndOrder.orderType,
       Filters: [],
       LayoutChange: false,
-      // ToDo: get the proper QueryViewerId
-      QueryviewerId: ""
+      QueryviewerId: this.controlName
     };
     const requestPageDataEvent = new CustomEvent("RequestPageDataForTable", {
       bubbles: true

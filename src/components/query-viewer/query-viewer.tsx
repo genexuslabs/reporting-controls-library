@@ -451,14 +451,12 @@ export class QueryViewer {
     if (this.controller) {
       event.stopPropagation();
       const pageData: QueryViewerPageDataForPivot = (event as any).parameter;
-      this.pageSize = pageData.PageSize;
 
-      this.controller.getPageDataForPivotTable(
-        pageData,
-        this.paging,
-        this.totalForColumns,
-        this.totalForRows
-      );
+      if (Number.isInteger(pageData.PageSize)) {
+        this.pageSize = pageData.PageSize;
+      }
+
+      this.controller.getPageDataForPivotTable(pageData);
     }
   }
 
@@ -521,12 +519,13 @@ export class QueryViewer {
     this.setControllerRef();
     if (this.controller) {
       event.stopPropagation();
-      this.controller.getPageDataForTable(
-        (event as any).parameter,
-        this.paging,
-        this.totalForColumns,
-        this.totalForRows
-      );
+      const pageData: QueryViewerPageDataForTable = (event as any).parameter;
+
+      if (Number.isInteger(pageData.PageSize)) {
+        this.pageSize = pageData.PageSize;
+      }
+
+      this.controller.getPageDataForTable(pageData);
     }
   }
 
@@ -741,7 +740,6 @@ export class QueryViewer {
     if (!properties) {
       return;
     }
-
     this.type ??= properties.outputType;
     this.queryTitle ??= properties.title;
     this.showValues ??= properties.showValues;

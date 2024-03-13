@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Component, h, Method, Prop, Watch } from "@stencil/core";
+import { Component, h, Method, Prop, Watch, Listen } from "@stencil/core";
 import {
   renderJSPivot,
   OAT,
@@ -23,7 +23,9 @@ import {
   QueryViewerPivotParameters,
   QueryViewerPivotTable,
   QueryViewerShowDataLabelsIn,
-  QueryViewerTotal
+  QueryViewerTotal,
+  QueryViewerPageDataForTable,
+  QueryViewerPageDataForPivot
 } from "@genexus/reporting-api";
 
 const PIVOT_PAGE = (ucId: string) => `${ucId}_GeneralQuery1_pivot_page`;
@@ -37,6 +39,7 @@ export class QueryViewerPivot {
   private queryViewerContainer: HTMLDivElement;
   private queryViewerConfiguration: QueryViewerPivotTable = undefined;
   private shouldReRenderPivot = false;
+  private pageSizeChangeWasCommittedByTheUser = false;
 
   /**
    * Response Attribute Values
@@ -197,6 +200,10 @@ export class QueryViewerPivot {
   @Prop() readonly pageSize: number;
   @Watch("pageSize")
   pageSizeInChange() {
+    if (this.pageSizeChangeWasCommittedByTheUser) {
+      this.pageSizeChangeWasCommittedByTheUser = false;
+      return;
+    }
     this.shouldReRenderPivot = true;
   }
 
@@ -266,6 +273,18 @@ export class QueryViewerPivot {
     GXPL_QViewerJSMoveColumnToRight: "to right"
   };
 
+  @Listen("RequestPageDataForPivotTable", {
+    target: "document",
+    capture: true
+  })
+  @Listen("RequestPageDataForTable", { target: "document", capture: true })
+  handleRequestPageDataForTable(event) {
+    const pageData: QueryViewerPageDataForTable | QueryViewerPageDataForPivot =
+      (event as any).parameter;
+    this.pageSizeChangeWasCommittedByTheUser =
+      this.pageSize !== pageData.PageSize;
+  }
+
   /**
    * Returns an XML on a string variable containing all the data for the attributes loaded in the Pivot Table.
    */
@@ -330,14 +349,14 @@ export class QueryViewerPivot {
         ObjectName: this.objectName,
         ControlName: this.pivotParameters.ControlName,
         metadata: this.metadata,
-        PageSize: this.pageSize,
+        PageSize: this.paging ? this.pageSize : undefined,
         UcId: this.pivotParameters.UcId,
         AutoResize: this.autoResize,
         DisableColumnSort: false,
         RememberLayout: this.rememberLayout,
         ShowDataLabelsIn: this.showDataLabelsIn,
-        ServerPaging: true,
-        ServerPagingPivot: this.paging,
+        ServerPaging: true, // PivotTable and Table outputs always have ServerPaging enabled, because client-side paging is no longer supported. If in GeneXus Paging = false, we should send the PageSize property with undefined so that the PivotTable and the Table know that pagination is not configured.
+        ServerPagingPivot: true,
         ServerPagingCacheSize: 0,
         UseRecordsetCache: true,
         AllowSelection: false,
@@ -377,7 +396,7 @@ export class QueryViewerPivot {
     return (
       <div
         class="gx-query-viewer-pivot-container"
-        id="gx_query_viewer_pivot_container"
+        id={this.pivotParameters.UcId}
         ref={el => (this.queryViewerContainer = el)}
       >
         <div
