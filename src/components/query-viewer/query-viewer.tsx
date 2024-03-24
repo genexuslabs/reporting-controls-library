@@ -443,7 +443,7 @@ export class QueryViewer {
     this.setQueryViewerProperties(event.detail.Properties);
   }
 
-  @Listen("RequestPageDataForPivotTable", { target: "document" })
+  @Listen("RequestPageDataForPivotTable")
   handleRequestPageDataForPivotTable(
     event: CustomEvent<QueryViewerPageDataForPivot>
   ) {
@@ -460,7 +460,7 @@ export class QueryViewer {
     }
   }
 
-  @Listen("RequestAttributeValuesForPivotTable", { target: "document" })
+  @Listen("RequestAttributeValuesForPivotTable")
   handleAttributeValuesForPivotTable(
     event: CustomEvent<QueryViewerAttributesValuesForPivot>
   ) {
@@ -512,7 +512,7 @@ export class QueryViewer {
 
   /** Table Services **/
 
-  @Listen("RequestPageDataForTable", { target: "document" })
+  @Listen("RequestPageDataForTable")
   handleRequestPageDataForTable(
     event: CustomEvent<QueryViewerPageDataForTable>
   ) {
@@ -534,7 +534,7 @@ export class QueryViewer {
     this.pageDataForTable = event.detail;
   }
 
-  @Listen("RequestAttributeForTable", { target: "document" })
+  @Listen("RequestAttributeForTable")
   handleAttributeForTable(
     event: CustomEvent<QueryViewerAttributesValuesForTable>
   ) {
