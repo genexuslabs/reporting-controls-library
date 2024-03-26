@@ -274,10 +274,9 @@ export class QueryViewerPivot {
   };
 
   @Listen("RequestPageDataForPivotTable", {
-    target: "document",
     capture: true
   })
-  @Listen("RequestPageDataForTable", { target: "document", capture: true })
+  @Listen("RequestPageDataForTable", { capture: true })
   handleRequestPageDataForTable(event) {
     const pageData: QueryViewerPageDataForTable | QueryViewerPageDataForPivot =
       (event as any).parameter;
