@@ -188,6 +188,7 @@ export class GxQueryRender implements GxComponent {
     [QueryViewerOutputType.Chart]: query => this.implementedRender(query),
     [QueryViewerOutputType.Map]: () => this.notImplementedRender(),
     [QueryViewerOutputType.PivotTable]: () => this.notImplementedRender(),
+    [QueryViewerOutputType.Pivot_Table]: () => this.notImplementedRender(),
     [QueryViewerOutputType.Table]: () => this.notImplementedRender(),
     [QueryViewerOutputType.Default]: () => this.notImplementedRender(),
 
