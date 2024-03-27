@@ -747,23 +747,23 @@ export class QueryViewer {
     if (!properties) {
       return;
     }
-    const type = properties.outputType;
+    this.type = properties.outputType;
     this.queryTitle ??= properties.title;
     this.showValues ??= properties.showValues;
-    if (type === QueryViewerOutputType.Card) {
+    if (this.type === QueryViewerOutputType.Card) {
       this.showDataAs ??= properties.showDataAs;
       this.orientation ??= properties.orientation;
       this.includeTrend ??= properties.includeTrend;
       this.includeSparkline ??= properties.includeSparkline;
       this.includeMaxMin ??= properties.includeMaxAndMin;
-    } else if (type === QueryViewerOutputType.Chart) {
+    } else if (this.type === QueryViewerOutputType.Chart) {
       this.chartType ??= properties.chartType;
       this.plotSeries ??= properties.plotSeries;
       this.xAxisLabels ??= properties.xAxisLabels;
       this.xAxisIntersectionAtZero ??= properties.xAxisIntersectionAtZero;
       this.xAxisTitle ??= properties.xAxisTitle;
       this.yAxisTitle ??= properties.yAxisTitle;
-    } else if (type === QueryViewerOutputType.Map) {
+    } else if (this.type === QueryViewerOutputType.Map) {
       this.mapType ??= properties.mapType;
       this.region ??= properties.region;
       this.continent ??= properties.continent;
@@ -775,8 +775,6 @@ export class QueryViewer {
       this.totalForRows ??= properties.totalForRows;
       this.totalForColumns ??= properties.totalForColumns;
     }
-
-    this.type = properties.outputType;
   }
 
   private cardRender(serviceResponse: QueryViewerServiceResponse) {
@@ -831,7 +829,7 @@ export class QueryViewer {
         totalForRows={this.totalForRows}
         totalForColumns={this.totalForColumns}
         translations={DUMMY_TRANSLATIONS}
-        tableType={this.type === QueryViewerOutputType.PivotTable
+        tableType={this.type.startsWith('Pivot')
             ? QueryViewerOutputType.PivotTable
             : QueryViewerOutputType.Table
         }
