@@ -7,7 +7,8 @@ import {
   Prop,
   State,
   h,
-  Method
+  Method,
+  Watch
 } from "@stencil/core";
 
 import {
@@ -92,6 +93,8 @@ export class QueryViewer {
     [QueryViewerOutputType.Map]: response =>
       this.notImplementedRender(response),
     [QueryViewerOutputType.PivotTable]: (_, pivotResponse) =>
+      this.pivotRender(pivotResponse),
+    [QueryViewerOutputType.Pivot_Table]: (_, pivotResponse) =>
       this.pivotRender(pivotResponse),
     [QueryViewerOutputType.Table]: (_, pivotResponse) =>
       this.pivotRender(pivotResponse),
@@ -324,6 +327,10 @@ export class QueryViewer {
    * Type of the QueryViewer: Table, PivotTable, Chart, Card
    */
   @Prop({ mutable: true }) type: QueryViewerOutputType;
+  @Watch("type")
+  handleTypeChanged(newValue: QueryViewerOutputType) {
+    console.log('handleTypeChanged', newValue);
+  }
 
   /**
    * if true the x Axes intersect at zero
@@ -740,7 +747,7 @@ export class QueryViewer {
     if (!properties) {
       return;
     }
-    this.type ??= properties.outputType;
+    this.type = properties.outputType;
     this.queryTitle ??= properties.title;
     this.showValues ??= properties.showValues;
     if (this.type === QueryViewerOutputType.Card) {
@@ -822,8 +829,7 @@ export class QueryViewer {
         totalForRows={this.totalForRows}
         totalForColumns={this.totalForColumns}
         translations={DUMMY_TRANSLATIONS}
-        tableType={
-          this.type === QueryViewerOutputType.PivotTable
+        tableType={this.type.startsWith('Pivot')
             ? QueryViewerOutputType.PivotTable
             : QueryViewerOutputType.Table
         }

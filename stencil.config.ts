@@ -25,7 +25,10 @@ export const config: Config = {
     },
     {
       type: "www",
-      serviceWorker: null // disable service workers
+      serviceWorker: null, // disable service workers
+      copy: [
+        { src: "components/query-viewer/assets", dest: "assets" }
+      ]
     }
   ],
   bundles: [
