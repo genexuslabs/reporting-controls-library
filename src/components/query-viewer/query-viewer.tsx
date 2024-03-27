@@ -7,7 +7,8 @@ import {
   Prop,
   State,
   h,
-  Method
+  Method,
+  Watch
 } from "@stencil/core";
 
 import {
@@ -92,6 +93,8 @@ export class QueryViewer {
     [QueryViewerOutputType.Map]: response =>
       this.notImplementedRender(response),
     [QueryViewerOutputType.PivotTable]: (_, pivotResponse) =>
+      this.pivotRender(pivotResponse),
+    [QueryViewerOutputType.Pivot_Table]: (_, pivotResponse) =>
       this.pivotRender(pivotResponse),
     [QueryViewerOutputType.Table]: (_, pivotResponse) =>
       this.pivotRender(pivotResponse),
@@ -324,6 +327,10 @@ export class QueryViewer {
    * Type of the QueryViewer: Table, PivotTable, Chart, Card
    */
   @Prop({ mutable: true }) type: QueryViewerOutputType;
+  @Watch("type")
+  handleTypeChanged(newValue: QueryViewerOutputType) {
+    console.log('handleTypeChanged', newValue);
+  }
 
   /**
    * if true the x Axes intersect at zero
@@ -740,23 +747,23 @@ export class QueryViewer {
     if (!properties) {
       return;
     }
-    this.type ??= properties.outputType;
+    const type = properties.outputType;
     this.queryTitle ??= properties.title;
     this.showValues ??= properties.showValues;
-    if (this.type === QueryViewerOutputType.Card) {
+    if (type === QueryViewerOutputType.Card) {
       this.showDataAs ??= properties.showDataAs;
       this.orientation ??= properties.orientation;
       this.includeTrend ??= properties.includeTrend;
       this.includeSparkline ??= properties.includeSparkline;
       this.includeMaxMin ??= properties.includeMaxAndMin;
-    } else if (this.type === QueryViewerOutputType.Chart) {
+    } else if (type === QueryViewerOutputType.Chart) {
       this.chartType ??= properties.chartType;
       this.plotSeries ??= properties.plotSeries;
       this.xAxisLabels ??= properties.xAxisLabels;
       this.xAxisIntersectionAtZero ??= properties.xAxisIntersectionAtZero;
       this.xAxisTitle ??= properties.xAxisTitle;
       this.yAxisTitle ??= properties.yAxisTitle;
-    } else if (this.type === QueryViewerOutputType.Map) {
+    } else if (type === QueryViewerOutputType.Map) {
       this.mapType ??= properties.mapType;
       this.region ??= properties.region;
       this.continent ??= properties.continent;
@@ -768,6 +775,8 @@ export class QueryViewer {
       this.totalForRows ??= properties.totalForRows;
       this.totalForColumns ??= properties.totalForColumns;
     }
+
+    this.type = properties.outputType;
   }
 
   private cardRender(serviceResponse: QueryViewerServiceResponse) {
@@ -822,8 +831,7 @@ export class QueryViewer {
         totalForRows={this.totalForRows}
         totalForColumns={this.totalForColumns}
         translations={DUMMY_TRANSLATIONS}
-        tableType={
-          this.type === QueryViewerOutputType.PivotTable
+        tableType={this.type === QueryViewerOutputType.PivotTable
             ? QueryViewerOutputType.PivotTable
             : QueryViewerOutputType.Table
         }
