@@ -253,7 +253,8 @@ export class QueryViewerPivot {
     GXPL_QViewerJSNone: "NONE",
     GXPL_QViewerJSReverse: "Revert",
     GXPL_QViewerSearch: "Search",
-    GXPL_QViewerInfoUser: "User Info",
+    GXPL_QViewerInfoUser:
+      "Use this area to define filters that apply to the entire table. First drag and drop here any element contained in the rows or columns axes and then select a value for that element to apply that filter.",
     GXPL_QViewerJSDropFiltersHere: "Drop filters here",
     GXPL_QViewerPopupTitle: "Options",
     GXPL_QViewerJSVisibleColumns: "Visible columns",
@@ -266,8 +267,8 @@ export class QueryViewerPivot {
     GXPL_QViewerJSValue: "Value",
     GXPL_QViewerJSTotal: "Total",
     GXPL_QViewerJSTotalFor: "Total for",
-    GXPL_QViewerJSPerPage: "Rows:",
-    GXPL_QViewerJSPage: "Pags:",
+    GXPL_QViewerJSPerPage: "Per page",
+    GXPL_QViewerJSPage: "Page",
     GXPL_QViewerJSOf: "of",
     GXPL_QViewerJSMoveColumnToLeft: "to left",
     GXPL_QViewerJSMoveColumnToRight: "to right"
