@@ -7,8 +7,7 @@ import {
   Prop,
   State,
   h,
-  Method,
-  Watch
+  Method
 } from "@stencil/core";
 
 import {
