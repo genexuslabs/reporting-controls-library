@@ -327,10 +327,6 @@ export class QueryViewer {
    * Type of the QueryViewer: Table, PivotTable, Chart, Card
    */
   @Prop({ mutable: true }) type: QueryViewerOutputType;
-  @Watch("type")
-  handleTypeChanged(newValue: QueryViewerOutputType) {
-    console.log('handleTypeChanged', newValue);
-  }
 
   /**
    * if true the x Axes intersect at zero

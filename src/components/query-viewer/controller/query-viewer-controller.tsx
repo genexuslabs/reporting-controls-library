@@ -161,7 +161,7 @@ export class QueryViewerController {
         this.realType = realType;
       });
     } else {
-      this.realType = newValue;
+      this.realType = newValue === QueryViewerOutputType.Pivot_Table ? QueryViewerOutputType.PivotTable : newValue;
     }
   }
 
@@ -413,6 +413,7 @@ export class QueryViewerController {
 
     if (
       this.realType === QueryViewerOutputType.PivotTable ||
+      this.realType === QueryViewerOutputType.Pivot_Table ||
       this.realType === QueryViewerOutputType.Table
     ) {
       queryViewerObject.ShowDataLabelsIn = this.showDataLabelsIn;
@@ -516,7 +517,6 @@ export class QueryViewerController {
   }
 
   componentWillUpdate() {
-    console.log(this.realType);
     if (this.shouldRequestRecordSetCacheAndMetadata) {
       this.getPropertiesMetadataAndData();
       this.shouldRequestRecordSetCacheAndMetadata = false;
