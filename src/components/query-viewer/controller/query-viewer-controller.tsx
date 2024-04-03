@@ -222,7 +222,7 @@ export class QueryViewerController {
   @Event() attributeValuesForPivotTable: EventEmitter<string>;
 
   /**
-   * Fired when new page data is ready to use in the PivotTable
+   * Fired when new page data is ready to use in the Table
    */
   @Event() attributesValuesForTable: EventEmitter<string>;
 
@@ -266,14 +266,14 @@ export class QueryViewerController {
     const qvInfo = this.getQueryViewerInformation(this.objectName);
     const servicesInfo = this.getServiceContext();
     const callbackWhenSuccess = (xml: string) => {
-      if (this.type === QueryViewerOutputType.PivotTable) {
-        this.attributeValuesForPivotTable.emit(xml);
-      } else {
+      if (this.type === QueryViewerOutputType.Table) {
         this.attributesValuesForTable.emit(xml);
+      } else {
+        this.attributeValuesForPivotTable.emit(xml);
       }
     };
-    if (this.type === QueryViewerOutputType.PivotTable) {
-      makeRequestForPivotTable(
+    if (this.type === QueryViewerOutputType.Table) {
+      makeRequestForTable(
         qvInfo,
         { attributeValues: properties },
         servicesInfo,
@@ -281,7 +281,7 @@ export class QueryViewerController {
         callbackWhenSuccess
       );
     } else {
-      makeRequestForTable(
+      makeRequestForPivotTable(
         qvInfo,
         { attributeValues: properties },
         servicesInfo,
