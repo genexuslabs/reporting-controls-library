@@ -467,7 +467,7 @@ export class QueryViewerController {
       this.queryViewerServiceResponsePivotTable.emit({
         MetaData: metadata,
         metadataXML: metadataXML,
-        Properties: { ...queryViewerBaseProperties, outputType: this.realType },
+        Properties: !queryViewerBaseProperties ? null : { ...queryViewerBaseProperties, outputType: this.realType },
         objectName: this.objectName,
         useGxQuery: this.useGxquery
       });
@@ -487,7 +487,7 @@ export class QueryViewerController {
           this.queryViewerServiceResponse.emit({
             MetaData: metadata,
             Data: data,
-            Properties: { ...queryViewerBaseProperties, outputType: this.realType },
+            Properties: !queryViewerBaseProperties ? null : { ...queryViewerBaseProperties, outputType: this.realType },
             XML: xml
           });
         }
