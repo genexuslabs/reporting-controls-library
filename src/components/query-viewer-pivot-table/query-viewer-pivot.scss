@@ -1,19 +1,527 @@
-@import "../../../node_modules/jspivottable/css/common";
-@import "../../../node_modules/jspivottable/css/grid";
-@import "../../../node_modules/jspivottable/css/pivot";
-@import "../../../node_modules/jspivottable/css/winrect";
+gx-query-viewer-pivot {
+  display: contents;
+
+  th {
+    font: inherit;
+    text-align: start;
+  }
+
+  table {
+    border-spacing: unset;
+    border: unset;
+  }
+}
 
 .gx-query-viewer-pivot-container {
+  display: grid;
+  grid-auto-rows: max-content;
   width: 100%;
   height: 100%;
   overflow: auto;
 }
 
-gx-query-viewer-pivot {
-  display: contents;
-}
-
 .pivot_filter_div,
 .pivot_title_div {
   width: 100%;
+}
+
+$gx-query-viewer-pivot__icon-selectors: ".close_span_filter,.exportOptionsAnchor,.sort-asc,.sort-desc,.table-sort-asc,.table-sort-desc,.pivot_pag_div .pagefirst,.pivot_pag_div .pagelast,.pivot_pag_div .pagenext,.pivot_pag_div .pageprev,.div_settings,.filterInfoUser,.oat_winrect_close_b,.drag_drop_indicator, .collapsed, .expanded";
+
+:root {
+  --gx-query-viewer-pivot__accent-color-100: color-mix(
+    in srgb,
+    currentColor 10%,
+    transparent
+  );
+
+  --gx-query-viewer-pivot__border-color: color-mix(
+    in srgb,
+    currentColor 50%,
+    transparent
+  );
+
+  --gx-query-viewer-pivot__popup-gap: 8px;
+  --gx-query-viewer-pivot__footer-gap: 2px;
+  --gx-query-viewer-pivot__filter-gap: 8px;
+
+  --gx-query-viewer-pivot__icon-size: 16px;
+
+  --gx-query-viewer-pivot__cell-padding-inline: 0px;
+  --gx-query-viewer-pivot__cell-padding-block: 0px;
+}
+
+hr {
+  margin: 0;
+}
+
+// Wrapper for the custom font icon
+#{$gx-query-viewer-pivot__icon-selectors} {
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  cursor: pointer;
+  align-items: center;
+  color: var(--gx-query-viewer-pivot__icon-color, currentColor);
+}
+
+// - - - - - - - - - - - - - - - - - - - - -
+//   Filter and top div (Pivot and Table)
+// - - - - - - - - - - - - - - - - - - - - -
+.pivot_filter_div,
+.oatgrid_top_div {
+  display: grid;
+  grid-template-columns: max-content max-content 1fr; // Title, filters, burger menu
+  gap: var(--gx-query-viewer-pivot__filter-gap);
+
+  // Displayed when a filter is applied
+  .inner_filter_div {
+    display: grid;
+    grid-auto-flow: column;
+    gap: var(--gx-query-viewer-pivot__popup-gap);
+    align-items: center;
+    inline-size: max-content;
+  }
+
+  .filterInfoUser {
+    position: relative;
+    gap: var(--gx-query-viewer-pivot__filter-gap);
+    padding-inline-end: var(--gx-query-viewer-pivot__filter-gap);
+
+    > .spanHoverLabel {
+      position: absolute;
+      inset-block-start: 0;
+      inset-inline-start: calc(
+        var(--gx-query-viewer-pivot__icon-size) +
+          var(--gx-query-viewer-pivot__filter-gap)
+      );
+      inline-size: 300px;
+      cursor: default;
+      z-index: 1;
+    }
+
+    &:not(:hover) > .spanHoverLabel {
+      display: none;
+    }
+  }
+
+  // Burger menu
+  .exportOptionsAnchor {
+    order: 1;
+    justify-self: flex-end;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - -
+//   Filter drag preview (Pivot and Table)
+// - - - - - - - - - - - - - - - - - - - - -
+.att_drag_drop {
+  display: grid;
+  grid-auto-columns: max-content;
+  grid-auto-flow: column;
+  background-color: inherit;
+
+  .div_settings,
+  .drag_drop_arrow {
+    display: none;
+  }
+
+  .drag_drop_indicator {
+    order: -1;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - -
+//      Column header (Pivot and Table)
+// - - - - - - - - - - - - - - - - - - - - -
+.oatgrid thead tr td,
+.h2title {
+  cursor: pointer;
+
+  & > div {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  & > div > div {
+    display: flex;
+    align-items: center;
+    inline-size: 100%;
+  }
+
+  // Sort icons
+  .sort-desc,
+  .sort-asc {
+    position: static !important; // This is a WA due to the PivotTable is adding inline styles
+    width: auto !important;
+    height: auto !important;
+  }
+}
+
+.h2titlewhite {
+  text-align: end !important; // This is a WA due to the PivotTable is adding text-align = left in numeric values
+}
+
+// - - - - - - - - - - - - - - - - - - - - -
+//  Border style for cells (Pivot and Table)
+// - - - - - - - - - - - - - - - - - - - - -
+.pivot_table,
+.oatgrid {
+  border-collapse: collapse;
+
+  th,
+  td {
+    border: 1px solid var(--gx-query-viewer-pivot__border-color);
+    min-inline-size: 60px;
+  }
+
+  td {
+    text-align: end;
+  }
+
+  .h2subtitle.grandtotaltitle {
+    border-inline-end: unset;
+  }
+
+  .gtotal.grandtotalvalue {
+    border-inline-start: unset;
+  }
+}
+
+// Remove borders in column headers (Pivot and Table)
+.pivot_table > tbody > tr:nth-child(1) > th,
+.oatgrid > thead > tr > td {
+  border: unset;
+  border-block-end: 1px solid var(--gx-query-viewer-pivot__border-color);
+}
+
+// - - - - - - - - - - - - - - - - - - - - -
+//      Padding style (Pivot and Table)
+// - - - - - - - - - - - - - - - - - - - - -
+// PivotTable: Title, filter, header cell, cells, pagination,
+// Table: Top div, column header, cells
+.pivot_title_div,
+.pivot_filter_div,
+th,
+td,
+.pivot_pag_div,
+.oatgrid_top_div,
+.oatgrid thead tr td,
+.row_value {
+  padding-inline: var(--gx-query-viewer-pivot__cell-padding-inline);
+  padding-block: var(--gx-query-viewer-pivot__cell-padding-block);
+}
+
+// - - - - - - - - - - - - - - - - - - - - -
+//    Pagination style (Pivot and Table)
+// - - - - - - - - - - - - - - - - - - - - -
+.pivot_pag_div {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  border-inline: 1px solid var(--gx-query-viewer-pivot__border-color);
+  border-block-end: 1px solid var(--gx-query-viewer-pivot__border-color);
+  gap: calc(var(--gx-query-viewer-pivot__footer-gap) * 8);
+
+  // Dummy span wrappers
+  & > span {
+    display: flex;
+    justify-content: center;
+    gap: var(--gx-query-viewer-pivot__footer-gap);
+    align-items: center;
+
+    & > select {
+      order: 1;
+    }
+
+    input {
+      display: inline-grid;
+      border: 1px solid;
+      text-align: center;
+    }
+  }
+
+  // Disabled buttons for pagination
+  .disabled_pivot_button {
+    pointer-events: none;
+    color: color-mix(in srgb, currentColor 20%, transparent);
+  }
+}
+
+.pivot_pag_div_sd .material-icons {
+  font-size: 2.3em;
+}
+
+// - - - - - - - - - - - - - - - - - - - - -
+//                   Table
+// - - - - - - - - - - - - - - - - - - - - -
+// In the Table the "drop filters section" does not exists
+.oatgrid_top_div {
+  grid-template-columns: max-content 1fr;
+}
+
+.oatgrid {
+  // tr.selected {
+  //   background-color: #ff0000;
+  //   color: #fefefe;
+  // }
+
+  // td.index {
+  //   background-color: #aaa;
+  // }
+
+  .header_value > #span_txt_pivot {
+    margin-inline-end: 1.5ch;
+  }
+}
+
+/* pop-up style */
+
+.promp-pivot-button {
+  width: 100%;
+}
+
+.pivot_popup_fix {
+  height: 190px;
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+// - - - - - - - - - - - - - - - - - - - - -
+//                   Popup
+// - - - - - - - - - - - - - - - - - - - - -
+#exportOptionsContainer {
+  margin-block: var(--gx-query-viewer-pivot__popup-gap);
+}
+
+// Images for the checkboxes in the popup
+.check_item_img,
+.check_item_img_small,
+.uncheck_item_img,
+.uncheck_item_img_small,
+#pop-up label {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-items: center;
+  gap: var(--gx-query-viewer-pivot__popup-gap);
+  cursor: pointer;
+}
+
+.oat_winrect_content_small #pivot_order_asc,
+.oat_winrect_content_small #pivot_order_desc {
+  margin-left: 8px;
+}
+
+/* container table */
+.divIeContainer {
+  display: inline-block;
+}
+
+.first_popup_subdiv,
+.down_container {
+  display: grid;
+  grid-auto-rows: max-content;
+  gap: var(--gx-query-viewer-pivot__popup-gap);
+  position: relative;
+
+  & > br {
+    display: none;
+  }
+}
+
+.first_popup_subdiv input[type="radio"] {
+  display: none;
+}
+
+.oatfilterwindow_small .search_input {
+  width: 100%;
+}
+
+.oatfilterwindow hr {
+  background-color: currentColor;
+  width: 80%;
+}
+
+.oatfilterwindowGrid hr {
+  background-color: currentColor;
+  width: 100%;
+}
+
+.promp-grid-button {
+  width: 100%;
+}
+
+.oatfilterwindow > div {
+  margin-left: 16px;
+  margin-right: 16px;
+  margin-bottom: 8px;
+}
+
+.oatfilterwindowGrid > div {
+  margin-left: 10px;
+  margin-right: 15px;
+  margin-bottom: 10px;
+}
+
+/* ---------------- sort image -------------- */
+// .table-sort-image {
+//   position: absolute;
+//   right: 0px;
+//   bottom: 2px;
+// }
+
+.conteiner_table_div {
+  position: relative;
+  clear: both;
+}
+
+// - - - - - - - - - - - - - - - - - - - - -
+//                   Popup
+// - - - - - - - - - - - - - - - - - - - - -
+#pop-up {
+  padding-block: var(--gx-query-viewer-pivot__popup-gap);
+
+  hr {
+    background-color: currentColor;
+  }
+}
+
+#pop-up,
+.last_div_popup,
+.pivot_popup_auto {
+  display: grid;
+  grid-template-rows: max-content;
+  gap: var(--gx-query-viewer-pivot__popup-gap);
+}
+
+.pivot_popup_fix {
+  height: 190px;
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+.div_settings > .material-icons {
+  font-size: 0.875em;
+}
+
+.oatgrid thead tr td:not(:hover) .div_settings,
+.h2title:not(:hover) .div_settings {
+  opacity: 0;
+}
+
+.pivot_table :is(th.even, td.even) :is(.expanded, .collapsed) {
+  & > .material-icons {
+    transform: translateY(2px);
+  }
+}
+
+.oat_winrect_content_small .search_input {
+  width: 100%;
+}
+
+.oat_winrect_container {
+  background-color: inherit;
+  box-shadow: 0 4px 12px 3px var(--gx-query-viewer-pivot__accent-color-100);
+
+  padding: var(--gx-query-viewer-pivot__popup-padding);
+
+  // Popup header
+  > .oat_winrect_title {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+
+    // Title
+    > .winrect_title_label {
+      cursor: move; // Necessary to override user agent default
+    }
+  }
+
+  // Group of buttons
+  .div_buttons_popup {
+    display: flex;
+    justify-content: center;
+
+    > .btn {
+      cursor: pointer;
+    }
+  }
+
+  // Buttons and inputs displayed in the popup
+  .div_buttons_popup .btn,
+  .search_input {
+    display: inline-grid;
+    border: 1px solid;
+    padding-inline: 8px;
+    padding-block: 4px;
+    align-items: center;
+    inline-size: 100%;
+  }
+
+  // Hide search icon that is outside of the input
+  .div_filter_input > .material-icons {
+    display: none;
+  }
+}
+
+.oat_winrect_content {
+  position: relative;
+}
+
+.oat_winrect_caption {
+  position: relative;
+  top: 3px;
+  padding-right: 5px;
+  margin-right: 10px;
+}
+
+.oat_winrect_blankSpace {
+  height: 100%;
+  position: relative;
+}
+
+.oat_winrect_close_small {
+  width: 32px;
+  height: 32px;
+}
+
+.oat_winrect_container input[type="radio"] {
+  margin-top: 0px;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+#exportOptionsContainerGrid {
+  width: 400px;
+}
+
+.export_item_div {
+  margin-bottom: 8px;
+  width: 100%;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.move_item_img {
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.download_file_img,
+.download_file_img_small {
+  cursor: pointer;
+  margin-right: 8px;
+  color: var(--gx-query-viewer-pivot__accent-color-100);
+  display: inline-block;
+}
+
+.popup_title {
+  text-align: center;
+}
+
+.export_item_div_small {
+  height: 26px;
+}
+
+.export_item_div_small label {
+  padding-top: 3px;
 }
