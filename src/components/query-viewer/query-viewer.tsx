@@ -93,6 +93,8 @@ export class QueryViewer {
       this.notImplementedRender(response),
     [QueryViewerOutputType.PivotTable]: (_, pivotResponse) =>
       this.pivotRender(pivotResponse),
+    [QueryViewerOutputType.Pivot_Table]: (_, pivotResponse) =>
+      this.pivotRender(pivotResponse),
     [QueryViewerOutputType.Table]: (_, pivotResponse) =>
       this.pivotRender(pivotResponse),
 
@@ -740,7 +742,7 @@ export class QueryViewer {
     if (!properties) {
       return;
     }
-    this.type ??= properties.outputType;
+    this.type = properties.outputType;
     this.queryTitle ??= properties.title;
     this.showValues ??= properties.showValues;
     if (this.type === QueryViewerOutputType.Card) {
@@ -822,8 +824,7 @@ export class QueryViewer {
         totalForRows={this.totalForRows}
         totalForColumns={this.totalForColumns}
         translations={DUMMY_TRANSLATIONS}
-        tableType={
-          this.type === QueryViewerOutputType.PivotTable
+        tableType={this.type.startsWith('Pivot')
             ? QueryViewerOutputType.PivotTable
             : QueryViewerOutputType.Table
         }

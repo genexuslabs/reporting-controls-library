@@ -4,36 +4,35 @@ import {
   EventEmitter,
   Method,
   Prop,
+  State,
   Watch
 } from "@stencil/core";
 
 import {
-  ServicesContext,
+  GeneratorType,
   getMetadataAndData,
   getPivotTableMetadata,
+  getDefaultOutput,
   makeRequestForPivotTable,
   makeRequestForSyncServicesPivotTable,
-  makeRequestForTable
-} from "@genexus/reporting-api";
-import {
-  GeneratorType,
+  makeRequestForTable,
+  QueryViewer,
+  QueryViewerAttributesValuesForPivot,
   QueryViewerBase,
+  QueryViewerCalculatePivottableData,
+  QueryViewerCard,
   QueryViewerChartType,
   QueryViewerOrientation,
   QueryViewerOutputType,
-  QueryViewerShowDataLabelsIn,
-  QueryViewerTotal
-} from "@genexus/reporting-api";
-import { QueryViewer, QueryViewerCard } from "@genexus/reporting-api";
-import {
-  QueryViewerAttributesValuesForPivot,
-  QueryViewerCalculatePivottableData,
   QueryViewerPageDataForPivot,
   QueryViewerPageDataForTable,
   QueryViewerPivotTableDataSync,
   QueryViewerServiceMetaData,
   QueryViewerServiceResponse,
-  QueryViewerServiceResponsePivotTable
+  QueryViewerServiceResponsePivotTable,
+  QueryViewerShowDataLabelsIn,
+  QueryViewerTotal,
+  ServicesContext,
 } from "@genexus/reporting-api";
 
 @Component({
@@ -127,7 +126,7 @@ export class QueryViewerController {
   @Prop() readonly totalForRows: QueryViewerTotal;
   @Watch("totalForRows")
   handleTotalForRowsChange() {
-    if (this.type === QueryViewerOutputType.PivotTable) {
+    if (this.realType === QueryViewerOutputType.PivotTable || this.realType === QueryViewerOutputType.Pivot_Table) {
       this.shouldRequestRecordSetCacheAndMetadata = true;
     }
   }
@@ -138,7 +137,7 @@ export class QueryViewerController {
   @Prop() readonly totalForColumns: QueryViewerTotal;
   @Watch("totalForColumns")
   handleTotalForColumnsChange() {
-    if (this.type === QueryViewerOutputType.PivotTable) {
+    if (this.realType === QueryViewerOutputType.PivotTable || this.realType === QueryViewerOutputType.Pivot_Table) {
       this.shouldRequestRecordSetCacheAndMetadata = true;
     }
   }
@@ -152,6 +151,19 @@ export class QueryViewerController {
    * Type of the QueryViewer: Table, PivotTable, Chart, Card
    */
   @Prop() readonly type: QueryViewerOutputType;
+
+  @Watch("type")
+  handleTypeChange(newValue: QueryViewerOutputType) {
+    if (newValue.includes('Default')) {
+      const servicesInfo = this.getServiceContext();
+      const queryViewerObject = this.getQueryViewerInformation(this.objectName);
+      getDefaultOutput(queryViewerObject, servicesInfo, (realType: QueryViewerOutputType) => {
+        this.realType = realType;
+      });
+    } else {
+      this.realType = newValue === QueryViewerOutputType.Pivot_Table ? QueryViewerOutputType.PivotTable : newValue;
+    }
+  }
 
   /**
    * True to tell the controller to connect use GXquery as a queries repository
@@ -190,13 +202,22 @@ export class QueryViewerController {
   @Prop() readonly serializedObject: string;
 
   /**
+   * Type of the QueryViewer: Table, PivotTable, Chart, Card
+   */
+  @State() realType: QueryViewerOutputType;
+  @Watch("realType")
+  handleRealTypeChange() {
+    this.getPropertiesMetadataAndData();
+  }
+
+  /**
    * Ax to show data labels
    */
   @Prop() readonly showDataLabelsIn: QueryViewerShowDataLabelsIn;
 
   @Watch("showDataLabelsIn")
   handleShowDataLabelsInChange() {
-    if (this.type === QueryViewerOutputType.PivotTable) {
+    if (this.realType === QueryViewerOutputType.PivotTable || this.realType === QueryViewerOutputType.Pivot_Table) {
       this.shouldRequestRecordSetCacheAndMetadata = true;
     }
   }
@@ -384,8 +405,9 @@ export class QueryViewerController {
 
   private getQueryViewerInformation(objectName: string): QueryViewer {
     const useRecordsetCache =
-      this.type === QueryViewerOutputType.PivotTable ||
-      this.type === QueryViewerOutputType.Table;
+      this.realType === QueryViewerOutputType.Pivot_Table ||
+      this.realType === QueryViewerOutputType.PivotTable ||
+      this.realType === QueryViewerOutputType.Table;
 
     const queryViewerObject: QueryViewer = {
       ApplicationNamespace: this.applicationNamespace,
@@ -393,14 +415,14 @@ export class QueryViewerController {
       Axes: undefined, // @todo Add Axes support
       ObjectName: objectName,
       Parameters: [], // @todo Add Parameters support
-      RealType: this.type,
+      RealType: this.realType,
       RememberLayout: this.rememberLayout,
       ReturnSampleData: this.returnSampleData,
       TranslationType: this.translationType,
       UseRecordsetCache: useRecordsetCache
     };
 
-    if (this.type === QueryViewerOutputType.Card) {
+    if (this.realType === QueryViewerOutputType.Card) {
       (queryViewerObject as QueryViewerCard).IncludeTrend = this.includeTrend;
 
       (queryViewerObject as QueryViewerCard).IncludeSparkline =
@@ -408,8 +430,9 @@ export class QueryViewerController {
     }
 
     if (
-      this.type === QueryViewerOutputType.PivotTable ||
-      this.type === QueryViewerOutputType.Table
+      this.realType === QueryViewerOutputType.PivotTable ||
+      this.realType === QueryViewerOutputType.Pivot_Table ||
+      this.realType === QueryViewerOutputType.Table
     ) {
       queryViewerObject.ShowDataLabelsIn = this.showDataLabelsIn;
       queryViewerObject.Paging = this.paging;
@@ -430,10 +453,11 @@ export class QueryViewerController {
 
     // WA to avoid requests to unimplemented outputs
     if (
-      this.type !== QueryViewerOutputType.Card &&
-      this.type !== QueryViewerOutputType.Chart &&
-      this.type !== QueryViewerOutputType.PivotTable &&
-      this.type !== QueryViewerOutputType.Table
+      this.realType !== QueryViewerOutputType.Card &&
+      this.realType !== QueryViewerOutputType.Chart &&
+      this.realType !== QueryViewerOutputType.PivotTable &&
+      this.realType !== QueryViewerOutputType.Pivot_Table &&
+      this.realType !== QueryViewerOutputType.Table
     ) {
       return;
     }
@@ -461,7 +485,7 @@ export class QueryViewerController {
       this.queryViewerServiceResponsePivotTable.emit({
         MetaData: metadata,
         metadataXML: metadataXML,
-        Properties: queryViewerBaseProperties,
+        Properties: !queryViewerBaseProperties ? null : { ...queryViewerBaseProperties, outputType: this.realType },
         objectName: this.objectName,
         useGxQuery: this.useGxquery
       });
@@ -481,7 +505,7 @@ export class QueryViewerController {
           this.queryViewerServiceResponse.emit({
             MetaData: metadata,
             Data: data,
-            Properties: queryViewerBaseProperties,
+            Properties: !queryViewerBaseProperties ? null : { ...queryViewerBaseProperties, outputType: this.realType },
             XML: xml
           });
         }
@@ -507,7 +531,7 @@ export class QueryViewerController {
   }
 
   connectedCallback() {
-    this.getPropertiesMetadataAndData();
+    this.handleTypeChange(this.type);
   }
 
   componentWillUpdate() {
