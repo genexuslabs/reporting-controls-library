@@ -2071,6 +2071,10 @@ declare namespace LocalJSX {
         /**
           * Fired when new page data is ready to use in the PivotTable
          */
+        "onAttributesValuesForTable"?: (event: GxQueryViewerControllerCustomEvent<string>) => void;
+        /**
+          * Fired when new page data is ready to use in the PivotTable
+         */
         "onCalculatePivottableData"?: (event: GxQueryViewerControllerCustomEvent<string>) => void;
         /**
           * ItemClickEvent, executes actions when this event is triggered after clicking on a pivot table element.
