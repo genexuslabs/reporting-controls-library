@@ -110,7 +110,7 @@ const meta: Meta<HTMLGxQueryViewerControllerElement> = {
     chartType: QueryViewerChartType.Column,
     includeSparkline: false,
     includeTrend: false,
-    metadataName: import.meta.env.STORYBOOK_METADATA_NAME,
+    metadataId: import.meta.env.STORYBOOK_METADATA_ID,
     orientation: QueryViewerOrientation.Vertical,
     pageSize: 10,
     paging: true,
@@ -130,7 +130,7 @@ export const Slider: Story = {
   name: "Slider",
   args: {
     useGxquery: true,
-    metadataName: import.meta.env.STORYBOOK_METADATA_NAME,
+    metadataId: import.meta.env.STORYBOOK_METADATA_ID,
     objectName: 'UruguayHarvardIndex',
     type: QueryViewerOutputType.Chart
   }

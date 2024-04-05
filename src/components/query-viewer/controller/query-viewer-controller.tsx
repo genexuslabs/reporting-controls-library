@@ -171,10 +171,10 @@ export class QueryViewerController {
   @Prop() readonly useGxquery: boolean;
 
   /**
-   * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true.
+   * This is the ID of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true.
    * In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
    */
-  @Prop() readonly metadataName: string;
+  @Prop() readonly metadataId: string;
 
   /**
    * API base URL
@@ -523,7 +523,7 @@ export class QueryViewerController {
       saiaToken: this.saiaToken,
       saiaUserId: this.saiaUserId,
       generator: this.environment,
-      metadataName: this.metadataName,
+      metadataId: this.metadataId,
       objectName: this.objectName,
       serializedObject: this.serializedObject,
       queryViewerId: this.queryViewerId
