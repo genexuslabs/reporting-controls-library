@@ -91,7 +91,7 @@ const meta: Meta<HTMLGxQueryViewerControllerElement> = {
     chartType: QueryViewerChartType.Column,
     includeSparkline: false,
     includeTrend: false,
-    metadataName: import.meta.env.STORYBOOK_METADATA_NAME,
+    metadataId: import.meta.env.STORYBOOK_METADATA_ID,
     orientation: QueryViewerOrientation.Vertical,
     pageSize: 10,
     paging: true,
@@ -111,7 +111,7 @@ export const Chart: Story = {
   name: "Chart with serializationObject",
   args: {
     useGxquery: true,
-    metadataName: import.meta.env.STORYBOOK_METADATA_NAME,
+    metadataId: import.meta.env.STORYBOOK_METADATA_ID,
     serializedObject: '{ "id": "72508bf7-d801-49cb-898c-7cbf4b700c03", "title": "Chart - with controller", "chartType":"Column", "showValues":"true" }',
     type: QueryViewerOutputType.Chart
   }
@@ -120,7 +120,7 @@ export const Chart2: Story = {
   name: "Chart with objectName",
   args: {
     useGxquery: true,
-    metadataName: import.meta.env.STORYBOOK_METADATA_NAME,
+    metadataId: import.meta.env.STORYBOOK_METADATA_ID,
     objectName: 'CountriesByGDPPerCapita',
     type: QueryViewerOutputType.Chart
   },
@@ -131,7 +131,7 @@ export const PivotTable: Story = {
   name: "Pivot Table",
   args: {
     useGxquery: true,
-    metadataName: import.meta.env.STORYBOOK_METADATA_NAME,
+    metadataId: import.meta.env.STORYBOOK_METADATA_ID,
     objectName: 'CountriesByGDPPerCapita',
     type: QueryViewerOutputType.PivotTable,
     pageSize: 5
@@ -145,7 +145,7 @@ export const Table: Story = {
   name: "Table",
   args: {
     useGxquery: true,
-    metadataName: import.meta.env.STORYBOOK_METADATA_NAME,
+    metadataId: import.meta.env.STORYBOOK_METADATA_ID,
     objectName: 'CountriesByGDPPerCapita',
     type: QueryViewerOutputType.Table
   },

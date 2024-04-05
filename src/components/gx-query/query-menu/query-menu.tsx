@@ -87,7 +87,7 @@ export class QueryMenu implements GxComponent {
    * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true.
    * In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
    */
-  @Prop() readonly metadataName = "";
+  @Prop() readonly metadataId = "";
   /**
    * API base URL
    */
@@ -243,7 +243,7 @@ export class QueryMenu implements GxComponent {
   private queryOptions(): GxQueryOptions {
     return {
       baseUrl: this.baseUrl,
-      metadataName: this.metadataName,
+      metadataId: this.metadataId,
       apiKey: this.apiKey,
       saiaToken: this.saiaToken,
       saiaUserId: this.saiaUserId
