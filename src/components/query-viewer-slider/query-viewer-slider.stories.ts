@@ -4,7 +4,26 @@ import { QueryViewerChartType, QueryViewerOrientation, QueryViewerOutputType, Qu
 
 const meta: Meta<HTMLGxQueryViewerControllerElement> = {
   component: "gx-query-viewer-controller",
-  decorators: [(story, context) => html`<gx-query-viewer type="${context.args.type}" control-name="gx1">${story()}</gx-query-viewer>`],
+  decorators: [(story, context) => html`
+    <div style="height: 200px; margin: 40px; display: flex; width: 100%">
+      <gx-query-viewer-slider start-slider-value="50" end-slider-value="80">
+        <gx-query-viewer
+          control-name="gx1"
+          type="${context.args.type}"
+          slot="content"
+          chart-type="Line"
+          allow-selection="false"
+          plot-series="InTheSameChart"
+          show-data-labels-in="Columns"
+          query-title="4 - Single data chart - with slider"
+          x-axis-intersection-at-zero="false"
+          x-axis-labels=""
+          x-axis-title=""
+          y-axis-title=""
+        >${story()}</gx-query-viewer>
+      </gx-query-viewer-slider>
+    </div>
+  `],
   argTypes: {
     type: {
       options: [
@@ -107,48 +126,12 @@ export default meta;
 
 type Story = StoryObj<HTMLGxQueryViewerControllerElement>;
 
-export const Chart: Story = {
-  name: "Chart with serializationObject",
+export const Slider: Story = {
+  name: "Slider",
   args: {
     useGxquery: true,
     metadataId: import.meta.env.STORYBOOK_METADATA_ID,
-    serializedObject: '{ "id": "72508bf7-d801-49cb-898c-7cbf4b700c03", "title": "Chart - with controller", "chartType":"Column", "showValues":"true" }',
+    objectName: 'UruguayHarvardIndex',
     type: QueryViewerOutputType.Chart
-  }
-};
-export const Chart2: Story = {
-  name: "Chart with objectName",
-  args: {
-    useGxquery: true,
-    metadataId: import.meta.env.STORYBOOK_METADATA_ID,
-    objectName: 'CountriesByGDPPerCapita',
-    type: QueryViewerOutputType.Chart
-  },
-  parameters: {
-  }
-};
-export const PivotTable: Story = {
-  name: "Pivot Table",
-  args: {
-    useGxquery: true,
-    metadataId: import.meta.env.STORYBOOK_METADATA_ID,
-    objectName: 'CountriesByGDPPerCapita',
-    type: QueryViewerOutputType.PivotTable,
-    pageSize: 5
-  },
-  parameters: {
-  }
-};
-
-
-export const Table: Story = {
-  name: "Table",
-  args: {
-    useGxquery: true,
-    metadataId: import.meta.env.STORYBOOK_METADATA_ID,
-    objectName: 'CountriesByGDPPerCapita',
-    type: QueryViewerOutputType.Table
-  },
-  parameters: {
   }
 };
