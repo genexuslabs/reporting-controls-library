@@ -241,9 +241,9 @@ export class QueryViewerPivot {
     GXPL_QViewerSinceTheBeginningTrend: "Trend Since The Beginning",
     GXPL_QViewerLastDayTrend: "Trend Last Day",
     GXPL_QViewerLastHourTrend: "Trend Last hour",
-    GXPL_QViewerJSAllOption: "Todos",
+    GXPL_QViewerJSAllOption: "All option",
     GXPL_QViewerJSAscending: "Ascending",
-    GXPL_QViewerJSDescending: "Descendiente",
+    GXPL_QViewerJSDescending: "Descending",
     GXPL_QViewerJSSubtotals: "Subtotal",
     GXPL_QViewerJSRestoreDefaultView: "Restore default view",
     GXPL_QViewerJSPivotDimensionToColumn: "Move to columns",
@@ -251,7 +251,7 @@ export class QueryViewerPivot {
     GXPL_QViewerJSMoveToFilterBar: "To Filters",
     GXPL_QViewerJSAll: "ALL",
     GXPL_QViewerJSNone: "NONE",
-    GXPL_QViewerJSReverse: "Revert",
+    GXPL_QViewerJSReverse: "REVERT",
     GXPL_QViewerSearch: "Search",
     GXPL_QViewerInfoUser:
       "Use this area to define filters that apply to the entire table. First drag and drop here any element contained in the rows or columns axes and then select a value for that element to apply that filter.",
@@ -270,8 +270,8 @@ export class QueryViewerPivot {
     GXPL_QViewerJSPerPage: "Per page",
     GXPL_QViewerJSPage: "Page",
     GXPL_QViewerJSOf: "of",
-    GXPL_QViewerJSMoveColumnToLeft: "to left",
-    GXPL_QViewerJSMoveColumnToRight: "to right"
+    GXPL_QViewerJSMoveColumnToLeft: "Move column to left",
+    GXPL_QViewerJSMoveColumnToRight: "Move column to right"
   };
 
   @Listen("RequestPageDataForPivotTable", {
