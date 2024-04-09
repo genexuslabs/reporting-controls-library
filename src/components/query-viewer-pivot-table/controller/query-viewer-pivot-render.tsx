@@ -96,11 +96,23 @@ export class QueryViewerPivotTableRender {
    * This attribute lets you determinate whether there will be paging buttons.
    */
   @Prop() readonly paging: boolean;
+  @Watch("paging")
+  pagingChange() {
+    if (this.tableType === QueryViewerOutputType.Table) {
+      this.requestInitialPageDataForTable();
+    }
+  }
 
   /**
    * Enables you to define the number of rows that will be shown when the Paging property is activated
    */
   @Prop() readonly pageSize: number;
+  @Watch("pageSize")
+  pageSizeChange() {
+    if (this.tableType === QueryViewerOutputType.Table) {
+      this.requestInitialPageDataForTable();
+    }
+  }
 
   /**
    * For timeline for remembering layout

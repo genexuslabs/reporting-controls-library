@@ -98,7 +98,10 @@ export class QueryViewerPivot {
     if (!oldValue) {
       return;
     }
-    setPageDataForTable(this.queryViewerConfiguration.oat_element, newValue);
+    if (newValue !== oldValue) {
+      setPageDataForTable(this.queryViewerConfiguration.oat_element, newValue);
+      this.renderPivot();
+    }
   }
 
   /**
@@ -191,6 +194,13 @@ export class QueryViewerPivot {
   @Prop() readonly paging: boolean;
   @Watch("paging")
   pagingInChange() {
+    if (
+      this.pageSizeChangeWasCommittedByTheUser &&
+      this.tableType !== QueryViewerOutputType.Table
+    ) {
+      this.pageSizeChangeWasCommittedByTheUser = false;
+      return;
+    }
     this.shouldReRenderPivot = true;
   }
 
@@ -200,7 +210,10 @@ export class QueryViewerPivot {
   @Prop() readonly pageSize: number;
   @Watch("pageSize")
   pageSizeInChange() {
-    if (this.pageSizeChangeWasCommittedByTheUser) {
+    if (
+      this.pageSizeChangeWasCommittedByTheUser &&
+      this.tableType !== QueryViewerOutputType.Table
+    ) {
       this.pageSizeChangeWasCommittedByTheUser = false;
       return;
     }
