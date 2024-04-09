@@ -51,9 +51,9 @@ export namespace Components {
          */
         "messageIconSize": string;
         /**
-          * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
+          * This is the ID of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
          */
-        "metadataName": "";
+        "metadataId": "";
         /**
           * Text that appears in the input control when it has no value set
          */
@@ -92,7 +92,7 @@ export namespace Components {
         /**
           * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
          */
-        "metadataName": "";
+        "metadataId": "";
         /**
           * Dates to group queries
          */
@@ -669,9 +669,9 @@ export namespace Components {
          */
         "includeTrend": boolean;
         /**
-          * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
+          * This is the ID of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
          */
-        "metadataName": string;
+        "metadataId": string;
         /**
           * Name of the Query or Data provider assigned
          */
@@ -1413,9 +1413,9 @@ declare namespace LocalJSX {
          */
         "messageIconSize"?: string;
         /**
-          * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
+          * This is the ID of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
          */
-        "metadataName"?: "";
+        "metadataId"?: "";
         /**
           * Fired when receive a question answer
          */
@@ -1457,7 +1457,7 @@ declare namespace LocalJSX {
         /**
           * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
          */
-        "metadataName"?: "";
+        "metadataId"?: "";
         /**
           * Delete query
          */
@@ -2057,9 +2057,9 @@ declare namespace LocalJSX {
          */
         "includeTrend"?: boolean;
         /**
-          * This is the name of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
+          * This is the ID of the metadata (all the queries belong to a certain metadata) the connector will use when useGxquery = true. In this case the connector must be told the query to execute, either by name (via the objectName property) or giving a full serialized query (via the query property)
          */
-        "metadataName"?: string;
+        "metadataId"?: string;
         /**
           * Name of the Query or Data provider assigned
          */
@@ -2069,7 +2069,7 @@ declare namespace LocalJSX {
          */
         "onAttributeValuesForPivotTable"?: (event: GxQueryViewerControllerCustomEvent<string>) => void;
         /**
-          * Fired when new page data is ready to use in the PivotTable
+          * Fired when new page data is ready to use in the Table
          */
         "onAttributesValuesForTable"?: (event: GxQueryViewerControllerCustomEvent<string>) => void;
         /**
