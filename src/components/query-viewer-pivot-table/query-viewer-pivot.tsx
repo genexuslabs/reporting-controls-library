@@ -33,7 +33,7 @@ const PIVOT_CONTENT = (ucId: string) => `${ucId}_GeneralQuery1_pivot_content`;
 @Component({
   tag: "gx-query-viewer-pivot",
   styleUrl: "query-viewer-pivot.scss",
-  shadow: true
+  shadow: false
 })
 export class QueryViewerPivot {
   private queryViewerContainer: HTMLDivElement;
