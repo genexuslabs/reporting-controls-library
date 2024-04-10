@@ -98,10 +98,10 @@ export class QueryViewerPivot {
     if (!oldValue) {
       return;
     }
-    if (newValue !== oldValue) {
-      setPageDataForTable(this.queryViewerConfiguration.oat_element, newValue);
-      this.renderPivot();
-    }
+    // This is a WA since the Table does not refresh its pageSize if we don't update
+    // the pageData previously
+    setPageDataForTable(this.queryViewerConfiguration.oat_element, newValue);
+    this.renderPivot();
   }
 
   /**
