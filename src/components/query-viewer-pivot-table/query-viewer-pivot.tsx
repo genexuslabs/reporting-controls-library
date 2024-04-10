@@ -376,7 +376,11 @@ export class QueryViewerPivot {
         SelectLine: true,
         TotalForColumns: this.totalForColumns,
         TotalForRows: this.totalForRows,
-        Title: this.pivotTitle,
+        // This is a WA since the PivotTable does not refresh its title in runtime
+        Title:
+          this.tableType === QueryViewerOutputType.Table
+            ? this.pivotTitle
+            : undefined,
         data:
           this.tableType === QueryViewerOutputType.Table
             ? this.pageDataForTable
@@ -412,11 +416,17 @@ export class QueryViewerPivot {
         id={this.pivotParameters.UcId}
         ref={el => (this.queryViewerContainer = el)}
       >
+        {this.tableType !== QueryViewerOutputType.Table && (
+          // This is a WA since the PivotTable does not refresh its title in runtime
+          <span class="pivot_title">{this.pivotTitle}</span>
+        )}
         <div
+          key={PIVOT_PAGE(this.pivotParameters.UcId)}
           id={PIVOT_PAGE(this.pivotParameters.UcId)}
           class="pivot_filter_div"
         ></div>
         <div
+          key={PIVOT_PAGE(this.pivotParameters.UcId)}
           id={PIVOT_CONTENT(this.pivotParameters.UcId)}
           class="conteiner_table_div"
         ></div>
