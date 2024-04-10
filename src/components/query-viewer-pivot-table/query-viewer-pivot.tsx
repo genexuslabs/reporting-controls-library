@@ -410,37 +410,23 @@ export class QueryViewerPivot {
   }
 
   render() {
-    // This is a WA since the PivotTable does not refresh its title in runtime
-    if (this.tableType !== QueryViewerOutputType.Table) {
-      return (
-        <div
-          class="gx-query-viewer-pivot-container"
-          id={this.pivotParameters.UcId}
-          ref={el => (this.queryViewerContainer = el)}
-        >
-          <span class="pivot_title">{this.pivotTitle}</span>
-          <div
-            id={PIVOT_PAGE(this.pivotParameters.UcId)}
-            class="pivot_filter_div"
-          ></div>
-          <div
-            id={PIVOT_CONTENT(this.pivotParameters.UcId)}
-            class="conteiner_table_div"
-          ></div>
-        </div>
-      );
-    }
     return (
       <div
         class="gx-query-viewer-pivot-container"
         id={this.pivotParameters.UcId}
         ref={el => (this.queryViewerContainer = el)}
       >
+        {this.tableType !== QueryViewerOutputType.Table && (
+          // This is a WA since the PivotTable does not refresh its title in runtime
+          <span class="pivot_title">{this.pivotTitle}</span>
+        )}
         <div
+          key={PIVOT_PAGE(this.pivotParameters.UcId)}
           id={PIVOT_PAGE(this.pivotParameters.UcId)}
           class="pivot_filter_div"
         ></div>
         <div
+          key={PIVOT_PAGE(this.pivotParameters.UcId)}
           id={PIVOT_CONTENT(this.pivotParameters.UcId)}
           class="conteiner_table_div"
         ></div>
