@@ -8,7 +8,10 @@ import {
   Watch
 } from "@stencil/core";
 
-import { QueryViewerServiceResponsePivotTable } from "@genexus/reporting-api";
+import {
+  QueryViewerPageDataForTable,
+  QueryViewerServiceResponsePivotTable
+} from "@genexus/reporting-api";
 import {
   QueryViewerAxisOrderType,
   QueryViewerOutputType,
@@ -371,15 +374,14 @@ export class QueryViewerPivotTableRender {
 
   private requestInitialPageDataForTable() {
     const dataFieldAndOrder = this.getDataFieldAndOrder();
-    const pageDataTableParameters = {
+    const pageDataTableParameters: QueryViewerPageDataForTable = {
       PageNumber: 1,
       PageSize: this.paging ? this.pageSize : undefined,
-      RecalculateCantPages: true,
+      ReturnTotPages: true,
       DataFieldOrder: dataFieldAndOrder.dataFieldOrder,
       OrderType: dataFieldAndOrder.orderType,
       Filters: [],
-      LayoutChange: false,
-      QueryviewerId: this.controlName
+      LayoutChange: false
     };
     const requestPageDataEvent = new CustomEvent("RequestPageDataForTable", {
       bubbles: true
