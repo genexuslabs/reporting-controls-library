@@ -408,6 +408,7 @@ export class QueryViewerPivotTableRender {
       return (
         <Host>
           <gx-query-viewer-pivot
+            class={this.cssClass || null}
             pivotCollection={pivotCollection}
             pivotParameters={pivotParameters}
             pageDataForPivotTable={this.pageDataForPivotTable}
@@ -435,6 +436,7 @@ export class QueryViewerPivotTableRender {
     return (
       <Host>
         <gx-query-viewer-pivot
+          class={this.cssClass || null}
           pivotCollection={pivotCollection}
           pivotParameters={pivotParameters}
           pageDataForTable={this.pageDataForTable}
