@@ -76,7 +76,7 @@ export class QueryViewerPivotTableRender {
   @Prop() readonly pivotTableDataSyncXml: string;
 
   /**
-   * A CSS class to set as the `gx-query-viewer-pivot-controller` element class.
+   * A CSS class to set as the `gx-query-viewer-pivot-render` element class.
    */
   @Prop() readonly cssClass: string;
 
@@ -408,7 +408,7 @@ export class QueryViewerPivotTableRender {
       return (
         <Host>
           <gx-query-viewer-pivot
-            class={this.cssClass || null}
+            cssClass={this.cssClass}
             pivotCollection={pivotCollection}
             pivotParameters={pivotParameters}
             pageDataForPivotTable={this.pageDataForPivotTable}
@@ -436,7 +436,7 @@ export class QueryViewerPivotTableRender {
     return (
       <Host>
         <gx-query-viewer-pivot
-          class={this.cssClass || null}
+          cssClass={this.cssClass}
           pivotCollection={pivotCollection}
           pivotParameters={pivotParameters}
           pageDataForTable={this.pageDataForTable}
