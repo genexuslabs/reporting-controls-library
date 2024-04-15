@@ -8,7 +8,10 @@ import {
   Watch
 } from "@stencil/core";
 
-import { QueryViewerServiceResponsePivotTable } from "@genexus/reporting-api";
+import {
+  QueryViewerPageDataForTable,
+  QueryViewerServiceResponsePivotTable
+} from "@genexus/reporting-api";
 import {
   QueryViewerAxisOrderType,
   QueryViewerOutputType,
@@ -73,7 +76,7 @@ export class QueryViewerPivotTableRender {
   @Prop() readonly pivotTableDataSyncXml: string;
 
   /**
-   * A CSS class to set as the `gx-query-viewer-pivot-controller` element class.
+   * A CSS class to set as the `gx-query-viewer-pivot-render` element class.
    */
   @Prop() readonly cssClass: string;
 
@@ -371,15 +374,14 @@ export class QueryViewerPivotTableRender {
 
   private requestInitialPageDataForTable() {
     const dataFieldAndOrder = this.getDataFieldAndOrder();
-    const pageDataTableParameters = {
+    const pageDataTableParameters: QueryViewerPageDataForTable = {
       PageNumber: 1,
       PageSize: this.paging ? this.pageSize : undefined,
-      RecalculateCantPages: true,
+      ReturnTotPages: true,
       DataFieldOrder: dataFieldAndOrder.dataFieldOrder,
       OrderType: dataFieldAndOrder.orderType,
       Filters: [],
-      LayoutChange: false,
-      QueryviewerId: this.controlName
+      LayoutChange: false
     };
     const requestPageDataEvent = new CustomEvent("RequestPageDataForTable", {
       bubbles: true
@@ -406,6 +408,7 @@ export class QueryViewerPivotTableRender {
       return (
         <Host>
           <gx-query-viewer-pivot
+            cssClass={this.cssClass}
             pivotCollection={pivotCollection}
             pivotParameters={pivotParameters}
             pageDataForPivotTable={this.pageDataForPivotTable}
@@ -433,6 +436,7 @@ export class QueryViewerPivotTableRender {
     return (
       <Host>
         <gx-query-viewer-pivot
+          cssClass={this.cssClass}
           pivotCollection={pivotCollection}
           pivotParameters={pivotParameters}
           pageDataForTable={this.pageDataForTable}

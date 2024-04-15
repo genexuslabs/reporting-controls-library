@@ -190,8 +190,7 @@ hr {
 // Remove borders in column headers (Pivot and Table)
 .pivot_table > tbody > tr:nth-child(1) > th,
 .oatgrid > thead > tr > td {
-  border: unset;
-  border-block-end: 1px solid var(--gx-query-viewer-pivot__border-color);
+  border: 1px solid var(--gx-query-viewer-pivot__border-color);
 }
 
 // - - - - - - - - - - - - - - - - - - - - -
@@ -205,8 +204,7 @@ th,
 td,
 .pivot_pag_div,
 .oatgrid_top_div,
-.oatgrid thead tr td,
-.row_value {
+.oatgrid thead tr td {
   padding-inline: var(--gx-query-viewer-pivot__cell-padding-inline);
   padding-block: var(--gx-query-viewer-pivot__cell-padding-block);
 }
@@ -257,6 +255,13 @@ td,
 // In the Table the "drop filters section" does not exists
 .oatgrid_top_div {
   grid-template-columns: max-content 1fr;
+}
+
+.pivot_title,
+.oatgrid_top_div,
+.pivot_filter_div {
+  border-inline: 1px solid var(--gx-query-viewer-pivot__border-color);
+  border-block-start: 1px solid var(--gx-query-viewer-pivot__border-color);
 }
 
 .oatgrid {
@@ -348,18 +353,6 @@ td,
 
 .promp-grid-button {
   width: 100%;
-}
-
-.oatfilterwindow > div {
-  margin-left: 16px;
-  margin-right: 16px;
-  margin-bottom: 8px;
-}
-
-.oatfilterwindowGrid > div {
-  margin-left: 10px;
-  margin-right: 15px;
-  margin-bottom: 10px;
 }
 
 /* ---------------- sort image -------------- */

@@ -54,6 +54,11 @@ export class QueryViewerPivot {
   }
 
   /**
+   * A CSS class to set as the `gx-query-viewer-pivot` element class.
+   */
+  @Prop() readonly cssClass: string;
+
+  /**
    * Response Page Data
    */
   @Prop() readonly pageDataForPivotTable: string;
@@ -412,7 +417,10 @@ export class QueryViewerPivot {
   render() {
     return (
       <div
-        class="gx-query-viewer-pivot-container"
+        class={{
+          "gx-query-viewer-pivot-container": true,
+          [this.cssClass]: !!this.cssClass
+        }}
         id={this.pivotParameters.UcId}
         ref={el => (this.queryViewerContainer = el)}
       >

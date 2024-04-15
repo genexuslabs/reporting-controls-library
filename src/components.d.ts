@@ -934,6 +934,10 @@ export namespace Components {
          */
         "calculatePivottableDataXml": string;
         /**
+          * A CSS class to set as the `gx-query-viewer-pivot` element class.
+         */
+        "cssClass": string;
+        /**
           * Method to navigate to the first page.
          */
         "firstPage": () => Promise<any>;
@@ -1053,7 +1057,7 @@ export namespace Components {
          */
         "controlName": string;
         /**
-          * A CSS class to set as the `gx-query-viewer-pivot-controller` element class.
+          * A CSS class to set as the `gx-query-viewer-pivot-render` element class.
          */
         "cssClass": string;
         /**
@@ -2374,6 +2378,10 @@ declare namespace LocalJSX {
          */
         "calculatePivottableDataXml"?: string;
         /**
+          * A CSS class to set as the `gx-query-viewer-pivot` element class.
+         */
+        "cssClass"?: string;
+        /**
           * metadata
          */
         "metadata"?: string;
@@ -2469,7 +2477,7 @@ declare namespace LocalJSX {
          */
         "controlName": string;
         /**
-          * A CSS class to set as the `gx-query-viewer-pivot-controller` element class.
+          * A CSS class to set as the `gx-query-viewer-pivot-render` element class.
          */
         "cssClass"?: string;
         /**
