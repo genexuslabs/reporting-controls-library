@@ -204,7 +204,6 @@ export class QueryViewerPivot {
       this.tableType !== QueryViewerOutputType.Table
     ) {
       this.pageSizeChangeWasCommittedByTheUser = false;
-      return;
     }
     this.shouldReRenderPivot = true;
   }
