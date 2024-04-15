@@ -199,12 +199,6 @@ export class QueryViewerPivot {
   @Prop() readonly paging: boolean;
   @Watch("paging")
   pagingInChange() {
-    if (
-      this.pageSizeChangeWasCommittedByTheUser &&
-      this.tableType !== QueryViewerOutputType.Table
-    ) {
-      this.pageSizeChangeWasCommittedByTheUser = false;
-    }
     this.shouldReRenderPivot = true;
   }
 
