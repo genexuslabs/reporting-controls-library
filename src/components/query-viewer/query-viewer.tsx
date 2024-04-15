@@ -533,7 +533,15 @@ export class QueryViewer {
 
   @Listen("pageDataForTable")
   handlePageDataForTable(event: CustomEvent<string>) {
-    this.pageDataForTable = event.detail;
+    // This method for updating the table isn't the best, but it work as a WA.
+    // When the pageData remains the same as before, it indicates the need to
+    // restore the view. To achieve this, the table must be re-rendered. Therefore,
+    // we need to dispatch a change event that triggers the necessary re-render
+
+    this.pageDataForTable =
+      this.pageDataForTable === event.detail
+        ? this.pageDataForTable + " "
+        : event.detail;
   }
 
   @Listen("RequestAttributeForTable")
@@ -824,7 +832,8 @@ export class QueryViewer {
         totalForRows={this.totalForRows}
         totalForColumns={this.totalForColumns}
         translations={DUMMY_TRANSLATIONS}
-        tableType={this.type.startsWith('Pivot')
+        tableType={
+          this.type.startsWith("Pivot")
             ? QueryViewerOutputType.PivotTable
             : QueryViewerOutputType.Table
         }
