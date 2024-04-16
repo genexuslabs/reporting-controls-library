@@ -556,7 +556,17 @@ export class QueryViewer {
 
   @Listen("attributesValuesForTable")
   handleAttributesValuesTable(event: CustomEvent<string>) {
-    this.attributeValuesForTableXml = event.detail;
+    // This method for updating the table isn't the best, but it work as a WA.
+    // When the attribute values remain the same as before, but we've applied
+    // filters to the columns, it indicates the need to update this value in the
+    // pivot component to request new page data with the applied filters.
+    // To achieve this, the table needs to be re-rendered. Therefore, we must
+    // dispatch a change event that triggers the necessary re-render
+
+    this.attributeValuesForTableXml =
+      this.attributeValuesForTableXml === event.detail
+        ? this.attributeValuesForTableXml + " "
+        : event.detail;
   }
 
   @Listen("requestDataSynForTable")
