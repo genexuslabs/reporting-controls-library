@@ -11,7 +11,7 @@ gx-query-viewer-chart-controller,
 
 .gx-query-viewer-chart-controller__header {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr min-content;
   grid-template-rows: min-content;
 }
 
