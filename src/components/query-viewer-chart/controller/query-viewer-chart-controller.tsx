@@ -6,7 +6,7 @@ import {
 import { Component, Element, Host, Prop, State, h } from "@stencil/core";
 import {
   QueryViewerChartType,
-  QueryViewerDataType,
+  // QueryViewerDataType,
   QueryViewerOutputType,
   QueryViewerPlotSeries,
   QueryViewerSliderRange,
@@ -16,7 +16,7 @@ import {
 import { getAllHighchartOptions, getChartGroup } from "./chart-utils";
 import {
   ChartMetadataAndData,
-  XAxisDataType,
+  // XAxisDataType,
   processDataAndMetadata
 } from "./processDataAndMetadata";
 
@@ -193,11 +193,11 @@ export class QueryViewerChart {
     this.groupAndCompareTimeline();
   };
 
-  private handleGroupBy = (event: CustomEvent) => {
-    const value = event.detail.value;
-    this.timelineGroupBy = value;
-    this.groupAndCompareTimeline();
-  };
+  // private handleGroupBy = (event: CustomEvent) => {
+  //   const value = event.detail.value;
+  //   this.timelineGroupBy = value;
+  //   this.groupAndCompareTimeline();
+  // };
 
   private handleCompareWithChange = (event: CustomEvent) => {
     const value: boolean = event.detail.target.checked;
@@ -353,41 +353,43 @@ export class QueryViewerChart {
     );
   }
 
-  private renderGroupByCombo(options: {
-    showYears: boolean;
-    showSemesters: boolean;
-    showQuarters: boolean;
-    showMonths: boolean;
-    showWeeks: boolean;
-    showDays: boolean;
-    showHours: boolean;
-    showMinutes: boolean;
-  }) {
-    const dataType = XAxisDataType(this.serviceResponse.MetaData);
+  // ToDo: Fix this function; it always returns the same graph when attempting to group by date
+  // private renderGroupByCombo(options: {
+  //   showYears: boolean;
+  //   showSemesters: boolean;
+  //   showQuarters: boolean;
+  //   showMonths: boolean;
+  //   showWeeks: boolean;
+  //   showDays: boolean;
+  //   showHours: boolean;
+  //   showMinutes: boolean;
+  // }) {
+  //   const dataType = XAxisDataType(this.serviceResponse.MetaData);
 
-    return (
-      (options.showDays || dataType === QueryViewerDataType.Date) && (
-        <gx-form-field
-          class="gx-query-viewer-chart-controller__header-form-field"
-          labelCaption="Group by"
-          labelPosition="left"
-        >
-          <gx-select onInput={this.handleGroupBy}>
-            <gx-select-option selected>Days</gx-select-option>
-            {options.showWeeks && <gx-select-option>Weeks</gx-select-option>}
-            {options.showMonths && <gx-select-option>Months</gx-select-option>}
-            {options.showQuarters && (
-              <gx-select-option>Quarters</gx-select-option>
-            )}
-            {options.showSemesters && (
-              <gx-select-option>Semesters</gx-select-option>
-            )}
-            {options.showYears && <gx-select-option>Years</gx-select-option>}
-          </gx-select>
-        </gx-form-field>
-      )
-    );
-  }
+  //   return (
+  //     (options.showDays || dataType === QueryViewerDataType.Date) && (
+  //       <gx-form-field
+  //         class="gx-query-viewer-chart-controller__header-form-field"
+  //         labelCaption="Group by"
+  //         labelPosition="left"
+  //       >
+  //         <gx-select onInput={this.handleGroupBy}>
+  //           <gx-select-option selected>Days</gx-select-option>
+  //           {options.showWeeks && <gx-select-option>Weeks</gx-select-option>}
+  //           {options.showMonths && <gx-select-option>Months</gx-select-option>}
+  //           {options.showQuarters && (
+  //             <gx-select-option>Quarters</gx-select-option>
+  //           )}
+  //           {options.showSemesters && (
+  //             <gx-select-option>Semesters</gx-select-option>
+  //           )}
+  //           {options.showYears && <gx-select-option>Years</gx-select-option>}
+  //         </gx-select>
+  //       </gx-form-field>
+  //     )
+  //   );
+  // }
+
   // ToDo: improve this implementation
   private renderFooter = (charts: Options[]) => [
     charts.map(({ pane, plotOptions }) => (
@@ -418,7 +420,7 @@ export class QueryViewerChart {
         include6m: true,
         include1y: true
       })}
-      {this.renderGroupByCombo({
+      {/* {this.renderGroupByCombo({
         showYears: true,
         showSemesters: true,
         showQuarters: true,
@@ -427,7 +429,7 @@ export class QueryViewerChart {
         showDays: true,
         showHours: true,
         showMinutes: true
-      })}
+      })} */}
       <div class="gx-query-viewer-chart-controller__header-compare-container">
         <gx-checkbox
           checked={false}
