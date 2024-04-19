@@ -6,6 +6,7 @@ gx-query-viewer-chart-controller,
 
 .gx-query-viewer-controller--timeline {
   grid-template-rows: min-content 1fr min-content;
+  width: 100%;
 }
 
 .gx-query-viewer-chart-controller__header {
