@@ -18,6 +18,13 @@ gx-query-viewer-chart-controller,
 .gx-query-viewer-chart-controller__header-compare-container {
   display: grid;
   grid-template-columns: min-content 1fr;
+  & > gx-checkbox > .gx-checkbox__container {
+    margin: 2px;
+  }
+
+  & > gx-select {
+    background-color: inherit;
+  }
 }
 
 .gx-query-viewer-chart-controller__header-form-field {
@@ -27,8 +34,7 @@ gx-query-viewer-chart-controller,
 }
 
 .gx-query-viewer-chart-controller__header-zoom-options {
-  display: grid;
-  grid-template-columns: min-content 1fr;
+  display: flex;
 }
 
 .gx-query-viewer-chart_timeline-footer {
