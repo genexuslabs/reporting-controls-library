@@ -417,7 +417,7 @@ export class QueryViewerPivot {
         id={this.pivotParameters.UcId}
         ref={el => (this.queryViewerContainer = el)}
       >
-        {this.tableType !== QueryViewerOutputType.Table && (
+        {this.tableType !== QueryViewerOutputType.Table && this.pivotTitle && (
           // This is a WA since the PivotTable does not refresh its title in runtime
           <span class="pivot_title">{this.pivotTitle}</span>
         )}
