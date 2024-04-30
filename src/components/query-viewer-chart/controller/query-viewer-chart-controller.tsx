@@ -392,7 +392,7 @@ export class QueryViewerChart {
 
   // ToDo: improve this implementation
   private renderFooter = (charts: Options[]) => [
-    charts.map(({ pane, plotOptions }) => (
+    charts.map(({ pane }) => (
       <gx-query-viewer-chart
         slot="content"
         class={"gx-query-viewer-chart_timeline-footer"}
@@ -404,7 +404,13 @@ export class QueryViewerChart {
         tooltipOptions={{ enabled: false }}
         paneOptions={pane}
         legendOptions={{ enabled: false }}
-        plotOptions={plotOptions}
+        plotOptions={{
+          line: {
+            dataLabels: {
+              enabled: false
+            }
+          }
+        }}
         yaxisOptions={{ visible: false }}
         xaxisOptions={{ visible: false }}
       ></gx-query-viewer-chart>
