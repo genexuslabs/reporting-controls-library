@@ -138,12 +138,13 @@ const aggregateMap: {
 
     for (let i = 0; i < values.length; i++) {
       if (values[i]) {
-        sumValues = add(sumValues, values[i]);
+        sumValues = sumValues ? add(sumValues, values[i]) : values[i];
       }
     }
+
     return sumValues;
   },
-  // TODO: HOW TO ADD TWO BIG NUMBERS???
+
   [QueryViewerAggregationType.Average]: (
     values: GxBigNumber[],
     quantities: number[]
@@ -154,14 +155,12 @@ const aggregateMap: {
     for (let i = 0; i < values.length; i++) {
       const value = values[i];
       if (value) {
-        sumValues = add(sumValues, value);
+        sumValues = sumValues ? add(sumValues, value) : value;
         sumQuantities += quantities[i];
       }
     }
 
-    return sumValues != null
-      ? divide(sumValues, new GxBigNumber(sumQuantities))
-      : null;
+    return sumValues != null ? divide(sumValues, sumQuantities) : null;
   },
 
   [QueryViewerAggregationType.Count]: (
@@ -235,30 +234,16 @@ function aggregateDatum(
       let yQuantity;
 
       if (datum.aggregation === QueryViewerAggregationType.Count) {
-        console.log("is count");
-        console.log("yValue: " + 0);
-        console.log("yQuantity: " + row[datum.dataField]);
-
-        yValue = new GxBigNumber(0); // Not used
+        yValue = new GxBigNumber(0);
         yQuantity = parseFloat(row[datum.dataField]);
       } else if (datum.aggregation === QueryViewerAggregationType.Average) {
-        console.log("is average");
-        console.log("yValue: " + row[datum.dataField + "_N"]);
-        console.log("yQuantity: " + row[datum.dataField + "_D"]);
-
         yValue = new GxBigNumber(row[datum.dataField + "_N"]);
-        console.log("value parsed " + yValue);
-
         yQuantity = parseFloat(row[datum.dataField + "_D"]);
       } else {
-        console.log("is sum or another different from count and average");
-        console.log("yValue: " + row[datum.dataField]);
-        console.log("yQuantity: " + 1);
-
         yValue = new GxBigNumber(row[datum.dataField]);
         yQuantity = 1;
-        console.log("value parsed " + yValue);
       }
+
       currentYValues.push(yValue);
       currentYQuantities.push(yQuantity);
     }

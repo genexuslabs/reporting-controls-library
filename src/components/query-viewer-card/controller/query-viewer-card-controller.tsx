@@ -78,8 +78,6 @@ export class QueryViewerCard {
   @Prop() readonly serviceResponse: QueryViewerServiceResponse;
   @Watch("serviceResponse")
   handleServiceResponseChange(newResponse: QueryViewerServiceResponse) {
-    console.log(newResponse);
-
     this.updateCards(newResponse);
   }
 
@@ -192,7 +190,7 @@ export class QueryViewerCard {
         );
       }
     });
-    console.log("cardsToRender", cardsToRender);
+
     return cardsToRender;
   }
 
