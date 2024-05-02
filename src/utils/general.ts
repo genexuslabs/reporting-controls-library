@@ -17,6 +17,9 @@ import {
   QueryViewerServiceMetaDataData
 } from "@genexus/reporting-api";
 import { TooltipFormatterContextObject } from "highcharts";
+import { GxBigNumber } from "@genexus/web-standard-functions/types/gxbignumber";
+import { divide } from "@genexus/web-standard-functions/math/divide";
+import { add } from "@genexus/web-standard-functions/math/add";
 
 export function parseNumericPicture(
   dataType: QueryViewerDataType,
@@ -122,70 +125,87 @@ function evaluate(
 
 const aggregateMap: {
   [key in QueryViewerAggregationType]: (
-    values: number[],
+    values: GxBigNumber[],
     quantities: number[]
-  ) => number;
+  ) => GxBigNumber;
 } = {
   [QueryViewerAggregationType.Sum]: (
-    values: number[],
+    values: GxBigNumber[],
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _quantities: number[]
   ) => {
-    let sumValues: number = null;
+    let sumValues: GxBigNumber = null;
 
     for (let i = 0; i < values.length; i++) {
       if (values[i]) {
-        sumValues += values[i];
+        sumValues = add(sumValues, values[i]);
       }
     }
     return sumValues;
   },
-
+  // TODO: HOW TO ADD TWO BIG NUMBERS???
   [QueryViewerAggregationType.Average]: (
-    values: number[],
+    values: GxBigNumber[],
     quantities: number[]
   ) => {
-    let sumValues: number = null;
+    let sumValues: GxBigNumber = null;
     let sumQuantities: number = null;
 
     for (let i = 0; i < values.length; i++) {
-      if (values[i]) {
-        sumValues += values[i];
+      const value = values[i];
+      if (value) {
+        sumValues = add(sumValues, value);
         sumQuantities += quantities[i];
       }
     }
-    return sumValues != null ? sumValues / sumQuantities : null;
+
+    return sumValues != null
+      ? divide(sumValues, new GxBigNumber(sumQuantities))
+      : null;
   },
 
   [QueryViewerAggregationType.Count]: (
-    _values: number[],
+    _values: GxBigNumber[],
     quantities: number[]
-  ) => quantities.reduce((a, b) => a + b, 0),
+  ) => new GxBigNumber(quantities.reduce((a, b) => a + b, 0)),
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  [QueryViewerAggregationType.Max]: (values: number[], _quantities: number[]) =>
-    values.length === 0 ? null : Math.max(...values),
+  [QueryViewerAggregationType.Max]: (
+    values: GxBigNumber[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _quantities: number[]
+  ) =>
+    values.length === 0
+      ? null
+      : new GxBigNumber(Math.max(...values.map(Number))),
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  [QueryViewerAggregationType.Min]: (values: number[], _quantities: number[]) =>
-    values.length === 0 ? null : Math.min(...values)
+  [QueryViewerAggregationType.Min]: (
+    values: GxBigNumber[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _quantities: number[]
+  ) =>
+    values.length === 0
+      ? null
+      : new GxBigNumber(Math.min(...values.map(Number)))
 };
 
 export const aggregate = (
   aggregation: QueryViewerAggregationType,
-  values: number[],
+  values: GxBigNumber[],
   quantities: number[]
-) =>
-  aggregateMap[aggregation || QueryViewerAggregationType.Sum](
+) => {
+  return aggregateMap[aggregation || QueryViewerAggregationType.Sum](
     values,
     quantities
   );
+};
 
 function aggregateDatum(
   datum: QueryViewerServiceMetaDataData,
   rows: QueryViewerServiceDataRow[]
 ): string {
-  const currentYValues = [];
+  const currentYValues: GxBigNumber[] = [];
   const currentYQuantities = [];
   const variables: number[] = [];
 
@@ -211,18 +231,33 @@ function aggregateDatum(
         }
       } while (value);
     } else {
-      let yValue;
+      let yValue: GxBigNumber;
       let yQuantity;
 
       if (datum.aggregation === QueryViewerAggregationType.Count) {
-        yValue = 0; // Not used
+        console.log("is count");
+        console.log("yValue: " + 0);
+        console.log("yQuantity: " + row[datum.dataField]);
+
+        yValue = new GxBigNumber(0); // Not used
         yQuantity = parseFloat(row[datum.dataField]);
       } else if (datum.aggregation === QueryViewerAggregationType.Average) {
-        yValue = parseFloat(row[datum.dataField + "_N"]);
+        console.log("is average");
+        console.log("yValue: " + row[datum.dataField + "_N"]);
+        console.log("yQuantity: " + row[datum.dataField + "_D"]);
+
+        yValue = new GxBigNumber(row[datum.dataField + "_N"]);
+        console.log("value parsed " + yValue);
+
         yQuantity = parseFloat(row[datum.dataField + "_D"]);
       } else {
-        yValue = parseFloat(row[datum.dataField]);
+        console.log("is sum or another different from count and average");
+        console.log("yValue: " + row[datum.dataField]);
+        console.log("yQuantity: " + 1);
+
+        yValue = new GxBigNumber(row[datum.dataField]);
         yQuantity = 1;
+        console.log("value parsed " + yValue);
       }
       currentYValues.push(yValue);
       currentYQuantities.push(yQuantity);
@@ -246,6 +281,7 @@ export function aggregateData(
 
   data.forEach(datum => {
     const aggValue = aggregateDatum(datum, rows);
+
     newRow[datum.dataField] = aggValue;
   });
   return newRow;

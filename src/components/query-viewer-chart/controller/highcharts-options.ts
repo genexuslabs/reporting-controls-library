@@ -16,10 +16,9 @@ import {
   PaneOptions,
   PlotOptions,
   PointMarkerOptionsObject,
-  SeriesLineOptions
+  SeriesLineOptions,
   // ExtremesObject,
   // SeriesLineOptions
-  ,
   SeriesOptionsType,
   SubtitleOptions,
   TooltipFormatterContextObject,
@@ -53,6 +52,7 @@ import {
   getChartGroup
 } from "./chart-utils";
 import { ChartMetadataAndData, XAxisDataType } from "./processDataAndMetadata";
+import { GxBigNumber } from "@genexus/web-standard-functions/types/gxbignumber";
 
 const DEFAULT_CHART_SPACING = 10;
 export const HOURS_PER_DAY = 24;
@@ -1524,7 +1524,7 @@ function groupPoints(
     dateStr: null,
     name: null
   };
-  let pointAdd: { x: string; y: number; name: string };
+  let pointAdd: { x: string; y: GxBigNumber; name: string };
   let currentYValues: number[] = [];
   let currentYQuantities: number[] = [];
   const points = [];
@@ -1566,7 +1566,11 @@ function groupPoints(
     } else {
       pointAdd = {
         x: lastStartPoint.dateStr,
-        y: aggregate(aggregation, currentYValues, currentYQuantities),
+        y: aggregate(
+          aggregation,
+          currentYValues.map(value => new GxBigNumber(value)),
+          currentYQuantities
+        ),
         name: lastStartPoint.name
       };
       points.push(pointAdd);
@@ -1578,7 +1582,11 @@ function groupPoints(
   if (currentYValues.length > 0 && currentYQuantities.length > 0) {
     pointAdd = {
       x: lastStartPoint.dateStr,
-      y: aggregate(aggregation, currentYValues, currentYQuantities),
+      y: aggregate(
+        aggregation,
+        currentYValues.map(value => new GxBigNumber(value)),
+        currentYQuantities
+      ),
       name: lastStartPoint.name
     };
     points.push(pointAdd);

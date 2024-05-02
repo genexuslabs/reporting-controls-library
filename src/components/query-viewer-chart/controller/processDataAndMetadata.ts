@@ -28,6 +28,7 @@ import {
   parseNumericPicture
 } from "../../../utils/general";
 import { ChartTypes, IS_CHART_TYPE, isDatetimeXAxis } from "./chart-types";
+import { GxBigNumber } from "@genexus/web-standard-functions/types/gxbignumber";
 
 export type ChartMetadataAndData = {
   Categories: QueryViewerChartCategories;
@@ -512,7 +513,7 @@ function aggregatePoints(chartSerie: QueryViewerChartSerie) {
   });
   const value = aggregate(
     chartSerie.Aggregation,
-    currentYValues,
+    currentYValues.map(val => new GxBigNumber(val)),
     currentYQuantities
   ).toString();
   chartSerie.Points = [{ Value: value, Value_N: value, Value_D: "1" }];
