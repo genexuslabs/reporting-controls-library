@@ -1084,15 +1084,15 @@
         queryViewers[0].serviceResponse = serviceResponseCardMock;
 
         // Chart
-        /* queryViewers[1].serviceResponse = serviceResponseChartMock;
+        queryViewers[1].serviceResponse = serviceResponseChartMock;
         queryViewers[2].serviceResponse = serviceResponseChartMock;
-        queryViewers[3].serviceResponse = serviceResponseChartMock; */
+        queryViewers[3].serviceResponse = serviceResponseChartMock;
 
-        /*   document
+        document
           .querySelector("gx-query-viewer-slider")
           .addEventListener("change", event => {
             console.log("Slider new value:", event.detail);
-          }); */
+          });
       });
     </script>
   </head>
@@ -1110,7 +1110,7 @@
           query-title="1-Card"
         ></gx-query-viewer>
       </div>
-      <!-- 
+
       <div>
         <gx-query-viewer
           type="Chart"
@@ -1159,7 +1159,7 @@
             ></gx-query-viewer>
           </gx-query-viewer-slider>
         </div>
-      </div> -->
+      </div>
     </div>
   </body>
 </html>

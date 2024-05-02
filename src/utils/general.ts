@@ -166,7 +166,9 @@ const aggregateMap: {
   [QueryViewerAggregationType.Count]: (
     _values: GxBigNumber[],
     quantities: number[]
-  ) => new GxBigNumber(quantities.reduce((a, b) => a + b, 0)),
+  ) => {
+    return new GxBigNumber(quantities.reduce((a, b) => a + b, 0));
+  },
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   [QueryViewerAggregationType.Max]: (
@@ -210,7 +212,7 @@ function aggregateDatum(
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
-
+    // TODO: Test when datum isFormula is true
     if (datum.isFormula) {
       let j = 0;
       let value = row[datum.dataField + "_1"];

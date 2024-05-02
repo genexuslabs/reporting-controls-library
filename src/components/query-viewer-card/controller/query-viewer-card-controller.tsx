@@ -16,6 +16,7 @@ import {
 } from "@genexus/reporting-api";
 import { aggregateData } from "../../../utils/general";
 import { analyzeSeries, valueOrPercentage } from "./card-utils";
+import { GxBigNumber } from "@genexus/web-standard-functions/types/gxbignumber";
 
 type CardInformation = {
   title: string;
@@ -225,7 +226,7 @@ export class QueryViewerCard {
 
     cardInformation["value"] = valueOrPercentage(
       this.showDataAs,
-      parseFloat(lastRow[datum.dataField]),
+      new GxBigNumber(lastRow[datum.dataField]),
       datum
     );
 
@@ -279,14 +280,14 @@ export class QueryViewerCard {
       // MinValue @todo Update the implementation of the minValue using the Web implementation
       cardInformation["minValue"] = valueOrPercentage(
         this.showDataAs,
-        data.MinValue,
+        new GxBigNumber(data.MinValue),
         datum
       );
 
       // MaxValue @todo Update the implementation of the maxValue using the Web implementation
       cardInformation["maxValue"] = valueOrPercentage(
         this.showDataAs,
-        data.MaxValue,
+        new GxBigNumber(data.MaxValue),
         datum
       );
     }
