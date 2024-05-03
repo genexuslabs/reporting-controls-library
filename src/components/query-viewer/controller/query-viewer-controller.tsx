@@ -287,13 +287,13 @@ export class QueryViewerController {
     const qvInfo = this.getQueryViewerInformation(this.objectName);
     const servicesInfo = this.getServiceContext();
     const callbackWhenSuccess = (xml: string) => {
-      if (this.type === QueryViewerOutputType.Table) {
+      if (this.realType === QueryViewerOutputType.Table) {
         this.attributesValuesForTable.emit(xml);
       } else {
         this.attributeValuesForPivotTable.emit(xml);
       }
     };
-    if (this.type === QueryViewerOutputType.Table) {
+    if (this.realType === QueryViewerOutputType.Table) {
       makeRequestForTable(
         qvInfo,
         { attributeValues: properties },
