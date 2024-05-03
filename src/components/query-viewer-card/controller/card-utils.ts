@@ -11,10 +11,10 @@ import {
   QueryViewerTrendPeriod
 } from "@genexus/reporting-api";
 import { fromDateToString, fromStringToDateISO } from "../../../utils/date";
-import { GxBigNumber } from "@genexus/web-standard-functions/types/gxbignumber";
-import { divide } from "@genexus/web-standard-functions/math/divide";
-import { toStringBigNumber } from "@genexus/web-standard-functions/bigNumber/toString";
-import { multiply } from "@genexus/web-standard-functions/math/multiply";
+import { GxBigNumber } from "@genexus/web-standard-functions/dist/lib-esm/types/gxbignumber";
+import { divide } from "@genexus/web-standard-functions/dist/lib-esm/math/divide";
+import { toStringBigNumber } from "@genexus/web-standard-functions/dist/lib-esm/bigNumber/toString";
+import { multiply } from "@genexus/web-standard-functions/dist/lib-esm/math/multiply";
 
 export type RegressionSeries = {
   LinearRegression: {

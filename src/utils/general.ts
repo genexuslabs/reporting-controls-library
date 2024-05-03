@@ -17,9 +17,9 @@ import {
   QueryViewerServiceMetaDataData
 } from "@genexus/reporting-api";
 import { TooltipFormatterContextObject } from "highcharts";
-import { GxBigNumber } from "@genexus/web-standard-functions/types/gxbignumber";
-import { divide } from "@genexus/web-standard-functions/math/divide";
-import { add } from "@genexus/web-standard-functions/math/add";
+import { GxBigNumber } from "@genexus/web-standard-functions/dist/lib-esm/types/gxbignumber";
+import { divide } from "@genexus/web-standard-functions/dist/lib-esm/math/divide";
+import { add } from "@genexus/web-standard-functions/dist/lib-esm/math/add";
 
 export function parseNumericPicture(
   dataType: QueryViewerDataType,

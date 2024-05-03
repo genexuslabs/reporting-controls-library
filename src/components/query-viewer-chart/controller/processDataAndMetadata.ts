@@ -28,7 +28,7 @@ import {
   parseNumericPicture
 } from "../../../utils/general";
 import { ChartTypes, IS_CHART_TYPE, isDatetimeXAxis } from "./chart-types";
-import { GxBigNumber } from "@genexus/web-standard-functions/types/gxbignumber";
+import { GxBigNumber } from "@genexus/web-standard-functions/dist/lib-esm/types/gxbignumber";
 
 export type ChartMetadataAndData = {
   Categories: QueryViewerChartCategories;

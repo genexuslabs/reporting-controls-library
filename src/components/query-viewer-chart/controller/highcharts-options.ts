@@ -52,7 +52,7 @@ import {
   getChartGroup
 } from "./chart-utils";
 import { ChartMetadataAndData, XAxisDataType } from "./processDataAndMetadata";
-import { GxBigNumber } from "@genexus/web-standard-functions/types/gxbignumber";
+import { GxBigNumber } from "@genexus/web-standard-functions/dist/lib-esm/types/gxbignumber";
 
 const DEFAULT_CHART_SPACING = 10;
 export const HOURS_PER_DAY = 24;
