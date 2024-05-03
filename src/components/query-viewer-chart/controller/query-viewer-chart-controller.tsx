@@ -187,11 +187,11 @@ export class QueryViewerChart {
     );
   }
 
-  private handleComparePeriodChange = (event: CustomEvent) => {
-    const value = event.detail.value;
-    this.timelinePeriod = value;
-    this.groupAndCompareTimeline();
-  };
+  // private handleComparePeriodChange = (event: CustomEvent) => {
+  //   const value = event.detail.value;
+  //   this.timelinePeriod = value;
+  //   this.groupAndCompareTimeline();
+  // };
 
   // private handleGroupBy = (event: CustomEvent) => {
   //   const value = event.detail.value;
@@ -199,11 +199,11 @@ export class QueryViewerChart {
   //   this.groupAndCompareTimeline();
   // };
 
-  private handleCompareWithChange = (event: CustomEvent) => {
-    const value: boolean = event.detail.target.checked;
-    this.timelineCompareWith = value;
-    this.groupAndCompareTimeline();
-  };
+  // private handleCompareWithChange = (event: CustomEvent) => {
+  //   const value: boolean = event.detail.target.checked;
+  //   this.timelineCompareWith = value;
+  //   this.groupAndCompareTimeline();
+  // };
 
   private updateCurrentPeriodZoom = async (
     event: CustomEvent<QueryViewerSliderRange>
@@ -392,7 +392,7 @@ export class QueryViewerChart {
 
   // ToDo: improve this implementation
   private renderFooter = (charts: Options[]) => [
-    charts.map(({ pane, plotOptions }) => (
+    charts.map(({ pane }) => (
       <gx-query-viewer-chart
         slot="content"
         class={"gx-query-viewer-chart_timeline-footer"}
@@ -404,7 +404,13 @@ export class QueryViewerChart {
         tooltipOptions={{ enabled: false }}
         paneOptions={pane}
         legendOptions={{ enabled: false }}
-        plotOptions={plotOptions}
+        plotOptions={{
+          line: {
+            dataLabels: {
+              enabled: false
+            }
+          }
+        }}
         yaxisOptions={{ visible: false }}
         xaxisOptions={{ visible: false }}
       ></gx-query-viewer-chart>
@@ -413,14 +419,18 @@ export class QueryViewerChart {
 
   private renderTimeline = (charts: Options[]) => [
     <header class="gx-query-viewer-chart-controller__header">
-      {this.renderZoomOptions({
-        include1m: true,
-        include2m: true,
-        include3m: true,
-        include6m: true,
-        include1y: true
-      })}
-      {/* {this.renderGroupByCombo({
+      {
+        this.renderZoomOptions({
+          include1m: true,
+          include2m: true,
+          include3m: true,
+          include6m: true,
+          include1y: true
+        })
+
+        /*
+      
+      { {this.renderGroupByCombo({
         showYears: true,
         showSemesters: true,
         showQuarters: true,
@@ -429,25 +439,27 @@ export class QueryViewerChart {
         showDays: true,
         showHours: true,
         showMinutes: true
-      })} */}
-      <div class="gx-query-viewer-chart-controller__header-compare-container">
-        <gx-checkbox
-          checked={false}
-          accessibleName="Compare"
-          onInput={this.handleCompareWithChange}
-        ></gx-checkbox>
+      })} }
+        <div class="gx-query-viewer-chart-controller__header-compare-container">
+          <gx-checkbox
+            checked={false}
+            accessibleName="Compare"
+            onInput={this.handleCompareWithChange}
+          ></gx-checkbox>
 
-        <gx-form-field
-          class="gx-query-viewer-chart-controller__header-form-field"
-          labelCaption="Compare with"
-          labelPosition="left"
-        >
-          <gx-select onInput={this.handleComparePeriodChange}>
-            <gx-select-option selected>Previous period</gx-select-option>
-            <gx-select-option>Previous year</gx-select-option>
-          </gx-select>
-        </gx-form-field>
-      </div>
+          <gx-form-field
+            class="gx-query-viewer-chart-controller__header-form-field"
+            labelCaption="Compare with"
+            labelPosition="left"
+          >
+            <gx-select onInput={this.handleComparePeriodChange}>
+              <gx-select-option selected>Previous period</gx-select-option>
+              <gx-select-option>Previous year</gx-select-option>
+            </gx-select>
+          </gx-form-field>
+        </div>
+      */
+      }
     </header>,
     <div class="gx-query-viewer-chart-controller__timeline-container">
       {charts.map(
@@ -506,7 +518,6 @@ export class QueryViewerChart {
           : charts.map(
               ({
                 chart,
-                // credits,
                 legend,
                 title,
                 subtitle,
