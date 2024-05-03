@@ -39,4 +39,39 @@ describe("valueOrPercentage", () => {
 
     expect(result).toBe("10 (10%)");
   });
+  it("should return the value as a string with decimal precision when showDataAs is Values", () => {
+    const showDataAs = "Values" as QueryViewerShowDataAs;
+    const value = new GxBigNumber(10.123456789);
+    const datum = {
+      targetValue: 100
+    } as QueryViewerServiceMetaDataData;
+
+    const result = valueOrPercentage(showDataAs, value, datum);
+
+    expect(result).toBe("10.123456789");
+  });
+
+  it("should return the percentage as a string with decimal precision when showDataAs is Percentages", () => {
+    const showDataAs = "Percentages" as QueryViewerShowDataAs;
+    const value = new GxBigNumber(10.123456789);
+    const datum = {
+      targetValue: 100
+    } as QueryViewerServiceMetaDataData;
+
+    const result = valueOrPercentage(showDataAs, value, datum);
+
+    expect(result).toBe("10.123456789%");
+  });
+
+  it("should return the value and percentage as a string with decimal precision when showDataAs is ValuesAndPercentages", () => {
+    const showDataAs = "ValuesAndPercentages" as QueryViewerShowDataAs;
+    const value = new GxBigNumber(10.123456789);
+    const datum = {
+      targetValue: 100
+    } as QueryViewerServiceMetaDataData;
+
+    const result = valueOrPercentage(showDataAs, value, datum);
+
+    expect(result).toBe("10.123456789 (10.123456789%)");
+  });
 });
