@@ -94,6 +94,7 @@ export class QueryViewerPivot {
     );
   }
 
+
   /**
    * Response Page Data
    */
@@ -106,7 +107,7 @@ export class QueryViewerPivot {
     // This is a WA since the Table does not refresh its pageSize if we don't update
     // the pageData previously
     setPageDataForTable(this.queryViewerConfiguration.oat_element, newValue);
-    this.renderPivot();
+    // this.renderPivot();
   }
 
   /**
