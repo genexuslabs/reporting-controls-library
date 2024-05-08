@@ -17,9 +17,9 @@ import {
   QueryViewerServiceMetaDataData
 } from "@genexus/reporting-api";
 import { TooltipFormatterContextObject } from "highcharts";
-import { GxBigNumber } from "@genexus/web-standard-functions/types/gxbignumber";
-import { divide } from "@genexus/web-standard-functions/math/divide";
-import { add } from "@genexus/web-standard-functions/math/add";
+import { GxBigNumber } from "@genexus/web-standard-functions/dist/lib/types/gxbignumber";
+import { divide } from "@genexus/web-standard-functions/dist/lib/math/divide";
+import { add } from "@genexus/web-standard-functions/dist/lib/math/add";
 
 export function parseNumericPicture(
   dataType: QueryViewerDataType,
@@ -887,6 +887,7 @@ export function TooltipFormatter(
   chartTypes: ChartTypes
 ) {
   // let qViewer;
+
   const res = "";
   if (sharedTooltip) {
     // ToDo: implement this with the events
@@ -941,6 +942,7 @@ export function TooltipFormatter(
     //   ? 2
     //   : serie.NumberFormat.DecimalPrecision;
     // const removeTrailingZeroes = chartTypes.Gauge;
+
     return isRTL
       ? (chartTypes.Gauge ? "%" : "") +
           // formatNumber(
@@ -962,9 +964,14 @@ export function TooltipFormatter(
           //   picture,
           //   removeTrailingZeroes
           // )
-          evArg.point.y +
+          //linea original
+          //evArg.point.y +
+          //
+          //aqui paso el valor que viene en la propiedad dataTool al tooltip
+          evArg.point.options.description +
           (chartTypes.Gauge ? "%" : "");
   }
+
   return res;
 }
 

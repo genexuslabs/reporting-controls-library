@@ -66,8 +66,8 @@
   "license": "MIT",
   "dependencies": {
     "@genexus/reporting-api": "~3.1.0",
-    "@genexus/web-controls-library": "2.3.0",
-    "@genexus/web-standard-functions": "file:///C:/PROJECTS/genexus/web-standard-functions/dist/lib-esm",
+    "@genexus/web-controls-library": "^2.7.0",
+    "@genexus/web-standard-functions": "^0.61.0",
     "date-fns": "^2.30.0",
     "highcharts": "^11.1.0",
     "jquery": "^3.7.1",
