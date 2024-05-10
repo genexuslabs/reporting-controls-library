@@ -142,9 +142,12 @@ hr {
     justify-content: space-between;
   }
 
-  & > div > div {
+  & > div > div:not(.table-sort-image) {
     display: flex;
     align-items: center;
+  }
+
+  & > div > div:not(.table-sort-image) {
     inline-size: 100%;
   }
 
@@ -341,7 +344,7 @@ td,
   width: 100%;
 }
 
-.oatfilterwindow hr {
+.oatfilterwindow:not(#pop-up) hr {
   background-color: currentColor;
   width: 80%;
 }
@@ -496,7 +499,9 @@ td,
 
 .move_item_img {
   cursor: pointer;
-  margin-bottom: 8px;
+}
+.move_item_img:has(~ .move_item_img) {
+  margin-bottom: 8;
 }
 
 .download_file_img,
