@@ -887,6 +887,7 @@ export function TooltipFormatter(
   chartTypes: ChartTypes
 ) {
   // let qViewer;
+
   const res = "";
   if (sharedTooltip) {
     // ToDo: implement this with the events
@@ -941,6 +942,7 @@ export function TooltipFormatter(
     //   ? 2
     //   : serie.NumberFormat.DecimalPrecision;
     // const removeTrailingZeroes = chartTypes.Gauge;
+
     return isRTL
       ? (chartTypes.Gauge ? "%" : "") +
           // formatNumber(
@@ -962,9 +964,14 @@ export function TooltipFormatter(
           //   picture,
           //   removeTrailingZeroes
           // )
+          //linea original
+          //evArg.point.y +
+          //
+          //aqui paso el valor que viene en la propiedad dataTool al tooltip
           evArg.point.options.description +
           (chartTypes.Gauge ? "%" : "");
   }
+
   return res;
 }
 
