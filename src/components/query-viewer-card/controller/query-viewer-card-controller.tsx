@@ -16,7 +16,7 @@ import {
 } from "@genexus/reporting-api";
 import { aggregateData } from "../../../utils/general";
 import { analyzeSeries, valueOrPercentage } from "./card-utils";
-import { GxBigNumber } from "@genexus/web-standard-functions/types/gxbignumber";
+import { GxBigNumber } from "@genexus/web-standard-functions/dist/lib/types/gxbignumber";
 
 type CardInformation = {
   title: string;

@@ -52,7 +52,8 @@ import {
   getChartGroup
 } from "./chart-utils";
 import { ChartMetadataAndData, XAxisDataType } from "./processDataAndMetadata";
-import { GxBigNumber } from "@genexus/web-standard-functions/types/gxbignumber";
+import { GxBigNumber } from "@genexus/web-standard-functions/dist/lib/types/gxbignumber";
+import { toStringBigNumber } from "@genexus/web-standard-functions/dist/lib/bigNumber/toString";
 
 const DEFAULT_CHART_SPACING = 10;
 export const HOURS_PER_DAY = 24;
@@ -290,7 +291,7 @@ function getXAxisObject(
         text: chartMetadataAndData.Series.ByIndex[serieIndex].Name
       };
     }
-    xAxis.lineWidth = 0;
+    xAxis.lineWidth = 1;
     if (type === QueryViewerChartType.Sparkline) {
       xAxis.tickPositions = [];
       xAxis.visible = false;
@@ -793,31 +794,59 @@ function getPlotOptionsObject(
   allowSelection: boolean,
   type: QueryViewerOutputType
 ) {
-  const plotOptions: PlotOptions = { series: { events: {} } };
+  const plotOptions: PlotOptions = {
+    series: { events: {} },
+    pie: { events: {} }
+  };
+
+  //inicializo contador
+  let counter = 0;
+  //maximo de elementos de la serie
+  const chartMetadataAndDataLength =
+    chartMetadataAndData.Series.ByIndex[0].Points.length;
   if (chartType === QueryViewerChartType.CircularGauge) {
     plotOptions.series.dataLabels = {
       enabled:
         (chartMetadataAndData.Series.DataFields.length === 1 && showValues) ||
         chartTypes.Splitted,
       y: 0,
-      borderWidth: 0
-
+      borderWidth: 0,
+      formatter: () => {
+        counter++;
+        return counter <= chartMetadataAndDataLength
+          ? chartMetadataAndData.Series.ByIndex[0].Points[counter - 1]?.Value
+          : chartMetadataAndData.Series.ByIndex[0].Points[
+              counter - chartMetadataAndDataLength - 1
+            ]?.Value;
+      }
       // ToDo: implement this
       // formatter: () => CircularGaugeTooltipAndDataLabelFormatter(this, qViewer)
     };
     plotOptions.series.marker = { enabled: false };
   } else if (showValues) {
     plotOptions.series.dataLabels = {
-      enabled: true
-      // ToDo: implement this
-      // connectorColor: "#000000",
-      // ToDo: implement this when picture will available
-      // formatter: () => DataLabelFormatter(this, qViewer)
+      enabled: true,
+      formatter: () => {
+        counter++;
+        return counter <= chartMetadataAndDataLength
+          ? chartMetadataAndData.Series.ByIndex[0].Points[counter - 1]?.Value
+          : chartMetadataAndData.Series.ByIndex[0].Points[
+              counter - chartMetadataAndDataLength - 1
+            ]?.Value;
+      }
     };
 
+    // ToDo: implement this
+    // connectorColor: "#000000",
+    // ToDo: implement this when picture will available
+    // formatter: () => DataLabelFormatter(this, qViewer)
     if (chartType === QueryViewerChartType.LinearGauge) {
       plotOptions.series.dataLabels.inside = true;
     }
+
+    /* if (chartType === QueryViewerChartType.LinearGauge) {
+      plotOptions.series.dataLabels.inside = true;
+    } */
   }
   if (chartTypes.Splitted && chartType !== QueryViewerChartType.CircularGauge) {
     plotOptions.series.point = {};
@@ -970,8 +999,7 @@ function getPlotOptionsObject(
       plotOptions.pie.dataLabels = {
         enabled: showValues,
         connectorColor: "#c3c4c8",
-        connectorShape: connector90degrees,
-        format: "{point.y}"
+        connectorShape: connector90degrees
       };
       plotOptions.pie.showInLegend = true;
       break;
@@ -1660,11 +1688,22 @@ function getIndividualSerieObject(
       const name = point.name;
       const xValue = point.x;
       const value = point.y;
+
+      //convierto el Value del objeto point a bigNumber
+      let valueBig = new GxBigNumber(point.Value);
+      //lo llevo a string para poderlo pasar al objeto serie mas abajo
+      let stringBigNumber = toStringBigNumber(
+        valueBig,
+        new GxBigNumber(),
+        new GxBigNumber()
+      );
+
       const date = fromStringToDateISO(xValue);
       serie.data[index] = {
         x: date.getTime() - date.getTimezoneOffset() * 60000,
         y: value,
-        name: name
+        name: name,
+        description: stringBigNumber
       };
       // if (IsNullColor(chartSerie.Color)) {
       //   SetHighchartsColor(
@@ -1712,6 +1751,15 @@ function getIndividualSerieObject(
 
     chartSerie.Points.forEach((point, index) => {
       let name = "";
+
+      /* //convierto el Value del objeto point a bigNumber
+      let valueBig = new GxBigNumber(point.Value);
+      //lo llevo a string para poderlo pasar al objeto serie mas abajo
+      let stringBigNumber = toStringBigNumber(
+        valueBig,
+        new GxBigNumber(),
+        new GxBigNumber()
+      ); */
       let value = point.Value
         ? parseFloat(trimUtil(point.Value).replace(",", "."))
         : null;
@@ -1719,15 +1767,19 @@ function getIndividualSerieObject(
       if (chartTypes.Gauge) {
         value = (value / chartSerie.TargetValue) * 100;
       } else {
-        // name = chartMetadataAndData.Categories.Values[index].ValueWithPicture;
+        name = chartMetadataAndData.Categories.Values[index].ValueWithPicture;
         name = chartMetadataAndData.Categories.Values[index].Value; // WA TODO: UPDATE THIS TO ONLY BE "....ValueWithPicture"
       }
 
+      //asigno la nueva propiedad description al objeto serie para ser mostrada
+      //en el tooltip
       serie.data[index] = {
         id: name,
         name: name,
-        y: value
+        y: value,
+        description: point.Value
       };
+
       if (chartTypes.DatetimeXAxis) {
         const xValue = chartMetadataAndData.Categories.Values[index].Value;
         const date = fromStringToDateISO(xValue);
@@ -1756,6 +1808,7 @@ function getIndividualSerieObject(
       // }
     });
   }
+
   return serie;
 }
 
@@ -1784,6 +1837,7 @@ function getSeriesObject(
         metadata,
         groupOption
       );
+
       const k = serieIndex != null ? serieIndex : seriesIndexAux;
       if (chartTypes.Combination) {
         if (k % 2 === 0) {
@@ -1958,6 +2012,7 @@ export async function GroupAndCompareTimeline(
   // Carga las series con los datos que correspondan
   chartmetadataAndData.Series.ByIndex.forEach(async (_seriesIndex, index) => {
     const chartSerie = chartmetadataAndData.Series.ByIndex[index];
+
     const seriesName = chartSerie.Name;
     let serieColorIndex;
     // if (chartTypes.Splitted) {
@@ -2002,6 +2057,7 @@ export async function GroupAndCompareTimeline(
     );
 
     points.forEach(point => {
+      console.log(point);
       const value = point.y;
       const date = fromStringToDateISO(point.x);
       const name = point.name;
@@ -2251,6 +2307,5 @@ export function getHighchartOptions(
       groupOption
     )
   };
-
   return options;
 }
