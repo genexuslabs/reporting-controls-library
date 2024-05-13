@@ -488,7 +488,7 @@ function XAxisDataTypeOK(
 //         serie.MaximumValue = serie.TargetValue;
 // }
 
-function aggregatePoints(chartSerie: QueryViewerChartSerie) {
+export function aggregatePoints(chartSerie: QueryViewerChartSerie) {
   const currentYValues: number[] = [];
   const currentYQuantities: number[] = [];
   // const firstColor = "";

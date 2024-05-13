@@ -949,7 +949,7 @@ export function TooltipFormatter(
           //   picture,
           //   removeTrailingZeroes
           // )
-          evArg.point.y +
+          evArg.point.options.description +
           "<b>: " +
           (evArg.point.name !== "" ? evArg.point.name : evArg.series.name) +
           "<b>"
@@ -962,7 +962,7 @@ export function TooltipFormatter(
           //   picture,
           //   removeTrailingZeroes
           // )
-          evArg.point.y +
+          evArg.point.options.description +
           (chartTypes.Gauge ? "%" : "");
   }
   return res;

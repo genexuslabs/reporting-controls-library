@@ -53,6 +53,7 @@ import {
 } from "./chart-utils";
 import { ChartMetadataAndData, XAxisDataType } from "./processDataAndMetadata";
 import { GxBigNumber } from "@genexus/web-standard-functions/dist/lib/types/gxbignumber";
+import { toStringBigNumber } from "@genexus/web-standard-functions/dist/lib/bigNumber/toString";
 
 const DEFAULT_CHART_SPACING = 10;
 export const HOURS_PER_DAY = 24;
@@ -1513,7 +1514,7 @@ function getGroupStartPoint(
   return { dateStr: dateStrStartPoint, name: nameStartPoint };
 }
 
-function groupPoints(
+export function groupPoints(
   chartmetadataAndData: ChartMetadataAndData,
   chartSeriePoints: QueryViewerChartSerie,
   xAxisDataType: QueryViewerDataType,
@@ -1723,10 +1724,21 @@ function getIndividualSerieObject(
         name = chartMetadataAndData.Categories.Values[index].Value; // WA TODO: UPDATE THIS TO ONLY BE "....ValueWithPicture"
       }
 
+      const bigNumberValue = new GxBigNumber(point.Value);
+
+      const bigNumberValueFormatter = toStringBigNumber(
+        bigNumberValue,
+        new GxBigNumber(),
+        new GxBigNumber()
+      );
+
       serie.data[index] = {
         id: name,
         name: name,
-        y: value
+        y: value,
+        options: {
+          description: bigNumberValueFormatter
+        }
       };
       if (chartTypes.DatetimeXAxis) {
         const xValue = chartMetadataAndData.Categories.Values[index].Value;
@@ -1775,6 +1787,7 @@ function getSeriesObject(
   ) {
     if (!chartTypes.Splitted || seriesIndexAux === serieIndex) {
       const chartSerie = chartMetadataAndData.Series.ByIndex[seriesIndexAux];
+
       const serie = getIndividualSerieObject(
         chartTypes,
         chartType,
