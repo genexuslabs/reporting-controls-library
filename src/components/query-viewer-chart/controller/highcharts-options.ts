@@ -1563,13 +1563,13 @@ export function groupPoints(
     let yQuantity;
     if (point.Value != null) {
       if (aggregation === QueryViewerAggregationType.Count) {
-        yValue = 0; // No se utiliza
+        yValue = new GxBigNumber(0); // No se utiliza
         yQuantity = parseFloat(trimUtil(point.Value));
       } else if (aggregation === QueryViewerAggregationType.Average) {
-        yValue = parseFloat(trimUtil(point.Value_N));
+        yValue = new GxBigNumber(trimUtil(point.Value_N));
         yQuantity = parseFloat(trimUtil(point.Value_D));
       } else {
-        yValue = parseFloat(trimUtil(point.Value));
+        yValue = new GxBigNumber(trimUtil(point.Value));
         yQuantity = 1;
       }
     } else {
@@ -1614,7 +1614,6 @@ export function groupPoints(
           new GxBigNumber()
         )
       };
-      console.log("pointAdd", pointAddStringBigNumber);
       points.push(pointAddStringBigNumber);
       lastStartPoint = currentStartPoint;
       currentYValues = [yValue];
@@ -1643,7 +1642,7 @@ export function groupPoints(
         new GxBigNumber()
       )
     };
-    console.log("pointAdd", pointAddStringBigNumber);
+
     points.push(pointAddStringBigNumber);
   }
   return points;
@@ -1697,8 +1696,6 @@ function getIndividualSerieObject(
   //     }
   //   };
   if (chartTypes.Timeline) {
-    console.log("Es timeline");
-
     serie.name = chartSerie.Name;
     serie.data = [];
     serie.turboThreshold = 0;
@@ -1713,14 +1710,14 @@ function getIndividualSerieObject(
       chartSerie.Aggregation,
       groupOption
     );
+
     points.forEach((point, index) => {
       const name = point.name;
       const xValue = point.x;
       const value = point.y;
 
-      // convierto el Value del objeto point a bigNumber
-      const valueBig = new GxBigNumber(point.Value);
-      // lo llevo a string para poderlo pasar al objeto serie mas abajo
+      const valueBig = new GxBigNumber(point.description);
+
       const stringBigNumber = toStringBigNumber(
         valueBig,
         new GxBigNumber(),
@@ -1738,6 +1735,7 @@ function getIndividualSerieObject(
       //   SetHighchartsColor(
       //     qViewer,
       //     serie.data[j],
+
       //     chartSerie.point.Color,
       //     true
       //   );
@@ -2112,13 +2110,10 @@ export async function GroupAndCompareTimeline(
           }
         }
         if (addToSerie1) {
-          console.log("entra serie 1");
-
           const point = { x: timeValue1, y: value, name: name };
           serieOfUser.data.push(point);
         }
         if (addToSerie2) {
-          console.log("entra serie 2");
           const point = {
             x: timeValue2,
             y: value,

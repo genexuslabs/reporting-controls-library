@@ -141,7 +141,6 @@ const aggregateMap: {
         sumValues = sumValues ? add(sumValues, values[i]) : values[i];
       }
     }
-    console.log("sumValues ", sumValues);
 
     return sumValues;
   },
@@ -219,8 +218,6 @@ function aggregateDatum(
     const row = rows[i];
     // TODO: Test when datum isFormula is true
     if (datum.isFormula) {
-      console.log("isFormula");
-
       let j = 0;
       let value = row[datum.dataField + "_1"];
 
@@ -250,9 +247,6 @@ function aggregateDatum(
 
         yQuantity = new GxBigNumber(row[datum.dataField + "_D"]);
       } else {
-        console.log("es Sum");
-        console.log("row[datum.dataField] ", row[datum.dataField]);
-
         yValue = new GxBigNumber(row[datum.dataField]);
         yQuantity = new GxBigNumber(1);
       }
@@ -261,8 +255,6 @@ function aggregateDatum(
       currentYQuantities.push(yQuantity);
     }
   }
-  console.log("currentYValues ", currentYValues);
-  console.log("currentYQuantities ", currentYQuantities);
 
   return datum.isFormula
     ? evaluate(datum.formula, datum.dataField + "_", variables.map(toString))
