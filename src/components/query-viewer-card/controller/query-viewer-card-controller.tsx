@@ -173,6 +173,7 @@ export class QueryViewerCard {
         ? aggregateData(response.MetaData.data, response.Data.rows)
         : response.Data.rows[response.Data.rows.length - 1];
     }
+    console.log(lastRow);
 
     response.MetaData.data.forEach(datum => {
       if (

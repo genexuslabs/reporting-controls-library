@@ -126,13 +126,13 @@ function evaluate(
 const aggregateMap: {
   [key in QueryViewerAggregationType]: (
     values: GxBigNumber[],
-    quantities: number[]
+    quantities: GxBigNumber[]
   ) => GxBigNumber;
 } = {
   [QueryViewerAggregationType.Sum]: (
     values: GxBigNumber[],
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _quantities: number[]
+    _quantities: GxBigNumber[]
   ) => {
     let sumValues: GxBigNumber = null;
 
@@ -141,22 +141,25 @@ const aggregateMap: {
         sumValues = sumValues ? add(sumValues, values[i]) : values[i];
       }
     }
+    console.log("sumValues ", sumValues);
 
     return sumValues;
   },
 
   [QueryViewerAggregationType.Average]: (
     values: GxBigNumber[],
-    quantities: number[]
+    quantities: GxBigNumber[]
   ) => {
     let sumValues: GxBigNumber = null;
-    let sumQuantities: number = null;
+    let sumQuantities: GxBigNumber = null;
 
     for (let i = 0; i < values.length; i++) {
       const value = values[i];
       if (value) {
         sumValues = sumValues ? add(sumValues, value) : value;
-        sumQuantities += quantities[i];
+        sumQuantities = sumQuantities
+          ? add(sumQuantities, quantities[i])
+          : quantities[i];
       }
     }
 
@@ -165,16 +168,18 @@ const aggregateMap: {
 
   [QueryViewerAggregationType.Count]: (
     _values: GxBigNumber[],
-    quantities: number[]
+    quantities: GxBigNumber[]
   ) => {
-    return new GxBigNumber(quantities.reduce((a, b) => a + b, 0));
+    return new GxBigNumber(
+      quantities.reduce((a, b) => add(a, b), new GxBigNumber(0))
+    );
   },
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   [QueryViewerAggregationType.Max]: (
     values: GxBigNumber[],
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _quantities: number[]
+    _quantities: GxBigNumber[]
   ) =>
     values.length === 0
       ? null
@@ -184,7 +189,7 @@ const aggregateMap: {
   [QueryViewerAggregationType.Min]: (
     values: GxBigNumber[],
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _quantities: number[]
+    _quantities: GxBigNumber[]
   ) =>
     values.length === 0
       ? null
@@ -194,7 +199,7 @@ const aggregateMap: {
 export const aggregate = (
   aggregation: QueryViewerAggregationType,
   values: GxBigNumber[],
-  quantities: number[]
+  quantities: GxBigNumber[]
 ) => {
   return aggregateMap[aggregation || QueryViewerAggregationType.Sum](
     values,
@@ -207,13 +212,15 @@ function aggregateDatum(
   rows: QueryViewerServiceDataRow[]
 ): string {
   const currentYValues: GxBigNumber[] = [];
-  const currentYQuantities = [];
+  const currentYQuantities: GxBigNumber[] = [];
   const variables: number[] = [];
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
     // TODO: Test when datum isFormula is true
     if (datum.isFormula) {
+      console.log("isFormula");
+
       let j = 0;
       let value = row[datum.dataField + "_1"];
 
@@ -233,23 +240,29 @@ function aggregateDatum(
       } while (value);
     } else {
       let yValue: GxBigNumber;
-      let yQuantity;
+      let yQuantity: GxBigNumber;
 
       if (datum.aggregation === QueryViewerAggregationType.Count) {
         yValue = new GxBigNumber(0);
-        yQuantity = parseFloat(row[datum.dataField]);
+        yQuantity = new GxBigNumber(row[datum.dataField]);
       } else if (datum.aggregation === QueryViewerAggregationType.Average) {
         yValue = new GxBigNumber(row[datum.dataField + "_N"]);
-        yQuantity = parseFloat(row[datum.dataField + "_D"]);
+
+        yQuantity = new GxBigNumber(row[datum.dataField + "_D"]);
       } else {
+        console.log("es Sum");
+        console.log("row[datum.dataField] ", row[datum.dataField]);
+
         yValue = new GxBigNumber(row[datum.dataField]);
-        yQuantity = 1;
+        yQuantity = new GxBigNumber(1);
       }
 
       currentYValues.push(yValue);
       currentYQuantities.push(yQuantity);
     }
   }
+  console.log("currentYValues ", currentYValues);
+  console.log("currentYQuantities ", currentYQuantities);
 
   return datum.isFormula
     ? evaluate(datum.formula, datum.dataField + "_", variables.map(toString))
@@ -964,10 +977,10 @@ export function TooltipFormatter(
           //   picture,
           //   removeTrailingZeroes
           // )
-          //linea original
-          //evArg.point.y +
+          // linea original
+          // evArg.point.y +
           //
-          //aqui paso el valor que viene en la propiedad dataTool al tooltip
+          // aqui paso el valor que viene en la propiedad dataTool al tooltip
           evArg.point.options.description +
           (chartTypes.Gauge ? "%" : "");
   }

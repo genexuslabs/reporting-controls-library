@@ -799,9 +799,9 @@ function getPlotOptionsObject(
     pie: { events: {} }
   };
 
-  //inicializo contador
+  // inicializo contador
   let counter = 0;
-  //maximo de elementos de la serie
+  // maximo de elementos de la serie
   const chartMetadataAndDataLength =
     chartMetadataAndData.Series.ByIndex[0].Points.length;
   if (chartType === QueryViewerChartType.CircularGauge) {
@@ -1597,11 +1597,25 @@ export function groupPoints(
         y: aggregate(
           aggregation,
           currentYValues.map(value => new GxBigNumber(value)),
-          currentYQuantities
+          currentYQuantities.map(quantity => new GxBigNumber(quantity))
         ),
         name: lastStartPoint.name
       };
-      points.push(pointAdd);
+
+      const pointAddStringBigNumber = {
+        x: pointAdd.x,
+        y: parseFloat(
+          toStringBigNumber(pointAdd.y, new GxBigNumber(), new GxBigNumber())
+        ),
+        name: pointAdd.name,
+        description: toStringBigNumber(
+          pointAdd.y,
+          new GxBigNumber(),
+          new GxBigNumber()
+        )
+      };
+      console.log("pointAdd", pointAddStringBigNumber);
+      points.push(pointAddStringBigNumber);
       lastStartPoint = currentStartPoint;
       currentYValues = [yValue];
       currentYQuantities = [yQuantity];
@@ -1613,11 +1627,24 @@ export function groupPoints(
       y: aggregate(
         aggregation,
         currentYValues.map(value => new GxBigNumber(value)),
-        currentYQuantities
+        currentYQuantities.map(quantity => new GxBigNumber(quantity))
       ),
       name: lastStartPoint.name
     };
-    points.push(pointAdd);
+    const pointAddStringBigNumber = {
+      x: pointAdd.x,
+      y: parseFloat(
+        toStringBigNumber(pointAdd.y, new GxBigNumber(), new GxBigNumber())
+      ),
+      name: pointAdd.name,
+      description: toStringBigNumber(
+        pointAdd.y,
+        new GxBigNumber(),
+        new GxBigNumber()
+      )
+    };
+    console.log("pointAdd", pointAddStringBigNumber);
+    points.push(pointAddStringBigNumber);
   }
   return points;
 }
@@ -1670,6 +1697,8 @@ function getIndividualSerieObject(
   //     }
   //   };
   if (chartTypes.Timeline) {
+    console.log("Es timeline");
+
     serie.name = chartSerie.Name;
     serie.data = [];
     serie.turboThreshold = 0;
@@ -1689,10 +1718,10 @@ function getIndividualSerieObject(
       const xValue = point.x;
       const value = point.y;
 
-      //convierto el Value del objeto point a bigNumber
-      let valueBig = new GxBigNumber(point.Value);
-      //lo llevo a string para poderlo pasar al objeto serie mas abajo
-      let stringBigNumber = toStringBigNumber(
+      // convierto el Value del objeto point a bigNumber
+      const valueBig = new GxBigNumber(point.Value);
+      // lo llevo a string para poderlo pasar al objeto serie mas abajo
+      const stringBigNumber = toStringBigNumber(
         valueBig,
         new GxBigNumber(),
         new GxBigNumber()
@@ -1771,8 +1800,8 @@ function getIndividualSerieObject(
         name = chartMetadataAndData.Categories.Values[index].Value; // WA TODO: UPDATE THIS TO ONLY BE "....ValueWithPicture"
       }
 
-      //asigno la nueva propiedad description al objeto serie para ser mostrada
-      //en el tooltip
+      // asigno la nueva propiedad description al objeto serie para ser mostrada
+      // en el tooltip
       serie.data[index] = {
         id: name,
         name: name,
@@ -2058,7 +2087,6 @@ export async function GroupAndCompareTimeline(
     );
 
     points.forEach(point => {
-      console.log(point);
       const value = point.y;
       const date = fromStringToDateISO(point.x);
       const name = point.name;
@@ -2084,10 +2112,13 @@ export async function GroupAndCompareTimeline(
           }
         }
         if (addToSerie1) {
+          console.log("entra serie 1");
+
           const point = { x: timeValue1, y: value, name: name };
           serieOfUser.data.push(point);
         }
         if (addToSerie2) {
+          console.log("entra serie 2");
           const point = {
             x: timeValue2,
             y: value,

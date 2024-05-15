@@ -401,7 +401,7 @@ function AddSeriesValues(
       serie.MaxValue = parseFloat(point.Value);
     } else {
       if (parseFloat(point.Value) > serie.MaxValue) {
-        //serie.MaxValue = parseFloat(point.Value);
+        // serie.MaxValue = parseFloat(point.Value);
       }
       if (parseFloat(point.Value) < serie.MinValue) {
         serie.MinValue = parseFloat(point.Value);
@@ -532,7 +532,7 @@ export function aggregatePoints(chartSerie: QueryViewerChartSerie) {
   const value = aggregate(
     chartSerie.Aggregation,
     currentYValues.map(val => new GxBigNumber(val)),
-    currentYQuantities
+    currentYQuantities.map(val => new GxBigNumber(val))
   ).toString();
   chartSerie.Points = [{ Value: value, Value_N: value, Value_D: "1" }];
   chartSerie.NegativeValues = parseFloat(value) < 0;
