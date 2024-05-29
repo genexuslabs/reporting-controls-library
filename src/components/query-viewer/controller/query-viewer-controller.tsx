@@ -470,10 +470,10 @@ export class QueryViewerController {
     // WA to avoid requests to unimplemented outputs
     if (
       this.realType !== QueryViewerOutputType.Card &&
-      this.realType !== QueryViewerOutputType.Chart &&
-      this.realType !== QueryViewerOutputType.PivotTable &&
-      this.realType !== QueryViewerOutputType.Pivot_Table &&
-      this.realType !== QueryViewerOutputType.Table
+      this.realType !== QueryViewerOutputType.Chart
+      // this.realType !== QueryViewerOutputType.PivotTable &&
+      // this.realType !== QueryViewerOutputType.Pivot_Table &&
+      // this.realType !== QueryViewerOutputType.Table
     ) {
       return;
     }
