@@ -18,8 +18,8 @@ import {
 } from "@genexus/reporting-api";
 import { TooltipFormatterContextObject } from "highcharts";
 import { GxBigNumber } from "@genexus/web-standard-functions/dist/lib/types/gxbignumber";
-import { divide } from "@genexus/web-standard-functions/dist/lib/math/divide";
 import { add } from "@genexus/web-standard-functions/dist/lib/math/add";
+import { divide } from "@genexus/web-standard-functions/dist/lib/math/divide";
 
 export function parseNumericPicture(
   dataType: QueryViewerDataType,
@@ -123,7 +123,7 @@ function evaluate(
   return eval(formula);
 }
 
-const aggregateMap: {
+export const aggregateMap: {
   [key in QueryViewerAggregationType]: (
     values: GxBigNumber[],
     quantities: GxBigNumber[]
@@ -174,22 +174,22 @@ const aggregateMap: {
     );
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   [QueryViewerAggregationType.Max]: (
     values: GxBigNumber[],
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _quantities: GxBigNumber[]
   ) =>
+    // TODO: Find a way to find the biggest number in an array of BigNumber
     values.length === 0
       ? null
       : new GxBigNumber(Math.max(...values.map(Number))),
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   [QueryViewerAggregationType.Min]: (
     values: GxBigNumber[],
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _quantities: GxBigNumber[]
   ) =>
+    // TODO: Find a way to find the smallest number in an array of BigNumber
     values.length === 0
       ? null
       : new GxBigNumber(Math.min(...values.map(Number)))
@@ -206,7 +206,7 @@ export const aggregate = (
   );
 };
 
-function aggregateDatum(
+export function aggregateDatum(
   datum: QueryViewerServiceMetaDataData,
   rows: QueryViewerServiceDataRow[]
 ): string {

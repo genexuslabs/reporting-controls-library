@@ -1630,6 +1630,7 @@ export function groupPoints(
       ),
       name: lastStartPoint.name
     };
+
     const pointAddStringBigNumber = {
       x: pointAdd.x,
       y: parseFloat(

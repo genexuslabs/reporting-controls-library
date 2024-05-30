@@ -8,12 +8,11 @@ import {
   QueryViewerAggregationType
 } from "@genexus/reporting-api";
 describe("groupPoints", () => {
-  // TODO: Fix the test
   const chartMetadataAndData: ChartMetadataAndData = {
     Categories: {
       DataFields: ["F1"],
       MinValue: "Recife",
-      MaxValue: "Brasilia",
+      MaxValue: "Rio de Janeiro",
       Values: [
         { Value: "Rio de Janeiro", ValueWithPicture: "" },
         { Value: "Lima", ValueWithPicture: "" },
@@ -26,8 +25,8 @@ describe("groupPoints", () => {
     Series: {
       ByIndex: [
         {
-          MinValue: 3305,
-          MaxValue: 11748000,
+          MinValue: 2102998,
+          MaxValue: 11748123456789,
           FieldName: "Element5",
           Name: "Population",
           Visible: QueryViewerVisible.Yes,
@@ -47,7 +46,7 @@ describe("groupPoints", () => {
             Suffix: ""
           },
           Points: [
-            { Value: "11748000", Value_N: "", Value_D: "" },
+            { Value: "11748123456789", Value_N: "", Value_D: "" },
             { Value: "3297000", Value_N: "", Value_D: "" },
             { Value: "2985000", Value_N: "", Value_D: "" },
             { Value: "2514000", Value_N: "", Value_D: "" },
@@ -61,9 +60,9 @@ describe("groupPoints", () => {
     PlotBands: []
   };
 
-  it("should group points by start point when groupOption is 'start'", () => {
+  it("should create point object correctly adding description property", () => {
     const aggregation = QueryViewerAggregationType.Sum;
-    const groupOption = "start";
+    const groupOption = "Days";
 
     const result = groupPoints(
       chartMetadataAndData,
@@ -74,16 +73,28 @@ describe("groupPoints", () => {
     );
 
     expect(result).toEqual([
-      { x: "2022-01-01", y: 100, name: "January 2022" },
-      { x: "2022-02-01", y: 60, name: "February 2022" },
-      { x: "2022-03-01", y: 40, name: "March 2022" },
-      { x: "2022-04-01", y: 40, name: "April 2022" }
+      {
+        x: "Rio de Janeiro",
+        y: 11748123456789,
+        name: "",
+        description: "11748123456789"
+      },
+      { x: "Lima", y: 3297000, name: "", description: "3297000" },
+      { x: "Belo Horizonte", y: 2985000, name: "", description: "2985000" },
+      { x: "Porto Alegre", y: 2514000, name: "", description: "2514000" },
+      { x: "Brasilia", y: 2254000, name: "", description: "2254000" },
+      { x: "Recife", y: 2102998, name: "", description: "2102998" }
     ]);
   });
 
-  it.skip("should group points by end point when groupOption is 'end'", () => {
+  it("description value must a precise string representation of 'y' value", () => {
     const aggregation = QueryViewerAggregationType.Sum;
-    const groupOption = "end";
+    const groupOption = "Days";
+
+    chartMetadataAndData.Series.ByIndex[0].MaxValue = 202400000000123800;
+
+    chartMetadataAndData.Series.ByIndex[0].Points[0].Value =
+      "202400000000123797";
 
     const result = groupPoints(
       chartMetadataAndData,
@@ -94,13 +105,20 @@ describe("groupPoints", () => {
     );
 
     expect(result).toEqual([
-      { x: "2022-01-01", y: 10, name: "January 2022" },
-      { x: "2022-02-01", y: 30, name: "February 2022" },
-      { x: "2022-03-01", y: 60, name: "March 2022" },
-      { x: "2022-04-01", y: 100, name: "April 2022" }
+      {
+        x: "Rio de Janeiro",
+        y: 202400000000123800,
+        name: "",
+        description: "202400000000123797"
+      },
+      { x: "Lima", y: 3297000, name: "", description: "3297000" },
+      { x: "Belo Horizonte", y: 2985000, name: "", description: "2985000" },
+      { x: "Porto Alegre", y: 2514000, name: "", description: "2514000" },
+      { x: "Brasilia", y: 2254000, name: "", description: "2254000" },
+      { x: "Recife", y: 2102998, name: "", description: "2102998" }
     ]);
   });
-
+  // TODO: Currently not supported Average aggregation, errors are thrown before gxBigNumber support implementation
   it.skip("should group points by average when aggregation is 'Average'", () => {
     const aggregation = QueryViewerAggregationType.Average;
     const groupOption = "start";
@@ -112,12 +130,36 @@ describe("groupPoints", () => {
       aggregation,
       groupOption
     );
+    console.log(result);
+  });
+
+  it("should group points by count when aggregation is 'Count'", () => {
+    const aggregation = QueryViewerAggregationType.Count;
+    const groupOption = "Days";
+    chartMetadataAndData.Series.ByIndex[0].Points = [
+      { Value: "1", Value_N: "", Value_D: "" },
+      { Value: "1", Value_N: "", Value_D: "" },
+      { Value: "1", Value_N: "", Value_D: "" },
+      { Value: "1", Value_N: "", Value_D: "" },
+      { Value: "1", Value_N: "", Value_D: "" },
+      { Value: "1", Value_N: "", Value_D: "" }
+    ];
+
+    const result = groupPoints(
+      chartMetadataAndData,
+      chartMetadataAndData.Series.ByIndex[0],
+      QueryViewerDataType.Date,
+      aggregation,
+      groupOption
+    );
 
     expect(result).toEqual([
-      { x: "2022-01-01", y: 5, name: "January 2022" },
-      { x: "2022-02-01", y: 10, name: "February 2022" },
-      { x: "2022-03-01", y: 15, name: "March 2022" },
-      { x: "2022-04-01", y: 20, name: "April 2022" }
+      { x: "Rio de Janeiro", y: 1, name: "", description: "1" },
+      { x: "Lima", y: 1, name: "", description: "1" },
+      { x: "Belo Horizonte", y: 1, name: "", description: "1" },
+      { x: "Porto Alegre", y: 1, name: "", description: "1" },
+      { x: "Brasilia", y: 1, name: "", description: "1" },
+      { x: "Recife", y: 1, name: "", description: "1" }
     ]);
   });
 });
