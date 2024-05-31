@@ -36,6 +36,12 @@
 
 Add a new query item
 
+#### Parameters
+
+| Name   | Type                                                                                                                                                   | Description |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- |
+| `item` | `Omit<QueryViewerBase, "modified"> & { id: string; name: string; description: string; modified: Date; expression: string; differenceInDays: number; }` | GxQueryItem |
+
 #### Returns
 
 Type: `Promise<void>`
