@@ -10,10 +10,10 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "skipLibCheck": true,
-    "lib": ["dom", "es2015"],
-    "moduleResolution": "node",
+    "lib": ["DOM", "ES2022", "DOM.Iterable"],
     "module": "esnext",
-    "target": "es2017",
+    "target": "ES2022",
+    "moduleResolution": "node",
     "jsx": "react",
     "jsxFactory": "h"
   },
