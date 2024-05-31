@@ -36,6 +36,7 @@
     "build-storybook": "storybook build"
   },
   "devDependencies": {
+    "@genexus/web-controls-library": "2.7.0",
     "@stencil-community/eslint-plugin": "~0.7.1",
     "@stencil/core": "~4.11.0",
     "@stencil/sass": "~3.0.9",
@@ -66,12 +67,14 @@
   "license": "MIT",
   "dependencies": {
     "@genexus/reporting-api": "~3.1.0",
-    "@genexus/web-controls-library": "2.3.0",
     "date-fns": "^2.30.0",
     "highcharts": "^11.1.0",
     "jquery": "^3.7.1",
     "jspivottable": "1.3.7",
     "material-icons": "^1.13.1",
     "rollup-plugin-dotenv": "^0.5.0"
+  },
+  "peerDependencies": {
+    "@genexus/web-controls-library": ">= 2.7.0"
   }
 }
