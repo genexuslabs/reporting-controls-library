@@ -33,6 +33,12 @@
 
 get the current extremes for the axis.
 
+#### Parameters
+
+| Name     | Type                | Description |
+| -------- | ------------------- | ----------- |
+| `series` | `SeriesLineOptions` |             |
+
 #### Returns
 
 Type: `Promise<Series>`
@@ -52,6 +58,14 @@ Type: `Promise<ExtremesObject>`
 ### `setExtremes(minDate: number, maxDate: number, redraw: boolean) => Promise<void>`
 
 set the current extremes for the axis.
+
+#### Parameters
+
+| Name      | Type      | Description |
+| --------- | --------- | ----------- |
+| `minDate` | `number`  |             |
+| `maxDate` | `number`  |             |
+| `redraw`  | `boolean` |             |
 
 #### Returns
 

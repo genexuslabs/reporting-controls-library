@@ -34,7 +34,7 @@ export type QueryRequest = {
   assetsDirs: ["assets"]
 })
 export class QueryChat implements GxComponent {
-  private inputElement!: HTMLGxEditElement;
+  private inputElement!: any;
   private hasTriggerButton: boolean;
   private chatElement!: HTMLDivElement;
 

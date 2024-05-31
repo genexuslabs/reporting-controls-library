@@ -32,7 +32,7 @@ type KeyEvents =
   shadow: true
 })
 export class QueryMenuItem implements GxComponent {
-  private inputRef!: HTMLGxEditElement;
+  private inputRef!: any;
   private editControlId: string;
   private backupInputValue: string;
 
@@ -162,7 +162,7 @@ export class QueryMenuItem implements GxComponent {
   };
 
   render() {
-    let template: HTMLGxEditElement | HTMLSpanElement;
+    let template: any | HTMLSpanElement;
 
     if (this.editMode) {
       template = (
@@ -178,7 +178,11 @@ export class QueryMenuItem implements GxComponent {
 
     return (
       <Host tabindex="0" onClick={!this.editMode ? this.handlerSelect : null}>
-        <li class="item" part={`item ${this.isActive ? 'active' : ''}`} role="option">
+        <li
+          class="item"
+          part={`item ${this.isActive ? "active" : ""}`}
+          role="option"
+        >
           <div
             aria-controls={this.editControlId}
             aria-expanded={this.editMode ? "true" : "false"}
