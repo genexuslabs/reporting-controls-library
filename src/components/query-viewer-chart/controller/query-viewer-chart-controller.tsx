@@ -478,6 +478,7 @@ export class QueryViewerChart {
         }) => (
           <gx-query-viewer-chart
             class={{ [`${this.cssClass}__chart`]: !!this.cssClass }}
+            part="chart"
             // translations={this.translations}
             chartTitle={title}
             subtitleOptions={subtitle}
@@ -530,6 +531,7 @@ export class QueryViewerChart {
               }) => (
                 <gx-query-viewer-chart
                   class={{ [`${this.cssClass}__chart`]: !!this.cssClass }}
+                  part="chart"
                   // translations={this.translations}
                   chartTitle={title}
                   subtitleOptions={subtitle}
