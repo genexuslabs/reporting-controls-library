@@ -109,13 +109,12 @@ export function parseNumericPicture(
   };
 }
 
-function evaluate(
-  formula: string,
-  baseName: string,
-  variables: string[]
-): string {
+function evaluate(formula: string, baseName: string, variables: string[]) {
   for (let i = 1; i <= variables.length; i++) {
-    formula = formula.replace(baseName + i.toString(), variables[i - 1]);
+    formula = formula.replace(
+      new RegExp(baseName + i.toString(), "g"),
+      variables[i - 1]
+    );
   }
   return eval(formula);
 }
@@ -230,7 +229,7 @@ function aggregateDatum(
   }
 
   return datum.isFormula
-    ? evaluate(datum.formula, datum.dataField + "_", variables.map(toString))
+    ? evaluate(datum.formula, datum.dataField + "_", variables.map(String))
     : aggregate(
         datum.aggregation,
         currentYValues,
