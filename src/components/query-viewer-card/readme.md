@@ -29,18 +29,6 @@
 | `itemClickEvent` | ItemClickEvent, executes actions when this event is triggered after clicking on a query element. | `CustomEvent<any>` |
 
 
-## Shadow Parts
-
-| Part              | Description |
-| ----------------- | ----------- |
-| `"max-min-title"` |             |
-| `"max-min-value"` |             |
-| `"sparkline"`     |             |
-| `"title"`         |             |
-| `"trend"`         |             |
-| `"value"`         |             |
-
-
 ## Dependencies
 
 ### Used by

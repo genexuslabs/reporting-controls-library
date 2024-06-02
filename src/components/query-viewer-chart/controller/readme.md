@@ -20,6 +20,13 @@
 | `yAxisTitle`              | `y-axis-title`                | Y Axis title                                                                | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `undefined` |
 
 
+## Shadow Parts
+
+| Part      | Description |
+| --------- | ----------- |
+| `"chart"` |             |
+
+
 ## Dependencies
 
 ### Used by
@@ -30,16 +37,12 @@
 
 - [gx-query-viewer-chart](..)
 - [gx-query-viewer-slider](../../query-viewer-slider)
-- gx-radio-group
-- gx-radio-option
 
 ### Graph
 ```mermaid
 graph TD;
   gx-query-viewer-chart-controller --> gx-query-viewer-chart
   gx-query-viewer-chart-controller --> gx-query-viewer-slider
-  gx-query-viewer-chart-controller --> gx-radio-group
-  gx-query-viewer-chart-controller --> gx-radio-option
   gx-query-viewer --> gx-query-viewer-chart-controller
   style gx-query-viewer-chart-controller fill:#f9f,stroke:#333,stroke-width:4px
 ```

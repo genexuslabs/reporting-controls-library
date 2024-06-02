@@ -20,6 +20,13 @@
 | `trendPeriod`      | `trend-period`      | If `includeTrend == true`, this attribute specifies the period of time to calculate the trend.                  | `QueryViewerTrendPeriod.LastDay \| QueryViewerTrendPeriod.LastHour \| QueryViewerTrendPeriod.LastMinute \| QueryViewerTrendPeriod.LastMonth \| QueryViewerTrendPeriod.LastQuarter \| QueryViewerTrendPeriod.LastSecond \| QueryViewerTrendPeriod.LastSemester \| QueryViewerTrendPeriod.LastWeek \| QueryViewerTrendPeriod.LastYear \| QueryViewerTrendPeriod.SinceTheBeginning`                                                                                                                                             | `QueryViewerTrendPeriod.SinceTheBeginning` |
 
 
+## Shadow Parts
+
+| Part     | Description |
+| -------- | ----------- |
+| `"card"` |             |
+
+
 ## Dependencies
 
 ### Used by
