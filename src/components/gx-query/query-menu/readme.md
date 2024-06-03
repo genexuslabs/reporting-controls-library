@@ -36,6 +36,12 @@
 
 Add a new query item
 
+#### Parameters
+
+| Name   | Type                                                                                                                                                   | Description |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- |
+| `item` | `Omit<QueryViewerBase, "modified"> & { id: string; name: string; description: string; modified: Date; expression: string; differenceInDays: number; }` | GxQueryItem |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -57,15 +63,11 @@ Type: `Promise<void>`
 ### Depends on
 
 - [gx-query-menu-item](../query-menu-item)
-- gx-loading
 
 ### Graph
 ```mermaid
 graph TD;
   gx-query-menu --> gx-query-menu-item
-  gx-query-menu --> gx-loading
-  gx-query-menu-item --> gx-edit
-  gx-loading --> gx-lottie
   style gx-query-menu fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

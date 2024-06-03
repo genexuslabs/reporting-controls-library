@@ -50,14 +50,9 @@ Type: `Promise<void>`
 
  - [gx-query-menu](../query-menu)
 
-### Depends on
-
-- gx-edit
-
 ### Graph
 ```mermaid
 graph TD;
-  gx-query-menu-item --> gx-edit
   gx-query-menu --> gx-query-menu-item
   style gx-query-menu-item fill:#f9f,stroke:#333,stroke-width:4px
 ```

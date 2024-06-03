@@ -10,6 +10,10 @@
 
     <script type="module" src="/build/reporting.esm.js"></script>
     <script nomodule src="/build/reporting.js"></script>
+    <script type="module">
+      import { defineCustomElements } from "https://unpkg.com/@genexus/web-controls-library@latest/dist/esm/loader.js";
+      defineCustomElements();
+    </script>
 
     <style>
       body {
@@ -651,7 +655,7 @@
                 name: "Element1",
                 title: "Average of Country Life Expectancy",
                 dataField: "F1",
-                aggregation: "Sum",
+                aggregation: "Average",
                 dataType: "real",
                 visible: "Yes",
                 picture: "ZZZZZZZZZZZZZZ9",
@@ -704,7 +708,7 @@
             rows: [
               {
                 F1: "72.3845",
-                F1_N: "202400000000123797",
+                F1_N: "14476.9",
                 F1_D: "200"
               }
             ]
@@ -768,295 +772,311 @@
             rows: [
               {
                 F1: "Rio de Janeiro                          ",
-                F2: "801200009888899878987"
+                F2: "11748000"
               },
               {
                 F1: "Lima                                    ",
-                F2: "701200009889899878987"
+                F2: "8012000"
+              },
+              {
+                F1: "Belo Horizonte                          ",
+                F2: "5575000"
+              },
+              {
+                F1: "Porto Alegre                            ",
+                F2: "3917000"
+              },
+              {
+                F1: "Brasilia                                ",
+                F2: "3716996"
+              },
+              {
+                F1: "Recife                                  ",
+                F2: "3651000"
               },
               {
                 F1: "Salvador                                ",
-                F2: "601200009889899878987"
+                F2: "3484000"
               },
               {
                 F1: "Medellin                                ",
-                F2: "501200009889899878987"
+                F2: "3297000"
               },
               {
                 F1: "Caracas                                 ",
-                F2: "401200009889899878987"
+                F2: "2985000"
               },
               {
                 F1: "Guayaquil                               ",
-                F2: "601200009889899878987"
+                F2: "2514000"
               },
               {
                 F1: "Cali                                    ",
-                F2: "501200009889899878987"
+                F2: "2254000"
               },
               {
                 F1: "Santa Cruz                              ",
-                F2: "801200009889899878987"
+                F2: "2102998"
               },
               {
                 F1: "Maracaibo                               ",
-                F2: "701200009889899878987"
+                F2: "2072000"
               },
               {
                 F1: "Valencia                                ",
-                F2: "901200009889899878987"
+                F2: "1770000"
               },
               {
                 F1: "Manaus                                  ",
-                F2: "601200009889899878987"
+                F2: "1753000"
               },
               {
                 F1: "Quito                                   ",
-                F2: "701200009889899878987"
+                F2: "1701000"
               },
               {
                 F1: "La Paz                                  ",
-                F2: "801200009889899878987"
+                F2: "1590000"
               },
               {
                 F1: "Montevideo                              ",
-                F2: "501200009889899878987"
+                F2: "1513000"
               },
               {
                 F1: "Rosario                                 ",
-                F2: "301200009889899878987"
+                F2: "1203000"
               },
               {
                 F1: "Maceio                                  ",
-                F2: "401200009889899878987"
+                F2: "1186000"
               },
               {
                 F1: "Natal                                   ",
-                F2: "601200009889899878987"
+                F2: "1088000"
               },
               {
                 F1: "Florianopolis                           ",
-                F2: "801200009889899878987"
+                F2: "1023000"
               },
               {
                 F1: "Mendoza                                 ",
-                F2: "701200009889899878987"
+                F2: "893000"
               },
               {
                 F1: "Arequipa                                ",
-                F2: "751200009889899878987"
+                F2: "815000"
               },
               {
                 F1: "Cuiaba                                  ",
-                F2: "561200009889899878987"
+                F2: "806000"
               },
               {
                 F1: "Campo Grande                            ",
-                F2: "571200009889899878987"
+                F2: "778000"
               },
               {
                 F1: "Trujillo                                ",
-                F2: "758200009889899878987"
+                F2: "765171"
               },
               {
                 F1: "Uberlandia                              ",
-                F2: "659200009889899878987"
+                F2: "563536"
               },
               {
                 F1: "Salta                                   ",
-                F2: "589200009889899878987"
+                F2: "512686"
               },
               {
                 F1: "Santa Fe                                ",
-                F2: "599200009889899878987"
+                F2: "489505"
               },
               {
                 F1: "Feira de Santana                        ",
-                F2: "881200009889899878987"
+                F2: "481911"
               },
               {
                 F1: "Iquitos                                 ",
-                F2: "781200009889899878987"
+                F2: "458729"
               },
               {
                 F1: "San Juan                                ",
-                F2: "871200009889899878987"
+                F2: "447048"
               },
               {
                 F1: "Piura                                   ",
-                F2: "864200009889899878987"
+                F2: "396932"
               },
               {
                 F1: "Caxias do Sul                           ",
-                F2: "681200009889899878987"
+                F2: "381270"
               },
               {
                 F1: "Manizales                               ",
-                F2: "671200009889899878987"
+                F2: "375848"
               },
               {
                 F1: "Cusco                                   ",
-                F2: "661200009889899878987"
+                F2: "361182"
               },
               {
                 F1: "Posadas                                 ",
-                F2: "651200009889899878987"
+                F2: "357119"
               },
               {
                 F1: "Chimbote                                ",
-                F2: "641200009889899878987"
+                F2: "349846"
               },
               {
                 F1: "Montes Claros                           ",
-                F2: "631200009889899878987"
+                F2: "332379"
               },
               {
                 F1: "Pelotas                                 ",
-                F2: "621200009889899878987"
+                F2: "320674"
               },
               {
                 F1: "Pucallpa                                ",
-                F2: "611200009889899878987"
+                F2: "310750"
               },
               {
                 F1: "Antofagasta                             ",
-                F2: "741200009889899878987"
+                F2: "309832"
               },
               {
                 F1: "Vitoria da Conquista                    ",
-                F2: "731200009889899878987"
+                F2: "308204"
               },
               {
                 F1: "Cuenca                                  ",
-                F2: "721200009889899878987"
+                F2: "286878"
               },
               {
                 F1: "Tacna                                   ",
-                F2: "711200009889899878987"
+                F2: "280098"
               },
               {
                 F1: "Ica                                     ",
-                F2: "721200009889899878987"
+                F2: "279420"
               },
               {
                 F1: "Georgetown                              ",
-                F2: "731200009889899878987"
+                F2: "264350"
               },
               {
                 F1: "Petrolina                               ",
-                F2: "741200009889899878987"
+                F2: "260985"
               },
               {
                 F1: "Rio Branco                              ",
-                F2: "771200009889899878987"
+                F2: "257642"
               },
               {
                 F1: "Paramaribo                              ",
-                F2: "761200009889899878987"
+                F2: "254169"
               },
               {
                 F1: "Boa Vista                               ",
-                F2: "751200009889899878987"
+                F2: "235150"
               },
               {
                 F1: "Sucre                                   ",
-                F2: "491200009889899878987"
+                F2: "224838"
               },
               {
                 F1: "Formosa                                 ",
-                F2: "451200009889899878987"
+                F2: "221383"
               },
               {
                 F1: "Arica                                   ",
-                F2: "591200009889899878987"
+                F2: "185999"
               },
               {
                 F1: "Puerto Montt                            ",
-                F2: "551200009889899878987"
+                F2: "174629"
               },
               {
                 F1: "Tarija                                  ",
-                F2: "561200009889899878987"
+                F2: "159269"
               },
               {
                 F1: "Barreiras                               ",
-                F2: "881200009889899878987"
+                F2: "158292"
               },
               {
                 F1: "La Serena                               ",
-                F2: "891200009889899878987"
+                F2: "154521"
               },
               {
                 F1: "Comodoro Rivadavia                      ",
-                F2: "651200009889899878987"
+                F2: "140850"
               },
               {
                 F1: "Copiapo                                 ",
-                F2: "561200009889899878987"
+                F2: "129280"
               },
               {
                 F1: "Santa Rosa                              ",
-                F2: "871200009889899878987"
+                F2: "111424"
               },
               {
                 F1: "Corumba                                 ",
-                F2: "789200009889899878987"
+                F2: "96520"
               },
               {
                 F1: "Rio Gallegos                            ",
-                F2: "854200009889899878987"
+                F2: "85700"
               },
               {
                 F1: "Trinidad                                ",
-                F2: "698200009889899878987"
+                F2: "84259"
               },
               {
                 F1: "Riberalta                               ",
-                F2: "458200009889899878987"
+                F2: "74014"
               },
               {
                 F1: "Leticia                                 ",
-                F2: "561200009889899878987"
+                F2: "59575"
               },
               {
                 F1: "Cruzeiro do Sul                         ",
-                F2: "561200009889899878987"
+                F2: "56862"
               },
               {
                 F1: "Puerto Ayacucho                         ",
-                F2: "601200009889899878987"
+                F2: "52526"
               },
               {
                 F1: "Alta Floresta                           ",
-                F2: "87200009889899878987"
+                F2: "40466"
               },
               {
                 F1: "Durazno                                 ",
-                F2: "654200009889899878987"
+                F2: "34037"
               },
               {
                 F1: "Cottica                                 ",
-                F2: "789200009889899878987"
+                F2: "29210"
               },
               {
                 F1: "Colider                                 ",
-                F2: "874200009889899878987"
+                F2: "27139"
               },
               {
                 F1: "Rawson                                  ",
-                F2: "568200009889899878987"
+                F2: "26335"
               },
               {
                 F1: "Alvorada                                ",
-                F2: "551200009889899878987"
+                F2: "10232"
               },
               {
                 F1: "El Calafate                             ",
-                F2: "781200009889899878987"
+                F2: "8000"
               },
               {
                 F1: "Puerto Deseado                          ",
-                F2: "871200009889899878987"
+                F2: "3305"
               }
             ]
           }
@@ -1071,12 +1091,6 @@
         queryViewers[1].serviceResponse = serviceResponseChartMock;
         queryViewers[2].serviceResponse = serviceResponseChartMock;
         queryViewers[3].serviceResponse = serviceResponseChartMock;
-        queryViewers[4].serviceResponse = serviceResponseChartMock;
-        queryViewers[5].serviceResponse = serviceResponseChartMock;
-        queryViewers[6].serviceResponse = serviceResponseChartMock;
-        queryViewers[7].serviceResponse = serviceResponseChartMock;
-        queryViewers[8].serviceResponse = serviceResponseChartMock;
-        queryViewers[9].serviceResponse = serviceResponseChartMock;
 
         document
           .querySelector("gx-query-viewer-slider")
@@ -1187,56 +1201,6 @@
           plot-series="InTheSameChart"
           show-data-labels-in="Columns"
           query-title="3 - Single data chart - Column 3D"
-          x-axis-intersection-at-zero="false"
-          x-axis-labels=""
-          x-axis-title=""
-          y-axis-title=""
-        ></gx-query-viewer>
-      </div>
-
-      <div>
-        <gx-query-viewer
-          type="Chart"
-          chart-type="Pie"
-          allow-selection="false"
-          show-values="true"
-          plot-series="InTheSameChart"
-          show-data-labels-in="Columns"
-          query-title="3 - Single data chart - Column 3D"
-          x-axis-intersection-at-zero="false"
-          x-axis-labels=""
-          x-axis-title=""
-          y-axis-title=""
-        ></gx-query-viewer>
-      </div>
-      <div>
-        <gx-query-viewer-slider start-slider-value="50" end-slider-value="80">
-          <gx-query-viewer
-            slot="content"
-            type="Chart"
-            chart-type="Line"
-            allow-selection="false"
-            show-values="true"
-            plot-series="InTheSameChart"
-            show-data-labels-in="Columns"
-            query-title="4 - Single data chart - with slider"
-            x-axis-intersection-at-zero="false"
-            x-axis-labels=""
-            x-axis-title=""
-            y-axis-title=""
-          ></gx-query-viewer>
-        </gx-query-viewer-slider>
-      </div>
-
-      <div>
-        <gx-query-viewer
-          type="Chart"
-          chart-type="Doughnut3D"
-          allow-selection="false"
-          plot-series="InTheSameChart"
-          show-data-labels-in="Columns"
-          show-values="true"
-          query-title="2 - Single data chart"
           x-axis-intersection-at-zero="false"
           x-axis-labels=""
           x-axis-title=""

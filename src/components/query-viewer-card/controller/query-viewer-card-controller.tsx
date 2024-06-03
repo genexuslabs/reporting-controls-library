@@ -343,6 +343,7 @@ export class QueryViewerCard {
           }) => (
             <gx-query-viewer-card
               class={{ [`${this.cssClass}__card`]: !!this.cssClass }}
+              part="card"
               description={title}
               value={value}
               minValue={minValue}
