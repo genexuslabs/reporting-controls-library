@@ -10,11 +10,11 @@
 
     <script type="module" src="/build/reporting.esm.js"></script>
     <script nomodule src="/build/reporting.js"></script>
+
     <script type="module">
       import { defineCustomElements } from "https://unpkg.com/@genexus/web-controls-library@latest/dist/esm/loader.js";
       defineCustomElements();
     </script>
-
     <style>
       body {
         margin: 0;
@@ -34,7 +34,252 @@
         align-items: center;
       }
     </style>
+  
+    <script>
+      const pivotParameters = {
+        AllowSelection: false,
+        AutoResize: true,
+        ControlName: "ctrlQueryviewer1",
+        DisableColumnSort: false,
+        ObjectName: "Query",
+        PageSize: 20,
+        RealType: "PivotTable",
+        RememberLayout: false,
+        SelectLine: true,
+        ServerPaging: true,
+        ServerPagingCacheSize: 0,
+        ServerPagingPivot: true,
+        ShowDataLabelsIn: "Columns",
+        Title: "Pivot",
+        TotalForColumns: "Yes",
+        TotalForRows: "Yes",
+        UcId: "ctrlQueryviewer1",
+        UseRecordsetCache: true,
+        metadata: `<?xml version="1.0" encoding="UTF-8"?>
+            <OLAPCube Version="2" format="compact" decimalSeparator="." thousandsSeparator="," dateFormat="MDY" textForNullValues="" ShowDataLabelsIn="Columns">
+              <OLAPDimension name="Element1" displayName="Country Name" description="Country Name" dataField="F1" visible="Yes" axis="Rows" canDragToPages="true" summarize="yes" align="left" picture="" dataType="character" format=""></OLAPDimension>
+              <OLAPMeasure name="Element2" displayName="Sum of Country Value" description="Sum of Country Value" dataField="F2" visible="Yes" aggregation="sum" align="right" picture="ZZZZZZZZZZZZZZZZZ9" targetValue="0" maximumValue="0" dataType="integer" format=""></OLAPMeasure>
+            </OLAPCube>`
+      };
 
+      const pivotCollection = {
+        collection: {
+          ctrlQueryviewer1: {
+            AutoRefreshGroup: "",
+            debugServices: false,
+            ControlName: "ctrlQueryviewer1",
+            Metadata: {
+              Axes: [
+                {
+                  name: "Element1",
+                  title: "Country Name",
+                  dataField: "F1",
+                  dataType: "character",
+                  visible: "Yes",
+                  axis: "Rows",
+                  canDragToPages: true,
+                  raiseItemClick: true,
+                  isComponent: false,
+                  style: "",
+                  subtotals: "Yes",
+                  filter: {
+                    type: "ShowAllValues",
+                    values: []
+                  },
+                  expandCollapse: {
+                    type: "ExpandAllValues",
+                    values: []
+                  },
+                  order: {
+                    type: "None",
+                    values: []
+                  },
+                  valuesStyles: []
+                }
+              ],
+              Data: [
+                {
+                  name: "Element2",
+                  title: "Sum of Country Value",
+                  dataField: "F2",
+                  aggregation: "Sum",
+                  dataType: "integer",
+                  visible: "Yes",
+                  picture: "ZZZZZZZZZZZZZZ9",
+                  raiseItemClick: true,
+                  isComponent: false,
+                  targetValue: 100,
+                  maximumValue: 100,
+                  style: "",
+                  conditionalStyles: [],
+                  isFormula: false,
+                  formula: ""
+                }
+              ]
+            }
+          }
+        },
+        fadeTimeouts: {}
+      };
+
+      const PIVOT_PAGE = `ctrlQueryviewer1_GeneralQuery1_pivot_page`;
+      const PIVOT_CONTENT = `ctrlQueryviewer1_GeneralQuery1_pivot_content`;
+
+      const queryViewerConfiguration = {
+        xml: {
+          metadata: pivotParameters.metadata
+        },
+        pivotParams: {
+          page: `ctrlQueryviewer1_GeneralQuery1_pivot_page`,
+          content: `ctrlQueryviewer1_GeneralQuery1_pivot_content`,
+          container: pivotParameters.queryViewerContainer,
+          RealType: pivotParameters.tableType,
+          ObjectName: pivotParameters.objectName,
+          ControlName: pivotParameters.ControlName,
+          metadata: pivotParameters.metadata,
+          PageSize: pivotParameters.paging
+            ? pivotParameters.pageSize
+            : undefined,
+          UcId: pivotParameters.UcId,
+          AutoResize: pivotParameters.autoResize,
+          DisableColumnSort: false,
+          RememberLayout: pivotParameters.rememberLayout,
+          ShowDataLabelsIn: pivotParameters.showDataLabelsIn,
+          ServerPaging: true,
+          ServerPagingPivot: true,
+          ServerPagingCacheSize: 0,
+          UseRecordsetCache: true,
+          AllowSelection: false,
+          SelectLine: true,
+          TotalForColumns: pivotParameters.totalForColumns,
+          TotalForRows: pivotParameters.totalForRows,
+          Title: undefined,
+          data: undefined
+        },
+        oat_element: undefined
+      };
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const pivotElement = document.querySelector("gx-query-viewer-pivot");
+        if (pivotElement) {
+          pivotElement.pivotParameters = pivotParameters;
+          pivotElement.pivotCollection = pivotCollection;
+          pivotElement.metadata = pivotParameters.metadata;
+          pivotElement.queryViewerConfiguration = queryViewerConfiguration;
+        }
+      });
+
+      var dataforpivottable = function (e) {
+        var data = `<?xml version="1.0" encoding="UTF-8"?>
+          <Recordset RecordCount="8" PageCount="1">
+            <Page PageNumber="1">
+              <Columns>
+                <Header DataField="F2"></Header>
+              </Columns>
+              <Rows>
+                <Row>
+                  <Header>
+                    <F1>Argentina</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547282</Cell>
+                  </Cells>
+                </Row>
+                <Row>
+                  <Header>
+                    <F1>Brasil</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547282</Cell>
+                  </Cells>
+                </Row>
+                <Row>
+                  <Header>
+                    <F1>Uruguay</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547282</Cell>
+                  </Cells>
+                </Row>
+                <Row>
+                  <Header>
+                    <F1>Paraguay</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547282</Cell>
+                  </Cells>
+                </Row>
+                <Row>
+                  <Header>
+                    <F1>Chile</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547223</Cell>
+                  </Cells>
+                </Row>
+                <Row>
+                  <Header>
+                    <F1>Suiza</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547282</Cell>
+                  </Cells>
+                </Row>
+                <Row>
+                  <Header>
+                    <F1>Alemania</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547282</Cell>
+                  </Cells>
+                </Row>
+                <Row>
+                  <Header>
+                    <F1>Peru</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547282</Cell>
+                  </Cells>
+                </Row>
+                <Row>
+                  <Header>
+                    <F1>Bolivia</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547282</Cell>
+                  </Cells>
+                </Row>
+                <Row>
+                  <Header>
+                    <F1>Portugal</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547282</Cell>
+                  </Cells>
+                </Row>
+                <Row>
+                  <Header>
+                    <F1>Canada</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547282</Cell>
+                  </Cells>
+                </Row>
+
+              </Rows>
+            </Page>
+          </Recordset>
+        `;
+        var resXML = data;
+        if (typeof e.parameter.callback == "function")
+          e.parameter.callback(resXML);
+      };
+      document.addEventListener(
+        "RequestPageDataForPivotTable",
+        dataforpivottable,
+        false
+      );
+    </script>
     <script>
       window.addEventListener("appload", () => {
         // const serviceResponseCardMock = {
@@ -1099,6 +1344,26 @@
           });
       });
     </script>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        display: inline-grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 500px;
+        gap: 1em;
+      }
+      .container > div {
+        border: 1px solid gray;
+        padding: 1em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
   </head>
   <body>
     <div class="container">
@@ -1144,7 +1409,6 @@
           y-axis-title=""
         ></gx-query-viewer>
       </div>
-
       <div>
         <div style="height: 200px; margin: 40px; display: flex; width: 100%">
           <gx-query-viewer-slider start-slider-value="50" end-slider-value="80">
@@ -1164,6 +1428,21 @@
           </gx-query-viewer-slider>
         </div>
       </div>
+      <div>
+        <div style="height: 200px; margin: 40px; display: flex; width: 100%">
+          <gx-query-viewer-pivot
+            css-class="QueryViewer"
+            table-type="PivotTable"
+            auto-resize="true"
+            total-for-columns="Yes"
+            total-for-rows="Yes"
+            show-data-labels-in="Columns"
+            paging="true"
+            page-size="10"
+            remember-layout="false"
+            object-name="Query"
+          ></gx-query-viewer-pivot>
+        </div>
     </div>
   </body>
 </html>
