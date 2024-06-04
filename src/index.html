@@ -1208,5 +1208,23 @@
         ></gx-query-viewer>
       </div>
     </div>
+    <div style="height: 200px; margin: 40px; display: flex; width: 100%">
+      <gx-query-viewer-slider start-slider-value="50" end-slider-value="80">
+        <gx-query-viewer
+          slot="content"
+          type="Chart"
+          chart-type="Line"
+          allow-selection="false"
+          plot-series="InTheSameChart"
+          show-data-labels-in="Columns"
+          query-title="4 - Single data chart - with slider"
+          x-axis-intersection-at-zero="false"
+          x-axis-labels=""
+          x-axis-title=""
+          y-axis-title=""
+        ></gx-query-viewer>
+      </gx-query-viewer-slider>
+    </div>
+    <div></div>
   </body>
 </html>

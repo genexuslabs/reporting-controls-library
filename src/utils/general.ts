@@ -19,6 +19,8 @@ import {
 import { TooltipFormatterContextObject } from "highcharts";
 import { GxBigNumber } from "@genexus/web-standard-functions/dist/lib/types/gxbignumber";
 import { add } from "@genexus/web-standard-functions/dist/lib/math/add";
+import { subtract } from "@genexus/web-standard-functions/dist/lib/math/subtract";
+import { multiply } from "@genexus/web-standard-functions/dist/lib/math/multiply";
 import { divide } from "@genexus/web-standard-functions/dist/lib/math/divide";
 
 export function parseNumericPicture(
@@ -112,6 +114,36 @@ export function parseNumericPicture(
   };
 }
 
+function calculate(formula: string) {
+  const operators = {
+    "*": (a: GxBigNumber, b: GxBigNumber) => multiply(a, b),
+    "/": (a: GxBigNumber, b: GxBigNumber) => divide(a, b),
+    "+": (a: GxBigNumber, b: GxBigNumber) => add(a, b),
+    "-": (a: GxBigNumber, b: GxBigNumber) => subtract(a, b)
+  };
+
+  const stack = [];
+  let number = "";
+
+  for (const char of formula) {
+    if (char in operators) {
+      stack.push(new GxBigNumber(number));
+      number = "";
+      stack.push(char);
+    } else {
+      number += char;
+    }
+  }
+
+  stack.push(new GxBigNumber(number));
+  let result = stack[0];
+  for (let i = 1; i < stack.length; i += 2) {
+    result = operators[stack[i]](result, stack[i + 1]);
+  }
+
+  return result;
+}
+
 function evaluate(formula: string, baseName: string, variables: string[]) {
   for (let i = 1; i <= variables.length; i++) {
     formula = formula.replace(
@@ -119,7 +151,8 @@ function evaluate(formula: string, baseName: string, variables: string[]) {
       variables[i - 1]
     );
   }
-  return eval(formula);
+
+  return calculate(formula);
 }
 
 export const aggregateMap: {
@@ -211,11 +244,10 @@ export function aggregateDatum(
 ): string {
   const currentYValues: GxBigNumber[] = [];
   const currentYQuantities: GxBigNumber[] = [];
-  const variables: number[] = [];
+  const variables: GxBigNumber[] = [];
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
-    // TODO: Test when datum isFormula is true
     if (datum.isFormula) {
       let j = 0;
       let value = row[datum.dataField + "_1"];
@@ -225,12 +257,13 @@ export function aggregateDatum(
         value = row[datum.dataField + "_" + j.toString()];
 
         if (value) {
-          const floatValue = parseFloat(value);
-
+          const floatValue = new GxBigNumber(value);
           if (i === 0) {
             variables.push(floatValue);
           } else {
-            variables[j - 1] += floatValue;
+            variables[j - 1] = variables[j - 1]
+              ? add(variables[j - 1], floatValue)
+              : variables[j - 1];
           }
         }
       } while (value);
@@ -256,7 +289,11 @@ export function aggregateDatum(
   }
 
   return datum.isFormula
-    ? evaluate(datum.formula, datum.dataField + "_", variables.map(String))
+    ? evaluate(
+        datum.formula,
+        datum.dataField + "_",
+        variables.map(num => num.toString())
+      )
     : aggregate(
         datum.aggregation,
         currentYValues,
