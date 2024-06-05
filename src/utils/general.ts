@@ -113,8 +113,7 @@ export function parseNumericPicture(
     Suffix: suffix
   };
 }
-
-function calculate(formula: string) {
+export function calculate(formula: string) {
   const operators = {
     "*": (a: GxBigNumber, b: GxBigNumber) => multiply(a, b),
     "/": (a: GxBigNumber, b: GxBigNumber) => divide(a, b),
@@ -122,26 +121,45 @@ function calculate(formula: string) {
     "-": (a: GxBigNumber, b: GxBigNumber) => subtract(a, b)
   };
 
-  const stack = [];
+  const precedence = {
+    "+": 1,
+    "-": 1,
+    "*": 2,
+    "/": 2
+  };
+
+  const numberStack: GxBigNumber[] = [];
+  const operatorStack: string[] = [];
   let number = "";
 
   for (const char of formula) {
     if (char in operators) {
-      stack.push(new GxBigNumber(number));
+      numberStack.push(new GxBigNumber(number));
       number = "";
-      stack.push(char);
+      while (
+        operatorStack.length > 0 &&
+        precedence[char] <= precedence[operatorStack[operatorStack.length - 1]]
+      ) {
+        const b = numberStack.pop();
+        const a = numberStack.pop();
+        const operator = operatorStack.pop();
+        numberStack.push(operators[operator](a, b));
+      }
+      operatorStack.push(char);
     } else {
       number += char;
     }
   }
 
-  stack.push(new GxBigNumber(number));
-  let result = stack[0];
-  for (let i = 1; i < stack.length; i += 2) {
-    result = operators[stack[i]](result, stack[i + 1]);
+  numberStack.push(new GxBigNumber(number));
+  while (operatorStack.length > 0) {
+    const b = numberStack.pop();
+    const a = numberStack.pop();
+    const operator = operatorStack.pop();
+    numberStack.push(operators[operator](a, b));
   }
 
-  return result;
+  return numberStack.pop();
 }
 
 function evaluate(formula: string, baseName: string, variables: string[]) {
@@ -245,7 +263,6 @@ export function aggregateDatum(
   const currentYValues: GxBigNumber[] = [];
   const currentYQuantities: GxBigNumber[] = [];
   const variables: GxBigNumber[] = [];
-
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
     if (datum.isFormula) {
