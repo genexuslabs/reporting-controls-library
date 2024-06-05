@@ -155,6 +155,7 @@ export class QueryViewerChart {
       // ToDo: add implementation for RTL
       false
     );
+
     // AddHighchartsCSSRules(qViewer);
     // ToDo: Add translations
     // SetHighchartsOptions();

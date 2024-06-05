@@ -17,6 +17,11 @@ import {
   QueryViewerServiceMetaDataData
 } from "@genexus/reporting-api";
 import { TooltipFormatterContextObject } from "highcharts";
+import { GxBigNumber } from "@genexus/web-standard-functions/dist/lib/types/gxbignumber";
+import { add } from "@genexus/web-standard-functions/dist/lib/math/add";
+import { subtract } from "@genexus/web-standard-functions/dist/lib/math/subtract";
+import { multiply } from "@genexus/web-standard-functions/dist/lib/math/multiply";
+import { divide } from "@genexus/web-standard-functions/dist/lib/math/divide";
 
 export function parseNumericPicture(
   dataType: QueryViewerDataType,
@@ -108,6 +113,54 @@ export function parseNumericPicture(
     Suffix: suffix
   };
 }
+export function calculate(formula: string) {
+  const operators = {
+    "*": (a: GxBigNumber, b: GxBigNumber) => multiply(a, b),
+    "/": (a: GxBigNumber, b: GxBigNumber) => divide(a, b),
+    "+": (a: GxBigNumber, b: GxBigNumber) => add(a, b),
+    "-": (a: GxBigNumber, b: GxBigNumber) => subtract(a, b)
+  };
+
+  const precedence = {
+    "+": 1,
+    "-": 1,
+    "*": 2,
+    "/": 2
+  };
+
+  const numberStack: GxBigNumber[] = [];
+  const operatorStack: string[] = [];
+  let number = "";
+
+  for (const char of formula) {
+    if (char in operators) {
+      numberStack.push(new GxBigNumber(number));
+      number = "";
+      while (
+        operatorStack.length > 0 &&
+        precedence[char] <= precedence[operatorStack[operatorStack.length - 1]]
+      ) {
+        const b = numberStack.pop();
+        const a = numberStack.pop();
+        const operator = operatorStack.pop();
+        numberStack.push(operators[operator](a, b));
+      }
+      operatorStack.push(char);
+    } else {
+      number += char;
+    }
+  }
+
+  numberStack.push(new GxBigNumber(number));
+  while (operatorStack.length > 0) {
+    const b = numberStack.pop();
+    const a = numberStack.pop();
+    const operator = operatorStack.pop();
+    numberStack.push(operators[operator](a, b));
+  }
+
+  return numberStack.pop();
+}
 
 function evaluate(formula: string, baseName: string, variables: string[]) {
   for (let i = 1; i <= variables.length; i++) {
@@ -116,81 +169,102 @@ function evaluate(formula: string, baseName: string, variables: string[]) {
       variables[i - 1]
     );
   }
-  return eval(formula);
+
+  return calculate(formula);
 }
 
-const aggregateMap: {
+export const aggregateMap: {
   [key in QueryViewerAggregationType]: (
-    values: number[],
-    quantities: number[]
-  ) => number;
+    values: GxBigNumber[],
+    quantities: GxBigNumber[]
+  ) => GxBigNumber;
 } = {
   [QueryViewerAggregationType.Sum]: (
-    values: number[],
+    values: GxBigNumber[],
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _quantities: number[]
+    _quantities: GxBigNumber[]
   ) => {
-    let sumValues: number = null;
+    let sumValues: GxBigNumber = null;
 
     for (let i = 0; i < values.length; i++) {
       if (values[i]) {
-        sumValues += values[i];
+        sumValues = sumValues ? add(sumValues, values[i]) : values[i];
       }
     }
+
     return sumValues;
   },
 
   [QueryViewerAggregationType.Average]: (
-    values: number[],
-    quantities: number[]
+    values: GxBigNumber[],
+    quantities: GxBigNumber[]
   ) => {
-    let sumValues: number = null;
-    let sumQuantities: number = null;
+    let sumValues: GxBigNumber = null;
+    let sumQuantities: GxBigNumber = null;
 
     for (let i = 0; i < values.length; i++) {
-      if (values[i]) {
-        sumValues += values[i];
-        sumQuantities += quantities[i];
+      const value = values[i];
+      if (value) {
+        sumValues = sumValues ? add(sumValues, value) : value;
+        sumQuantities = sumQuantities
+          ? add(sumQuantities, quantities[i])
+          : quantities[i];
       }
     }
-    return sumValues != null ? sumValues / sumQuantities : null;
+
+    return sumValues != null ? divide(sumValues, sumQuantities) : null;
   },
 
   [QueryViewerAggregationType.Count]: (
-    _values: number[],
-    quantities: number[]
-  ) => quantities.reduce((a, b) => a + b, 0),
+    _values: GxBigNumber[],
+    quantities: GxBigNumber[]
+  ) => {
+    return new GxBigNumber(
+      quantities.reduce((a, b) => add(a, b), new GxBigNumber(0))
+    );
+  },
 
+  [QueryViewerAggregationType.Max]: (
+    values: GxBigNumber[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _quantities: GxBigNumber[]
+  ) =>
+    // TODO: Find a way to find the biggest number in an array of BigNumber
+    values.length === 0
+      ? null
+      : new GxBigNumber(Math.max(...values.map(Number))),
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  [QueryViewerAggregationType.Max]: (values: number[], _quantities: number[]) =>
-    values.length === 0 ? null : Math.max(...values),
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  [QueryViewerAggregationType.Min]: (values: number[], _quantities: number[]) =>
-    values.length === 0 ? null : Math.min(...values)
+  [QueryViewerAggregationType.Min]: (
+    values: GxBigNumber[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _quantities: GxBigNumber[]
+  ) =>
+    // TODO: Find a way to find the smallest number in an array of BigNumber
+    values.length === 0
+      ? null
+      : new GxBigNumber(Math.min(...values.map(Number)))
 };
 
 export const aggregate = (
   aggregation: QueryViewerAggregationType,
-  values: number[],
-  quantities: number[]
-) =>
-  aggregateMap[aggregation || QueryViewerAggregationType.Sum](
+  values: GxBigNumber[],
+  quantities: GxBigNumber[]
+) => {
+  return aggregateMap[aggregation || QueryViewerAggregationType.Sum](
     values,
     quantities
   );
+};
 
-function aggregateDatum(
+export function aggregateDatum(
   datum: QueryViewerServiceMetaDataData,
   rows: QueryViewerServiceDataRow[]
 ): string {
-  const currentYValues = [];
-  const currentYQuantities = [];
-  const variables: number[] = [];
-
+  const currentYValues: GxBigNumber[] = [];
+  const currentYQuantities: GxBigNumber[] = [];
+  const variables: GxBigNumber[] = [];
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
-
     if (datum.isFormula) {
       let j = 0;
       let value = row[datum.dataField + "_1"];
@@ -200,36 +274,43 @@ function aggregateDatum(
         value = row[datum.dataField + "_" + j.toString()];
 
         if (value) {
-          const floatValue = parseFloat(value);
-
+          const floatValue = new GxBigNumber(value);
           if (i === 0) {
             variables.push(floatValue);
           } else {
-            variables[j - 1] += floatValue;
+            variables[j - 1] = variables[j - 1]
+              ? add(variables[j - 1], floatValue)
+              : variables[j - 1];
           }
         }
       } while (value);
     } else {
-      let yValue;
-      let yQuantity;
+      let yValue: GxBigNumber;
+      let yQuantity: GxBigNumber;
 
       if (datum.aggregation === QueryViewerAggregationType.Count) {
-        yValue = 0; // Not used
-        yQuantity = parseFloat(row[datum.dataField]);
+        yValue = new GxBigNumber(0);
+        yQuantity = new GxBigNumber(row[datum.dataField]);
       } else if (datum.aggregation === QueryViewerAggregationType.Average) {
-        yValue = parseFloat(row[datum.dataField + "_N"]);
-        yQuantity = parseFloat(row[datum.dataField + "_D"]);
+        yValue = new GxBigNumber(row[datum.dataField + "_N"]);
+
+        yQuantity = new GxBigNumber(row[datum.dataField + "_D"]);
       } else {
-        yValue = parseFloat(row[datum.dataField]);
-        yQuantity = 1;
+        yValue = new GxBigNumber(row[datum.dataField]);
+        yQuantity = new GxBigNumber(1);
       }
+
       currentYValues.push(yValue);
       currentYQuantities.push(yQuantity);
     }
   }
 
   return datum.isFormula
-    ? evaluate(datum.formula, datum.dataField + "_", variables.map(String))
+    ? evaluate(
+        datum.formula,
+        datum.dataField + "_",
+        variables.map(num => num.toString())
+      )
     : aggregate(
         datum.aggregation,
         currentYValues,
@@ -245,6 +326,7 @@ export function aggregateData(
 
   data.forEach(datum => {
     const aggValue = aggregateDatum(datum, rows);
+
     newRow[datum.dataField] = aggValue;
   });
   return newRow;
@@ -863,6 +945,7 @@ export function TooltipFormatter(
   chartTypes: ChartTypes
 ) {
   // let qViewer;
+
   const res = "";
   if (sharedTooltip) {
     // ToDo: implement this with the events
@@ -917,6 +1000,7 @@ export function TooltipFormatter(
     //   ? 2
     //   : serie.NumberFormat.DecimalPrecision;
     // const removeTrailingZeroes = chartTypes.Gauge;
+
     return isRTL
       ? (chartTypes.Gauge ? "%" : "") +
           // formatNumber(
@@ -925,7 +1009,7 @@ export function TooltipFormatter(
           //   picture,
           //   removeTrailingZeroes
           // )
-          evArg.point.y +
+          evArg.point.options.description +
           "<b>: " +
           (evArg.point.name !== "" ? evArg.point.name : evArg.series.name) +
           "<b>"
@@ -938,9 +1022,14 @@ export function TooltipFormatter(
           //   picture,
           //   removeTrailingZeroes
           // )
-          evArg.point.y +
+          // linea original
+          // evArg.point.y +
+          //
+          // aqui paso el valor que viene en la propiedad dataTool al tooltip
+          evArg.point.options.description +
           (chartTypes.Gauge ? "%" : "");
   }
+
   return res;
 }
 

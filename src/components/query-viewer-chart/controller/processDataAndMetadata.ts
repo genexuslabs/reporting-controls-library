@@ -28,6 +28,7 @@ import {
   parseNumericPicture
 } from "../../../utils/general";
 import { ChartTypes, IS_CHART_TYPE, isDatetimeXAxis } from "./chart-types";
+import { GxBigNumber } from "@genexus/web-standard-functions/dist/lib/types/gxbignumber";
 
 export type ChartMetadataAndData = {
   Categories: QueryViewerChartCategories;
@@ -371,7 +372,7 @@ function AddSeriesValues(
     // else
     //     point.Color = qv.util.GetNullColor();
     serie.Points.push(point);
-    if (parseFloat(point.Value) > 0) {
+    /*  if (parseFloat(point.Value) > 0) {
       serie.PositiveValues = true;
     }
     if (parseFloat(point.Value) < 0) {
@@ -383,6 +384,24 @@ function AddSeriesValues(
     } else {
       if (parseFloat(point.Value) > serie.MaxValue) {
         serie.MaxValue = parseFloat(point.Value);
+      }
+      if (parseFloat(point.Value) < serie.MinValue) {
+        serie.MinValue = parseFloat(point.Value);
+      }
+    } */
+
+    if (parseFloat(point.Value) > 0) {
+      serie.PositiveValues = true;
+    }
+    if (parseFloat(point.Value) < 0) {
+      serie.NegativeValues = true;
+    }
+    if (valueIndex === 0) {
+      serie.MinValue = parseFloat(point.Value);
+      serie.MaxValue = parseFloat(point.Value);
+    } else {
+      if (parseFloat(point.Value) > serie.MaxValue) {
+        // serie.MaxValue = parseFloat(point.Value);
       }
       if (parseFloat(point.Value) < serie.MinValue) {
         serie.MinValue = parseFloat(point.Value);
@@ -487,7 +506,7 @@ function XAxisDataTypeOK(
 //         serie.MaximumValue = serie.TargetValue;
 // }
 
-function aggregatePoints(chartSerie: QueryViewerChartSerie) {
+export function aggregatePoints(chartSerie: QueryViewerChartSerie) {
   const currentYValues: number[] = [];
   const currentYQuantities: number[] = [];
   // const firstColor = "";
@@ -501,7 +520,7 @@ function aggregatePoints(chartSerie: QueryViewerChartSerie) {
       yValue = parseFloat(trimUtil(point.Value_N));
       yQuantity = parseFloat(trimUtil(point.Value_D));
     } else {
-      yValue = parseFloat(trimUtil(point.Value));
+      yValue = new GxBigNumber(point.Value);
       yQuantity = 1;
     }
     currentYValues.push(yValue);
@@ -512,8 +531,8 @@ function aggregatePoints(chartSerie: QueryViewerChartSerie) {
   });
   const value = aggregate(
     chartSerie.Aggregation,
-    currentYValues,
-    currentYQuantities
+    currentYValues.map(val => new GxBigNumber(val)),
+    currentYQuantities.map(val => new GxBigNumber(val))
   ).toString();
   chartSerie.Points = [{ Value: value, Value_N: value, Value_D: "1" }];
   chartSerie.NegativeValues = parseFloat(value) < 0;

@@ -1387,7 +1387,38 @@
           allow-selection="false"
           plot-series="InTheSameChart"
           show-data-labels-in="Columns"
+          show-values="true"
           query-title="2 - Single data chart"
+          x-axis-intersection-at-zero="false"
+          x-axis-labels=""
+          x-axis-title=""
+          y-axis-title=""
+        ></gx-query-viewer>
+      </div>
+      <div>
+        <gx-query-viewer
+          type="Chart"
+          chart-type="Polar"
+          allow-selection="false"
+          plot-series="InTheSameChart"
+          show-data-labels-in="Columns"
+          show-values="true"
+          query-title="2 - Single data chart"
+          x-axis-intersection-at-zero="false"
+          x-axis-labels=""
+          x-axis-title=""
+          y-axis-title=""
+        ></gx-query-viewer>
+      </div>
+      <div>
+        <gx-query-viewer
+          type="Chart"
+          chart-type="Radar"
+          allow-selection="false"
+          plot-series="InTheSameChart"
+          show-data-labels-in="Columns"
+          show-values="true"
+          query-title="2 - Radar"
           x-axis-intersection-at-zero="false"
           x-axis-labels=""
           x-axis-title=""
@@ -1400,6 +1431,7 @@
           type="Chart"
           chart-type="Column3D"
           allow-selection="false"
+          show-values="true"
           plot-series="InTheSameChart"
           show-data-labels-in="Columns"
           query-title="3 - Single data chart - Column 3D"
@@ -1410,23 +1442,34 @@
         ></gx-query-viewer>
       </div>
       <div>
-        <div style="height: 200px; margin: 40px; display: flex; width: 100%">
-          <gx-query-viewer-slider start-slider-value="50" end-slider-value="80">
-            <gx-query-viewer
-              slot="content"
-              type="Chart"
-              chart-type="Line"
-              allow-selection="false"
-              plot-series="InTheSameChart"
-              show-data-labels-in="Columns"
-              query-title="4 - Single data chart - with slider"
-              x-axis-intersection-at-zero="false"
-              x-axis-labels=""
-              x-axis-title=""
-              y-axis-title=""
-            ></gx-query-viewer>
-          </gx-query-viewer-slider>
-        </div>
+        <gx-query-viewer
+          type="Chart"
+          chart-type="Area"
+          allow-selection="false"
+          show-values="true"
+          plot-series="InTheSameChart"
+          show-data-labels-in="Columns"
+          query-title="3 - Single data chart - Column 3D"
+          x-axis-intersection-at-zero="false"
+          x-axis-labels=""
+          x-axis-title=""
+          y-axis-title=""
+        ></gx-query-viewer>
+      </div>
+      <div>
+        <gx-query-viewer
+          type="Chart"
+          chart-type="Funnel"
+          allow-selection="false"
+          show-values="true"
+          plot-series="InTheSameChart"
+          show-data-labels-in="Columns"
+          query-title="3 - Single data chart - Column 3D"
+          x-axis-intersection-at-zero="false"
+          x-axis-labels=""
+          x-axis-title=""
+          y-axis-title=""
+        ></gx-query-viewer>
       </div>
       <div>
         <div style="height: 200px; margin: 40px; display: flex; width: 100%">
@@ -1444,5 +1487,23 @@
           ></gx-query-viewer-pivot>
         </div>
     </div>
+    <div style="height: 200px; margin: 40px; display: flex; width: 100%">
+      <gx-query-viewer-slider start-slider-value="50" end-slider-value="80">
+        <gx-query-viewer
+          slot="content"
+          type="Chart"
+          chart-type="Line"
+          allow-selection="false"
+          plot-series="InTheSameChart"
+          show-data-labels-in="Columns"
+          query-title="4 - Single data chart - with slider"
+          x-axis-intersection-at-zero="false"
+          x-axis-labels=""
+          x-axis-title=""
+          y-axis-title=""
+        ></gx-query-viewer>
+      </gx-query-viewer-slider>
+    </div>
+    <div></div>
   </body>
 </html>

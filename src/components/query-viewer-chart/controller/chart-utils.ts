@@ -112,6 +112,7 @@ export function getAllHighchartOptions(
     arrOptions.push(options);
     return arrOptions;
   }
+
   for (
     let seriesIndex = 0;
     seriesIndex < chartMetadataAndData.Series.ByIndex.length;

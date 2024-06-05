@@ -11,6 +11,10 @@ import {
   QueryViewerTrendPeriod
 } from "@genexus/reporting-api";
 import { fromDateToString, fromStringToDateISO } from "../../../utils/date";
+import { GxBigNumber } from "@genexus/web-standard-functions/dist/lib/types/gxbignumber";
+import { divide } from "@genexus/web-standard-functions/dist/lib/math/divide";
+import { toStringBigNumber } from "@genexus/web-standard-functions/dist/lib/bigNumber/toString";
+import { multiply } from "@genexus/web-standard-functions/dist/lib/math/multiply";
 
 export type RegressionSeries = {
   LinearRegression: {
@@ -302,13 +306,15 @@ const showDataAsMapping: {
 // @todo Complete the implementation of this function by comparing it to the Web implementation
 export function valueOrPercentage(
   showDataAs: QueryViewerShowDataAs,
-  value: number,
+  value: GxBigNumber,
   datum: QueryViewerServiceMetaDataData
 ) {
-  const percentage = (value * 100) / datum.targetValue;
+  const multiplication = multiply(value, 100);
+  const percentage = divide(multiplication, datum.targetValue);
 
   return showDataAsMapping[showDataAs]({
-    value: value.toFixed(2),
-    percentage: percentage.toFixed(2) + "%"
+    value: toStringBigNumber(value, new GxBigNumber(), new GxBigNumber()),
+    percentage:
+      toStringBigNumber(percentage, new GxBigNumber(), new GxBigNumber()) + "%"
   });
 }
