@@ -89,8 +89,7 @@ export class QueryViewer {
     [QueryViewerOutputType.Card]: response => this.cardRender(response),
 
     [QueryViewerOutputType.Chart]: response => this.chartRender(response),
-    [QueryViewerOutputType.Map]: response =>
-      this.notImplementedRender(response),
+    [QueryViewerOutputType.Map]: response => this.mapRender(response),
     [QueryViewerOutputType.PivotTable]: (_, pivotResponse) =>
       this.pivotRender(pivotResponse),
     [QueryViewerOutputType.Pivot_Table]: (_, pivotResponse) =>
@@ -276,6 +275,11 @@ export class QueryViewer {
   @Prop({ mutable: true }) queryTitle: string;
 
   /**
+   * Description of the QueryViewer
+   */
+  @Prop({ mutable: true }) description: string;
+
+  /**
    * For timeline for remembering layout
    */
   @Prop() readonly rememberLayout: boolean;
@@ -368,6 +372,19 @@ export class QueryViewer {
   @Prop({ mutable: true }) country: QueryViewerCountry;
 
   /**
+   * If type == Map, this is the HTML of the tooltip header line
+   */
+  @Prop() readonly headerFormat: string | undefined = undefined;
+  /**
+   * If type == Map, this is the HTML of the point's line in the tooltip
+   */
+  @Prop() readonly pointFormat: string | undefined = undefined;
+  /**
+   * If type == Map, this is a string to append to the tooltip format.
+   */
+  @Prop() readonly footerFormat: string | undefined = undefined;
+
+  /**
    * Response Page Data
    */
   @Prop({ mutable: true }) pageDataForPivotTable: string;
@@ -428,6 +445,33 @@ export class QueryViewer {
    * Event is triggered every time that values are removed from or added to the list of possible values for an attribute
    */
   @Event() filterChanged: EventEmitter<QueryViewerFilterChangedData>;
+
+
+  /* User Events for Maps */
+
+  /**
+   * Event fire when a user clicks an element to the Map
+   */
+  @Event() mapItemClick: EventEmitter; // Highcharts.PointClickCallbackFunction
+  /**
+   * Event fire when a user selects an element to the Map
+   */
+  @Event() mapItemSelect: EventEmitter; // Highcharts.PointSelectCallbackFunction
+  /**
+   * Event fire when a user unselect an element to the Map
+   */
+  @Event() mapItemUnSelect: EventEmitter; // Highcharts.PointUnselectCallbackFunction
+  /**
+   * Event fire when a user click an element to the Map
+   */
+  @Event() mapItemUpdate: EventEmitter; // Highcharts.PointUpdateCallbackFunction
+
+  @Listen("MapOnItemClickEvent")
+  handleMapOnItemClickEvent(event: CustomEvent) {
+    console.log('MapOnItemClickEvent', event);
+    // this.mapItemClick.emit(event);
+  }
+
 
   @Listen("queryViewerServiceResponse")
   handleServiceResponse(event: CustomEvent<QueryViewerServiceResponse>) {
@@ -588,6 +632,26 @@ export class QueryViewer {
       (event as any).parameter.Data
     );
     this.itemClick.emit(eventData);
+  }
+
+  @Listen("MapItemClick")
+  handleMapItemClickEvent(event: CustomEvent) {
+    console.log('MapItemClick', event);
+  }
+
+  @Listen("MapItemMOuseOver")
+  handleMapItemMouseOverEvent(event: CustomEvent) {
+    console.log('MapItemMouseOver', event);
+  }
+
+  @Listen("MapItemMOuseOut")
+  handleMapItemMouseOutEvent(event: CustomEvent) {
+    console.log('MapItemMouseOut', event);
+  }
+
+  @Listen("MapItemSelect")
+  handleMapItemSelectEvent(event: CustomEvent) {
+    console.log('MapItemSelect', event);
   }
 
   @Listen("PivotTableOnDragundDropEvent")
@@ -763,6 +827,7 @@ export class QueryViewer {
     this.type = properties.outputType;
     this.queryTitle ??= properties.title;
     this.showValues ??= properties.showValues;
+    this.description ??= properties.description;
     if (this.type === QueryViewerOutputType.Card) {
       this.showDataAs ??= properties.showDataAs;
       this.orientation ??= properties.orientation;
@@ -821,6 +886,24 @@ export class QueryViewer {
         xAxisLabels={this.xAxisLabels}
         yAxisTitle={this.yAxisTitle}
       ></gx-query-viewer-chart-controller>
+    );
+  }
+
+  private mapRender(serviceResponse: QueryViewerServiceResponse) {
+    console.log(this.headerFormat, this.pointFormat);
+    return (
+      <gx-query-viewer-map-controller
+        continent={this.continent}
+        country={this.country}
+        queryTitle={this.queryTitle}
+        description={this.description}
+        mapType={this.mapType}
+        region={this.region}
+        serviceResponse={serviceResponse}
+        headerFormat={this.headerFormat}
+        pointFormat={this.pointFormat}
+        footerFormat={this.footerFormat}
+      ></gx-query-viewer-map-controller>
     );
   }
 

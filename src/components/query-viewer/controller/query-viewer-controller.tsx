@@ -457,7 +457,8 @@ export class QueryViewerController {
       this.realType !== QueryViewerOutputType.Chart &&
       this.realType !== QueryViewerOutputType.PivotTable &&
       this.realType !== QueryViewerOutputType.Pivot_Table &&
-      this.realType !== QueryViewerOutputType.Table
+      this.realType !== QueryViewerOutputType.Table &&
+      this.realType !== QueryViewerOutputType.Map
     ) {
       return;
     }

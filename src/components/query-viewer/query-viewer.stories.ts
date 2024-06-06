@@ -152,3 +152,15 @@ export const Table: Story = {
   parameters: {
   }
 };
+
+export const Map: Story = {
+  name: "Map",
+  args: {
+    useGxquery: true,
+    metadataId: import.meta.env.STORYBOOK_METADATA_ID,
+    objectName: 'TotalCasesPerMillionMap',
+    type: QueryViewerOutputType.Map
+  },
+  parameters: {
+  }
+};
