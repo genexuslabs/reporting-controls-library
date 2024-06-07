@@ -183,6 +183,10 @@ export namespace Components {
          */
         "allowElementsOrderChange": boolean;
         /**
+          * If type == Map, allow the points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
+         */
+        "allowPointSelect": false;
+        /**
           * Allow selection
          */
         "allowSelection": boolean;
@@ -920,6 +924,10 @@ export namespace Components {
     }
     interface GxQueryViewerMap {
         /**
+          * Allow the points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
+         */
+        "allowPointSelect": false;
+        /**
           * If region = Continent, this is the continent to display in the map
          */
         "continent": QueryViewerContinent;
@@ -966,13 +974,17 @@ export namespace Components {
         /**
           * Series options for specific data and the data itself.
          */
-        "series": Highcharts.SeriesOptionsType;
+        "series": Highcharts.SeriesOptionsType[];
         /**
           * Map Data for series, in terms of a GeoJSON or TopoJSON object
          */
         "topology": Highcharts.GeoJSON | Highcharts.TopoJSON;
     }
     interface GxQueryViewerMapController {
+        /**
+          * Allow the points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
+         */
+        "allowPointSelect": false;
         /**
           * If region = Continent, this is the continent to display in the map
          */
@@ -1713,6 +1725,10 @@ declare namespace LocalJSX {
          */
         "allowElementsOrderChange"?: boolean;
         /**
+          * If type == Map, allow the points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
+         */
+        "allowPointSelect"?: false;
+        /**
           * Allow selection
          */
         "allowSelection"?: boolean;
@@ -1860,22 +1876,6 @@ declare namespace LocalJSX {
           * Event fired when a user navigates to the last page in the pivot table
          */
         "onLastPage"?: (event: GxQueryViewerCustomEvent<any>) => void;
-        /**
-          * Event fire when a user clicks an element to the Map
-         */
-        "onMapItemClick"?: (event: GxQueryViewerCustomEvent<any>) => void;
-        /**
-          * Event fire when a user selects an element to the Map
-         */
-        "onMapItemSelect"?: (event: GxQueryViewerCustomEvent<any>) => void;
-        /**
-          * Event fire when a user unselect an element to the Map
-         */
-        "onMapItemUnSelect"?: (event: GxQueryViewerCustomEvent<any>) => void;
-        /**
-          * Event fire when a user click an element to the Map
-         */
-        "onMapItemUpdate"?: (event: GxQueryViewerCustomEvent<any>) => void;
         /**
           * Event fired when a user navigates to the next page in the pivot table
          */
@@ -2514,6 +2514,10 @@ declare namespace LocalJSX {
     }
     interface GxQueryViewerMap {
         /**
+          * Allow the points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
+         */
+        "allowPointSelect"?: false;
+        /**
           * If region = Continent, this is the continent to display in the map
          */
         "continent"?: QueryViewerContinent;
@@ -2546,9 +2550,8 @@ declare namespace LocalJSX {
          */
         "mapType"?: QueryViewerMapType;
         "onMapItemClick"?: (event: GxQueryViewerMapCustomEvent<Highcharts.PointClickCallbackFunction>) => void;
-        "onMapItemMouseOut"?: (event: GxQueryViewerMapCustomEvent<Highcharts.PointClickCallbackFunction>) => void;
-        "onMapItemMouseOver"?: (event: GxQueryViewerMapCustomEvent<Highcharts.PointClickCallbackFunction>) => void;
         "onMapItemSelect"?: (event: GxQueryViewerMapCustomEvent<Highcharts.PointSelectCallbackFunction>) => void;
+        "onMapItemUnSelect"?: (event: GxQueryViewerMapCustomEvent<Highcharts.PointUnselectCallbackFunction>) => void;
         /**
           * The HTML of the point's line in the tooltip
          */
@@ -2564,13 +2567,17 @@ declare namespace LocalJSX {
         /**
           * Series options for specific data and the data itself.
          */
-        "series"?: Highcharts.SeriesOptionsType;
+        "series"?: Highcharts.SeriesOptionsType[];
         /**
           * Map Data for series, in terms of a GeoJSON or TopoJSON object
          */
         "topology"?: Highcharts.GeoJSON | Highcharts.TopoJSON;
     }
     interface GxQueryViewerMapController {
+        /**
+          * Allow the points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
+         */
+        "allowPointSelect"?: false;
         /**
           * If region = Continent, this is the continent to display in the map
          */

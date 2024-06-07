@@ -83,7 +83,10 @@ export class QueryViewerMapController {
    * A string to append to the tooltip format.
    */
   @Prop() readonly footerFormat: string | undefined = undefined;
-
+  /**
+   * Allow the points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
+   */
+  @Prop() readonly allowPointSelect = false;
   /**
    * Map Data for series, in terms of a GeoJSON or TopoJSON object
    */
@@ -101,7 +104,7 @@ export class QueryViewerMapController {
         break;
       case 'Country':
         const country = String(this.country).toLocaleLowerCase();
-        url = `https://code.highcharts.com/mapdata/countries/${country}/${country}-all.geo.json`;
+        url = `https://code.highcharts.com/mapdata/countries/${country}/${country}-all.topo.json`;
         break;
     }
     return url;
@@ -124,7 +127,7 @@ export class QueryViewerMapController {
 
       if (matches) {
         const [, longitud, latitud] = matches;
-        return { value: `${value}`, name: `${value}`, lon: parseFloat(longitud), lat: parseFloat(latitud) };
+        return { value: `${value}`, name: `${value}`, lon: parseFloat(longitud), lat: parseFloat(latitud), x: parseFloat(longitud), y: parseFloat(latitud) };
       } else {
         return { value, z: value, code: key };
       }
@@ -149,6 +152,7 @@ export class QueryViewerMapController {
     // @TODO: Replace type in order to show points. Review to allow bubbles
     if (dataType === 'geopoint') {
       series.type = 'mappoint';
+      series.allAreas = false;
     }
 
     return series;
@@ -187,6 +191,7 @@ export class QueryViewerMapController {
           headerFormat={this.headerFormat}
           pointFormat={this.pointFormat}
           footerFormat={this.footerFormat}
+          allowPointSelect={this.allowPointSelect}
         ></gx-query-viewer-map>
       </Host>
     );

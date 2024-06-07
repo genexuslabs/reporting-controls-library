@@ -153,12 +153,24 @@ export const Table: Story = {
   }
 };
 
-export const Map: Story = {
-  name: "Map",
+export const MapChoropleth: Story = {
+  name: "Map choropleth",
   args: {
     useGxquery: true,
     metadataId: import.meta.env.STORYBOOK_METADATA_ID,
     objectName: 'TotalCasesPerMillionMap',
+    type: QueryViewerOutputType.Map
+  },
+  parameters: {
+  }
+};
+
+export const MapBubble: Story = {
+  name: "Map bubble",
+  args: {
+    useGxquery: true,
+    metadataId: import.meta.env.STORYBOOK_METADATA_ID,
+    objectName: 'PopulationByCountryBubbleMap',
     type: QueryViewerOutputType.Map
   },
   parameters: {

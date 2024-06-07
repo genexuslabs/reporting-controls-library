@@ -55,7 +55,7 @@ export class QueryViewerMap {
   /**
    * Series options for specific data and the data itself.
    */
-  @Prop() readonly series: Highcharts.SeriesOptionsType;
+  @Prop() readonly series: Highcharts.SeriesOptionsType[];
 
   /**
    * The HTML of the tooltip header line
@@ -69,6 +69,10 @@ export class QueryViewerMap {
    * A string to append to the tooltip format.
    */
   @Prop() readonly footerFormat: string | undefined = undefined;
+  /**
+   * Allow the points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
+   */
+  @Prop() readonly allowPointSelect = false;
 
   /**
    * Map Data for series, in terms of a GeoJSON or TopoJSON object
@@ -77,26 +81,20 @@ export class QueryViewerMap {
 
   @Event() mapItemClick: EventEmitter<Highcharts.PointClickCallbackFunction>;
 
-  @Event() mapItemMouseOver: EventEmitter<Highcharts.PointClickCallbackFunction>;
-
-  @Event() mapItemMouseOut: EventEmitter<Highcharts.PointClickCallbackFunction>;
-
   @Event() mapItemSelect: EventEmitter<Highcharts.PointSelectCallbackFunction>;
 
-  private handleClick(e) {
-    this.mapItemClick.emit(e.detail)
+  @Event() mapItemUnSelect: EventEmitter<Highcharts.PointUnselectCallbackFunction>;
+
+  private handleClick(e: Highcharts.PointClickCallbackFunction) {
+    this.mapItemClick.emit(e);
   }
-  private handleMouseOut(e) {
-    this.mapItemMouseOver.emit(e.detail)
+  private handleSelect(e: Highcharts.PointSelectCallbackFunction) {
+    this.mapItemSelect.emit(e);
   }
-  private handleMouseOver(e) {
-    this.mapItemMouseOut.emit(e.detail)
-  }
-  private handleSelected(e) {
-    this.mapItemSelect.emit(e.detail)
+  private handleUnselect(e: Highcharts.PointUnselectCallbackFunction) {
+    this.mapItemUnSelect.emit(e);
   }
 
-  // @ts-ignore
   private renderMap() {
     HighchartsData(Highcharts);
     HighchartsExporting(Highcharts);
@@ -122,12 +120,36 @@ export class QueryViewerMap {
         enabled: true
       },
       plotOptions: {
+        map: {
+          allowPointSelect: this.allowPointSelect,
+          point: {
+            events: {
+              select: this.handleSelect.bind(this),
+              unselect: this.handleUnselect.bind(this),
+            }
+          }
+        },
+        mapbubble: {
+          allowPointSelect: this.allowPointSelect,
+          point: {
+            events: {
+              select: this.handleSelect.bind(this),
+              unselect: this.handleUnselect.bind(this),
+            }
+          }
+        },
+        mappoint: {
+          allowPointSelect: this.allowPointSelect,
+          point: {
+            events: {
+              select: this.handleSelect.bind(this),
+              unselect: this.handleUnselect.bind(this),
+            }
+          }
+        },
         series: {
           events: {
             click: this.handleClick.bind(this),
-            mouseOut: this.handleMouseOut.bind(this),
-            mouseOver: this.handleMouseOver.bind(this),
-            select: this.handleSelected.bind(this),
           },
         },
       },

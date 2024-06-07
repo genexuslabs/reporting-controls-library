@@ -383,6 +383,10 @@ export class QueryViewer {
    * If type == Map, this is a string to append to the tooltip format.
    */
   @Prop() readonly footerFormat: string | undefined = undefined;
+  /**
+   * If type == Map, allow the points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
+   */
+  @Prop() readonly allowPointSelect = false;
 
   /**
    * Response Page Data
@@ -445,33 +449,6 @@ export class QueryViewer {
    * Event is triggered every time that values are removed from or added to the list of possible values for an attribute
    */
   @Event() filterChanged: EventEmitter<QueryViewerFilterChangedData>;
-
-
-  /* User Events for Maps */
-
-  /**
-   * Event fire when a user clicks an element to the Map
-   */
-  @Event() mapItemClick: EventEmitter; // Highcharts.PointClickCallbackFunction
-  /**
-   * Event fire when a user selects an element to the Map
-   */
-  @Event() mapItemSelect: EventEmitter; // Highcharts.PointSelectCallbackFunction
-  /**
-   * Event fire when a user unselect an element to the Map
-   */
-  @Event() mapItemUnSelect: EventEmitter; // Highcharts.PointUnselectCallbackFunction
-  /**
-   * Event fire when a user click an element to the Map
-   */
-  @Event() mapItemUpdate: EventEmitter; // Highcharts.PointUpdateCallbackFunction
-
-  @Listen("MapOnItemClickEvent")
-  handleMapOnItemClickEvent(event: CustomEvent) {
-    console.log('MapOnItemClickEvent', event);
-    // this.mapItemClick.emit(event);
-  }
-
 
   @Listen("queryViewerServiceResponse")
   handleServiceResponse(event: CustomEvent<QueryViewerServiceResponse>) {
@@ -632,26 +609,6 @@ export class QueryViewer {
       (event as any).parameter.Data
     );
     this.itemClick.emit(eventData);
-  }
-
-  @Listen("MapItemClick")
-  handleMapItemClickEvent(event: CustomEvent) {
-    console.log('MapItemClick', event);
-  }
-
-  @Listen("MapItemMOuseOver")
-  handleMapItemMouseOverEvent(event: CustomEvent) {
-    console.log('MapItemMouseOver', event);
-  }
-
-  @Listen("MapItemMOuseOut")
-  handleMapItemMouseOutEvent(event: CustomEvent) {
-    console.log('MapItemMouseOut', event);
-  }
-
-  @Listen("MapItemSelect")
-  handleMapItemSelectEvent(event: CustomEvent) {
-    console.log('MapItemSelect', event);
   }
 
   @Listen("PivotTableOnDragundDropEvent")
@@ -890,7 +847,6 @@ export class QueryViewer {
   }
 
   private mapRender(serviceResponse: QueryViewerServiceResponse) {
-    console.log(this.headerFormat, this.pointFormat);
     return (
       <gx-query-viewer-map-controller
         continent={this.continent}
@@ -903,6 +859,7 @@ export class QueryViewer {
         headerFormat={this.headerFormat}
         pointFormat={this.pointFormat}
         footerFormat={this.footerFormat}
+        allow-point-select={this.allowPointSelect}
       ></gx-query-viewer-map-controller>
     );
   }

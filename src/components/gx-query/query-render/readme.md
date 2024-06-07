@@ -47,6 +47,7 @@ graph TD;
   gx-query-render --> gx-loading
   gx-query-viewer --> gx-query-viewer-card-controller
   gx-query-viewer --> gx-query-viewer-chart-controller
+  gx-query-viewer --> gx-query-viewer-map-controller
   gx-query-viewer --> gx-query-viewer-pivot-render
   gx-query-viewer-card-controller --> gx-query-viewer-card
   gx-query-viewer-card --> gx-query-viewer-chart
@@ -54,6 +55,7 @@ graph TD;
   gx-query-viewer-chart-controller --> gx-query-viewer-slider
   gx-query-viewer-chart-controller --> gx-radio-group
   gx-query-viewer-chart-controller --> gx-radio-option
+  gx-query-viewer-map-controller --> gx-query-viewer-map
   gx-query-viewer-pivot-render --> gx-query-viewer-pivot
   gx-loading --> gx-lottie
   style gx-query-render fill:#f9f,stroke:#333,stroke-width:4px
