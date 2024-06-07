@@ -129,9 +129,6 @@ graph TD;
   gx-query-viewer-card --> gx-query-viewer-chart
   gx-query-viewer-chart-controller --> gx-query-viewer-chart
   gx-query-viewer-chart-controller --> gx-query-viewer-slider
-  gx-query-viewer-chart-controller --> gx-radio-group
-  gx-query-viewer-chart-controller --> gx-radio-option
-  gx-query-viewer-map-controller --> gx-query-viewer-map
   gx-query-viewer-pivot-render --> gx-query-viewer-pivot
   gx-query-render --> gx-query-viewer
   style gx-query-viewer fill:#f9f,stroke:#333,stroke-width:4px

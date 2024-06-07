@@ -46,28 +46,6 @@ Type: `Promise<void>`
 | `"chat-history"` |             |
 
 
-## Dependencies
-
-### Depends on
-
-- gx-loading
-- gx-icon
-- gx-textblock
-- gx-button
-- gx-edit
-
-### Graph
-```mermaid
-graph TD;
-  gx-query-chat --> gx-loading
-  gx-query-chat --> gx-icon
-  gx-query-chat --> gx-textblock
-  gx-query-chat --> gx-button
-  gx-query-chat --> gx-edit
-  gx-loading --> gx-lottie
-  style gx-query-chat fill:#f9f,stroke:#333,stroke-width:4px
-```
-
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

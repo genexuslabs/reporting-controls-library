@@ -57,6 +57,12 @@
 
 PivotTable's Method for Attributes Values
 
+#### Parameters
+
+| Name         | Type                                                                                                                                    | Description |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `properties` | `{ DataField: string; Page: number; PageSize: number; PageNumber: number; Filter: string; FilterText: string; QueryviewerId: number; }` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -66,6 +72,12 @@ Type: `Promise<void>`
 ### `getCalculatePivottableData(properties: QueryViewerCalculatePivottableData) => Promise<void>`
 
 PivotTable's Method for Calculate PivotTable Data
+
+#### Parameters
+
+| Name         | Type                         | Description |
+| ------------ | ---------------------------- | ----------- |
+| `properties` | `{ queryviewerId: number; }` |             |
 
 #### Returns
 
@@ -77,6 +89,12 @@ Type: `Promise<void>`
 
 PivotTable's Method for PivotTable Page Data
 
+#### Parameters
+
+| Name       | Type                                                                                                                                                                                                                                                           | Description |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `pageData` | `{ PageNumber: number; PageSize: number; ReturnTotPages: boolean; AxesInfo: QueryViewerAxesInfo[]; DataInfo: QueryViewerDataInfo[]; Filters: QueryViewerFilter[]; ExpandCollapse: QueryViewerExpandCollapse[]; LayoutChange: string; QueryviewerId: number; }` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -87,6 +105,12 @@ Type: `Promise<void>`
 
 Table's Method for Table Page Data
 
+#### Parameters
+
+| Name       | Type                                                                                                                                                                                                                         | Description |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `pageData` | `{ PageNumber: number; PageSize: number; RecalculateCantPages?: boolean; ReturnTotPages: boolean; DataFieldOrder: string; OrderType: string; Filters: QueryViewerFilter[]; LayoutChange: boolean; QueryviewerId?: number; }` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -96,6 +120,12 @@ Type: `Promise<void>`
 ### `getPivottableDataSync(properties: QueryViewerPivotTableDataSync) => Promise<void>`
 
 PivotTable's Method for PivotTable Data Sync Response
+
+#### Parameters
+
+| Name         | Type                         | Description |
+| ------------ | ---------------------------- | ----------- |
+| `properties` | `{ queryviewerId: number; }` |             |
 
 #### Returns
 

@@ -10,6 +10,11 @@ import { GeneratorType, GxQueryItem, QueryViewerAttributesValuesForPivot, QueryV
 import { QueryViewerDragAndDropData, QueryViewerFilterChangedData, QueryViewerItemClickData, QueryViewerItemExpandAndCollapseData } from "./global/types";
 import { Axis, ChartOptions, LegendOptions, PaneOptions, PlotOptions, SeriesLineOptions, SeriesOptionsType, SubtitleOptions, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
 import { QueryViewerParameterChangedEvent } from "./components/query-viewer-parameter/query-viewer-parameter";
+export { QueryRequest } from "./components/gx-query/query-chat/query-chat";
+export { GeneratorType, GxQueryItem, QueryViewerAttributesValuesForPivot, QueryViewerAutoResizeType, QueryViewerBase, QueryViewerCalculatePivottableData, QueryViewerChartType, QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerPageDataForPivot, QueryViewerPageDataForTable, QueryViewerPivotCollection, QueryViewerPivotParameters, QueryViewerPivotTableDataSync, QueryViewerPlotSeries, QueryViewerRegion, QueryViewerServiceData, QueryViewerServiceMetaData, QueryViewerServiceResponse, QueryViewerServiceResponsePivotTable, QueryViewerShowDataAs, QueryViewerShowDataLabelsIn, QueryViewerSliderRange, QueryViewerTotal, QueryViewerTranslations, QueryViewerTrendPeriod, QueryViewerXAxisLabels, TrendIcon } from "@genexus/reporting-api";
+export { QueryViewerDragAndDropData, QueryViewerFilterChangedData, QueryViewerItemClickData, QueryViewerItemExpandAndCollapseData } from "./global/types";
+export { Axis, ChartOptions, LegendOptions, PaneOptions, PlotOptions, SeriesLineOptions, SeriesOptionsType, SubtitleOptions, TitleOptions, TooltipOptions, XAxisOptions, YAxisOptions } from "highcharts";
+export { QueryViewerParameterChangedEvent } from "./components/query-viewer-parameter/query-viewer-parameter";
 export namespace Components {
     interface GxFloatingWindow {
         /**
@@ -1386,19 +1391,57 @@ declare global {
         prototype: HTMLGxFloatingWindowElement;
         new (): HTMLGxFloatingWindowElement;
     };
+    interface HTMLGxQueryChatElementEventMap {
+        "gxUserRequest": QueryRequest;
+        "gxAssistantResponse": QueryViewerBase;
+    }
     interface HTMLGxQueryChatElement extends Components.GxQueryChat, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLGxQueryChatElementEventMap>(type: K, listener: (this: HTMLGxQueryChatElement, ev: GxQueryChatCustomEvent<HTMLGxQueryChatElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLGxQueryChatElementEventMap>(type: K, listener: (this: HTMLGxQueryChatElement, ev: GxQueryChatCustomEvent<HTMLGxQueryChatElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLGxQueryChatElement: {
         prototype: HTMLGxQueryChatElement;
         new (): HTMLGxQueryChatElement;
     };
+    interface HTMLGxQueryMenuElementEventMap {
+        "gxQuerySelect": GxQueryItem;
+        "gxQueryDelete": GxQueryItem;
+        "gxQueryRename": GxQueryItem;
+    }
     interface HTMLGxQueryMenuElement extends Components.GxQueryMenu, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLGxQueryMenuElementEventMap>(type: K, listener: (this: HTMLGxQueryMenuElement, ev: GxQueryMenuCustomEvent<HTMLGxQueryMenuElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLGxQueryMenuElementEventMap>(type: K, listener: (this: HTMLGxQueryMenuElement, ev: GxQueryMenuCustomEvent<HTMLGxQueryMenuElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLGxQueryMenuElement: {
         prototype: HTMLGxQueryMenuElement;
         new (): HTMLGxQueryMenuElement;
     };
+    interface HTMLGxQueryMenuItemElementEventMap {
+        "deleteItem": any;
+        "renameItem": any;
+        "selectItem": any;
+    }
     interface HTMLGxQueryMenuItemElement extends Components.GxQueryMenuItem, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLGxQueryMenuItemElementEventMap>(type: K, listener: (this: HTMLGxQueryMenuItemElement, ev: GxQueryMenuItemCustomEvent<HTMLGxQueryMenuItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLGxQueryMenuItemElementEventMap>(type: K, listener: (this: HTMLGxQueryMenuItemElement, ev: GxQueryMenuItemCustomEvent<HTMLGxQueryMenuItemElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLGxQueryMenuItemElement: {
         prototype: HTMLGxQueryMenuItemElement;
@@ -1410,13 +1453,44 @@ declare global {
         prototype: HTMLGxQueryRenderElement;
         new (): HTMLGxQueryRenderElement;
     };
+    interface HTMLGxQueryViewerElementEventMap {
+        "itemClick": QueryViewerItemClickData;
+        "dragAndDrop": QueryViewerDragAndDropData;
+        "itemCollapse": QueryViewerItemExpandAndCollapseData;
+        "itemExpand": QueryViewerItemExpandAndCollapseData;
+        "changePage": any;
+        "firstPage": any;
+        "previousPage": any;
+        "nextPage": any;
+        "lastPage": any;
+        "filterChanged": QueryViewerFilterChangedData;
+    }
     interface HTMLGxQueryViewerElement extends Components.GxQueryViewer, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLGxQueryViewerElementEventMap>(type: K, listener: (this: HTMLGxQueryViewerElement, ev: GxQueryViewerCustomEvent<HTMLGxQueryViewerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLGxQueryViewerElementEventMap>(type: K, listener: (this: HTMLGxQueryViewerElement, ev: GxQueryViewerCustomEvent<HTMLGxQueryViewerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLGxQueryViewerElement: {
         prototype: HTMLGxQueryViewerElement;
         new (): HTMLGxQueryViewerElement;
     };
+    interface HTMLGxQueryViewerCardElementEventMap {
+        "itemClickEvent": any;
+    }
     interface HTMLGxQueryViewerCardElement extends Components.GxQueryViewerCard, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLGxQueryViewerCardElementEventMap>(type: K, listener: (this: HTMLGxQueryViewerCardElement, ev: GxQueryViewerCardCustomEvent<HTMLGxQueryViewerCardElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLGxQueryViewerCardElementEventMap>(type: K, listener: (this: HTMLGxQueryViewerCardElement, ev: GxQueryViewerCardCustomEvent<HTMLGxQueryViewerCardElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLGxQueryViewerCardElement: {
         prototype: HTMLGxQueryViewerCardElement;
@@ -1440,25 +1514,77 @@ declare global {
         prototype: HTMLGxQueryViewerChartControllerElement;
         new (): HTMLGxQueryViewerChartControllerElement;
     };
+    interface HTMLGxQueryViewerControllerElementEventMap {
+        "queryViewerServiceResponse": QueryViewerServiceResponse;
+        "queryViewerServiceResponsePivotTable": QueryViewerServiceResponsePivotTable;
+        "pageDataForPivotTable": string;
+        "attributeValuesForPivotTable": string;
+        "attributesValuesForTable": string;
+        "calculatePivottableData": string;
+        "pageDataForTable": string;
+        "syncPivotTableData": string;
+        "itemClickPivotTable": string;
+    }
     interface HTMLGxQueryViewerControllerElement extends Components.GxQueryViewerController, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLGxQueryViewerControllerElementEventMap>(type: K, listener: (this: HTMLGxQueryViewerControllerElement, ev: GxQueryViewerControllerCustomEvent<HTMLGxQueryViewerControllerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLGxQueryViewerControllerElementEventMap>(type: K, listener: (this: HTMLGxQueryViewerControllerElement, ev: GxQueryViewerControllerCustomEvent<HTMLGxQueryViewerControllerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLGxQueryViewerControllerElement: {
         prototype: HTMLGxQueryViewerControllerElement;
         new (): HTMLGxQueryViewerControllerElement;
     };
+    interface HTMLGxQueryViewerElementElementEventMap {
+        "elementChanged": any;
+    }
     interface HTMLGxQueryViewerElementElement extends Components.GxQueryViewerElement, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLGxQueryViewerElementElementEventMap>(type: K, listener: (this: HTMLGxQueryViewerElementElement, ev: GxQueryViewerElementCustomEvent<HTMLGxQueryViewerElementElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLGxQueryViewerElementElementEventMap>(type: K, listener: (this: HTMLGxQueryViewerElementElement, ev: GxQueryViewerElementCustomEvent<HTMLGxQueryViewerElementElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLGxQueryViewerElementElement: {
         prototype: HTMLGxQueryViewerElementElement;
         new (): HTMLGxQueryViewerElementElement;
     };
+    interface HTMLGxQueryViewerElementFormatElementEventMap {
+        "elementChanged": any;
+    }
     interface HTMLGxQueryViewerElementFormatElement extends Components.GxQueryViewerElementFormat, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLGxQueryViewerElementFormatElementEventMap>(type: K, listener: (this: HTMLGxQueryViewerElementFormatElement, ev: GxQueryViewerElementFormatCustomEvent<HTMLGxQueryViewerElementFormatElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLGxQueryViewerElementFormatElementEventMap>(type: K, listener: (this: HTMLGxQueryViewerElementFormatElement, ev: GxQueryViewerElementFormatCustomEvent<HTMLGxQueryViewerElementFormatElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLGxQueryViewerElementFormatElement: {
         prototype: HTMLGxQueryViewerElementFormatElement;
         new (): HTMLGxQueryViewerElementFormatElement;
     };
+    interface HTMLGxQueryViewerFormatStyleElementEventMap {
+        "elementChanged": any;
+    }
     interface HTMLGxQueryViewerFormatStyleElement extends Components.GxQueryViewerFormatStyle, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLGxQueryViewerFormatStyleElementEventMap>(type: K, listener: (this: HTMLGxQueryViewerFormatStyleElement, ev: GxQueryViewerFormatStyleCustomEvent<HTMLGxQueryViewerFormatStyleElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLGxQueryViewerFormatStyleElementEventMap>(type: K, listener: (this: HTMLGxQueryViewerFormatStyleElement, ev: GxQueryViewerFormatStyleCustomEvent<HTMLGxQueryViewerFormatStyleElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLGxQueryViewerFormatStyleElement: {
         prototype: HTMLGxQueryViewerFormatStyleElement;
@@ -1476,7 +1602,18 @@ declare global {
         prototype: HTMLGxQueryViewerMapControllerElement;
         new (): HTMLGxQueryViewerMapControllerElement;
     };
+    interface HTMLGxQueryViewerParameterElementEventMap {
+        "parameterValueChanged": QueryViewerParameterChangedEvent;
+    }
     interface HTMLGxQueryViewerParameterElement extends Components.GxQueryViewerParameter, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLGxQueryViewerParameterElementEventMap>(type: K, listener: (this: HTMLGxQueryViewerParameterElement, ev: GxQueryViewerParameterCustomEvent<HTMLGxQueryViewerParameterElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLGxQueryViewerParameterElementEventMap>(type: K, listener: (this: HTMLGxQueryViewerParameterElement, ev: GxQueryViewerParameterCustomEvent<HTMLGxQueryViewerParameterElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLGxQueryViewerParameterElement: {
         prototype: HTMLGxQueryViewerParameterElement;
@@ -1494,13 +1631,35 @@ declare global {
         prototype: HTMLGxQueryViewerPivotRenderElement;
         new (): HTMLGxQueryViewerPivotRenderElement;
     };
+    interface HTMLGxQueryViewerSliderElementEventMap {
+        "change": QueryViewerSliderRange;
+    }
     interface HTMLGxQueryViewerSliderElement extends Components.GxQueryViewerSlider, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLGxQueryViewerSliderElementEventMap>(type: K, listener: (this: HTMLGxQueryViewerSliderElement, ev: GxQueryViewerSliderCustomEvent<HTMLGxQueryViewerSliderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLGxQueryViewerSliderElementEventMap>(type: K, listener: (this: HTMLGxQueryViewerSliderElement, ev: GxQueryViewerSliderCustomEvent<HTMLGxQueryViewerSliderElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLGxQueryViewerSliderElement: {
         prototype: HTMLGxQueryViewerSliderElement;
         new (): HTMLGxQueryViewerSliderElement;
     };
+    interface HTMLGxSidebarElementEventMap {
+        "gxQueryNewChat": null;
+    }
     interface HTMLGxSidebarElement extends Components.GxSidebar, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLGxSidebarElementEventMap>(type: K, listener: (this: HTMLGxSidebarElement, ev: GxSidebarCustomEvent<HTMLGxSidebarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLGxSidebarElementEventMap>(type: K, listener: (this: HTMLGxSidebarElement, ev: GxSidebarCustomEvent<HTMLGxSidebarElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLGxSidebarElement: {
         prototype: HTMLGxSidebarElement;

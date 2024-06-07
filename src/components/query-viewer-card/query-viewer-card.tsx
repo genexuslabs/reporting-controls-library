@@ -18,6 +18,22 @@ import {
 
 let autoQueryViewerCardId = 0;
 
+const TITLE_PART = "title";
+const VALUE_PART = "value";
+const SPARKLINE_PART = "sparkline";
+const TREND_PART = "trend";
+const MAX_MIN_VALUE_PART = "max-min-value";
+const MAX_MIN_TITLE_PART = "max-min-title";
+
+const EXPORT_PARTS = [
+  TITLE_PART,
+  VALUE_PART,
+  SPARKLINE_PART,
+  TREND_PART,
+  MAX_MIN_VALUE_PART,
+  MAX_MIN_TITLE_PART
+].join(",");
+
 const TITLE_OPTION = {
   text: ""
 };
@@ -165,6 +181,7 @@ export class QueryViewerCard {
       <Host
         role="article"
         aria-labelledby={this.queryViewerCardId}
+        exportparts={EXPORT_PARTS}
         class={{
           "gx-query-viewer-card--sparkline":
             this.includeSparkline && !this.includeTrend,
@@ -172,17 +189,17 @@ export class QueryViewerCard {
             !this.includeSparkline && this.includeTrend
         }}
       >
-        <span class="value" part="value">
+        <span class="value" part={VALUE_PART}>
           {this.value}
         </span>
-        <h1 class="title" part="title" id={this.queryViewerCardId}>
+        <h1 class="title" part={TITLE_PART} id={this.queryViewerCardId}>
           {this.description}
         </h1>
 
         {this.includeSparkline && (
           <gx-query-viewer-chart
             class="card-sparkline"
-            part="sparkline"
+            part={SPARKLINE_PART}
             chartTitle={TITLE_OPTION}
             chartOptions={CHART_OPTION}
             seriesOptions={seriesOption(this.seriesData) as SeriesOptionsType[]}
@@ -204,7 +221,7 @@ export class QueryViewerCard {
               ]
             }
             class="trend"
-            part="trend"
+            part={TREND_PART}
             title={
               this.translations[
                 ("GXPL_QViewer" +
@@ -219,16 +236,16 @@ export class QueryViewerCard {
 
         {this.includeMaxMin && (
           <div class="values-container">
-            <span class="max-min-value" part="max-min-value">
+            <span class="max-min-value" part={MAX_MIN_VALUE_PART}>
               {this.minValue}
             </span>
-            <span class="max-min-value" part="max-min-value">
+            <span class="max-min-value" part={MAX_MIN_VALUE_PART}>
               {this.maxValue}
             </span>
-            <span class="max-min-title" part="max-min-title">
+            <span class="max-min-title" part={MAX_MIN_TITLE_PART}>
               {this.translations.GXPL_QViewerCardMinimum}
             </span>
-            <span class="max-min-title" part="max-min-title">
+            <span class="max-min-title" part={MAX_MIN_TITLE_PART}>
               {this.translations.GXPL_QViewerCardMaximum}
             </span>
           </div>

@@ -11,6 +11,10 @@
     <script type="module" src="/build/reporting.esm.js"></script>
     <script nomodule src="/build/reporting.js"></script>
 
+    <script type="module">
+      import { defineCustomElements } from "https://unpkg.com/@genexus/web-controls-library@latest/dist/esm/loader.js";
+      defineCustomElements();
+    </script>
     <style>
       body {
         margin: 0;
@@ -30,7 +34,252 @@
         align-items: center;
       }
     </style>
+  
+    <script>
+      const pivotParameters = {
+        AllowSelection: false,
+        AutoResize: true,
+        ControlName: "ctrlQueryviewer1",
+        DisableColumnSort: false,
+        ObjectName: "Query",
+        PageSize: 20,
+        RealType: "PivotTable",
+        RememberLayout: false,
+        SelectLine: true,
+        ServerPaging: true,
+        ServerPagingCacheSize: 0,
+        ServerPagingPivot: true,
+        ShowDataLabelsIn: "Columns",
+        Title: "Pivot",
+        TotalForColumns: "Yes",
+        TotalForRows: "Yes",
+        UcId: "ctrlQueryviewer1",
+        UseRecordsetCache: true,
+        metadata: `<?xml version="1.0" encoding="UTF-8"?>
+            <OLAPCube Version="2" format="compact" decimalSeparator="." thousandsSeparator="," dateFormat="MDY" textForNullValues="" ShowDataLabelsIn="Columns">
+              <OLAPDimension name="Element1" displayName="Country Name" description="Country Name" dataField="F1" visible="Yes" axis="Rows" canDragToPages="true" summarize="yes" align="left" picture="" dataType="character" format=""></OLAPDimension>
+              <OLAPMeasure name="Element2" displayName="Sum of Country Value" description="Sum of Country Value" dataField="F2" visible="Yes" aggregation="sum" align="right" picture="ZZZZZZZZZZZZZZZZZ9" targetValue="0" maximumValue="0" dataType="integer" format=""></OLAPMeasure>
+            </OLAPCube>`
+      };
 
+      const pivotCollection = {
+        collection: {
+          ctrlQueryviewer1: {
+            AutoRefreshGroup: "",
+            debugServices: false,
+            ControlName: "ctrlQueryviewer1",
+            Metadata: {
+              Axes: [
+                {
+                  name: "Element1",
+                  title: "Country Name",
+                  dataField: "F1",
+                  dataType: "character",
+                  visible: "Yes",
+                  axis: "Rows",
+                  canDragToPages: true,
+                  raiseItemClick: true,
+                  isComponent: false,
+                  style: "",
+                  subtotals: "Yes",
+                  filter: {
+                    type: "ShowAllValues",
+                    values: []
+                  },
+                  expandCollapse: {
+                    type: "ExpandAllValues",
+                    values: []
+                  },
+                  order: {
+                    type: "None",
+                    values: []
+                  },
+                  valuesStyles: []
+                }
+              ],
+              Data: [
+                {
+                  name: "Element2",
+                  title: "Sum of Country Value",
+                  dataField: "F2",
+                  aggregation: "Sum",
+                  dataType: "integer",
+                  visible: "Yes",
+                  picture: "ZZZZZZZZZZZZZZ9",
+                  raiseItemClick: true,
+                  isComponent: false,
+                  targetValue: 100,
+                  maximumValue: 100,
+                  style: "",
+                  conditionalStyles: [],
+                  isFormula: false,
+                  formula: ""
+                }
+              ]
+            }
+          }
+        },
+        fadeTimeouts: {}
+      };
+
+      const PIVOT_PAGE = `ctrlQueryviewer1_GeneralQuery1_pivot_page`;
+      const PIVOT_CONTENT = `ctrlQueryviewer1_GeneralQuery1_pivot_content`;
+
+      const queryViewerConfiguration = {
+        xml: {
+          metadata: pivotParameters.metadata
+        },
+        pivotParams: {
+          page: `ctrlQueryviewer1_GeneralQuery1_pivot_page`,
+          content: `ctrlQueryviewer1_GeneralQuery1_pivot_content`,
+          container: pivotParameters.queryViewerContainer,
+          RealType: pivotParameters.tableType,
+          ObjectName: pivotParameters.objectName,
+          ControlName: pivotParameters.ControlName,
+          metadata: pivotParameters.metadata,
+          PageSize: pivotParameters.paging
+            ? pivotParameters.pageSize
+            : undefined,
+          UcId: pivotParameters.UcId,
+          AutoResize: pivotParameters.autoResize,
+          DisableColumnSort: false,
+          RememberLayout: pivotParameters.rememberLayout,
+          ShowDataLabelsIn: pivotParameters.showDataLabelsIn,
+          ServerPaging: true,
+          ServerPagingPivot: true,
+          ServerPagingCacheSize: 0,
+          UseRecordsetCache: true,
+          AllowSelection: false,
+          SelectLine: true,
+          TotalForColumns: pivotParameters.totalForColumns,
+          TotalForRows: pivotParameters.totalForRows,
+          Title: undefined,
+          data: undefined
+        },
+        oat_element: undefined
+      };
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const pivotElement = document.querySelector("gx-query-viewer-pivot");
+        if (pivotElement) {
+          pivotElement.pivotParameters = pivotParameters;
+          pivotElement.pivotCollection = pivotCollection;
+          pivotElement.metadata = pivotParameters.metadata;
+          pivotElement.queryViewerConfiguration = queryViewerConfiguration;
+        }
+      });
+
+      var dataforpivottable = function (e) {
+        var data = `<?xml version="1.0" encoding="UTF-8"?>
+          <Recordset RecordCount="8" PageCount="1">
+            <Page PageNumber="1">
+              <Columns>
+                <Header DataField="F2"></Header>
+              </Columns>
+              <Rows>
+                <Row>
+                  <Header>
+                    <F1>Argentina</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547282</Cell>
+                  </Cells>
+                </Row>
+                <Row>
+                  <Header>
+                    <F1>Brasil</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547282</Cell>
+                  </Cells>
+                </Row>
+                <Row>
+                  <Header>
+                    <F1>Uruguay</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547282</Cell>
+                  </Cells>
+                </Row>
+                <Row>
+                  <Header>
+                    <F1>Paraguay</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547282</Cell>
+                  </Cells>
+                </Row>
+                <Row>
+                  <Header>
+                    <F1>Chile</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547223</Cell>
+                  </Cells>
+                </Row>
+                <Row>
+                  <Header>
+                    <F1>Suiza</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547282</Cell>
+                  </Cells>
+                </Row>
+                <Row>
+                  <Header>
+                    <F1>Alemania</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547282</Cell>
+                  </Cells>
+                </Row>
+                <Row>
+                  <Header>
+                    <F1>Peru</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547282</Cell>
+                  </Cells>
+                </Row>
+                <Row>
+                  <Header>
+                    <F1>Bolivia</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547282</Cell>
+                  </Cells>
+                </Row>
+                <Row>
+                  <Header>
+                    <F1>Portugal</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547282</Cell>
+                  </Cells>
+                </Row>
+                <Row>
+                  <Header>
+                    <F1>Canada</F1>
+                  </Header>
+                  <Cells>
+                    <Cell>987655423456789263547282</Cell>
+                  </Cells>
+                </Row>
+
+              </Rows>
+            </Page>
+          </Recordset>
+        `;
+        var resXML = data;
+        if (typeof e.parameter.callback == "function")
+          e.parameter.callback(resXML);
+      };
+      document.addEventListener(
+        "RequestPageDataForPivotTable",
+        dataforpivottable,
+        false
+      );
+    </script>
     <script>
       window.addEventListener("appload", () => {
         // const serviceResponseCardMock = {
@@ -644,68 +893,68 @@
 
         const serviceResponseCardMock = {
           MetaData: {
-            "textForNullValues": "",
-            "axes": [],
-            "data": [
+            textForNullValues: "",
+            axes: [],
+            data: [
               {
-                "name": "Element1",
-                "title": "Average of Country Life Expectancy",
-                "dataField": "F1",
-                "aggregation": "Average",
-                "dataType": "real",
-                "visible": "Yes",
-                "picture": "ZZZZZZZZZZZZZZ9",
-                "raiseItemClick": true,
-                "isComponent": false,
-                "targetValue": 100,
-                "maximumValue": 100,
-                "style": "",
-                "conditionalStyles": [],
-                "isFormula": false,
-                "formula": ""
+                name: "Element1",
+                title: "Average of Country Life Expectancy",
+                dataField: "F1",
+                aggregation: "Average",
+                dataType: "real",
+                visible: "Yes",
+                picture: "ZZZZZZZZZZZZZZ9",
+                raiseItemClick: true,
+                isComponent: false,
+                targetValue: 100,
+                maximumValue: 100,
+                style: "",
+                conditionalStyles: [],
+                isFormula: false,
+                formula: ""
               },
               {
-                "name": "F1_N",
-                "title": "F1_N",
-                "dataField": "F1_N",
-                "aggregation": "Sum",
-                "dataType": "real",
-                "visible": "Never",
-                "picture": "ZZZZZZZZZZZZZZ9.99",
-                "raiseItemClick": false,
-                "isComponent": true,
-                "targetValue": 100,
-                "maximumValue": 100,
-                "style": "",
-                "conditionalStyles": [],
-                "isFormula": false,
-                "formula": ""
+                name: "F1_N",
+                title: "F1_N",
+                dataField: "F1_N",
+                aggregation: "Sum",
+                dataType: "real",
+                visible: "Never",
+                picture: "ZZZZZZZZZZZZZZ9.99",
+                raiseItemClick: false,
+                isComponent: true,
+                targetValue: 100,
+                maximumValue: 100,
+                style: "",
+                conditionalStyles: [],
+                isFormula: false,
+                formula: ""
               },
               {
-                "name": "F1_D",
-                "title": "F1_D",
-                "dataField": "F1_D",
-                "aggregation": "Count",
-                "dataType": "integer",
-                "visible": "Never",
-                "picture": "ZZZZZZZZZZZZZZ9",
-                "raiseItemClick": false,
-                "isComponent": true,
-                "targetValue": 100,
-                "maximumValue": 100,
-                "style": "",
-                "conditionalStyles": [],
-                "isFormula": false,
-                "formula": ""
+                name: "F1_D",
+                title: "F1_D",
+                dataField: "F1_D",
+                aggregation: "Count",
+                dataType: "integer",
+                visible: "Never",
+                picture: "ZZZZZZZZZZZZZZ9",
+                raiseItemClick: false,
+                isComponent: true,
+                targetValue: 100,
+                maximumValue: 100,
+                style: "",
+                conditionalStyles: [],
+                isFormula: false,
+                formula: ""
               }
             ]
           },
           Data: {
-            "rows": [
+            rows: [
               {
-                "F1": "72.3845",
-                "F1_N": "14476.9",
-                "F1_D": "200"
+                F1: "72.3845",
+                F1_N: "14476.9",
+                F1_D: "200"
               }
             ]
           }
@@ -715,364 +964,364 @@
 
         const serviceResponseChartMock = {
           MetaData: {
-            "textForNullValues": "",
-            "axes": [
-                {
-                    "name": "Element4",
-                    "title": "Name",
-                    "dataField": "F1",
-                    "dataType": "character",
-                    "visible": "Yes",
-                    "axis": "Rows",
-                    "canDragToPages": true,
-                    "raiseItemClick": true,
-                    "isComponent": false,
-                    "style": "",
-                    "subtotals": "Yes",
-                    "filter": {
-                        "type": "ShowAllValues",
-                        "values": []
-                    },
-                    "expandCollapse": {
-                        "type": "ExpandAllValues",
-                        "values": []
-                    },
-                    "order": {
-                        "type": "None",
-                        "values": []
-                    },
-                    "valuesStyles": []
-                }
+            textForNullValues: "",
+            axes: [
+              {
+                name: "Element4",
+                title: "Name",
+                dataField: "F1",
+                dataType: "character",
+                visible: "Yes",
+                axis: "Rows",
+                canDragToPages: true,
+                raiseItemClick: true,
+                isComponent: false,
+                style: "",
+                subtotals: "Yes",
+                filter: {
+                  type: "ShowAllValues",
+                  values: []
+                },
+                expandCollapse: {
+                  type: "ExpandAllValues",
+                  values: []
+                },
+                order: {
+                  type: "None",
+                  values: []
+                },
+                valuesStyles: []
+              }
             ],
-            "data": [
-                {
-                    "name": "Element5",
-                    "title": "Population",
-                    "dataField": "F2",
-                    "aggregation": "",
-                    "dataType": "integer",
-                    "visible": "Yes",
-                    "picture": "ZZZZZZZZZZZZZZ9",
-                    "raiseItemClick": true,
-                    "isComponent": false,
-                    "targetValue": 100,
-                    "maximumValue": 100,
-                    "style": "",
-                    "conditionalStyles": [],
-                    "isFormula": false,
-                    "formula": ""
-                }
+            data: [
+              {
+                name: "Element5",
+                title: "Population",
+                dataField: "F2",
+                aggregation: "",
+                dataType: "integer",
+                visible: "Yes",
+                picture: "ZZZZZZZZZZZZZZ9",
+                raiseItemClick: true,
+                isComponent: false,
+                targetValue: 100,
+                maximumValue: 100,
+                style: "",
+                conditionalStyles: [],
+                isFormula: false,
+                formula: ""
+              }
             ]
-        },
+          },
           Data: {
-            "rows": [
+            rows: [
               {
-                  "F1": "Rio de Janeiro                          ",
-                  "F2": "11748000"
+                F1: "Rio de Janeiro                          ",
+                F2: "11748000"
               },
               {
-                  "F1": "Lima                                    ",
-                  "F2": "8012000"
+                F1: "Lima                                    ",
+                F2: "8012000"
               },
               {
-                  "F1": "Belo Horizonte                          ",
-                  "F2": "5575000"
+                F1: "Belo Horizonte                          ",
+                F2: "5575000"
               },
               {
-                  "F1": "Porto Alegre                            ",
-                  "F2": "3917000"
+                F1: "Porto Alegre                            ",
+                F2: "3917000"
               },
               {
-                  "F1": "Brasilia                                ",
-                  "F2": "3716996"
+                F1: "Brasilia                                ",
+                F2: "3716996"
               },
               {
-                  "F1": "Recife                                  ",
-                  "F2": "3651000"
+                F1: "Recife                                  ",
+                F2: "3651000"
               },
               {
-                  "F1": "Salvador                                ",
-                  "F2": "3484000"
+                F1: "Salvador                                ",
+                F2: "3484000"
               },
               {
-                  "F1": "Medellin                                ",
-                  "F2": "3297000"
+                F1: "Medellin                                ",
+                F2: "3297000"
               },
               {
-                  "F1": "Caracas                                 ",
-                  "F2": "2985000"
+                F1: "Caracas                                 ",
+                F2: "2985000"
               },
               {
-                  "F1": "Guayaquil                               ",
-                  "F2": "2514000"
+                F1: "Guayaquil                               ",
+                F2: "2514000"
               },
               {
-                  "F1": "Cali                                    ",
-                  "F2": "2254000"
+                F1: "Cali                                    ",
+                F2: "2254000"
               },
               {
-                  "F1": "Santa Cruz                              ",
-                  "F2": "2102998"
+                F1: "Santa Cruz                              ",
+                F2: "2102998"
               },
               {
-                  "F1": "Maracaibo                               ",
-                  "F2": "2072000"
+                F1: "Maracaibo                               ",
+                F2: "2072000"
               },
               {
-                  "F1": "Valencia                                ",
-                  "F2": "1770000"
+                F1: "Valencia                                ",
+                F2: "1770000"
               },
               {
-                  "F1": "Manaus                                  ",
-                  "F2": "1753000"
+                F1: "Manaus                                  ",
+                F2: "1753000"
               },
               {
-                  "F1": "Quito                                   ",
-                  "F2": "1701000"
+                F1: "Quito                                   ",
+                F2: "1701000"
               },
               {
-                  "F1": "La Paz                                  ",
-                  "F2": "1590000"
+                F1: "La Paz                                  ",
+                F2: "1590000"
               },
               {
-                  "F1": "Montevideo                              ",
-                  "F2": "1513000"
+                F1: "Montevideo                              ",
+                F2: "1513000"
               },
               {
-                  "F1": "Rosario                                 ",
-                  "F2": "1203000"
+                F1: "Rosario                                 ",
+                F2: "1203000"
               },
               {
-                  "F1": "Maceio                                  ",
-                  "F2": "1186000"
+                F1: "Maceio                                  ",
+                F2: "1186000"
               },
               {
-                  "F1": "Natal                                   ",
-                  "F2": "1088000"
+                F1: "Natal                                   ",
+                F2: "1088000"
               },
               {
-                  "F1": "Florianopolis                           ",
-                  "F2": "1023000"
+                F1: "Florianopolis                           ",
+                F2: "1023000"
               },
               {
-                  "F1": "Mendoza                                 ",
-                  "F2": "893000"
+                F1: "Mendoza                                 ",
+                F2: "893000"
               },
               {
-                  "F1": "Arequipa                                ",
-                  "F2": "815000"
+                F1: "Arequipa                                ",
+                F2: "815000"
               },
               {
-                  "F1": "Cuiaba                                  ",
-                  "F2": "806000"
+                F1: "Cuiaba                                  ",
+                F2: "806000"
               },
               {
-                  "F1": "Campo Grande                            ",
-                  "F2": "778000"
+                F1: "Campo Grande                            ",
+                F2: "778000"
               },
               {
-                  "F1": "Trujillo                                ",
-                  "F2": "765171"
+                F1: "Trujillo                                ",
+                F2: "765171"
               },
               {
-                  "F1": "Uberlandia                              ",
-                  "F2": "563536"
+                F1: "Uberlandia                              ",
+                F2: "563536"
               },
               {
-                  "F1": "Salta                                   ",
-                  "F2": "512686"
+                F1: "Salta                                   ",
+                F2: "512686"
               },
               {
-                  "F1": "Santa Fe                                ",
-                  "F2": "489505"
+                F1: "Santa Fe                                ",
+                F2: "489505"
               },
               {
-                  "F1": "Feira de Santana                        ",
-                  "F2": "481911"
+                F1: "Feira de Santana                        ",
+                F2: "481911"
               },
               {
-                  "F1": "Iquitos                                 ",
-                  "F2": "458729"
+                F1: "Iquitos                                 ",
+                F2: "458729"
               },
               {
-                  "F1": "San Juan                                ",
-                  "F2": "447048"
+                F1: "San Juan                                ",
+                F2: "447048"
               },
               {
-                  "F1": "Piura                                   ",
-                  "F2": "396932"
+                F1: "Piura                                   ",
+                F2: "396932"
               },
               {
-                  "F1": "Caxias do Sul                           ",
-                  "F2": "381270"
+                F1: "Caxias do Sul                           ",
+                F2: "381270"
               },
               {
-                  "F1": "Manizales                               ",
-                  "F2": "375848"
+                F1: "Manizales                               ",
+                F2: "375848"
               },
               {
-                  "F1": "Cusco                                   ",
-                  "F2": "361182"
+                F1: "Cusco                                   ",
+                F2: "361182"
               },
               {
-                  "F1": "Posadas                                 ",
-                  "F2": "357119"
+                F1: "Posadas                                 ",
+                F2: "357119"
               },
               {
-                  "F1": "Chimbote                                ",
-                  "F2": "349846"
+                F1: "Chimbote                                ",
+                F2: "349846"
               },
               {
-                  "F1": "Montes Claros                           ",
-                  "F2": "332379"
+                F1: "Montes Claros                           ",
+                F2: "332379"
               },
               {
-                  "F1": "Pelotas                                 ",
-                  "F2": "320674"
+                F1: "Pelotas                                 ",
+                F2: "320674"
               },
               {
-                  "F1": "Pucallpa                                ",
-                  "F2": "310750"
+                F1: "Pucallpa                                ",
+                F2: "310750"
               },
               {
-                  "F1": "Antofagasta                             ",
-                  "F2": "309832"
+                F1: "Antofagasta                             ",
+                F2: "309832"
               },
               {
-                  "F1": "Vitoria da Conquista                    ",
-                  "F2": "308204"
+                F1: "Vitoria da Conquista                    ",
+                F2: "308204"
               },
               {
-                  "F1": "Cuenca                                  ",
-                  "F2": "286878"
+                F1: "Cuenca                                  ",
+                F2: "286878"
               },
               {
-                  "F1": "Tacna                                   ",
-                  "F2": "280098"
+                F1: "Tacna                                   ",
+                F2: "280098"
               },
               {
-                  "F1": "Ica                                     ",
-                  "F2": "279420"
+                F1: "Ica                                     ",
+                F2: "279420"
               },
               {
-                  "F1": "Georgetown                              ",
-                  "F2": "264350"
+                F1: "Georgetown                              ",
+                F2: "264350"
               },
               {
-                  "F1": "Petrolina                               ",
-                  "F2": "260985"
+                F1: "Petrolina                               ",
+                F2: "260985"
               },
               {
-                  "F1": "Rio Branco                              ",
-                  "F2": "257642"
+                F1: "Rio Branco                              ",
+                F2: "257642"
               },
               {
-                  "F1": "Paramaribo                              ",
-                  "F2": "254169"
+                F1: "Paramaribo                              ",
+                F2: "254169"
               },
               {
-                  "F1": "Boa Vista                               ",
-                  "F2": "235150"
+                F1: "Boa Vista                               ",
+                F2: "235150"
               },
               {
-                  "F1": "Sucre                                   ",
-                  "F2": "224838"
+                F1: "Sucre                                   ",
+                F2: "224838"
               },
               {
-                  "F1": "Formosa                                 ",
-                  "F2": "221383"
+                F1: "Formosa                                 ",
+                F2: "221383"
               },
               {
-                  "F1": "Arica                                   ",
-                  "F2": "185999"
+                F1: "Arica                                   ",
+                F2: "185999"
               },
               {
-                  "F1": "Puerto Montt                            ",
-                  "F2": "174629"
+                F1: "Puerto Montt                            ",
+                F2: "174629"
               },
               {
-                  "F1": "Tarija                                  ",
-                  "F2": "159269"
+                F1: "Tarija                                  ",
+                F2: "159269"
               },
               {
-                  "F1": "Barreiras                               ",
-                  "F2": "158292"
+                F1: "Barreiras                               ",
+                F2: "158292"
               },
               {
-                  "F1": "La Serena                               ",
-                  "F2": "154521"
+                F1: "La Serena                               ",
+                F2: "154521"
               },
               {
-                  "F1": "Comodoro Rivadavia                      ",
-                  "F2": "140850"
+                F1: "Comodoro Rivadavia                      ",
+                F2: "140850"
               },
               {
-                  "F1": "Copiapo                                 ",
-                  "F2": "129280"
+                F1: "Copiapo                                 ",
+                F2: "129280"
               },
               {
-                  "F1": "Santa Rosa                              ",
-                  "F2": "111424"
+                F1: "Santa Rosa                              ",
+                F2: "111424"
               },
               {
-                  "F1": "Corumba                                 ",
-                  "F2": "96520"
+                F1: "Corumba                                 ",
+                F2: "96520"
               },
               {
-                  "F1": "Rio Gallegos                            ",
-                  "F2": "85700"
+                F1: "Rio Gallegos                            ",
+                F2: "85700"
               },
               {
-                  "F1": "Trinidad                                ",
-                  "F2": "84259"
+                F1: "Trinidad                                ",
+                F2: "84259"
               },
               {
-                  "F1": "Riberalta                               ",
-                  "F2": "74014"
+                F1: "Riberalta                               ",
+                F2: "74014"
               },
               {
-                  "F1": "Leticia                                 ",
-                  "F2": "59575"
+                F1: "Leticia                                 ",
+                F2: "59575"
               },
               {
-                  "F1": "Cruzeiro do Sul                         ",
-                  "F2": "56862"
+                F1: "Cruzeiro do Sul                         ",
+                F2: "56862"
               },
               {
-                  "F1": "Puerto Ayacucho                         ",
-                  "F2": "52526"
+                F1: "Puerto Ayacucho                         ",
+                F2: "52526"
               },
               {
-                  "F1": "Alta Floresta                           ",
-                  "F2": "40466"
+                F1: "Alta Floresta                           ",
+                F2: "40466"
               },
               {
-                  "F1": "Durazno                                 ",
-                  "F2": "34037"
+                F1: "Durazno                                 ",
+                F2: "34037"
               },
               {
-                  "F1": "Cottica                                 ",
-                  "F2": "29210"
+                F1: "Cottica                                 ",
+                F2: "29210"
               },
               {
-                  "F1": "Colider                                 ",
-                  "F2": "27139"
+                F1: "Colider                                 ",
+                F2: "27139"
               },
               {
-                  "F1": "Rawson                                  ",
-                  "F2": "26335"
+                F1: "Rawson                                  ",
+                F2: "26335"
               },
               {
-                  "F1": "Alvorada                                ",
-                  "F2": "10232"
+                F1: "Alvorada                                ",
+                F2: "10232"
               },
               {
-                  "F1": "El Calafate                             ",
-                  "F2": "8000"
+                F1: "El Calafate                             ",
+                F2: "8000"
               },
               {
-                  "F1": "Puerto Deseado                          ",
-                  "F2": "3305"
+                F1: "Puerto Deseado                          ",
+                F2: "3305"
               }
             ]
           }
@@ -1080,25 +1329,43 @@
 
         const queryViewers = document.querySelectorAll("gx-query-viewer");
 
+        // Card
+        queryViewers[0].serviceResponse = serviceResponseCardMock;
 
-          // Card
-          queryViewers[0].serviceResponse = serviceResponseCardMock;
+        // Chart
+        queryViewers[1].serviceResponse = serviceResponseChartMock;
+        queryViewers[2].serviceResponse = serviceResponseChartMock;
+        queryViewers[3].serviceResponse = serviceResponseChartMock;
 
-          // Chart
-          queryViewers[1].serviceResponse = serviceResponseChartMock;
-          queryViewers[2].serviceResponse = serviceResponseChartMock;
-          queryViewers[3].serviceResponse = serviceResponseChartMock;
-
-          document
-            .querySelector("gx-query-viewer-slider")
-            .addEventListener("change", event => {
-              console.log("Slider new value:", event.detail);
-            });
+        document
+          .querySelector("gx-query-viewer-slider")
+          .addEventListener("change", event => {
+            console.log("Slider new value:", event.detail);
+          });
       });
     </script>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        display: inline-grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 500px;
+        gap: 1em;
+      }
+      .container > div {
+        border: 1px solid gray;
+        padding: 1em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
   </head>
   <body>
-
     <div class="container">
       <div>
         <gx-query-viewer
@@ -1142,7 +1409,6 @@
           y-axis-title=""
         ></gx-query-viewer>
       </div>
-
       <div>
         <div style="height: 200px; margin: 40px; display: flex; width: 100%">
           <gx-query-viewer-slider start-slider-value="50" end-slider-value="80">
@@ -1162,7 +1428,21 @@
           </gx-query-viewer-slider>
         </div>
       </div>
-
+      <div>
+        <div style="height: 200px; margin: 40px; display: flex; width: 100%">
+          <gx-query-viewer-pivot
+            css-class="QueryViewer"
+            table-type="PivotTable"
+            auto-resize="true"
+            total-for-columns="Yes"
+            total-for-rows="Yes"
+            show-data-labels-in="Columns"
+            paging="true"
+            page-size="10"
+            remember-layout="false"
+            object-name="Query"
+          ></gx-query-viewer-pivot>
+        </div>
     </div>
   </body>
 </html>

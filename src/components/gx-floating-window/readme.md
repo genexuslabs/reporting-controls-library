@@ -26,19 +26,6 @@
 | `"title"`     |             |
 
 
-## Dependencies
-
-### Depends on
-
-- gx-button
-
-### Graph
-```mermaid
-graph TD;
-  gx-floating-window --> gx-button
-  style gx-floating-window fill:#f9f,stroke:#333,stroke-width:4px
-```
-
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*
