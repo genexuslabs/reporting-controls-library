@@ -1590,7 +1590,20 @@ declare global {
         prototype: HTMLGxQueryViewerFormatStyleElement;
         new (): HTMLGxQueryViewerFormatStyleElement;
     };
+    interface HTMLGxQueryViewerMapElementEventMap {
+        "mapItemClick": Highcharts.PointClickCallbackFunction;
+        "mapItemSelect": Highcharts.PointSelectCallbackFunction;
+        "mapItemUnSelect": Highcharts.PointUnselectCallbackFunction;
+    }
     interface HTMLGxQueryViewerMapElement extends Components.GxQueryViewerMap, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLGxQueryViewerMapElementEventMap>(type: K, listener: (this: HTMLGxQueryViewerMapElement, ev: GxQueryViewerMapCustomEvent<HTMLGxQueryViewerMapElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLGxQueryViewerMapElementEventMap>(type: K, listener: (this: HTMLGxQueryViewerMapElement, ev: GxQueryViewerMapCustomEvent<HTMLGxQueryViewerMapElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLGxQueryViewerMapElement: {
         prototype: HTMLGxQueryViewerMapElement;
