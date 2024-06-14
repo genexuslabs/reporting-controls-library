@@ -28,11 +28,6 @@ export class QueryViewerMap {
   @Prop() readonly allowPointSelect: boolean = false;
 
   /**
-   * A CSS class to set as the element class.
-   */
-  @Prop() readonly cssClass: string;
-
-  /**
    * Description of the QueryViewer
    */
   @Prop() readonly description: string;

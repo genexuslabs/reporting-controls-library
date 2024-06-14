@@ -933,10 +933,6 @@ export namespace Components {
          */
         "allowPointSelect": boolean;
         /**
-          * A CSS class to set as the element class.
-         */
-        "cssClass": string;
-        /**
           * Description of the QueryViewer
          */
         "description": string;
@@ -982,10 +978,6 @@ export namespace Components {
           * If region = Country, this is the country to display in the map
          */
         "country": QueryViewerCountry;
-        /**
-          * A CSS class to set as the `gx-query-viewer-map` element class.
-         */
-        "cssClass": string;
         /**
           * Description of the QueryViewer
          */
@@ -2670,10 +2662,6 @@ declare namespace LocalJSX {
          */
         "allowPointSelect"?: boolean;
         /**
-          * A CSS class to set as the element class.
-         */
-        "cssClass"?: string;
-        /**
           * Description of the QueryViewer
          */
         "description"?: string;
@@ -2731,10 +2719,6 @@ declare namespace LocalJSX {
           * If region = Country, this is the country to display in the map
          */
         "country"?: QueryViewerCountry;
-        /**
-          * A CSS class to set as the `gx-query-viewer-map` element class.
-         */
-        "cssClass"?: string;
         /**
           * Description of the QueryViewer
          */

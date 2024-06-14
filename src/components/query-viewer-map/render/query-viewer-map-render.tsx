@@ -10,6 +10,8 @@ import {
   QueryViewerServiceResponse
 } from "@genexus/reporting-api";
 
+const GEOPOINT_REGEX = /\(([^ ]+) ([^)]+)\)/;
+
 @Component({
   tag: "gx-query-viewer-map-render"
 })
@@ -28,11 +30,6 @@ export class QueryViewerMapRender {
    * If region = Country, this is the country to display in the map
    */
   @Prop() readonly country: QueryViewerCountry;
-
-  /**
-   * A CSS class to set as the `gx-query-viewer-map` element class.
-   */
-  @Prop() readonly cssClass: string;
 
   /**
    * Description of the QueryViewer
@@ -119,8 +116,7 @@ export class QueryViewerMapRender {
         const key = row[axesDataField].trim();
         const value = Number(row[dataField]);
 
-        const regex = /\(([^ ]+) ([^)]+)\)/;
-        const matches = key.match(regex);
+        const matches = key.match(GEOPOINT_REGEX);
 
         if (matches) {
           const [, longitude, latitude] = matches;
@@ -177,7 +173,6 @@ export class QueryViewerMapRender {
     return (
       <Host>
         <gx-query-viewer-map
-          cssClass={this.cssClass}
           description={this.description}
           mapType={this.mapType}
           queryTitle={this.queryTitle}
