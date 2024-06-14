@@ -33,7 +33,8 @@
     "validate": "npm run test && npm run build && npm run scss-bundle",
     "validate.ci": "npm run build -- --max-workers 1 --debug && npm run scss-bundle",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "lint": "eslint src/**/*{.ts,.tsx} --fix"
   },
   "devDependencies": {
     "@genexus/web-controls-library": "2.7.0",

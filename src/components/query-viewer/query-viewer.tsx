@@ -275,7 +275,7 @@ export class QueryViewer {
   @Prop({ mutable: true }) queryTitle: string;
 
   /**
-   * Description of the QueryViewer
+   * If type == Map, the description to QueryViewerMap
    */
   @Prop({ mutable: true }) description: string;
 
@@ -848,7 +848,7 @@ export class QueryViewer {
 
   private mapRender(serviceResponse: QueryViewerServiceResponse) {
     return (
-      <gx-query-viewer-map-controller
+      <gx-query-viewer-map-render
         continent={this.continent}
         country={this.country}
         queryTitle={this.queryTitle}
@@ -860,7 +860,7 @@ export class QueryViewer {
         pointFormat={this.pointFormat}
         footerFormat={this.footerFormat}
         allow-point-select={this.allowPointSelect}
-      ></gx-query-viewer-map-controller>
+      ></gx-query-viewer-map-render>
     );
   }
 

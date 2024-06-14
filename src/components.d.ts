@@ -244,7 +244,7 @@ export namespace Components {
          */
         "dataVersionId": number;
         /**
-          * Description of the QueryViewer
+          * If type == Map, the description to QueryViewerMap
          */
         "description": string;
         /**
@@ -931,15 +931,7 @@ export namespace Components {
         /**
           * Allow the points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
          */
-        "allowPointSelect": false;
-        /**
-          * If region = Continent, this is the continent to display in the map
-         */
-        "continent": QueryViewerContinent;
-        /**
-          * If region = Country, this is the country to display in the map
-         */
-        "country": QueryViewerCountry;
+        "allowPointSelect": boolean;
         /**
           * A CSS class to set as the element class.
          */
@@ -947,7 +939,11 @@ export namespace Components {
         /**
           * The Data module provides a simplified interface for adding data.
          */
-        "data": (number | Highcharts.PointOptionsObject | [string, number])[];
+        "data": (
+    | number
+    | Highcharts.PointOptionsObject
+    | [string, number]
+  )[];
         /**
           * Description of the QueryViewer
          */
@@ -973,23 +969,19 @@ export namespace Components {
          */
         "queryTitle": string;
         /**
-          * This is the region to display in the map
-         */
-        "region": QueryViewerRegion;
-        /**
           * Series options for specific data and the data itself.
          */
-        "series": Highcharts.SeriesOptionsType[];
+        "series": (Highcharts.SeriesOptionsType | { name: string })[];
         /**
           * Map Data for series, in terms of a GeoJSON or TopoJSON object
          */
         "topology": Highcharts.GeoJSON | Highcharts.TopoJSON;
     }
-    interface GxQueryViewerMapController {
+    interface GxQueryViewerMapRender {
         /**
           * Allow the points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
          */
-        "allowPointSelect": false;
+        "allowPointSelect": boolean;
         /**
           * If region = Continent, this is the continent to display in the map
          */
@@ -1030,10 +1022,6 @@ export namespace Components {
           * This is the region to display in the map
          */
         "region": QueryViewerRegion;
-        /**
-          * Whether to select the series initially
-         */
-        "selected": boolean;
         /**
           * Specifies the metadata and data that the control will use to render.
          */
@@ -1609,11 +1597,11 @@ declare global {
         prototype: HTMLGxQueryViewerMapElement;
         new (): HTMLGxQueryViewerMapElement;
     };
-    interface HTMLGxQueryViewerMapControllerElement extends Components.GxQueryViewerMapController, HTMLStencilElement {
+    interface HTMLGxQueryViewerMapRenderElement extends Components.GxQueryViewerMapRender, HTMLStencilElement {
     }
-    var HTMLGxQueryViewerMapControllerElement: {
-        prototype: HTMLGxQueryViewerMapControllerElement;
-        new (): HTMLGxQueryViewerMapControllerElement;
+    var HTMLGxQueryViewerMapRenderElement: {
+        prototype: HTMLGxQueryViewerMapRenderElement;
+        new (): HTMLGxQueryViewerMapRenderElement;
     };
     interface HTMLGxQueryViewerParameterElementEventMap {
         "parameterValueChanged": QueryViewerParameterChangedEvent;
@@ -1694,7 +1682,7 @@ declare global {
         "gx-query-viewer-element-format": HTMLGxQueryViewerElementFormatElement;
         "gx-query-viewer-format-style": HTMLGxQueryViewerFormatStyleElement;
         "gx-query-viewer-map": HTMLGxQueryViewerMapElement;
-        "gx-query-viewer-map-controller": HTMLGxQueryViewerMapControllerElement;
+        "gx-query-viewer-map-render": HTMLGxQueryViewerMapRenderElement;
         "gx-query-viewer-parameter": HTMLGxQueryViewerParameterElement;
         "gx-query-viewer-pivot": HTMLGxQueryViewerPivotElement;
         "gx-query-viewer-pivot-render": HTMLGxQueryViewerPivotRenderElement;
@@ -1953,7 +1941,7 @@ declare namespace LocalJSX {
          */
         "dataVersionId"?: number;
         /**
-          * Description of the QueryViewer
+          * If type == Map, the description to QueryViewerMap
          */
         "description"?: string;
         /**
@@ -2688,15 +2676,7 @@ declare namespace LocalJSX {
         /**
           * Allow the points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
          */
-        "allowPointSelect"?: false;
-        /**
-          * If region = Continent, this is the continent to display in the map
-         */
-        "continent"?: QueryViewerContinent;
-        /**
-          * If region = Country, this is the country to display in the map
-         */
-        "country"?: QueryViewerCountry;
+        "allowPointSelect"?: boolean;
         /**
           * A CSS class to set as the element class.
          */
@@ -2704,7 +2684,11 @@ declare namespace LocalJSX {
         /**
           * The Data module provides a simplified interface for adding data.
          */
-        "data"?: (number | Highcharts.PointOptionsObject | [string, number])[];
+        "data"?: (
+    | number
+    | Highcharts.PointOptionsObject
+    | [string, number]
+  )[];
         /**
           * Description of the QueryViewer
          */
@@ -2721,8 +2705,17 @@ declare namespace LocalJSX {
           * This is the map type: Bubble or Choropleth
          */
         "mapType"?: QueryViewerMapType;
+        /**
+          * Fires when the series is clicked. One parameter, event, is passed to the function, containing common event information.
+         */
         "onMapItemClick"?: (event: GxQueryViewerMapCustomEvent<Highcharts.PointClickCallbackFunction>) => void;
+        /**
+          * Fires when the point is selected either programmatically or following a click on the point. One parameter, event, is passed to the function. Returning false cancels the operation.
+         */
         "onMapItemSelect"?: (event: GxQueryViewerMapCustomEvent<Highcharts.PointSelectCallbackFunction>) => void;
+        /**
+          * Fires when the point is unselected either programmatically or following a click on the point. One parameter, event, is passed to the function. Returning false cancels the operation.
+         */
         "onMapItemUnSelect"?: (event: GxQueryViewerMapCustomEvent<Highcharts.PointUnselectCallbackFunction>) => void;
         /**
           * The HTML of the point's line in the tooltip
@@ -2733,23 +2726,19 @@ declare namespace LocalJSX {
          */
         "queryTitle"?: string;
         /**
-          * This is the region to display in the map
-         */
-        "region"?: QueryViewerRegion;
-        /**
           * Series options for specific data and the data itself.
          */
-        "series"?: Highcharts.SeriesOptionsType[];
+        "series"?: (Highcharts.SeriesOptionsType | { name: string })[];
         /**
           * Map Data for series, in terms of a GeoJSON or TopoJSON object
          */
         "topology"?: Highcharts.GeoJSON | Highcharts.TopoJSON;
     }
-    interface GxQueryViewerMapController {
+    interface GxQueryViewerMapRender {
         /**
           * Allow the points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
          */
-        "allowPointSelect"?: false;
+        "allowPointSelect"?: boolean;
         /**
           * If region = Continent, this is the continent to display in the map
          */
@@ -2790,10 +2779,6 @@ declare namespace LocalJSX {
           * This is the region to display in the map
          */
         "region"?: QueryViewerRegion;
-        /**
-          * Whether to select the series initially
-         */
-        "selected"?: boolean;
         /**
           * Specifies the metadata and data that the control will use to render.
          */
@@ -3071,7 +3056,7 @@ declare namespace LocalJSX {
         "gx-query-viewer-element-format": GxQueryViewerElementFormat;
         "gx-query-viewer-format-style": GxQueryViewerFormatStyle;
         "gx-query-viewer-map": GxQueryViewerMap;
-        "gx-query-viewer-map-controller": GxQueryViewerMapController;
+        "gx-query-viewer-map-render": GxQueryViewerMapRender;
         "gx-query-viewer-parameter": GxQueryViewerParameter;
         "gx-query-viewer-pivot": GxQueryViewerPivot;
         "gx-query-viewer-pivot-render": GxQueryViewerPivotRender;
@@ -3098,7 +3083,7 @@ declare module "@stencil/core" {
             "gx-query-viewer-element-format": LocalJSX.GxQueryViewerElementFormat & JSXBase.HTMLAttributes<HTMLGxQueryViewerElementFormatElement>;
             "gx-query-viewer-format-style": LocalJSX.GxQueryViewerFormatStyle & JSXBase.HTMLAttributes<HTMLGxQueryViewerFormatStyleElement>;
             "gx-query-viewer-map": LocalJSX.GxQueryViewerMap & JSXBase.HTMLAttributes<HTMLGxQueryViewerMapElement>;
-            "gx-query-viewer-map-controller": LocalJSX.GxQueryViewerMapController & JSXBase.HTMLAttributes<HTMLGxQueryViewerMapControllerElement>;
+            "gx-query-viewer-map-render": LocalJSX.GxQueryViewerMapRender & JSXBase.HTMLAttributes<HTMLGxQueryViewerMapRenderElement>;
             "gx-query-viewer-parameter": LocalJSX.GxQueryViewerParameter & JSXBase.HTMLAttributes<HTMLGxQueryViewerParameterElement>;
             "gx-query-viewer-pivot": LocalJSX.GxQueryViewerPivot & JSXBase.HTMLAttributes<HTMLGxQueryViewerPivotElement>;
             "gx-query-viewer-pivot-render": LocalJSX.GxQueryViewerPivotRender & JSXBase.HTMLAttributes<HTMLGxQueryViewerPivotRenderElement>;

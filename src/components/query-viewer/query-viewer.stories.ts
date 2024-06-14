@@ -1,10 +1,20 @@
-import { html } from 'lit-html';
+import { html } from "lit-html";
 import type { Meta, StoryObj } from "@storybook/web-components";
-import { QueryViewerChartType, QueryViewerOrientation, QueryViewerOutputType, QueryViewerTotal } from "@genexus/reporting-api";
+import {
+  QueryViewerChartType,
+  QueryViewerOrientation,
+  QueryViewerOutputType,
+  QueryViewerTotal
+} from "@genexus/reporting-api";
 
 const meta: Meta<HTMLGxQueryViewerControllerElement> = {
   component: "gx-query-viewer-controller",
-  decorators: [(story, context) => html`<gx-query-viewer type="${context.args.type}" control-name="gx1">${story()}</gx-query-viewer>`],
+  decorators: [
+    (story, context) =>
+      html`<gx-query-viewer type="${context.args.type}" control-name="gx1"
+        >${story()}</gx-query-viewer
+      >`
+  ],
   argTypes: {
     type: {
       options: [
@@ -15,8 +25,8 @@ const meta: Meta<HTMLGxQueryViewerControllerElement> = {
         QueryViewerOutputType.Table
       ],
       control: {
-        type: 'select'
-      },
+        type: "select"
+      }
     },
     chartType: {
       options: [
@@ -54,29 +64,29 @@ const meta: Meta<HTMLGxQueryViewerControllerElement> = {
         QueryViewerChartType.StepArea,
         QueryViewerChartType.StepLine,
         QueryViewerChartType.StepTimeline,
-        QueryViewerChartType.Timeline,
+        QueryViewerChartType.Timeline
       ],
-      control: 'select',
+      control: "select",
       defaultValue: QueryViewerChartType.Column
     },
     environment: {
-      options: [
-        "net",
-        "java"
-      ],
-      control: 'select'
+      options: ["net", "java"],
+      control: "select"
     },
     orientation: {
-      options: [QueryViewerOrientation.Vertical, QueryViewerOrientation.Horizontal],
+      options: [
+        QueryViewerOrientation.Vertical,
+        QueryViewerOrientation.Horizontal
+      ],
       control: {
-        type: 'radio'
+        type: "radio"
       },
       defaultValue: "Vertical"
     },
     totalForRows: {
-      options: [ QueryViewerTotal.Yes, QueryViewerTotal.No ],
+      options: [QueryViewerTotal.Yes, QueryViewerTotal.No],
       control: {
-        type: 'radio'
+        type: "radio"
       },
       defaultValue: QueryViewerTotal.No
     }
@@ -97,10 +107,10 @@ const meta: Meta<HTMLGxQueryViewerControllerElement> = {
     paging: true,
     queryTitle: "",
     totalForRows: QueryViewerTotal.No,
-    useGxquery: true,
+    useGxquery: true
   },
   parameters: {
-    controls: { exclude: ['baseUrl', 'apiKey', 'saiaToken', 'saiaUserId'] }
+    controls: { exclude: ["baseUrl", "apiKey", "saiaToken", "saiaUserId"] }
   }
 };
 export default meta;
@@ -112,7 +122,8 @@ export const Chart: Story = {
   args: {
     useGxquery: true,
     metadataId: import.meta.env.STORYBOOK_METADATA_ID,
-    serializedObject: '{ "id": "72508bf7-d801-49cb-898c-7cbf4b700c03", "title": "Chart - with controller", "chartType":"Column", "showValues":"true" }',
+    serializedObject:
+      '{ "id": "72508bf7-d801-49cb-898c-7cbf4b700c03", "title": "Chart - with controller", "chartType":"Column", "showValues":"true" }',
     type: QueryViewerOutputType.Chart
   }
 };
@@ -121,36 +132,32 @@ export const Chart2: Story = {
   args: {
     useGxquery: true,
     metadataId: import.meta.env.STORYBOOK_METADATA_ID,
-    objectName: 'CountriesByGDPPerCapita',
+    objectName: "CountriesByGDPPerCapita",
     type: QueryViewerOutputType.Chart
   },
-  parameters: {
-  }
+  parameters: {}
 };
 export const PivotTable: Story = {
   name: "Pivot Table",
   args: {
     useGxquery: true,
     metadataId: import.meta.env.STORYBOOK_METADATA_ID,
-    objectName: 'CountriesByGDPPerCapita',
+    objectName: "CountriesByGDPPerCapita",
     type: QueryViewerOutputType.PivotTable,
     pageSize: 5
   },
-  parameters: {
-  }
+  parameters: {}
 };
-
 
 export const Table: Story = {
   name: "Table",
   args: {
     useGxquery: true,
     metadataId: import.meta.env.STORYBOOK_METADATA_ID,
-    objectName: 'CountriesByGDPPerCapita',
+    objectName: "CountriesByGDPPerCapita",
     type: QueryViewerOutputType.Table
   },
-  parameters: {
-  }
+  parameters: {}
 };
 
 export const MapChoropleth: Story = {
@@ -158,11 +165,10 @@ export const MapChoropleth: Story = {
   args: {
     useGxquery: true,
     metadataId: import.meta.env.STORYBOOK_METADATA_ID,
-    objectName: 'TotalCasesPerMillionMap',
+    objectName: "TotalCasesPerMillionMap",
     type: QueryViewerOutputType.Map
   },
-  parameters: {
-  }
+  parameters: {}
 };
 
 export const MapBubble: Story = {
@@ -170,9 +176,8 @@ export const MapBubble: Story = {
   args: {
     useGxquery: true,
     metadataId: import.meta.env.STORYBOOK_METADATA_ID,
-    objectName: 'PopulationByCountryBubbleMap',
+    objectName: "PopulationByCountryBubbleMap",
     type: QueryViewerOutputType.Map
   },
-  parameters: {
-  }
+  parameters: {}
 };

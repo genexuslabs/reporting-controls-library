@@ -1,25 +1,19 @@
-
-  // @ts-nocheck
-import * as Highcharts from 'highcharts/highmaps';
+import * as Highcharts from "highcharts/highmaps";
 import { Host, Watch } from "@stencil/core";
-import { Component, Prop, h, Event } from "@stencil/core";
+import { Component, Prop, h, State } from "@stencil/core";
 
 import {
-  QueryViewerAxisType,
   QueryViewerContinent,
   QueryViewerCountry,
   QueryViewerMapType,
   QueryViewerRegion,
   QueryViewerServiceResponse
- } from "@genexus/reporting-api";
-
+} from "@genexus/reporting-api";
 
 @Component({
-  tag: "gx-query-viewer-map-controller",
+  tag: "gx-query-viewer-map-render"
 })
-export class QueryViewerMapController {
-  private regExp = /\(([^)]+)\)/;
-
+export class QueryViewerMapRender {
   /**
    * A CSS class to set as the `gx-query-viewer-map` element class.
    */
@@ -28,23 +22,23 @@ export class QueryViewerMapController {
   /**
    * Title of the QueryViewer
    */
-  @Prop() queryTitle: string;
+  @Prop() readonly queryTitle: string;
 
   /**
    * Description of the QueryViewer
    */
-  @Prop() description: string;
+  @Prop() readonly description: string;
 
   /**
    * This is the map type: Bubble or Choropleth
    */
-  @Prop() mapType: QueryViewerMapType;
+  @Prop() readonly mapType: QueryViewerMapType;
 
   /**
    * This is the region to display in the map
    */
-  @Prop() region: QueryViewerRegion;
-  @Watch('region')
+  @Prop() readonly region: QueryViewerRegion;
+  @Watch("region")
   handleRegion(newValue) {
     if (newValue !== undefined) {
       this.fetchMapData();
@@ -54,17 +48,12 @@ export class QueryViewerMapController {
   /**
    * If region = Continent, this is the continent to display in the map
    */
-  @Prop() continent: QueryViewerContinent;
+  @Prop() readonly continent: QueryViewerContinent;
 
   /**
    * If region = Country, this is the country to display in the map
    */
-  @Prop() country: QueryViewerCountry;
-
-  /**
-   * Whether to select the series initially
-   */
-  @Prop() selected: boolean = false;
+  @Prop() readonly country: QueryViewerCountry;
 
   /**
    * Specifies the metadata and data that the control will use to render.
@@ -86,7 +75,7 @@ export class QueryViewerMapController {
   /**
    * Allow the points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
    */
-  @Prop() readonly allowPointSelect = false;
+  @Prop() readonly allowPointSelect: boolean = false;
   /**
    * Map Data for series, in terms of a GeoJSON or TopoJSON object
    */
@@ -97,12 +86,14 @@ export class QueryViewerMapController {
    * @returns topology URL
    */
   private mapDataUrl(): string {
-    let url = 'https://code.highcharts.com/mapdata/custom/world.topo.json';
-    switch(String(this.region)) {
-      case 'Continent':
-        url = `https://code.highcharts.com/mapdata/custom/${String(this.continent)}.topo.json`;
+    let url = "https://code.highcharts.com/mapdata/custom/world.topo.json";
+    switch (String(this.region)) {
+      case "Continent":
+        url = `https://code.highcharts.com/mapdata/custom/${String(
+          this.continent
+        )}.topo.json`;
         break;
-      case 'Country':
+      case "Country":
         const country = String(this.country).toLocaleLowerCase();
         url = `https://code.highcharts.com/mapdata/countries/${country}/${country}-all.topo.json`;
         break;
@@ -110,49 +101,58 @@ export class QueryViewerMapController {
     return url;
   }
 
-  private async fetchMapData(): void {
+  private async fetchMapData() {
     const url = this.mapDataUrl();
     this.topology = await fetch(url).then(response => response.json());
   }
 
-  private getSerieData(axesDataField: QueryViewerDataType, dataField: QueryViewerDataType): { code: string, value: number }[] {
+  private getSerieData(
+    axesDataField: string,
+    dataField: string
+  ): Highcharts.PointOptionsType[] {
     const { rows } = this.serviceResponse.Data;
 
-    return rows.map((row) => {
-      const key = row[axesDataField].trim();
-      const value = Number(row[dataField]);
+    return rows
+      .map(row => {
+        const key = row[axesDataField].trim();
+        const value = Number(row[dataField]);
 
-      const regex = /\(([^ ]+) ([^)]+)\)/;
-      const matches = key.match(regex);
+        const regex = /\(([^ ]+) ([^)]+)\)/;
+        const matches = key.match(regex);
 
-      if (matches) {
-        const [, longitud, latitud] = matches;
-        return { value: `${value}`, name: `${value}`, lon: parseFloat(longitud), lat: parseFloat(latitud), x: parseFloat(longitud), y: parseFloat(latitud) };
-      } else {
-        return { value, z: value, code: key };
-      }
-    })
-    .filter(({ value }) => value > 0);
-  };
+        if (matches) {
+          const [, longitude, latitude] = matches;
+          return {
+            lon: parseFloat(longitude),
+            lat: parseFloat(latitude),
+            name: `${value}`,
+            value
+          };
+        } else {
+          return { value, z: value, code: key };
+        }
+      })
+      .filter(({ value }) => Number(value) > 0);
+  }
 
-  private getSeries(): Highcharts.SeriesOptionsType {
-    const { dataField: axesDataField, dataType } = this.serviceResponse.MetaData.axes[0];
+  private getSeries() {
+    const { dataField: axesDataField, dataType } =
+      this.serviceResponse.MetaData.axes[0];
     const { dataField } = this.serviceResponse.MetaData.data[0];
     const { title } = this.serviceResponse.MetaData.data[0];
 
     const data = this.getSerieData(axesDataField, dataField);
 
     const series = {
-      type: this.mapType === "Choropleth" ? "map" : "mapbubble",
+      ...(this.mapType === "Bubble" ? { type: "mapbubble" } : { type: "map" }),
       name: title,
-      joinBy: ['iso-a2', 'code'],
-      data,
+      joinBy: ["iso-a2", "code"],
+      data
     };
 
     // @TODO: Replace type in order to show points. Review to allow bubbles
-    if (dataType === 'geopoint') {
-      series.type = 'mappoint';
-      series.allAreas = false;
+    if (dataType === "geopoint") {
+      series.type = "mappoint";
     }
 
     return series;
@@ -165,27 +165,20 @@ export class QueryViewerMapController {
 
     const series = [
       {
-        name: ['World', 'Continent'].includes(this.region) ? 'Countries' : 'Cities',
-        enableMouseTracking: false
+        name: ["World", "Continent"].includes(this.region)
+          ? "Countries"
+          : "Cities"
       },
       this.getSeries()
     ];
 
     return (
-      <Host
-        class={{
-          "gx-query-viewer-map-controller": true
-        }}
-      >
+      <Host>
         <gx-query-viewer-map
-          continent={this.continent}
-          country={this.country}
           cssClass={this.cssClass}
           description={this.description}
           mapType={this.mapType}
           queryTitle={this.queryTitle}
-          region={this.region}
-          selected={this.selected}
           series={series}
           topology={this.topology}
           headerFormat={this.headerFormat}

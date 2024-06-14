@@ -1,8 +1,16 @@
-import { Component, Event, Host, Prop, EventEmitter, h } from "@stencil/core";
-import * as Highcharts from 'highcharts/highmaps';
+import {
+  Component,
+  Event,
+  Host,
+  Prop,
+  EventEmitter,
+  h,
+  Watch
+} from "@stencil/core";
+import * as Highcharts from "highcharts/highmaps";
 import HighchartsData from "highcharts/modules/data";
 import HighchartsExporting from "highcharts/modules/exporting";
-import { QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryViewerRegion } from "@genexus/reporting-api";
+import { QueryViewerMapType } from "@genexus/reporting-api";
 
 @Component({
   tag: "gx-query-viewer-map",
@@ -12,35 +20,21 @@ import { QueryViewerContinent, QueryViewerCountry, QueryViewerMapType, QueryView
 export class QueryViewerMap {
   private mapContainer: HTMLDivElement;
 
+  private mapHC: Highcharts.MapChart;
   /**
    * Title of the QueryViewer
    */
-  @Prop() queryTitle: string;
+  @Prop() readonly queryTitle: string;
 
   /**
    * Description of the QueryViewer
    */
-  @Prop() description: string;
+  @Prop() readonly description: string;
 
   /**
    * This is the map type: Bubble or Choropleth
    */
-  @Prop() mapType: QueryViewerMapType;
-
-  /**
-   * This is the region to display in the map
-   */
-  @Prop() region: QueryViewerRegion;
-
-  /**
-   * If region = Continent, this is the continent to display in the map
-   */
-  @Prop() continent: QueryViewerContinent;
-
-  /**
-   * If region = Country, this is the country to display in the map
-   */
-  @Prop() country: QueryViewerCountry;
+  @Prop() readonly mapType: QueryViewerMapType;
 
   /**
    * A CSS class to set as the element class.
@@ -50,12 +44,16 @@ export class QueryViewerMap {
   /**
    * The Data module provides a simplified interface for adding data.
    */
-  @Prop() readonly data: (number | Highcharts.PointOptionsObject | [string, number])[];
+  @Prop() readonly data: (
+    | number
+    | Highcharts.PointOptionsObject
+    | [string, number]
+  )[];
 
   /**
    * Series options for specific data and the data itself.
    */
-  @Prop() readonly series: Highcharts.SeriesOptionsType[];
+  @Prop() readonly series: (Highcharts.SeriesOptionsType | { name: string })[];
 
   /**
    * The HTML of the tooltip header line
@@ -72,18 +70,39 @@ export class QueryViewerMap {
   /**
    * Allow the points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
    */
-  @Prop() readonly allowPointSelect = false;
+  @Prop() readonly allowPointSelect: boolean = false;
 
   /**
    * Map Data for series, in terms of a GeoJSON or TopoJSON object
    */
   @Prop() readonly topology: Highcharts.GeoJSON | Highcharts.TopoJSON;
 
+  /**
+   * Fires when the series is clicked. One parameter, event, is passed to the function, containing common event information.
+   */
   @Event() mapItemClick: EventEmitter<Highcharts.PointClickCallbackFunction>;
 
+  /**
+   * Fires when the point is selected either programmatically or following a click on the point. One parameter, event, is passed to the function. Returning false cancels the operation.
+   */
   @Event() mapItemSelect: EventEmitter<Highcharts.PointSelectCallbackFunction>;
 
-  @Event() mapItemUnSelect: EventEmitter<Highcharts.PointUnselectCallbackFunction>;
+  /**
+   * Fires when the point is unselected either programmatically or following a click on the point. One parameter, event, is passed to the function. Returning false cancels the operation.
+   */
+  @Event()
+  mapItemUnSelect: EventEmitter<Highcharts.PointUnselectCallbackFunction>;
+
+  @Watch("queryTitle")
+  @Watch("description")
+  updateTitle(newValue: string, _: string, propName: string) {
+    const propertiesDictionary = {
+      queryTitle: "title",
+      description: "description"
+    };
+    const key = propertiesDictionary[propName];
+    this.mapHC.update({ [`${key}`]: { text: newValue } });
+  }
 
   private handleClick(e: Highcharts.PointClickCallbackFunction) {
     this.mapItemClick.emit(e);
@@ -100,9 +119,9 @@ export class QueryViewerMap {
     HighchartsExporting(Highcharts);
 
     const tooltip = {
-      ...( this.headerFormat ? { headerFormat: this.headerFormat } : {}),
-      ...( this.pointFormat ? { pointFormat: this.pointFormat } : {}),
-      ...( this.footerFormat ? { footerFormat: this.footerFormat } : {})
+      ...(this.headerFormat ? { headerFormat: this.headerFormat } : {}),
+      ...(this.pointFormat ? { pointFormat: this.pointFormat } : {}),
+      ...(this.footerFormat ? { footerFormat: this.footerFormat } : {})
     };
 
     // @ts-ignore
@@ -111,7 +130,7 @@ export class QueryViewerMap {
         map: this.topology
       },
       title: {
-          text: this.queryTitle
+        text: this.queryTitle
       },
       subtitle: {
         text: this.description
@@ -125,7 +144,7 @@ export class QueryViewerMap {
           point: {
             events: {
               select: this.handleSelect.bind(this),
-              unselect: this.handleUnselect.bind(this),
+              unselect: this.handleUnselect.bind(this)
             }
           }
         },
@@ -134,7 +153,7 @@ export class QueryViewerMap {
           point: {
             events: {
               select: this.handleSelect.bind(this),
-              unselect: this.handleUnselect.bind(this),
+              unselect: this.handleUnselect.bind(this)
             }
           }
         },
@@ -143,21 +162,23 @@ export class QueryViewerMap {
           point: {
             events: {
               select: this.handleSelect.bind(this),
-              unselect: this.handleUnselect.bind(this),
+              unselect: this.handleUnselect.bind(this)
             }
+          },
+          tooltip: {
+            pointFormat: "longitude: {point.lon} / latitude: {point.lat}"
           }
         },
         series: {
           events: {
-            click: this.handleClick.bind(this),
-          },
-        },
+            click: this.handleClick.bind(this)
+          }
+        }
       },
       series: this.series,
       tooltip
     });
   }
-
 
   componentDidRender() {
     this.renderMap();
@@ -165,7 +186,7 @@ export class QueryViewerMap {
 
   render() {
     return (
-      <Host class="gx-query-viewer-map-container">
+      <Host>
         <div ref={el => (this.mapContainer = el as HTMLDivElement)}></div>
       </Host>
     );
