@@ -86,27 +86,25 @@ export class QueryViewerMapRender {
   @State() topology: Highcharts.GeoJSON | Highcharts.TopoJSON = null;
 
   /**
-   *
-   * @returns topology URL
+   * topology source URL
    */
-  private mapDataUrl(): string {
-    let url = "https://code.highcharts.com/mapdata/custom/world.topo.json";
-    switch (String(this.region)) {
-      case "Continent":
-        url = `https://code.highcharts.com/mapdata/custom/${String(
-          this.continent
-        )}.topo.json`;
-        break;
-      case "Country":
-        const country = String(this.country).toLocaleLowerCase();
-        url = `https://code.highcharts.com/mapdata/countries/${country}/${country}-all.topo.json`;
-        break;
-    }
-    return url;
-  }
+  private topologyUrlMapping = {
+    Continent: () =>
+      `https://code.highcharts.com/mapdata/custom/${String(
+        this.continent
+      )}.topo.json`,
+    Country: () => {
+      const country = String(this.country).toLocaleLowerCase();
+      return `https://code.highcharts.com/mapdata/countries/${country}/${country}-all.topo.json`;
+    },
+    World: () => `https://code.highcharts.com/mapdata/custom/world.topo.json`
+  } as const satisfies { [key in QueryViewerRegion]: () => string };
+
+  private getTopologyUrl = (): string =>
+    this.topologyUrlMapping[String(this.region || QueryViewerRegion.World)]();
 
   private async fetchMapData() {
-    const url = this.mapDataUrl();
+    const url = this.getTopologyUrl();
     this.topology = await fetch(url).then(response => response.json());
   }
 

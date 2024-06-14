@@ -937,14 +937,6 @@ export namespace Components {
          */
         "cssClass": string;
         /**
-          * The Data module provides a simplified interface for adding data.
-         */
-        "data": (
-    | number
-    | Highcharts.PointOptionsObject
-    | [string, number]
-  )[];
-        /**
           * Description of the QueryViewer
          */
         "description": string;
@@ -2681,14 +2673,6 @@ declare namespace LocalJSX {
           * A CSS class to set as the element class.
          */
         "cssClass"?: string;
-        /**
-          * The Data module provides a simplified interface for adding data.
-         */
-        "data"?: (
-    | number
-    | Highcharts.PointOptionsObject
-    | [string, number]
-  )[];
         /**
           * Description of the QueryViewer
          */
