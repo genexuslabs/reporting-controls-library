@@ -1,6 +1,6 @@
 module.exports = {
   parser: "@typescript-eslint/parser", // Specifies the ESLint parser
-  plugins: ["@typescript-eslint", "local"],
+  plugins: ["@typescript-eslint"],
   extends: [
     "plugin:@typescript-eslint/recommended",
     "plugin:@stencil-community/recommended",
@@ -87,17 +87,10 @@ module.exports = {
 
     // WA to fix false positive errors
     "@stencil-community/strict-mutable": "warn", // This rule catches Stencil Prop marked as mutable but not changing value in code
+    "@stencil-community/ban-exported-const-enums": "warn",
+    "@typescript-eslint/ban-ts-comment": "warn",
 
     // React
     "react/jsx-no-bind": "off"
-  },
-  overrides: [
-    {
-      files: ["**/*.tsx"],
-      rules: {
-        "local/jsx-uses-my-pragma": "error", // These are needed to avoid getting a not used error with imports used in JSX
-        "local/jsx-uses-vars": "error"
-      }
-    }
-  ]
+  }
 };
