@@ -849,17 +849,17 @@ export class QueryViewer {
   private mapRender(serviceResponse: QueryViewerServiceResponse) {
     return (
       <gx-query-viewer-map-render
+        allow-point-select={this.allowPointSelect}
         continent={this.continent}
         country={this.country}
-        queryTitle={this.queryTitle}
         description={this.description}
+        footerFormat={this.footerFormat}
+        headerFormat={this.headerFormat}
         mapType={this.mapType}
+        pointFormat={this.pointFormat}
+        queryTitle={this.queryTitle}
         region={this.region}
         serviceResponse={serviceResponse}
-        headerFormat={this.headerFormat}
-        pointFormat={this.pointFormat}
-        footerFormat={this.footerFormat}
-        allow-point-select={this.allowPointSelect}
       ></gx-query-viewer-map-render>
     );
   }

@@ -173,15 +173,15 @@ export class QueryViewerMapRender {
     return (
       <Host>
         <gx-query-viewer-map
+          allowPointSelect={this.allowPointSelect}
           description={this.description}
+          footerFormat={this.footerFormat}
+          headerFormat={this.headerFormat}
           mapType={this.mapType}
+          pointFormat={this.pointFormat}
           queryTitle={this.queryTitle}
           series={series}
           topology={this.topology}
-          headerFormat={this.headerFormat}
-          pointFormat={this.pointFormat}
-          footerFormat={this.footerFormat}
-          allowPointSelect={this.allowPointSelect}
         ></gx-query-viewer-map>
       </Host>
     );

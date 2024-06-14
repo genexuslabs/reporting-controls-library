@@ -67,6 +67,17 @@ export class QueryViewerMap {
    */
   @Prop() readonly topology: Highcharts.GeoJSON | Highcharts.TopoJSON;
 
+  @Watch("queryTitle")
+  @Watch("description")
+  updateTitle(newValue: string, _: string, propName: string) {
+    const propertiesDictionary = {
+      queryTitle: "title",
+      description: "description"
+    };
+    const key = propertiesDictionary[propName];
+    this.mapHC.update({ [`${key}`]: { text: newValue } });
+  }
+
   /**
    * Fires when the series is clicked. One parameter, event, is passed to the function, containing common event information.
    */
@@ -83,31 +94,17 @@ export class QueryViewerMap {
   @Event()
   mapItemUnSelect: EventEmitter<Highcharts.PointUnselectCallbackFunction>;
 
-  @Watch("queryTitle")
-  @Watch("description")
-  updateTitle(newValue: string, _: string, propName: string) {
-    const propertiesDictionary = {
-      queryTitle: "title",
-      description: "description"
-    };
-    const key = propertiesDictionary[propName];
-    this.mapHC.update({ [`${key}`]: { text: newValue } });
-  }
-
-  private handleClick(e: Highcharts.PointClickCallbackFunction) {
+  private handleClick = (e: Highcharts.PointClickCallbackFunction) => {
     this.mapItemClick.emit(e);
-  }
-  private handleSelect(e: Highcharts.PointSelectCallbackFunction) {
+  };
+  private handleSelect = (e: Highcharts.PointSelectCallbackFunction) => {
     this.mapItemSelect.emit(e);
-  }
-  private handleUnselect(e: Highcharts.PointUnselectCallbackFunction) {
+  };
+  private handleUnselect = (e: Highcharts.PointUnselectCallbackFunction) => {
     this.mapItemUnSelect.emit(e);
-  }
+  };
 
   private renderMap() {
-    HighchartsData(Highcharts);
-    HighchartsExporting(Highcharts);
-
     const tooltip = {
       ...(this.headerFormat ? { headerFormat: this.headerFormat } : {}),
       ...(this.pointFormat ? { pointFormat: this.pointFormat } : {}),
@@ -133,8 +130,8 @@ export class QueryViewerMap {
           allowPointSelect: this.allowPointSelect,
           point: {
             events: {
-              select: this.handleSelect.bind(this),
-              unselect: this.handleUnselect.bind(this)
+              select: this.handleSelect,
+              unselect: this.handleUnselect
             }
           }
         },
@@ -142,8 +139,8 @@ export class QueryViewerMap {
           allowPointSelect: this.allowPointSelect,
           point: {
             events: {
-              select: this.handleSelect.bind(this),
-              unselect: this.handleUnselect.bind(this)
+              select: this.handleSelect,
+              unselect: this.handleUnselect
             }
           }
         },
@@ -151,8 +148,8 @@ export class QueryViewerMap {
           allowPointSelect: this.allowPointSelect,
           point: {
             events: {
-              select: this.handleSelect.bind(this),
-              unselect: this.handleUnselect.bind(this)
+              select: this.handleSelect,
+              unselect: this.handleUnselect
             }
           },
           tooltip: {
@@ -168,6 +165,11 @@ export class QueryViewerMap {
       series: this.series,
       tooltip
     });
+  }
+
+  connectedCallback() {
+    HighchartsData(Highcharts);
+    HighchartsExporting(Highcharts);
   }
 
   componentDidRender() {
