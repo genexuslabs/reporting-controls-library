@@ -21,20 +21,11 @@ export class QueryViewerMap {
   private mapContainer: HTMLDivElement;
 
   private mapHC: Highcharts.MapChart;
-  /**
-   * Title of the QueryViewer
-   */
-  @Prop() readonly queryTitle: string;
 
   /**
-   * Description of the QueryViewer
+   * Allow the points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
    */
-  @Prop() readonly description: string;
-
-  /**
-   * This is the map type: Bubble or Choropleth
-   */
-  @Prop() readonly mapType: QueryViewerMapType;
+  @Prop() readonly allowPointSelect: boolean = false;
 
   /**
    * A CSS class to set as the element class.
@@ -42,35 +33,39 @@ export class QueryViewerMap {
   @Prop() readonly cssClass: string;
 
   /**
-   * The Data module provides a simplified interface for adding data.
+   * Description of the QueryViewer
    */
-  @Prop() readonly data: (
-    | number
-    | Highcharts.PointOptionsObject
-    | [string, number]
-  )[];
+  @Prop() readonly description: string;
 
   /**
-   * Series options for specific data and the data itself.
+   * A string to append to the tooltip format.
    */
-  @Prop() readonly series: (Highcharts.SeriesOptionsType | { name: string })[];
+  @Prop() readonly footerFormat: string | undefined = undefined;
 
   /**
    * The HTML of the tooltip header line
    */
   @Prop() readonly headerFormat: string | undefined = undefined;
+
+  /**
+   * Title of the QueryViewer
+   */
+  @Prop() readonly queryTitle: string;
+
+  /**
+   * This is the map type: Bubble or Choropleth
+   */
+  @Prop() readonly mapType: QueryViewerMapType;
+
   /**
    * The HTML of the point's line in the tooltip
    */
   @Prop() readonly pointFormat: string | undefined = undefined;
+
   /**
-   * A string to append to the tooltip format.
+   * Series options for specific data and the data itself.
    */
-  @Prop() readonly footerFormat: string | undefined = undefined;
-  /**
-   * Allow the points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
-   */
-  @Prop() readonly allowPointSelect: boolean = false;
+  @Prop() readonly series: (Highcharts.SeriesOptionsType | { name: string })[];
 
   /**
    * Map Data for series, in terms of a GeoJSON or TopoJSON object

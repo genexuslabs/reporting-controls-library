@@ -15,14 +15,24 @@ import {
 })
 export class QueryViewerMapRender {
   /**
+   * Allow the points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
+   */
+  @Prop() readonly allowPointSelect: boolean = false;
+
+  /**
+   * If region = Continent, this is the continent to display in the map
+   */
+  @Prop() readonly continent: QueryViewerContinent;
+
+  /**
+   * If region = Country, this is the country to display in the map
+   */
+  @Prop() readonly country: QueryViewerCountry;
+
+  /**
    * A CSS class to set as the `gx-query-viewer-map` element class.
    */
   @Prop() readonly cssClass: string;
-
-  /**
-   * Title of the QueryViewer
-   */
-  @Prop() readonly queryTitle: string;
 
   /**
    * Description of the QueryViewer
@@ -30,9 +40,29 @@ export class QueryViewerMapRender {
   @Prop() readonly description: string;
 
   /**
+   * A string to append to the tooltip format.
+   */
+  @Prop() readonly footerFormat: string | undefined = undefined;
+
+  /**
+   * The HTML of the tooltip header line
+   */
+  @Prop() readonly headerFormat: string | undefined = undefined;
+
+  /**
+   * Title of the QueryViewer
+   */
+  @Prop() readonly queryTitle: string;
+
+  /**
    * This is the map type: Bubble or Choropleth
    */
   @Prop() readonly mapType: QueryViewerMapType;
+
+  /**
+   * The HTML of the point's line in the tooltip
+   */
+  @Prop() readonly pointFormat: string | undefined = undefined;
 
   /**
    * This is the region to display in the map
@@ -46,36 +76,10 @@ export class QueryViewerMapRender {
   }
 
   /**
-   * If region = Continent, this is the continent to display in the map
-   */
-  @Prop() readonly continent: QueryViewerContinent;
-
-  /**
-   * If region = Country, this is the country to display in the map
-   */
-  @Prop() readonly country: QueryViewerCountry;
-
-  /**
    * Specifies the metadata and data that the control will use to render.
    */
   @Prop() readonly serviceResponse: QueryViewerServiceResponse;
 
-  /**
-   * The HTML of the tooltip header line
-   */
-  @Prop() readonly headerFormat: string | undefined = undefined;
-  /**
-   * The HTML of the point's line in the tooltip
-   */
-  @Prop() readonly pointFormat: string | undefined = undefined;
-  /**
-   * A string to append to the tooltip format.
-   */
-  @Prop() readonly footerFormat: string | undefined = undefined;
-  /**
-   * Allow the points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
-   */
-  @Prop() readonly allowPointSelect: boolean = false;
   /**
    * Map Data for series, in terms of a GeoJSON or TopoJSON object
    */
