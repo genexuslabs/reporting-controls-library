@@ -255,7 +255,8 @@ export class QueryViewerPivotTableRender {
         ServerPagingCacheSize: 0,
         TotalForColumns: this.totalForColumns,
         TotalForRows: this.totalForRows,
-        Title: this.pivotTitle
+        Title: this.pivotTitle,
+        mFlexGrid: true
       };
       return pivotParameters;
     }
@@ -284,7 +285,8 @@ export class QueryViewerPivotTableRender {
       TotalForColumns: this.totalForColumns,
       TotalForRows: this.totalForRows,
       Title: this.pivotTitle,
-      data: this.pageDataForTable
+      data: this.pageDataForTable,
+      mFlexGrid: true
     };
     return tableParameters;
     // ToDo: check if gx-query need this field
