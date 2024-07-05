@@ -94,7 +94,6 @@ export class QueryViewerPivot {
     );
   }
 
-
   /**
    * Response Page Data
    */
@@ -383,7 +382,8 @@ export class QueryViewerPivot {
         data:
           this.tableType === QueryViewerOutputType.Table
             ? this.pageDataForTable
-            : undefined
+            : undefined,
+        mFlexGrid: true
       },
       oat_element: undefined
     };
