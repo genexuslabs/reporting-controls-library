@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  Element,
   Event,
   Host,
   Listen,
@@ -102,6 +103,7 @@ export class QueryViewer {
     [QueryViewerOutputType.Default]: response =>
       this.notImplementedRender(response)
   };
+  @Element() element: HTMLGxQueryViewerElement;
 
   // refs
   private controller: HTMLGxQueryViewerControllerElement;
@@ -866,9 +868,10 @@ export class QueryViewer {
   }
 
   private setControllerRef() {
-    this.controller = document.querySelector(
-      `[id=${this.temporalId}] > gx-query-viewer-controller`
-    );
+    // this.controller = document.querySelector(
+    //   `[id=${this.temporalId}] > gx-query-viewer-controller`
+    // );
+    this.controller = this.element.querySelector(`gx-query-viewer-controller`);
   }
 
   componentWillLoad() {

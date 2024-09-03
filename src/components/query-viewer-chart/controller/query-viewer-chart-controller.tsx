@@ -20,7 +20,7 @@ import {
   processDataAndMetadata
 } from "./processDataAndMetadata";
 
-import { Options } from "highcharts";
+import { Options, PaneOptions } from "highcharts";
 import { ChartTypes } from "./chart-types";
 import {
   AVERAGE_DAYS_PER_MONTH,
@@ -402,7 +402,7 @@ export class QueryViewerChart {
         chartOptions={{ type: "line", height: 80 }}
         seriesOptions={fillHeaderAndFooter(this.chartType, charts)}
         tooltipOptions={{ enabled: false }}
-        paneOptions={pane}
+        paneOptions={pane as PaneOptions}
         legendOptions={{ enabled: false }}
         plotOptions={{
           line: {
@@ -429,7 +429,7 @@ export class QueryViewerChart {
         })
 
         /*
-      
+
       { {this.renderGroupByCombo({
         showYears: true,
         showSemesters: true,
@@ -485,7 +485,7 @@ export class QueryViewerChart {
             chartOptions={chart}
             seriesOptions={series}
             tooltipOptions={tooltip}
-            paneOptions={pane}
+            paneOptions={pane as PaneOptions}
             legendOptions={legend}
             plotOptions={plotOptions}
             yaxisOptions={yAxis}
