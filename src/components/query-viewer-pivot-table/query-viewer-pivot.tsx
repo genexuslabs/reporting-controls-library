@@ -1,5 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Component, h, Method, Prop, Watch, Listen } from "@stencil/core";
+import {
+  Component,
+  Element,
+  h,
+  Method,
+  Prop,
+  Watch,
+  Listen
+} from "@stencil/core";
 import {
   renderJSPivot,
   OAT,
@@ -40,6 +48,9 @@ export class QueryViewerPivot {
   private queryViewerConfiguration: QueryViewerPivotTable = undefined;
   private shouldReRenderPivot = false;
   private pageSizeChangeWasCommittedByTheUser = false;
+
+  @Element()
+  element: HTMLGxQueryViewerPivotElement;
 
   /**
    * Response Attribute Values
@@ -93,7 +104,6 @@ export class QueryViewerPivot {
       newValue
     );
   }
-
 
   /**
    * Response Page Data
@@ -392,7 +402,8 @@ export class QueryViewerPivot {
         this.queryViewerConfiguration.pivotParams,
         this.pivotCollection.collection,
         this.QueryViewerTranslations,
-        this.queryViewerConfiguration
+        this.queryViewerConfiguration,
+        this.element
       );
     }
   }
