@@ -34,7 +34,7 @@
         align-items: center;
       }
     </style>
-  
+
     <script>
       const pivotParameters = {
         AllowSelection: false,
@@ -1443,6 +1443,24 @@
             object-name="Query"
           ></gx-query-viewer-pivot>
         </div>
+      </div>
+      <div>
+        <div style="height: 200px; margin: 40px; display: flex; width: 100%">
+          <gx-query-viewer type="PivotTable" control-name="gx1">
+            <gx-query-viewer-controller
+              css-class="QueryViewer"
+              type="PivotTable"
+              object-name="CountriesByGDPPerCapita"
+              metadata-id=""
+              base-url=""
+              api-key=""
+              saia-token=""
+              saia-user-id=""
+              use-gxquery="true"
+            ></gx-query-viewer-controller>
+          </gx-query-viewer>
+        </div>
+      </div>
     </div>
   </body>
 </html>
