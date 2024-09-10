@@ -45,11 +45,13 @@ graph TD;
   gx-query-render --> gx-query-viewer
   gx-query-viewer --> gx-query-viewer-card-controller
   gx-query-viewer --> gx-query-viewer-chart-controller
+  gx-query-viewer --> gx-query-viewer-map-controller
   gx-query-viewer --> gx-query-viewer-pivot-render
   gx-query-viewer-card-controller --> gx-query-viewer-card
   gx-query-viewer-card --> gx-query-viewer-chart
   gx-query-viewer-chart-controller --> gx-query-viewer-chart
   gx-query-viewer-chart-controller --> gx-query-viewer-slider
+  gx-query-viewer-map-controller --> gx-query-viewer-map
   gx-query-viewer-pivot-render --> gx-query-viewer-pivot
   style gx-query-render fill:#f9f,stroke:#333,stroke-width:4px
 ```

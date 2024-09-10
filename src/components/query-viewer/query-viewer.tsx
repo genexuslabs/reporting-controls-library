@@ -90,8 +90,7 @@ export class QueryViewer {
     [QueryViewerOutputType.Card]: response => this.cardRender(response),
 
     [QueryViewerOutputType.Chart]: response => this.chartRender(response),
-    [QueryViewerOutputType.Map]: response =>
-      this.notImplementedRender(response),
+    [QueryViewerOutputType.Map]: response => this.mapRender(response),
     [QueryViewerOutputType.PivotTable]: (_, pivotResponse) =>
       this.pivotRender(pivotResponse),
     [QueryViewerOutputType.Pivot_Table]: (_, pivotResponse) =>
@@ -278,6 +277,11 @@ export class QueryViewer {
   @Prop({ mutable: true }) queryTitle: string;
 
   /**
+   * If type == Map, the description to QueryViewerMap
+   */
+  @Prop({ mutable: true }) description: string;
+
+  /**
    * For timeline for remembering layout
    */
   @Prop() readonly rememberLayout: boolean;
@@ -368,6 +372,23 @@ export class QueryViewer {
    * If type == Map and region = Country, this is the country to display in the map
    */
   @Prop({ mutable: true }) country: QueryViewerCountry;
+
+  /**
+   * If type == Map, this is the HTML of the tooltip header line
+   */
+  @Prop() readonly headerFormat: string | undefined = undefined;
+  /**
+   * If type == Map, this is the HTML of the point's line in the tooltip
+   */
+  @Prop() readonly pointFormat: string | undefined = undefined;
+  /**
+   * If type == Map, this is a string to append to the tooltip format.
+   */
+  @Prop() readonly footerFormat: string | undefined = undefined;
+  /**
+   * If type == Map, allow the points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
+   */
+  @Prop() readonly allowPointSelect = false;
 
   /**
    * Response Page Data
@@ -765,6 +786,7 @@ export class QueryViewer {
     this.type = properties.outputType;
     this.queryTitle ??= properties.title;
     this.showValues ??= properties.showValues;
+    this.description ??= properties.description;
     if (this.type === QueryViewerOutputType.Card) {
       this.showDataAs ??= properties.showDataAs;
       this.orientation ??= properties.orientation;
@@ -823,6 +845,24 @@ export class QueryViewer {
         xAxisLabels={this.xAxisLabels}
         yAxisTitle={this.yAxisTitle}
       ></gx-query-viewer-chart-controller>
+    );
+  }
+
+  private mapRender(serviceResponse: QueryViewerServiceResponse) {
+    return (
+      <gx-query-viewer-map-render
+        allow-point-select={this.allowPointSelect}
+        continent={this.continent}
+        country={this.country}
+        description={this.description}
+        footerFormat={this.footerFormat}
+        headerFormat={this.headerFormat}
+        mapType={this.mapType}
+        pointFormat={this.pointFormat}
+        queryTitle={this.queryTitle}
+        region={this.region}
+        serviceResponse={serviceResponse}
+      ></gx-query-viewer-map-render>
     );
   }
 

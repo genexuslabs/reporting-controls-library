@@ -16,10 +16,9 @@ import {
   PaneOptions,
   PlotOptions,
   PointMarkerOptionsObject,
-  SeriesLineOptions
+  SeriesLineOptions,
   // ExtremesObject,
   // SeriesLineOptions
-  ,
   SeriesOptionsType,
   SubtitleOptions,
   TooltipFormatterContextObject,
